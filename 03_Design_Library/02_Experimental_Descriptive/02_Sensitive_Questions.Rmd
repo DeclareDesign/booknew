@@ -30,7 +30,7 @@ source("scripts/before_chapter_script.R")
 ```{r sensitive_questions, echo = FALSE, output = FALSE, purl = FALSE}
 # run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
 do_diagnosis <- FALSE
-sims <- 500
+sims <- 10
 b_sims <- 20
 ```
 
@@ -38,9 +38,9 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-Sometimes, subjects might not tell the truth when \textit{directly} asked about certain attitudes or behaviors. Responses may be affected by sensitivity bias, or the tendancy of survey subjects to dissemble for fear of negative repercussions if some reference group learns their true response [@blair2018list]. In such cases, standard survey estimates based on direct questions will be biased. One class of solutions to this problem is to obscure individual responses, providing protection from social or legal pressures. When we obscure responses systematically through an experiment, we can often still identify average quantities of interest. One such design is the list experiment (introduced by @miller1984new), which asks respondents for the count of the number of `yes' responses to a series of questions including the sensitive item, rather than for a yes or no answer on the sensitive item itself. List experiments give subjects cover by aggregating their answer to the sensitive item with responses to other questions.
+Sometimes, subjects might not tell the truth when \textit{directly} asked about certain attitudes or behaviors. Responses may be affected by sensitivity bias, or the tendency of survey subjects to dissemble for fear of negative repercussions if some reference group learns their true response [@blair2018list]. In such cases, standard survey estimates based on direct questions will be biased. One class of solutions to this problem is to obscure individual responses, providing protection from social or legal pressures. When we obscure responses systematically through an experiment, we can often still identify average quantities of interest. One such design is the list experiment (introduced by @miller1984new), which asks respondents for the count of the number of `yes' responses to a series of questions including the sensitive item, rather than for a yes or no answer on the sensitive item itself. List experiments give subjects cover by aggregating their answer to the sensitive item with responses to other questions.
 
-During the 2016 Presidential Election in the U.S., some observers were concerned that pre-election estimates of support for Donald Trump might have been downwardly biased by "Shy Trump Supporters" -- survey respondents who supported Trump in their hearts, but were embarrased to admit it to pollsters. To assess this possibility, @coppock2017did obtained estimates of Trump support that were free of social desirability bias using a list experiment. Subjects in the control and treatment groups were asked: "Here is a list of [three/four] things that some people would do and some people would not. Please tell me HOW MANY of them you would do. We do not want to know which ones of these you would do, just how many. Here are the [three/four] things:"
+During the 2016 Presidential Election in the U.S., some observers were concerned that pre-election estimates of support for Donald Trump might have been downward biased by "Shy Trump Supporters" -- survey respondents who supported Trump in their hearts, but were embarrassed to admit it to pollsters. To assess this possibility, @coppock2017did obtained estimates of Trump support that were free of social desirability bias using a list experiment. Subjects in the control and treatment groups were asked: "Here is a list of [three/four] things that some people would do and some people would not. Please tell me HOW MANY of them you would do. We do not want to know which ones of these you would do, just how many. Here are the [three/four] things:"
 
 | Control                                                                                           | Treatment                                                                                                                                                                |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -49,7 +49,9 @@ During the 2016 Presidential Election in the U.S., some observers were concerned
 | If it were up for a vote, I would vote to ban assault weapons                                     | If it were up for a vote, I would vote to ban assault weapons                                                                                                            |
 |                                                                                                   | If the 2016 presidential election were being held today and the candidates were Hillary Clinton (Democrat) and Donald Trump (Republican), I would vote for Donald Trump. |
 
-The treatment group averaged 1.843 items while the control group averaged 1.548 items, for a difference-in-means estimate of support for Donald Trump of 29.6\% (note that this estimate is representative of US adults and not of US adults who would actually vote). The trouble with this estimate is that, while it's plausibly free from social desirability bias, it's also much higher variance. The 95\% confidence interval for the list experiment estimate is nearly 14 percentage points wide, whereas the the 95\% confidence interval for the (possibly biased!) direct question asked of the same sample is closer to 4 percentage points.
+The treatment group averaged 1.843 items while the control group averaged 1.548 items, for a difference-in-means estimate 0.296. We will show this is an unbiased estimator for the average treatment effect between being asked to respond to the treated list and the control list (invoking the usual assumptions of randomized experiments, including SUTVA). But our estimand is the proportion of people who support Donald Trump. For the difference-in-means to be an unbiased estimator of the proportion of respondents who would say "yes" to the sensitive item, we invoke two additional assumptions: no design effects and no "liars" (see Imai 2011). The first highlights the fact that we need a good estimate of the average control item count from the control group (in this example 1.843). We use that to net out the control item count from responses to the treated group (what is left is the sensitive item proportion). When respondents provide a different control item count in the treated group than in the control group, for example because they evaluate items relatively and the inclusion of the sensitive item changes their answers (see Flavin and Keane 2011), the design breaks down. The no liars assumption says that respondents provide truthful answers to the sensitive item within the count. The justification for the assumption is that the plausible cover of being asked within a count makes it possible for respondents to answer truthfully.
+
+The estimate is, under these assumptions, free from sensitivity bias, but it's also much higher variance. The 95\% confidence interval for the list experiment estimate is nearly 14 percentage points wide, whereas the the 95\% confidence interval for the (possibly biased!) direct question asked of the same sample is closer to 4 percentage points.
 
 The choice between list experiments and direct question is therefore a **bias-variance tradeoff**. List experiments may have less bias, but they are higher variance. Direct questions may be biased, but they have less variance.
 
@@ -57,7 +59,7 @@ The choice between list experiments and direct question is therefore a **bias-va
 
 - **M**odel: Our model includes subjects' true support for Donald Trump and whether or not they are "shy".  These two variables combine to determine how subjects will respond when asked directly about Trump support.
 
-    The potential outcomes model combines three types of information to determine how subjects will respond to the list experiment: their responses to the three nonsensitive control items, their true support for Trump, and whether they are assigned to see the treatment or the control list. Notice that our definition of the potential outcomes embeds the "No Liars" and "No Design Effects" assumptions required for the list experiment design (see Blair and Imai 2012 for more on these assumptions).
+    The potential outcomes model combines three types of information to determine how subjects will respond to the list experiment: their responses to the three nonsensitive control items, their true support for Trump, and whether they are assigned to see the treatment or the control list. Notice that our definition of the potential outcomes embeds the no liars and no design effects assumptions required for the list experiment design.
 
     We also have a global parameter that reflects our expectations about the proportion of Trump supporters who are shy. It's set at 6%, which is large enough to make a difference for polling, but not so large as to be implausible.
 
@@ -128,7 +130,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 simulations_list <- read_rds(rds_file_path)
 ```
 
-The plot shows the sampling distribution of the direct and list experimetn estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which -- bias or variance -- is more important in a particular setting. See @blair2018list for an extended discussion of how the choice of research design depends deeply on the purpose of the project. 
+The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which -- bias or variance -- is more important in a particular setting. See @blair2018list for an extended discussion of how the choice of research design depends deeply on the purpose of the project.
 
 ```{r, echo=FALSE}
 summary_df <- 
@@ -147,14 +149,17 @@ simulations_list %>%
 
 #### Violations of identifying assumptions
 
+In our model, the definition of the treated potential outcome, `Y_list_Z_1 = Y_list_Z_0 + truthful_trump_vote`, bakes in the no design effects and no liars assumptions. The first component is the control item count `Y_list_Z_0`, which ensures the respondent's count of control items is the same in both groups. The second is the true trump vote, which assumes no liars. 
+
+What do we learn from this experimental design if these assumptions do not hold? We examine the case of "ceiling effects," in which respondents whose control item count is the maximum (in the example, they would vote yes to all three control items) withhold their true support for Trump in the treatment group. We thus redefine the treated potential outcome to be a function of the original count, but those who would respond 4 (all control items plus Trump support) instead respond 3. These are the "liars." 
+
 ```{r}
 list_design_ceiling <- replace_step(
   list_design, step = 2, 
   new_step = declare_potential_outcomes(
     Y_list_Z_0 = raise_minimum_wage + repeal_obamacare + ban_assault_weapons,
     Y_list_Z_1_no_liars = Y_list_Z_0 + truthful_trump_vote,
-    Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars)
-  )
+    Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars))
 )
 ```
 
@@ -171,64 +176,63 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis_list_ceiling <- read_rds(rds_file_path)
 ```
 
-```{r}
-kable(diagnosis_list_ceiling %>% get_diagnosands %>% select(estimator_label, estimand_label, bias, rmse))
+```{r, echo = FALSE}
+diagnosis_list_ceiling %>% get_diagnosands %>% select(estimator_label, estimand_label, bias, rmse) %>% kable(digits = 3)
 ```
 
-See Blair and Imai (2012) and Li (2019) for methods for addressing violations no liars assumption through modeling and bounds.
+We see that the list experiment is still an unbiased estimator for the average difference in responses to the treatment list and the shorter control list (ATE). But under ceiling effects, it is no longer an unbiased estimator for the proportion of truthful Trump vote. Indeed, it is more unbiased than the direct question. The divergence illustrates a common feature of experimental designs for descriptive inference: the average treatment effect can be estimated without bias under SUTVA and randomization with these designs, but additional assumptions are required in order to add an interpretation of the ATE as the descriptive quantity of interest. The burden is on the researcher to demonstrate the credibility of these additional assumptions. The experimental design alone is not sufficient justification. 
 
-Li, Y. (n.d.). Relaxing the No Liars Assumption in List Experiment Analyses. Political Analysis, 1-16. doi:10.1017/pan.2019.7
+<!-- See Blair and Imai (2012) and Li (2019) for methods for addressing violations no liars assumption through modeling and bounds. -->
 
-#### Mitigating the risk of ceiling effects
+<!-- Li, Y. (n.d.). Relaxing the No Liars Assumption in List Experiment Analyses. Political Analysis, 1-16. doi:10.1017/pan.2019.7 -->
 
-Glynn (2013)
 
-```{r}
-list_design_glynn <- replace_step(
-  list_design, step = 1, 
-  new_step = declare_population(
-    N = 5000,
-    # true trump vote (unobservable)
-    truthful_trump_vote = draw_binary(0.45, N),
-    
-    # shy voter (unobservable)
-    shy = draw_binary(proportion_shy, N),
-    
-    # direct question response (1 if Trump supporter and not shy, 0 otherwise)
-    Y_direct = if_else(truthful_trump_vote == 1 & shy == 0, 1, 0),
-    
-    list2_item1 = draw_binary(0.5, N),
-    list2_item2 = correlate(given = list2_item1, rho = -.5, draw_binary, prob = 0.5), 
-    list2_item3 = draw_binary(0.1, N)  # low prevalence
-  )
-)
+#### Addressing potential assumption violations by design
 
-list_design_glynn <- replace_step(
-  list_design_glynn, step = 2, 
-  declare_potential_outcomes(
-    Y_list_Z_0 = list2_item1 + list2_item2 + list2_item3,
-    Y_list_Z_1_no_liars = Y_list_Z_0 + truthful_trump_vote,
-    Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars)
-  )
-)
-```
+Researchers may bolster the assumptions to identify the descriptive estimand through changes to the data strategy or the answer strategy. Changes to the data strategy for the list experiment aim to reduce the risk of design effects and violations of the no liars assumptions. For example, when there is a risk of ceiling effects, @glynn2013can proposes selecting control items that are inversely correlated. With three items, if two of the items are perfectly negatively correlated (i.e., if you say "yes" to one item you say "no" to the other), then the control item count will always be below the maximum of three when ceiling effects bite. We illustrate this design change by replacing the population declaration for the design with ceiling effects. This change is in the population, but is really a part of the data strategy because it involves the choice of measurement tool (which control items the researcher selects to ask respondents). 
 
-```{r, eval = do_diagnosis}
-diagnosis_list_glynn <- diagnose_design(list_design_glynn, sims = sims, bootstrap_sims = b_sims)
-```
+# ```{r}
+# TODO: need to fix
+# list_design_glynn <- replace_step(
+#   list_design_ceiling, step = 1, 
+#   new_step = declare_population(
+#     N = 5000,
+#     # true trump vote (unobservable)
+#     truthful_trump_vote = draw_binary(0.45, N),
+#     
+#     # shy voter (unobservable)
+#     shy = draw_binary(proportion_shy, N),
+#     
+#     # direct question response (1 if Trump supporter and not shy, 0 otherwise)
+#     Y_direct = if_else(truthful_trump_vote == 1 & shy == 0, 1, 0),
+#     
+#     list2_item1 = draw_binary(0.5, N),
+#     list2_item2 = correlate(given = list2_item1, rho = -.5, draw_binary, prob = 0.5), 
+#     list2_item3 = draw_binary(0.1, N)  # low prevalence
+#   )
+# )
+# ```
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/list_glynn_diagnosis.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis_list_glynn, path = rds_file_path)
-}
-diagnosis_list_glynn <- read_rds(rds_file_path)
-```
+# ```{r, eval = do_diagnosis}
+# diagnosis_list_glynn <- diagnose_design(list_design_glynn, sims = sims, bootstrap_sims = b_sims)
+# ```
 
-```{r}
-kable(diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimator_label, bias, rmse))
-```
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/list_glynn_diagnosis.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(diagnosis_list_glynn, path = rds_file_path) -->
+<!-- } -->
+<!-- diagnosis_list_glynn <- read_rds(rds_file_path) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimand_label, estimator_label, bias, rmse) %>% kable -->
+<!-- ``` -->
+
+We see that the design is stil lunbiased for the ATE and now is unbiased for the proportion of truthful Trump vote. This is because there are no longer ceiling effects, which represented a violation of the no design effects assumption required to interpret the ATE as the proportion of truthful Trump vote. 
+
+Changes the answer strategy have been proposed to address both the no design effects and no liars assumption. @blair2012statistical propose a statistical test for the design effects assumption; if it does not pass, they suggest not analyzing the list experiment data (i.e., this is a procedure that makes up an answer strategy). Scholars have also identified improvements to the answer strategy to address violations of no liars: @blair2012statistical provides a model that adjusts for ceiling and floor effects and @li2019relaxing provides a bounds approach that relaxes the assumption.
 
 ### Randomized response technique
 
@@ -312,23 +316,29 @@ kable(reshape_diagnosis(rr_diagnosis))
 #### Bias-variance tradeoff
 
 ```{r, eval = do_diagnosis}
-rr_designs <- redesign(rr_design, proportion_shy = c(0, 0.1, 0.25, 0.5), N = c(500, 1000, 2000, 5000))
+rr_designs <- redesign(rr_design, proportion_shy = seq(from = 0, to = 0.5, by = 0.05), N = seq(from = 500, to = 5000, by = 500))
 rr_tradeoff_diagnosis <- diagnose_design(rr_designs, sims = sims, bootstrap_sims = b_sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/rr_tradeoff_diagnosis.RDS")
+rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/rr_tradeoff_diagnosis2.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
   write_rds(rr_tradeoff_diagnosis, path = rds_file_path)
 }
 rr_tradeoff_diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r}
-# make a plot
-kable(reshape_diagnosis(rr_tradeoff_diagnosis))
-```
+# ```{r}
+# # make a plot
+# rr_tradeoff_diagnosis %>% 
+#   get_diagnosands %>% 
+#   ggplot() + 
+#   # bias line
+#   geom_line(aes(x = ))
+# 
+# # kable(reshape_diagnosis(rr_tradeoff_diagnosis))
+# ```
 
 
 ### References
