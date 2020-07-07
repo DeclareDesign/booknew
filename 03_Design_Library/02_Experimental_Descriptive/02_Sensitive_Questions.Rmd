@@ -191,31 +191,31 @@ We see that the list experiment is still an unbiased estimator for the average d
 
 Researchers may bolster the assumptions to identify the descriptive estimand through changes to the data strategy or the answer strategy. Changes to the data strategy for the list experiment aim to reduce the risk of design effects and violations of the no liars assumptions. For example, when there is a risk of ceiling effects, @glynn2013can proposes selecting control items that are inversely correlated. With three items, if two of the items are perfectly negatively correlated (i.e., if you say "yes" to one item you say "no" to the other), then the control item count will always be below the maximum of three when ceiling effects bite. We illustrate this design change by replacing the population declaration for the design with ceiling effects. This change is in the population, but is really a part of the data strategy because it involves the choice of measurement tool (which control items the researcher selects to ask respondents). 
 
-# ```{r}
-# TODO: need to fix
-# list_design_glynn <- replace_step(
-#   list_design_ceiling, step = 1, 
-#   new_step = declare_population(
-#     N = 5000,
-#     # true trump vote (unobservable)
-#     truthful_trump_vote = draw_binary(0.45, N),
-#     
-#     # shy voter (unobservable)
-#     shy = draw_binary(proportion_shy, N),
-#     
-#     # direct question response (1 if Trump supporter and not shy, 0 otherwise)
-#     Y_direct = if_else(truthful_trump_vote == 1 & shy == 0, 1, 0),
-#     
-#     list2_item1 = draw_binary(0.5, N),
-#     list2_item2 = correlate(given = list2_item1, rho = -.5, draw_binary, prob = 0.5), 
-#     list2_item3 = draw_binary(0.1, N)  # low prevalence
-#   )
-# )
-# ```
+<!-- ```{r} -->
+<!-- TODO: need to fix -->
+<!-- list_design_glynn <- replace_step( -->
+<!--   list_design_ceiling, step = 1,  -->
+<!--   new_step = declare_population( -->
+<!--     N = 5000, -->
+<!--     # true trump vote (unobservable) -->
+<!--     truthful_trump_vote = draw_binary(0.45, N), -->
+<!--      -->
+<!--     # shy voter (unobservable) -->
+<!--     shy = draw_binary(proportion_shy, N), -->
+<!--      -->
+<!--     # direct question response (1 if Trump supporter and not shy, 0 otherwise) -->
+<!--     Y_direct = if_else(truthful_trump_vote == 1 & shy == 0, 1, 0), -->
+<!--      -->
+<!--     list2_item1 = draw_binary(0.5, N), -->
+<!--     list2_item2 = correlate(given = list2_item1, rho = -.5, draw_binary, prob = 0.5),  -->
+<!--     list2_item3 = draw_binary(0.1, N)  # low prevalence -->
+<!--   ) -->
+<!-- ) -->
+<!-- ``` -->
 
-# ```{r, eval = do_diagnosis}
-# diagnosis_list_glynn <- diagnose_design(list_design_glynn, sims = sims, bootstrap_sims = b_sims)
-# ```
+<!-- ```{r, eval = do_diagnosis} -->
+<!-- diagnosis_list_glynn <- diagnose_design(list_design_glynn, sims = sims, bootstrap_sims = b_sims) -->
+<!-- ``` -->
 
 <!-- ```{r, echo = FALSE, purl = FALSE} -->
 <!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
@@ -329,16 +329,16 @@ if (do_diagnosis & !exists("do_bookdown")) {
 rr_tradeoff_diagnosis <- read_rds(rds_file_path)
 ```
 
-# ```{r}
-# # make a plot
-# rr_tradeoff_diagnosis %>% 
-#   get_diagnosands %>% 
-#   ggplot() + 
-#   # bias line
-#   geom_line(aes(x = ))
-# 
-# # kable(reshape_diagnosis(rr_tradeoff_diagnosis))
-# ```
+<!-- ```{r} -->
+<!-- # make a plot -->
+<!-- rr_tradeoff_diagnosis %>%  -->
+<!--   get_diagnosands %>%  -->
+<!--   ggplot() +  -->
+<!--   # bias line -->
+<!--   geom_line(aes(x = )) -->
+<!--  -->
+<!-- # kable(reshape_diagnosis(rr_tradeoff_diagnosis)) -->
+<!-- ``` -->
 
 
 ### References
