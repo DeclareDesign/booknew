@@ -24,12 +24,8 @@ source("scripts/before_chapter_script.R")
 ```{r choosing_an_answer_strategy, echo = FALSE, output = FALSE, purl = FALSE}
 # run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
 do_diagnosis <- FALSE
-sims <- 1000
-b_sims <- 1000
-```
-
-```{r, echo = FALSE}
-library(reshape2)
+sims <- 10
+b_sims <- 10
 ```
 
 ```{r, echo = FALSE}
@@ -79,8 +75,6 @@ kable(tidy(estimates_df))
 
 ### procedures 
 
-- precommittment is part of the answer strategy
-
 - *procedures*, if any, by which you explore the data and determine a final set of estimates are part of the answer strategy. for example, we sometimes find that the model we planned to run to analyze the data cannot be estimated. in these cases, there is an iterative estimation procedure in which a first model is run, changes to the specification are made, and a second or third model is presented as the result. that full set of steps -- a decision tree, depending on what is estimable -- is the answer strategy and we can evaluate whether it is a good one not only under the realized data but under other possible realizations where the decision *tree* would be the same but the decisions different.
 
 - *procedures where you run two procedures and pick the best fit or preferred on some dimensions* 
@@ -89,34 +83,33 @@ kable(tidy(estimates_df))
 ```{r}
 # haven't gotten something good here. 
 
-
-
 test_sample_estimator <-
   function(data){
     r_sq_full <- lm_robust(Y ~ Z + X, data = data, subset = train == 1)$r.squared
     r_sq_short <- lm_robust(Y ~ Z, data = data, subset = train == 1)$r.squared
     if(r_sq_full > r_sq_short) {
-      fit <- lm_robust(Y ~ Z + X, subset = train == 0, data = data)
-      return(tidy(fit) %>% filter(term == "Z") %>% mutate(which = "full"))
+      lm_robust(Y ~ Z + X, subset = train == 0, data = data) %>% 
+        tidy %>% filter(term == "Z") %>% mutate(which = "full")
     } else {
-      fit <- lm_robust(Y ~ Z, subset = train == 0, data = data)
-      return(tidy(fit) %>% filter(term == "Z") %>% mutate(which = "short"))
+      lm_robust(Y ~ Z, subset = train == 0, data = data) %>% 
+        tidy %>% filter(term == "Z") %>% mutate(which = "short")
     }
   }
 
 design <-
   declare_population(
-    N = 100, X = rbinom(N, 1, 0.5), train = rbinom(N, 1, 0.5), u = rnorm(N)
+    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N), train = rep(0:1, each = 50)
   ) + 
   declare_potential_outcomes(Y ~ Z + u) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_assignment(prob = 0.5) + 
   declare_reveal(Y, Z) + 
+  declare_estimator(Y ~ Z, model = lm_robust, label = "one-step", estimand = "ATE") + 
   declare_estimator(
     handler = tidy_estimator(test_sample_estimator),
     estimand = "ATE") 
 
-# diagnose_design(design, sims = 5000)  
+dg <- diagnose_design(design, sims = 5000)
 ```
 
 - *procedures for testing assumptions of identification strategy before running analysis*, such as falsification or placebo tests. in these tests, you run a test and only analyze the data using the analysis strategy you proposed if it passes the test indicating a failure to reject the null of no violation of the assumptions.
@@ -126,14 +119,12 @@ design <-
 
 ```
 
-- *procedures for addressing deviations from expected analyses* are part of the answer strategy. whether a study has a PAP or not, we often have a way we expect to analyze the data if things go well. when they do not -- because data are missing, there is noncompliance to an intervention, or the study is suspended for example -- the answers will change. these procedures determine the answer the study provides (or in some cases does not), so are part of the answer strategy. *standard operating procedures* (lin and green) are documents that systematize these procedures in advange.
+- precommittment is part of the answer strategy
 
 ### robustness checks
 
-- *robustness checks* are part of the answer strategy. often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). the purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. when this is the case, the decision a reader makes based on their inferences about the estimand from the estimate depend not only on the main estimate but also the robustness checks. as a result, we want to assess the properties of the two together. (**or is it a diagnostic statistic??** CHANGE THIS TO TALK ABOUT THIS AS A SET OF STATISTICS THAT ARE FOR A SINGLE RUN. ROBUSTNESS OF THE ANSWER STRATEGY. ROBUSTNESS AS A DIAGNOSTIC STATISTIC.)
-- distinguish this from changes to the model where we do robustnesss vis a vis a fixed answer and data strategy. 
-- two notions of "robustness". one is fix I D A and change M, is this "design" robust to changes in M. the other is, within a given run, is the estimate "robust" to changing the estimation procedure, so this is a diagnostic statistic.
-- note I must be defined across these changes in M.
+- *robustness checks* are part of the answer strategy. often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). the purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. when this is the case, the decision a reader makes based on their inferences about the estimand from the estimate depend not only on the main estimate but also the robustness checks. as a result, we want to assess the properties of the two together. 
+- distinguish this from changes to the model where we do robustnesss vis a vis a fixed answer and data strategy. i.e. two notions of "robustness". one is fix I D A and change M, is this "design" robust to changes in M. the other is, within a given run, is the estimate "robust" to changing the estimation procedure, so this is a diagnostic statistic. note I must be defined across these changes in M.
 
 ### presentation of results
 
@@ -185,7 +176,6 @@ grid.arrange(g1, g2, nrow = 1)
 
 We now demonstrate that the answer strategy on the left is flawed. XXYY describe sims.
 
-
 ```{r, echo = FALSE}
 # sweep across all ATEs from 0 to 0.5
 designs <- redesign(design, ATE = seq(0, 0.5, 0.05))
@@ -216,8 +206,7 @@ reshaped_simulations <-
             conf.high,
             conf.low,
             significant = p.value < 0.05) %>%
-  melt(measure.vars = c("estimate", "conf.high", "conf.low", "significant")) %>%
-  dcast(ATE + sim_ID  ~ estimator_label + variable)
+  pivot_wider(id_cols = c("ATE", "sim_ID"), names_from = "estimator_label", values_from = c("estimate", "conf.high", "conf.low", "significant"))
 
 
 # Plot 1 ------------------------------------------------------------------
@@ -225,8 +214,8 @@ reshaped_simulations <-
 gg_df <- 
   reshaped_simulations %>%
   group_by(ATE) %>%
-  summarize(`Significant for one group but not the other` = mean(xor(CATE_0_significant, CATE_1_significant)),
-            `Difference in subgroup effects is significant` = mean(interaction_significant)) %>%
+  summarize(`Significant for one group but not the other` = mean(xor(significant_CATE_0, significant_CATE_1)),
+            `Difference in subgroup effects is significant` = mean(significant_interaction)) %>%
   gather(condition, power, -ATE)
 
 ggplot(gg_df, aes(ATE, power, color = condition)) +
@@ -234,7 +223,8 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
   geom_line() +
   geom_label(data = (. %>% filter(ATE == 0.2)),
              aes(label = condition),
-             nudge_y = 0.02) +
+             nudge_y = 0.02,
+             family = "Palatino") +
   dd_theme() +
   scale_color_manual(values = c("red", "blue")) +
   theme(legend.position = "none") +
@@ -258,6 +248,17 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
 
 <!-- - best in the set (among set of simple linear models, what is the best model) -->
 
+### what you will do when data goes sideways
+
+- to compare answer strategies, you can imagine the estimators that are possible *if things go well* as well as *if things go wrong*, when there is missing data or there are outliers in variables. a good answer strategy (which might be a single estimator, or a procedure if-this-then-that) can handle both states of the world. 
+
+- *procedures for addressing deviations from expected analyses* are part of the answer strategy. whether a study has a PAP or not, we often have a way we expect to analyze the data if things go well. when they do not -- because data are missing, there is noncompliance to an intervention, or the study is suspended for example -- the answers will change. these procedures determine the answer the study provides (or in some cases does not), so are part of the answer strategy. *standard operating procedures* (lin and green) are documents that systematize these procedures in advange.
+
+- point is about what you do not the model aspects of this
+
+- properties of imputation procedure
+
+- standard operating procedures
 
 ## How to select an answer strategy
 
@@ -273,5 +274,3 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
 
 - you can *select an answer strategy in advance*, by simulating data. when estimators are selected with the data in hand, choices are often made in response to the realized data through examining model fit statistics that appear ideal in the context of this data, but are not ideal from the perspective of other data that could have been collected. we want answer strategies that perform well no matter how the data turn out. 
   - issues are: overfitting, selecting a suboptimal estimator from design perspective that passes a model fit statistic (show this is worse in a simple example)
-
-- to compare answer strategies, you can imagine the estimators that are possible *if things go well* as well as *if things go wrong*, when there is missing data or there are outliers in variables. a good answer strategy (which might be a single estimator, or a procedure if-this-then-that) can handle both states of the world. 
