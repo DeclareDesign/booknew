@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>13.3 Conjoint experimetns | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
-  <meta name="generator" content="bookdown 0.14.1 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="13.3 Conjoint experimetns | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
@@ -224,6 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.1.4" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#robustness-checks"><i class="fa fa-check"></i><b>8.1.4</b> robustness checks</a></li>
 <li class="chapter" data-level="8.1.5" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#presentation-of-results"><i class="fa fa-check"></i><b>8.1.5</b> presentation of results</a></li>
 <li class="chapter" data-level="8.1.6" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#multiple-comparisons"><i class="fa fa-check"></i><b>8.1.6</b> multiple comparisons</a></li>
+<li class="chapter" data-level="8.1.7" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#what-you-will-do-when-data-goes-sideways"><i class="fa fa-check"></i><b>8.1.7</b> what you will do when data goes sideways</a></li>
 </ul></li>
 <li class="chapter" data-level="8.2" data-path="how-to-select-an-answer-strategy.html"><a href="how-to-select-an-answer-strategy.html"><i class="fa fa-check"></i><b>8.2</b> How to select an answer strategy</a></li>
 </ul></li>
@@ -353,17 +354,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">13.3</span> Conjoint experimetns</h2>
 <!-- make sure to rename the section title below -->
 <p>You can use the global bib file via rmarkdown cites like this: <span class="citation">Imai, King, and Stuart (<a href="#ref-imai2008">2008</a>)</span></p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" title="1">design &lt;-</a>
-<a class="sourceLine" id="cb93-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb93-3" title="3"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
-<a class="sourceLine" id="cb93-4" title="4"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb93-5" title="5"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb93-6" title="6"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means)</a></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" title="1">design &lt;-</a>
+<a class="sourceLine" id="cb88-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb88-3" title="3"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
+<a class="sourceLine" id="cb88-4" title="4"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb88-5" title="5"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb88-6" title="6"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means)</a></code></pre></div>
 <p>This chunk is set to <code>echo = TRUE</code> and <code>eval = do_diagnosis</code></p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" title="1">simulations_pilot &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" title="1">simulations_pilot &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p>Right after you do simulations, you want to save the simulations rds.</p>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1"><span class="kw">kable</span>(<span class="kw">head</span>(simulations_pilot))</a></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1"><span class="kw">kable</span>(<span class="kw">head</span>(simulations_pilot))</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -668,6 +669,7 @@ Y
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": false,
 "twitter": false,
 "linkedin": false,
@@ -675,7 +677,6 @@ gitbook.start({
 "instapaper": false,
 "vk": false,
 "all": false,
-"github": false,
 "google": false,
 "instapper": false
 },
@@ -689,6 +690,10 @@ gitbook.start({
 "text": null
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },

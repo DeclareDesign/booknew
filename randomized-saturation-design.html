@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
 <head>
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>15.6 Randomized Saturation Design | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
-  <meta name="generator" content="bookdown 0.14.1 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
   <meta property="og:title" content="15.6 Randomized Saturation Design | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
@@ -224,6 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.1.4" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#robustness-checks"><i class="fa fa-check"></i><b>8.1.4</b> robustness checks</a></li>
 <li class="chapter" data-level="8.1.5" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#presentation-of-results"><i class="fa fa-check"></i><b>8.1.5</b> presentation of results</a></li>
 <li class="chapter" data-level="8.1.6" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#multiple-comparisons"><i class="fa fa-check"></i><b>8.1.6</b> multiple comparisons</a></li>
+<li class="chapter" data-level="8.1.7" data-path="what-belongs-in-an-answer-strategy.html"><a href="what-belongs-in-an-answer-strategy.html#what-you-will-do-when-data-goes-sideways"><i class="fa fa-check"></i><b>8.1.7</b> what you will do when data goes sideways</a></li>
 </ul></li>
 <li class="chapter" data-level="8.2" data-path="how-to-select-an-answer-strategy.html"><a href="how-to-select-an-answer-strategy.html"><i class="fa fa-check"></i><b>8.2</b> How to select an answer strategy</a></li>
 </ul></li>
@@ -369,78 +370,78 @@ We want to know the effect of having high and medium levels of saturation versus
 <li><p><strong>D</strong>ata strategy: We assign entire groups of individual ballot stations to one of three saturations: low (0%), medium (50%), and high (75%). We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. To estimate spillovers, we run one regression comparing high and one regression comparing medium to low saturation control units. To estimate the direct effect, we run a regression of the outcome on the treatment indicatior on the full sample, controlling for saturation.</p></li>
 </ul>
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb149-1" title="1">N_individuals &lt;-<span class="st"> </span><span class="dv">60</span></a>
-<a class="sourceLine" id="cb149-2" title="2">N_groups &lt;-<span class="st"> </span><span class="dv">15</span></a>
-<a class="sourceLine" id="cb149-3" title="3">G_per_saturation &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb149-4" title="4"></a>
-<a class="sourceLine" id="cb149-5" title="5">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb149-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> N_individuals, <span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">U =</span> <span class="kw">rnorm</span>(N), <span class="dt">G =</span> <span class="kw">ntile</span>(X, N_groups)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;S&quot;</span>, </a>
-<a class="sourceLine" id="cb149-8" title="8">                     <span class="dt">clusters =</span> G, </a>
-<a class="sourceLine" id="cb149-9" title="9">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>,<span class="st">&quot;med&quot;</span>,<span class="st">&quot;high&quot;</span>),</a>
-<a class="sourceLine" id="cb149-10" title="10">                     <span class="dt">m_each =</span> G_per_saturation) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-11" title="11"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb149-12" title="12">                     <span class="dt">blocks =</span> G,</a>
-<a class="sourceLine" id="cb149-13" title="13">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_low&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.5</span>,</a>
-<a class="sourceLine" id="cb149-15" title="15">                     <span class="dt">blocks =</span> G,</a>
-<a class="sourceLine" id="cb149-16" title="16">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_med&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.75</span>,</a>
-<a class="sourceLine" id="cb149-18" title="18">                     <span class="dt">blocks =</span> G,</a>
-<a class="sourceLine" id="cb149-19" title="19">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_high&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-20" title="20"><span class="st">  </span><span class="kw">declare_step</span>(</a>
-<a class="sourceLine" id="cb149-21" title="21">    <span class="dt">spillover_low =</span> <span class="kw">ave</span>(Z_S_low, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
-<a class="sourceLine" id="cb149-22" title="22">    <span class="dt">spillover_med =</span> <span class="kw">ave</span>(Z_S_med, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
-<a class="sourceLine" id="cb149-23" title="23">    <span class="dt">spillover_high =</span> <span class="kw">ave</span>(Z_S_high, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
-<a class="sourceLine" id="cb149-24" title="24">    <span class="dt">handler =</span> fabricate,</a>
-<a class="sourceLine" id="cb149-25" title="25">    <span class="dt">label =</span> <span class="st">&quot;spillover&quot;</span>)  <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-26" title="26"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb149-27" title="27">    Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="fl">-.20</span> <span class="op">+</span><span class="st"> </span>U <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-28" title="28"><span class="st">      </span>spillover_low <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;low&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-29" title="29"><span class="st">      </span>spillover_med <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;med&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-30" title="30"><span class="st">      </span>spillover_high <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;high&quot;</span>),</a>
-<a class="sourceLine" id="cb149-31" title="31">    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">S =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>,<span class="st">&quot;med&quot;</span>,<span class="st">&quot;high&quot;</span>))) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-32" title="32"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">high =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">0</span>_S_high <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low),</a>
-<a class="sourceLine" id="cb149-33" title="33">                   <span class="dt">med =</span>  <span class="kw">mean</span>(Y_Z_<span class="dv">0</span>_S_med <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low), </a>
-<a class="sourceLine" id="cb149-34" title="34">                   <span class="dt">ate_no_spill =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span>_S_low <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(Z,S) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-36" title="36"><span class="st">  </span><span class="kw">declare_step</span>(</a>
-<a class="sourceLine" id="cb149-37" title="37">    <span class="dt">w =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(S_cond_prob <span class="op">*</span><span class="st"> </span>(Z_S_low_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;low&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-38" title="38"><span class="st">                   </span>Z_S_med_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;med&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-39" title="39"><span class="st">                   </span>Z_S_high_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;high&quot;</span>))),</a>
-<a class="sourceLine" id="cb149-40" title="40">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-41" title="41"><span class="st">  </span><span class="kw">declare_reveal</span>(Y,<span class="kw">c</span>(Z, S)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-42" title="42"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
-<a class="sourceLine" id="cb149-43" title="43">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>S,</a>
-<a class="sourceLine" id="cb149-44" title="44">                    <span class="dt">subset =</span> Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>S <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;high&quot;</span>,<span class="st">&quot;low&quot;</span>), </a>
-<a class="sourceLine" id="cb149-45" title="45">                    <span class="dt">estimand =</span> <span class="st">&quot;high&quot;</span>,</a>
-<a class="sourceLine" id="cb149-46" title="46">                    <span class="dt">weights =</span> w,</a>
-<a class="sourceLine" id="cb149-47" title="47">                    <span class="dt">label =</span> <span class="st">&quot;high vs low&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-48" title="48"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
-<a class="sourceLine" id="cb149-49" title="49">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>S,</a>
-<a class="sourceLine" id="cb149-50" title="50">                    <span class="dt">subset =</span> Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>S <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;med&quot;</span>,<span class="st">&quot;low&quot;</span>), </a>
-<a class="sourceLine" id="cb149-51" title="51">                    <span class="dt">weights =</span> w,</a>
-<a class="sourceLine" id="cb149-52" title="52">                    <span class="dt">estimand =</span> <span class="st">&quot;med&quot;</span>,</a>
-<a class="sourceLine" id="cb149-53" title="53">                    <span class="dt">label =</span> <span class="st">&quot;med vs low&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
-<a class="sourceLine" id="cb149-55" title="55">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>S,</a>
-<a class="sourceLine" id="cb149-56" title="56">                    <span class="dt">term =</span> <span class="st">&quot;Z&quot;</span>, </a>
-<a class="sourceLine" id="cb149-57" title="57">                    <span class="dt">weights =</span> w,</a>
-<a class="sourceLine" id="cb149-58" title="58">                    <span class="dt">estimand =</span> <span class="st">&quot;ate_no_spill&quot;</span>,</a>
-<a class="sourceLine" id="cb149-59" title="59">                    <span class="dt">label =</span> <span class="st">&quot;main effect&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb144-1" title="1">N_individuals &lt;-<span class="st"> </span><span class="dv">60</span></a>
+<a class="sourceLine" id="cb144-2" title="2">N_groups &lt;-<span class="st"> </span><span class="dv">15</span></a>
+<a class="sourceLine" id="cb144-3" title="3">G_per_saturation &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb144-4" title="4"></a>
+<a class="sourceLine" id="cb144-5" title="5">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb144-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> N_individuals, <span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">U =</span> <span class="kw">rnorm</span>(N), <span class="dt">G =</span> <span class="kw">ntile</span>(X, N_groups)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb144-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;S&quot;</span>, </a>
+<a class="sourceLine" id="cb144-8" title="8">                     <span class="dt">clusters =</span> G, </a>
+<a class="sourceLine" id="cb144-9" title="9">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>,<span class="st">&quot;med&quot;</span>,<span class="st">&quot;high&quot;</span>),</a>
+<a class="sourceLine" id="cb144-10" title="10">                     <span class="dt">m_each =</span> G_per_saturation) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-11" title="11"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb144-12" title="12">                     <span class="dt">blocks =</span> G,</a>
+<a class="sourceLine" id="cb144-13" title="13">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_low&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb144-15" title="15">                     <span class="dt">blocks =</span> G,</a>
+<a class="sourceLine" id="cb144-16" title="16">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_med&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.75</span>,</a>
+<a class="sourceLine" id="cb144-18" title="18">                     <span class="dt">blocks =</span> G,</a>
+<a class="sourceLine" id="cb144-19" title="19">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_high&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-20" title="20"><span class="st">  </span><span class="kw">declare_step</span>(</a>
+<a class="sourceLine" id="cb144-21" title="21">    <span class="dt">spillover_low =</span> <span class="kw">ave</span>(Z_S_low, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb144-22" title="22">    <span class="dt">spillover_med =</span> <span class="kw">ave</span>(Z_S_med, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb144-23" title="23">    <span class="dt">spillover_high =</span> <span class="kw">ave</span>(Z_S_high, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb144-24" title="24">    <span class="dt">handler =</span> fabricate,</a>
+<a class="sourceLine" id="cb144-25" title="25">    <span class="dt">label =</span> <span class="st">&quot;spillover&quot;</span>)  <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-26" title="26"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb144-27" title="27">    Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="fl">-.20</span> <span class="op">+</span><span class="st"> </span>U <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb144-28" title="28"><span class="st">      </span>spillover_low <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;low&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb144-29" title="29"><span class="st">      </span>spillover_med <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;med&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb144-30" title="30"><span class="st">      </span>spillover_high <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;high&quot;</span>),</a>
+<a class="sourceLine" id="cb144-31" title="31">    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">S =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>,<span class="st">&quot;med&quot;</span>,<span class="st">&quot;high&quot;</span>))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-32" title="32"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">high =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">0</span>_S_high <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low),</a>
+<a class="sourceLine" id="cb144-33" title="33">                   <span class="dt">med =</span>  <span class="kw">mean</span>(Y_Z_<span class="dv">0</span>_S_med <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low), </a>
+<a class="sourceLine" id="cb144-34" title="34">                   <span class="dt">ate_no_spill =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span>_S_low <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(Z,S) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-36" title="36"><span class="st">  </span><span class="kw">declare_step</span>(</a>
+<a class="sourceLine" id="cb144-37" title="37">    <span class="dt">w =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(S_cond_prob <span class="op">*</span><span class="st"> </span>(Z_S_low_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;low&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb144-38" title="38"><span class="st">                   </span>Z_S_med_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;med&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb144-39" title="39"><span class="st">                   </span>Z_S_high_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;high&quot;</span>))),</a>
+<a class="sourceLine" id="cb144-40" title="40">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-41" title="41"><span class="st">  </span><span class="kw">declare_reveal</span>(Y,<span class="kw">c</span>(Z, S)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-42" title="42"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb144-43" title="43">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>S,</a>
+<a class="sourceLine" id="cb144-44" title="44">                    <span class="dt">subset =</span> Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>S <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;high&quot;</span>,<span class="st">&quot;low&quot;</span>), </a>
+<a class="sourceLine" id="cb144-45" title="45">                    <span class="dt">estimand =</span> <span class="st">&quot;high&quot;</span>,</a>
+<a class="sourceLine" id="cb144-46" title="46">                    <span class="dt">weights =</span> w,</a>
+<a class="sourceLine" id="cb144-47" title="47">                    <span class="dt">label =</span> <span class="st">&quot;high vs low&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-48" title="48"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb144-49" title="49">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>S,</a>
+<a class="sourceLine" id="cb144-50" title="50">                    <span class="dt">subset =</span> Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>S <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;med&quot;</span>,<span class="st">&quot;low&quot;</span>), </a>
+<a class="sourceLine" id="cb144-51" title="51">                    <span class="dt">weights =</span> w,</a>
+<a class="sourceLine" id="cb144-52" title="52">                    <span class="dt">estimand =</span> <span class="st">&quot;med&quot;</span>,</a>
+<a class="sourceLine" id="cb144-53" title="53">                    <span class="dt">label =</span> <span class="st">&quot;med vs low&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb144-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb144-55" title="55">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>S,</a>
+<a class="sourceLine" id="cb144-56" title="56">                    <span class="dt">term =</span> <span class="st">&quot;Z&quot;</span>, </a>
+<a class="sourceLine" id="cb144-57" title="57">                    <span class="dt">weights =</span> w,</a>
+<a class="sourceLine" id="cb144-58" title="58">                    <span class="dt">estimand =</span> <span class="st">&quot;ate_no_spill&quot;</span>,</a>
+<a class="sourceLine" id="cb144-59" title="59">                    <span class="dt">label =</span> <span class="st">&quot;main effect&quot;</span>)</a></code></pre></div>
 <p>Here’s what our hypothetical country looks like:</p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1"><span class="kw">draw_data</span>(design) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb150-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> X, <span class="dt">color =</span> <span class="kw">as.factor</span>(G))) <span class="op">+</span></a>
-<a class="sourceLine" id="cb150-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb150-4" title="4"><span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="st">&quot;Ballot station&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb150-5" title="5"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb150-6" title="6"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb150-7" title="7"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">1</span>,N_individuals,<span class="dt">by =</span> N_individuals <span class="op">/</span><span class="st"> </span>N_groups) <span class="op">-</span><span class="st"> </span><span class="fl">.5</span>)</a></code></pre></div>
-<p><img src="book_files/figure-html/unnamed-chunk-361-1.png" width="672" /></p>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb145-1" title="1"><span class="kw">draw_data</span>(design) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb145-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> X, <span class="dt">color =</span> <span class="kw">as.factor</span>(G))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb145-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb145-4" title="4"><span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="st">&quot;Ballot station&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb145-5" title="5"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb145-6" title="6"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb145-7" title="7"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">1</span>,N_individuals,<span class="dt">by =</span> N_individuals <span class="op">/</span><span class="st"> </span>N_groups) <span class="op">-</span><span class="st"> </span><span class="fl">.5</span>)</a></code></pre></div>
+<p><img src="book_files/figure-html/unnamed-chunk-355-1.png" width="672" /></p>
 <p>Let’s diagnose</p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb151-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb146-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p>Our diagnosis shows this design does a pretty great job, under this model of spillovers:</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb152-1" title="1">diagnosis <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reshape_diagnosis</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb147-1" title="1">diagnosis <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reshape_diagnosis</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -749,17 +750,17 @@ proportion of sample allocated to the “low” versus other conditions</p></li>
 <p>Now, we consider a model of spillovers in which fraud is displaced latitudinally,
 from one neighbor to the next. Say, because there are roads traveling north and
 fraudsters disregard boundaries (in reality, they are unlikely to do so).</p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb153-1" title="1">distal_design &lt;-<span class="st"> </span><span class="kw">replace_step</span>(<span class="dt">design =</span> design, <span class="dt">step =</span> <span class="st">&quot;spillover&quot;</span>,</a>
-<a class="sourceLine" id="cb153-2" title="2">                              <span class="dt">new_step =</span> <span class="kw">declare_step</span>(<span class="dt">next_neighbor =</span> <span class="kw">c</span>(N,<span class="dv">1</span><span class="op">:</span>(N<span class="dv">-1</span>)),</a>
-<a class="sourceLine" id="cb153-3" title="3">                                                      <span class="dt">spillover_low =</span> Z_S_low[next_neighbor],</a>
-<a class="sourceLine" id="cb153-4" title="4">                                                      <span class="dt">spillover_med =</span> Z_S_med[next_neighbor],</a>
-<a class="sourceLine" id="cb153-5" title="5">                                                      <span class="dt">spillover_high =</span> Z_S_high[next_neighbor],</a>
-<a class="sourceLine" id="cb153-6" title="6">                                                      <span class="dt">handler =</span> fabricate) )</a></code></pre></div>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb154-1" title="1">distal_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(distal_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb148-1" title="1">distal_design &lt;-<span class="st"> </span><span class="kw">replace_step</span>(<span class="dt">design =</span> design, <span class="dt">step =</span> <span class="st">&quot;spillover&quot;</span>,</a>
+<a class="sourceLine" id="cb148-2" title="2">                              <span class="dt">new_step =</span> <span class="kw">declare_step</span>(<span class="dt">next_neighbor =</span> <span class="kw">c</span>(N,<span class="dv">1</span><span class="op">:</span>(N<span class="dv">-1</span>)),</a>
+<a class="sourceLine" id="cb148-3" title="3">                                                      <span class="dt">spillover_low =</span> Z_S_low[next_neighbor],</a>
+<a class="sourceLine" id="cb148-4" title="4">                                                      <span class="dt">spillover_med =</span> Z_S_med[next_neighbor],</a>
+<a class="sourceLine" id="cb148-5" title="5">                                                      <span class="dt">spillover_high =</span> Z_S_high[next_neighbor],</a>
+<a class="sourceLine" id="cb148-6" title="6">                                                      <span class="dt">handler =</span> fabricate) )</a></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb149-1" title="1">distal_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(distal_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <ul>
 <li>When there are next-neighbor spillovers that ignore boundaries, the estimator is biased again</li>
 </ul>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb155-1" title="1">distal_diagnosis <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reshape_diagnosis</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1">distal_diagnosis <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reshape_diagnosis</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -1094,6 +1095,7 @@ Smed
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
+"github": false,
 "facebook": false,
 "twitter": false,
 "linkedin": false,
@@ -1101,7 +1103,6 @@ gitbook.start({
 "instapaper": false,
 "vk": false,
 "all": false,
-"github": false,
 "google": false,
 "instapper": false
 },
@@ -1115,6 +1116,10 @@ gitbook.start({
 "text": null
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },

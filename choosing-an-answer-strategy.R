@@ -5,8 +5,6 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
-library(reshape2)
-
 tau <- .10
 N <- 8
 N_sampled <- 4
@@ -27,34 +25,33 @@ kable(tidy(estimates_df))
 
 # haven't gotten something good here. 
 
-
-
 test_sample_estimator <-
   function(data){
     r_sq_full <- lm_robust(Y ~ Z + X, data = data, subset = train == 1)$r.squared
     r_sq_short <- lm_robust(Y ~ Z, data = data, subset = train == 1)$r.squared
     if(r_sq_full > r_sq_short) {
-      fit <- lm_robust(Y ~ Z + X, subset = train == 0, data = data)
-      return(tidy(fit) %>% filter(term == "Z") %>% mutate(which = "full"))
+      lm_robust(Y ~ Z + X, subset = train == 0, data = data) %>% 
+        tidy %>% filter(term == "Z") %>% mutate(which = "full")
     } else {
-      fit <- lm_robust(Y ~ Z, subset = train == 0, data = data)
-      return(tidy(fit) %>% filter(term == "Z") %>% mutate(which = "short"))
+      lm_robust(Y ~ Z, subset = train == 0, data = data) %>% 
+        tidy %>% filter(term == "Z") %>% mutate(which = "short")
     }
   }
 
 design <-
   declare_population(
-    N = 100, X = rbinom(N, 1, 0.5), train = rbinom(N, 1, 0.5), u = rnorm(N)
+    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N), train = rep(0:1, each = 50)
   ) + 
   declare_potential_outcomes(Y ~ Z + u) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_assignment(prob = 0.5) + 
   declare_reveal(Y, Z) + 
+  declare_estimator(Y ~ Z, model = lm_robust, label = "one-step", estimand = "ATE") + 
   declare_estimator(
     handler = tidy_estimator(test_sample_estimator),
     estimand = "ATE") 
 
-# diagnose_design(design, sims = 5000)  
+dg <- diagnose_design(design, sims = 5000)
 
 
 
@@ -112,8 +109,7 @@ reshaped_simulations <-
             conf.high,
             conf.low,
             significant = p.value < 0.05) %>%
-  melt(measure.vars = c("estimate", "conf.high", "conf.low", "significant")) %>%
-  dcast(ATE + sim_ID  ~ estimator_label + variable)
+  pivot_wider(id_cols = c("ATE", "sim_ID"), names_from = "estimator_label", values_from = c("estimate", "conf.high", "conf.low", "significant"))
 
 
 # Plot 1 ------------------------------------------------------------------
@@ -121,8 +117,8 @@ reshaped_simulations <-
 gg_df <- 
   reshaped_simulations %>%
   group_by(ATE) %>%
-  summarize(`Significant for one group but not the other` = mean(xor(CATE_0_significant, CATE_1_significant)),
-            `Difference in subgroup effects is significant` = mean(interaction_significant)) %>%
+  summarize(`Significant for one group but not the other` = mean(xor(significant_CATE_0, significant_CATE_1)),
+            `Difference in subgroup effects is significant` = mean(significant_interaction)) %>%
   gather(condition, power, -ATE)
 
 ggplot(gg_df, aes(ATE, power, color = condition)) +
@@ -130,7 +126,8 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
   geom_line() +
   geom_label(data = (. %>% filter(ATE == 0.2)),
              aes(label = condition),
-             nudge_y = 0.02) +
+             nudge_y = 0.02,
+             family = "Palatino") +
   dd_theme() +
   scale_color_manual(values = c("red", "blue")) +
   theme(legend.position = "none") +

@@ -73,49 +73,14 @@ list_design_ceiling <- replace_step(
   new_step = declare_potential_outcomes(
     Y_list_Z_0 = raise_minimum_wage + repeal_obamacare + ban_assault_weapons,
     Y_list_Z_1_no_liars = Y_list_Z_0 + truthful_trump_vote,
-    Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars)
-  )
+    Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars))
 )
 
 
 
 
 
-kable(diagnosis_list_ceiling %>% get_diagnosands %>% select(estimator_label, estimand_label, bias, rmse))
-
-list_design_glynn <- replace_step(
-  list_design, step = 1, 
-  new_step = declare_population(
-    N = 5000,
-    # true trump vote (unobservable)
-    truthful_trump_vote = draw_binary(0.45, N),
-    
-    # shy voter (unobservable)
-    shy = draw_binary(proportion_shy, N),
-    
-    # direct question response (1 if Trump supporter and not shy, 0 otherwise)
-    Y_direct = if_else(truthful_trump_vote == 1 & shy == 0, 1, 0),
-    
-    list2_item1 = draw_binary(0.5, N),
-    list2_item2 = correlate(given = list2_item1, rho = -.5, draw_binary, prob = 0.5), 
-    list2_item3 = draw_binary(0.1, N)  # low prevalence
-  )
-)
-
-list_design_glynn <- replace_step(
-  list_design_glynn, step = 2, 
-  declare_potential_outcomes(
-    Y_list_Z_0 = list2_item1 + list2_item2 + list2_item3,
-    Y_list_Z_1_no_liars = Y_list_Z_0 + truthful_trump_vote,
-    Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars)
-  )
-)
-
-
-
-
-
-kable(diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimator_label, bias, rmse))
+diagnosis_list_ceiling %>% get_diagnosands %>% select(estimator_label, estimand_label, bias, rmse) %>% kable(digits = 3)
 
 library(rr)
 
@@ -180,10 +145,3 @@ rr_design <- set_diagnosands(rr_design, diagnosands = declare_diagnosands(select
 
 
 kable(reshape_diagnosis(rr_diagnosis))
-
-
-
-
-
-# make a plot
-kable(reshape_diagnosis(rr_tradeoff_diagnosis))
