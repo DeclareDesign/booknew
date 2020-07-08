@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>References | Research Design: Declare, Diagnose, Redesign</title>
+  <title>5.1 The same DAG can support multiple causal theories. | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="References | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="5.1 The same DAG can support multiple causal theories. | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="References | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="5.1 The same DAG can support multiple causal theories. | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="improving-designs-in-the-social-sciences.html"/>
-
+<link rel="prev" href="directed-acyclic-graphs-and-potential-outcomes.html"/>
+<link rel="next" href="summary.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -354,95 +354,85 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references-4" class="section level1 unnumbered">
-<h1>References</h1>
-
-<div id="refs" class="references">
-<div>
-<p>Asunka, Joseph, Sarah Brierley, Miriam Golden, Eric Kramon, and George Ofosu. 2019. “Electoral Fraud or Violence: The Effect of Observers on Party Manipulation Strategies.” <em>British Journal of Political Science</em> 49 (1): 129–51. <a href="https://doi.org/10.1017/S0007123416000491">https://doi.org/10.1017/S0007123416000491</a>.</p>
+<div id="the-same-dag-can-support-multiple-causal-theories." class="section level2">
+<h2><span class="header-section-number">5.1</span> The same DAG can support multiple causal theories.</h2>
+<p>In this example, we’ll illustrate how using both DAGs and potential outcomes together, we can describe and learn about research designs in a more complete way. The DAG above encodes the beliefs that <span class="math inline">\(Y\)</span> is a function of <span class="math inline">\(Z\)</span>, <span class="math inline">\(X\)</span>, and <span class="math inline">\(U\)</span> and also that we can learn about the effects of <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span> but not <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. The DAG is silent, however, on the question of whether the effect of <span class="math inline">\(Z\)</span> is on average different for units with different values of <span class="math inline">\(X\)</span>. In other words, the DAG doesn’t reflect beliefs about treatment effect heterogeneity.</p>
+<p>Using potential outcomes, we can write down three new estimands: the conditional average treatment effect (CATE) of <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span> for units with <span class="math inline">\(X = 1\)</span>, the CATE among units with <span class="math inline">\(X = 0\)</span>, and the difference-in-cates:</p>
+<p><span class="math display">\[
+\begin{align}
+CATE_{(X = 1)} &amp;\def E[Y_i(1) - Y_i(0) | X = 1] \\
+CATE_{(X = 0)} &amp;\def E[Y_i(1) - Y_i(0) | X = 0] \\
+Diff-in-CATEs &amp;\def E[Y_i(1) - Y_i(0) | X = 1] - E[Y_i(1) - Y_i(0) | X = 0]
+\end{align}
+\]</span></p>
+<p>Suppose we think that the effect of treatment is larger for units with <span class="math inline">\(X = 1\)</span>, which is to say we think the difference-in-cates is positive. We can supplement the DAG representation of the causal model with a design declaration that includes these beliefs.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">diff_in_cates &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb50-2" title="2">design &lt;-</a>
+<a class="sourceLine" id="cb50-3" title="3"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb50-4" title="4">                     <span class="dt">U =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb50-5" title="5">                     <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">pnorm</span>(<span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>U <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb50-6" title="6"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>diff_in_cates <span class="op">*</span><span class="st"> </span>X <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>U) <span class="op">+</span></a>
+<a class="sourceLine" id="cb50-7" title="7"><span class="st">  </span><span class="kw">declare_estimands</span>(</a>
+<a class="sourceLine" id="cb50-8" title="8">    <span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb50-9" title="9">    <span class="dt">CATE_1 =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb50-10" title="10">    <span class="dt">CATE_0 =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">0</span>]),</a>
+<a class="sourceLine" id="cb50-11" title="11">    <span class="dt">DiC =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">1</span>]) <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(Y_Z_<span class="dv">1</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">0</span>] <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>[X <span class="op">==</span><span class="st"> </span><span class="dv">0</span>])</a>
+<a class="sourceLine" id="cb50-12" title="12">  )</a></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+estimand_label
+</th>
+<th style="text-align:right;">
+estimand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ATE
+</td>
+<td style="text-align:right;">
+0.725
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CATE_1
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CATE_0
+</td>
+<td style="text-align:right;">
+0.500
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DiC
+</td>
+<td style="text-align:right;">
+0.500
+</td>
+</tr>
+</tbody>
+</table>
+<p>We could incorporate different beliefs about the causal model by changing the <code>diff_in_cates</code> parameter. However, notice that regardless of the value of the interaction (either zero or some other number), the DAG looks the same. So if you want to design your study for the difference-in-CATEs, then you’ll need to go beyond the DAG to write down your beliefs about the extent of heterogeneity using another tool.</p>
 </div>
-<div>
-<p>Baird, Sarah, J. Aislinn Bohren, Craig McIntosh, and Berk Ozler. 2018. “Optimal Design of Experiments in the Presence of Interference.” <em>Review of Economics &amp; Statistics</em> 5 (100): 844–60.</p>
-</div>
-<div>
-<p>Blair, Graeme, Alexander Coppock, and Margaret Moor. 2018. “When to Worry About Sensitivity Bias: Evidence from 30 Years of List Experiments.” <em>Unpublished Manuscript</em>.</p>
-</div>
-<div>
-<p>Blair, Graeme, and Kosuke Imai. 2012. “Statistical Analysis of List Experiments.” <em>Political Analysis</em> 20 (1): 47–77.</p>
-</div>
-<div>
-<p>Carnegie, Allison, and Cyrus Samii. 2017. “International Institutions and Political Liberalization: Evidence from the World Bank Loans Program.” <em>British Journal of Political Science</em>, 1–23.</p>
-</div>
-<div>
-<p>Coppock, Alexander. 2017. “Did Shy Trump Supporters Bias the 2016 Polls? Evidence from a Nationally-Representative List Experiment.” <em>Statistics, Politics and Policy</em> 8 (1): 29–40.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Guido Imbens. 2017. “Why High-Order Polynomials Should Not Be Used in Regression Discontinuity Designs.” <em>Journal of Business &amp; Economic Statistics</em>, no. Forthcoming.</p>
-</div>
-<div>
-<p>Glynn, Adam N. 2013. “What Can We Learn with Statistical Truth Serum? Design and Analysis of the List Experiment.” <em>Public Opinion Quarterly</em> 77 (S1): 159–72.</p>
-</div>
-<div>
-<p>Greenland, Sander, Judea Pearl, and James M. Robins. 1999. “Causal Diagrams for Epidemiologic Research.” <em>Epidemiology</em>, 37–48.</p>
-</div>
-<div>
-<p>Hahn, Jinyong, Petra Todd, and Wilbert Van der Klaauw. 1999. “Evaluating the Effect of an Antidiscrimination Law Using a Regression-Discontinuity Design.” National Bureau of Economic Research.</p>
-</div>
-<div>
-<p>Halpern, Joseph Y. 2000. “Axiomatizing Causal Reasoning.” <em>Journal of Artificial Intelligence Research</em> 12: 317–37.</p>
-</div>
-<div>
-<p>Imai, Kosuke, Gary King, and Elizabeth A. Stuart. 2008. “Misunderstandings Between Experimentalists and Observationalists About Causal Inference.” <em>Journal of the Royal Statistical Society: Series A (Statistics in Society)</em> 171 (2): 481–502.</p>
-</div>
-<div>
-<p>Keele, Luke, and Rocı́o Titiunik. 2016. “Natural Experiments Based on Geography.” <em>Political Science Research and Methods</em> 4 (1): 65–95.</p>
-</div>
-<div>
-<p>Li, Yimeng. 2019. “Relaxing the No Liars Assumption in List Experiment Analyses.” <em>Political Analysis</em> 27 (4): 540–55.</p>
-</div>
-<div>
-<p>Miller, Judith Droitcour. 1984. “A New Survey Technique for Studying Deviant Behavior.” PhD thesis, George Washington University.</p>
-</div>
-<div>
-<p>Mitchell, Ojmarrh, Joshua C. Cochran, Daniel P. Mears, and William D. Bales. 2017. “Examining Prison Effects on Recidivism: A Regression Discontinuity Approach.” <em>Justice Quarterly</em> 34 (4): 571–96.</p>
-</div>
-<div>
-<p>Qin, Xuezheng, Castiel Chen Zhuang, and Rudai Yang. 2017. “Does the One-Child Policy Improve Children’s Human Capital in Urban China? A Regression Discontinuity Design.” <em>Journal of Comparative Economics</em> 45 (2): 287–303.</p>
-</div>
-<div>
-<p>Rosenbaum, Paul R. 2002. <em>Observational Studies</em>. New York: Springer.</p>
-</div>
-<div>
-<p>Sekhon, Jasjeet S., and Rocı́o Titiunik. 2017. “On Interpreting the Regression Discontinuity Design as a Local Experiment.” In <em>Regression Discontinuity Designs</em>, 1–28.</p>
-</div>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="improving-designs-in-the-social-sciences.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="directed-acyclic-graphs-and-potential-outcomes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="summary.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
