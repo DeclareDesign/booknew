@@ -1,10 +1,11 @@
 ---
 title: "Software primer"
-output: 
+output:
+  pdf_document: default
   html_document:
-    number_sections: true
+    number_sections: yes
 tables: yes
-bibliography: ../bib/book.bib 
+bibliography: ../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -270,7 +271,7 @@ When we run the declared population function, we will get a different 100-unit d
 tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab1 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab3 <- declare_population(N = 100, u = rnorm(N))() %>% head
-kable(list(tab1, tab2, tab3), booktabs = TRUE) %>% kable_styling()
+kable(list(tab1, tab2, tab3), booktabs = TRUE) #%>% kable_styling() # does not work with PDF
 ```
 
 The `fabricatr` package can simulate data for social science research including multilevel data structures like students in classrooms in schools. You can read the `fabricatr` Web site to get started simulating your data structure (link). A simple two-level data structure of individuals within households could be declared as:
