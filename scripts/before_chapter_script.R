@@ -3,7 +3,7 @@ source("scripts/package_list.R")
 
 lapply(bookwide_packages, function(x)
   if (!require(x, character.only = TRUE)) {
-    install.packages(x)
+    install.packages(x, repos = "https://cran.r-project.org")
     library(x, character.only = TRUE)
   })
 
