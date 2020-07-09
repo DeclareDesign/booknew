@@ -1,8 +1,9 @@
 ---
 title: "Part III Exercises"
 output: html_document
-bibliography: ../../bib/book.bib 
 ---
+
+<!-- bibliography: ../../bib/book.bib  -->
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 ```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
@@ -17,7 +18,7 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-## Part III Exercises
+# Part III Exercises
 
 <!-- make sure to rename the section title below -->
 
@@ -33,3 +34,28 @@ b_sims <- 20
 ```
 
 <!-- You can use the global bib file via rmarkdown cites like this: @imai2008 -->
+
+1. Measuring sensitive traits with direct questions may be biased due to sensitivity bias: subjects may perceive (rightly or wrongly) that someone such as the enumerator, their neighbors, or the authorities will impose costs on them if they provide a dispreferred answer. In sensitive settings, direct questions provide a comparatively precise answer, but they are biased. One alternative to direct questions is the list experiment (see section XXX). Under their assumptions, list experiments are unbiased, but they can be quite imprecise. Thus, the choice between list experiments and direct questions includes a bias-variance tradeoff. 
+
+Following the formulas given in _____, the variance of the direct question estimator is the following, where $\pi^*$ is the true prevalence rate and $\delta$ is sensitivity bias.
+
+$$
+\frac{1}{N - 1} \bigg\{ \pi^* (1 - \pi^*) + \delta (1 - \delta) - 2(\delta - \pi^*\delta) \bigg\}
+$$
+
+The variance of the list experiment is given by this expression, where $\V(Y_i(0)$ is the variance of the control item count and $\cov(Y_i(0), D_i^*)$ is the covariance of the control item count with the densitive trait.
+
+$$
+\frac{1}{N-1} \bigg\{ \pi^*(1-\pi^*) + 4 \V(Y_i(0))  + 4 \cov(Y_i(0), D_i^*) \bigg\}
+$$
+
+Our goal is to compare the direct question and list experiment designs with respect to the RMSE diagnosand. Recall that RMSE equals the square root of variance plus bias squared: $RMSE = \sqrt{Variance + Bias^2}$. Assume the following design parameters: $\delta = 0.10$,  $\pi^* = 0.50$, $\V(Y_i(0) = 0.075$, $\cov(Y_i(0), D_i^*) = 0.025$.
+
+a. What is the RMSE of the direct question when $N$ = 100? 
+b. What is the RMSE of the list experiment when $N$ = 100?
+c. Make a figure with $N$ on the horizontal axis and RMSE on the vertical axis. Plot the RMSE for both designs over a range of sample sizes from 100 to 2000. Hint: you'll need to write a function for each design that takes $N$ as an input and returns RMSE. You can get started by filling out this starter function: `direct_rmse <- function(N){ # stuff goes here}`
+d. How large does the sample size need to be before the list experiment is preferred to the direct question on RMSE grounds?
+e. Comment on how your answer to (d) would change if $\delta$ were equal to 0.2? What are the implications for the choice between list experiments and direct questions?
+
+
+
