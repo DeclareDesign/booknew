@@ -102,7 +102,7 @@ declare_population(data = voter_file)() %>% head %>% kable
 tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab1 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab3 <- declare_population(N = 100, u = rnorm(N))() %>% head
-kable(list(tab1, tab2, tab3), booktabs = TRUE) %>% kable_styling()
+kable(list(tab1, tab2, tab3), booktabs = TRUE) #%>% kable_styling() # does not work with PDF
 
 ## declare_population(
 ##   households = add_level(N = 100, individuals_per_hh = sample(1:10, N, replace = TRUE)),

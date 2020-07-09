@@ -23,37 +23,136 @@ simple_design_data <- draw_data(simple_design)
 estimates_df <- difference_in_means(Y ~ Z, data = simple_design_data)
 kable(tidy(estimates_df))
 
-# haven't gotten something good here. 
-
-test_sample_estimator <-
-  function(data){
-    r_sq_full <- lm_robust(Y ~ Z + X, data = data, subset = train == 1)$r.squared
-    r_sq_short <- lm_robust(Y ~ Z, data = data, subset = train == 1)$r.squared
-    if(r_sq_full > r_sq_short) {
-      lm_robust(Y ~ Z + X, subset = train == 0, data = data) %>% 
-        tidy %>% filter(term == "Z") %>% mutate(which = "full")
-    } else {
-      lm_robust(Y ~ Z, subset = train == 0, data = data) %>% 
-        tidy %>% filter(term == "Z") %>% mutate(which = "short")
-    }
+report_if_significant <- function(data){
+  fit_nocov <- lm_robust(Y ~ Z, data)
+  fit_cov <- lm_robust(Y ~ Z + X, data)
+  
+  # select fit with lower p.value on Z
+  if(fit_cov$p.value[2] < fit_nocov$p.value[2]){
+    fit_selected <- fit_cov
+  } else {
+    fit_selected <- fit_nocov
   }
+  fit_selected %>% tidy %>% filter(term == "Z")
+}
 
 design <-
-  declare_population(
-    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N), train = rep(0:1, each = 50)
+  declare_population(    
+    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N)
   ) + 
-  declare_potential_outcomes(Y ~ Z + u) + 
+  declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + u) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_assignment(prob = 0.5) + 
   declare_reveal(Y, Z) + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "one-step", estimand = "ATE") + 
+  declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") + 
+  declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") + 
   declare_estimator(
-    handler = tidy_estimator(test_sample_estimator),
+    handler = label_estimator(report_if_significant),
+    label = "select-lower-p-value",
     estimand = "ATE") 
 
-dg <- diagnose_design(design, sims = 5000)
+dg <- diagnose_design(design, sims = sims)
 
+conditional_on_placebo_test <- function(data) {
+  placebo_test <- lm_robust(Y_placebo ~ Z, data) %>% tidy %>% filter(term == "Z")
+  estimate <- lm_robust(Y ~ Z, data) %>% tidy %>% filter(term == "Z")
+  if(placebo_test$p.value <= 0.05) {
+    tibble(estimate = NA, reject = TRUE, term = "Z")
+  } else {
+    estimate %>% mutate(reject = FALSE)
+  }
+}
 
+library(sn)
+
+placebo_design <- 
+  declare_population(N = 100, u = rsn(n = N, xi = 0, omega = 1, alpha = 10)) +
+  declare_potential_outcomes(Y ~ 0.25 * Z + u) + 
+  declare_potential_outcomes(Y_placebo = 0.1 + 1.2 * u) + 
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_assignment(prob = 0.5) + 
+  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "unconditional") + 
+  declare_estimator(handler = label_estimator(conditional_on_placebo_test), 
+                    estimand = "ATE", label = "conditional")
+
+simulations_df <- simulate_design(placebo_design, sims = sims)
+
+# diag <- diagnose_design(placebo_design, sims = sims)
+
+simulations_df %>% 
+  group_by(estimator_label) %>% 
+  summarize(bias = mean(estimate - estimand, na.rm = TRUE))
+
+bivariate_correlation_decision <- function(data) {
+  fit <- lm_robust(y2 ~ y1, data) %>% tidy %>% filter(term == "y1")
+  tibble(decision = fit$p.value <= 0.05)
+}
+
+interacted_correlation_decision <- function(data) {
+  fit <- lm_robust(y2 ~ y1 + x, data) %>% tidy %>% filter(term == "y1")
+  tibble(decision = fit$p.value <= 0.05)
+}
+
+robustness_check_decision <- function(data) {
+  main_analysis <- bivariate_correlation_decision(data)
+  robustness_check <- interacted_correlation_decision(data)
+  tibble(decision = main_analysis$decision == TRUE & robustness_check$decision == TRUE)
+}
+
+robustness_checks_design <- 
+  declare_population(
+    N = 100,
+    x = rnorm(N),
+    y1 = rnorm(N),
+    y2 = 0.15 * y1 + 0.01 * x + rnorm(N)
+  ) +
+  declare_estimand(y1_y2_are_related = TRUE) + 
+  declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") + 
+  declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check")
+
+decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+
+diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis)
+
+robustness_checks_design <-
+  robustness_checks_design +
+  declare_estimator(handler = label_estimator(interacted_correlation_decision), label = "interacted")
+
+robustness_checks_design_dgp2 <- replace_step(
+  robustness_checks_design,
+  step = 1,
+  new_step = 
+    declare_population(
+      N = 100,
+      x = rnorm(N),
+      y1 = rnorm(N),
+      y2 = 0.15 * y1 + 0.01 * x + 0.05 * y1 * x + rnorm(N)
+    )
+)
+
+robustness_checks_design_dgp3 <- replace_step(
+  robustness_checks_design,
+  step = 1,
+  new_step = 
+    declare_population(
+      N = 100,
+      x = rnorm(N),
+      y1 = 0.15 * x + rnorm(N),
+      y2 = 0.15 * x + rnorm(N)
+    )
+)
+
+robustness_checks_design_dgp3 <- replace_step(
+  robustness_checks_design_dgp3, 
+  step = 2,
+  new_step = declare_estimand(y1_y2_are_related = FALSE)
+)
+
+decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+
+diag <- diagnose_design(
+  robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, 
+  sims = sims, diagnosands = decision_diagnosis)
 
 ATE <- 0.0
 
@@ -64,12 +163,13 @@ design <-
   # crucial step in POs: effects are not heterogeneous
   declare_potential_outcomes(Y ~ ATE * Z + normal_error) +
   declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE_0") + 
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE_1") +
+  declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE(0)") + 
+  declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE(1)") +
   declare_estimator(Y ~ Z * binary_covariate, 
-                    model = lm_robust, term = "Z:binary_covariate", label = "interaction")
+                    model = lm_robust, term = "Z:binary_covariate", label = "Interaction")
 
-estimates <- draw_estimates(design)
+
+
 
 g1 <- ggplot(data = estimates %>% filter(term == "Z"), aes(estimator_label, estimate)) + 
   geom_point() + 
@@ -89,7 +189,7 @@ g2 <- ggplot(data = estimates, aes(estimator_label, estimate)) +
   dd_theme() + 
   theme(axis.title.x = element_blank())
 
-grid.arrange(g1, g2, nrow = 1)
+g1 + g2
 
 # sweep across all ATEs from 0 to 0.5
 designs <- redesign(design, ATE = seq(0, 0.5, 0.05))
