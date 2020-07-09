@@ -33,7 +33,7 @@ before_script:
   - unzip ~/Dropbox/files.zip -d ~/Dropbox/DeclareDesign_book_rfiles -x /
   - Rscript -e 'library(checkpoint); found_packages <- scanForPackages(".", use.knitr = TRUE)$pkgs; if(length(found_packages[!found_packages%in% installed.packages()]) > 0) install.packages(found_packages[!found_packages%in% installed.packages()])'
   - Rscript -e 'remotes::install_version("bookdown", version = "0.19", repos = "http://cran.us.r-project.org")'
-  - Rscript -e 'remotes::install_github("DeclareDesign/DeclareDesign", ref = "declare-test-change")''
+  - Rscript -e 'remotes::install_github("DeclareDesign/DeclareDesign", ref = "declare-test-change")'
 script:
   - Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::gitbook")'
   - Rscript scripts/purl_R_scripts.R
