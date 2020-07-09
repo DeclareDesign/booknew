@@ -18,6 +18,7 @@ bookwide_packages <-
     "DesignLibrary",
     # tidyverse packages
     "ggplot2",
+    "patchwork",
     "dplyr",
     "tidyr",
     "readr",
