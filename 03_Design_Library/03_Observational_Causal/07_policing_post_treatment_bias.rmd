@@ -1,7 +1,7 @@
 ---
 title: "Policing and post-treatment bias"
 output: html_document
-bibliography: ../../bib/book.bib 
+bibliography: ../../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -19,11 +19,13 @@ source("scripts/before_chapter_script.R")
 
 ## Policing and post-treatment bias
 
+@imai2008
+
 <!-- make sure to rename the section title below -->
 
 ```{r policing, echo = FALSE, output = FALSE, purl = FALSE}
 # run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- TRUE
+do_diagnosis <- FALSE
 sims <- 200
 b_sims <- 20
 ```
@@ -33,9 +35,9 @@ b_sims <- 20
 library(blockTools)
 ```
 
-Knox, Lowe, and Mummolo (2020) (https://www.cambridge.org/core/journals/american-political-science-review/article/administrative-records-mask-racially-biased-policing/66BC0F9998543868BB20F241796B79B8) study the statistical biases that accompany estimates of racial bias in police use of force when presence in the dataset (being stopped by police) is conditioned on an outcome that is a downstream consequence of race. They show the estimate is not identified unless additional modelling assumptions are brought to bear. 
+Knox, Lowe, and Mummolo (2020) (https://www.cambridge.org/core/journals/american-political-science-review/article/administrative-records-mask-racially-biased-policing/66BC0F9998543868BB20F241796B79B8) study the statistical biases that accompany estimates of racial bias in police use of force when presence in the dataset (being stopped by police) is conditioned on an outcome that is a downstream consequence of race. They show the estimate is not identified unless additional modelling assumptions are brought to bear.
 
-Gaebler et al. (2020) (https://5harad.com/papers/post-treatment-bias.pdf) study the same question and make such modeling assumptions (subset ignorability, definition 2). 
+Gaebler et al. (2020) (https://5harad.com/papers/post-treatment-bias.pdf) study the same question and make such modeling assumptions (subset ignorability, definition 2).
 
 In a twitter thread (https://twitter.com/jonmummolo/status/1275790509647241222?s=20), Mummolo shows the three DAGs that are compatible with subset ignorability. We agree with Mummolo that these DAGs assume away causal paths that are very plausible.
 
@@ -89,9 +91,6 @@ design_3 <- redesign(design_1, U_M = 0)
 
 # no effect of U on Y
 design_4 <- redesign(design_1, U_Y = 0)
-
-simulations <- 
-  simulate_designs(design_1, design_2, design_3, design_4, sims = 500)
 ```
 
 This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
@@ -99,7 +98,7 @@ This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
 simulations <- simulate_designs(design_1, design_2, design_3, design_4, sims = sims)
 ```
 
-Right after you do simulations, you want to save the simulations rds. 
+Right after you do simulations, you want to save the simulations rds.
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
@@ -138,7 +137,7 @@ summary_df <-
   pivot_longer(cols = c("mean_estimand", "mean_estimate"))
 ```
 
-This plot confirms that unless one of those implausible assumptions hold, estimates of the CDE are biased. 
+This plot confirms that unless one of those implausible assumptions hold, estimates of the CDE are biased.
 
 ```{r, echo=FALSE}
 ggplot(simulations, aes(estimate)) +
