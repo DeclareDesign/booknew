@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="encouragement-designs.html"/>
-<link rel="next" href="randomized-saturation-design.html"/>
+<link rel="next" href="spillovers.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -305,10 +305,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="19.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html"><i class="fa fa-check"></i><b>19.5</b> Stepped wedge designs</a><ul>
 <li class="chapter" data-level="19.5.1" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#design-declaration-5"><i class="fa fa-check"></i><b>19.5.1</b> Design Declaration</a></li>
-<li class="chapter" data-level="19.5.2" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#references-3"><i class="fa fa-check"></i><b>19.5.2</b> References</a></li>
 </ul></li>
-<li class="chapter" data-level="19.6" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html"><i class="fa fa-check"></i><b>19.6</b> Randomized Saturation Design</a><ul>
-<li class="chapter" data-level="19.6.1" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#design-declaration-6"><i class="fa fa-check"></i><b>19.6.1</b> Design Declaration</a></li>
+<li class="chapter" data-level="19.6" data-path="spillovers.html"><a href="spillovers.html"><i class="fa fa-check"></i><b>19.6</b> Spillovers</a><ul>
+<li class="chapter" data-level="19.6.1" data-path="spillovers.html"><a href="spillovers.html#references-3"><i class="fa fa-check"></i><b>19.6.1</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="19.7" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html"><i class="fa fa-check"></i><b>19.7</b> Randomized Saturation Design</a><ul>
+<li class="chapter" data-level="19.7.1" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#design-declaration-6"><i class="fa fa-check"></i><b>19.7.1</b> Design Declaration</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="20" data-path="multi-study-designs.html"><a href="multi-study-designs.html"><i class="fa fa-check"></i><b>20</b> Multi-study designs</a><ul>
@@ -365,81 +367,95 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="stepped-wedge-designs" class="section level2">
 <h2><span class="header-section-number">19.5</span> Stepped wedge designs</h2>
-<p>Plan with this vignette:</p>
+<p>In a stepped wedge design, individuals are randomly assigned to enter into
+treatment in different stages, and at each stage their outcomes are remeasured.
+The first panel of Figure X illustrates where the study gets its name: here, two
+randomly selected individuals (or clusters) enter the treatment at before each
+of the three waves of measurement, while two individuals are randomly selected
+to remain in control.</p>
+<p>Such designs have a remarkable feature: because who enters the treatment group
+at any given stage is random, the data collected in each measurement wave can
+(almost) be treated like a fresh experiment. Often, stepped wedge designs are
+vaunted for their policy appeal: stepped wedges are a good option for rigorous
+causal inference when it’s not fair or feasible to prevent some people from
+getting a treatment. Yet, that same goal can be achieved in the context of any
+experiment with one wave of measurement: just treat the control once you’ve
+conducted the final measurement. The real advantage of the stepped wedge is not
+its ethical appeal: it’s the ability to squeeze more power out of a small
+sample.</p>
+<p>Stepped-wedge designs are more complicated than they at first appear. Below, we
+explain why: this design can be thought of as a block-randomized experiment with
+heterogeneous probabilities and a high risk of spillovers.</p>
 <ul>
-<li>Show why you would want to do stepped wedge
-<ul>
-<li>Increases power</li>
-<li>There are more estimands</li>
-</ul></li>
-<li>Show conditions under which FE give you wrong answer, draw connection to two-way FE papers in econ</li>
-<li>Show how to get answer right under hetfx</li>
-<li>Show additional tradeoffs in sample allocation</li>
+<li>Show SW is better-powered but both coefficient and SE will be biased if not
+analyzed correctly.</li>
+<li>Show how allocating more sample in earlier waves better here due to high
+variance in treatment POs.</li>
+<li>Show how spillovers are very plausible and can be overcome.</li>
+<li>Show extreme case in which no power gain from SW (when u_it = 0, ICC = 1):
+this is the intuition behind SW – power gains derive from inter-temporal
+variation</li>
 </ul>
 <div id="design-declaration-5" class="section level3">
 <h3><span class="header-section-number">19.5.1</span> Design Declaration</h3>
 <ul>
-<li><p><strong>M</strong>odel:</p></li>
-<li><p><strong>I</strong>nquiry:</p></li>
-<li><p><strong>D</strong>ata strategy:</p></li>
-<li><p><strong>A</strong>nswer strategy:
-The weights consider</p></li>
+<li><p><strong>M</strong>odel: our design has eight units randomized and remeasured at three time
+points. Units’ untreated potential outcomes consist of an unit- and a
+unit-period-specific shock. Their treated potential increases relative to their
+control potential outcome by a rate of 1 each period (see second panel of Figure
+X).</p></li>
+<li><p><strong>I</strong>nquiry: Since any unit at any given point in time reveals one of only two
+potential outcomes, we can define our estimand simply as the average treatment
+effect. As panel 2 shows, the ATE averaged over the three periods is (1 + 2 + 3)
+/ 3 = 2. An important assumption that enables us to define the estimand in this
+way is that units reveal the same treated or untreated potential outcome,
+irrespective of what happened in the previous period. This amounts to a no
+spillovers assumption, which may be implausible in practice. We return to this
+below.</p></li>
+<li><p><strong>D</strong>ata strategy: our assignment strategy works in two stages. We first
+cluster-assign unit-periods to a <code>wave</code> in which they will be treated.
+One-quarter of the units are not treated in any wave (pure control): <code>p_00 = 2/8</code>. The remaining three quarters are distributed evenly among the three waves
+of treatment: <code>p_W1 &lt;- p_W2 &lt;- p_W3 &lt;- 2/8</code>. In a second phase, the wave
+assignment is converted into a simple indicator, <code>Z</code>, for whether the unit is
+treated in a given period or not. There is an important but subtle difference
+between the <code>wave</code> and <code>Z</code> variables [explain Z is joint prob]</p></li>
+<li><p><strong>A</strong>nswer strategy: [describe: we look at an approach that treats it like
+blocks. What are inverse propensities weights? Simply put, they correspond to
+the number of observations that a sampled observation “represents.” We also
+compare to the power of a design that only involves one wave of measurement,
+e.g. at wave 2 where units are treated 5050.]</p></li>
 </ul>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb148-1" title="1">p_<span class="dv">00</span> &lt;-<span class="st"> </span>p_W1 &lt;-<span class="st"> </span>p_W2 &lt;-<span class="st"> </span>p_W3 &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">4</span></a>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb148-1" title="1">p_<span class="dv">00</span> &lt;-<span class="st"> </span>p_W1 &lt;-<span class="st"> </span>p_W2 &lt;-<span class="st"> </span>p_W3 &lt;-<span class="st"> </span><span class="dv">2</span><span class="op">/</span><span class="dv">8</span></a>
 <a class="sourceLine" id="cb148-2" title="2"></a>
-<a class="sourceLine" id="cb148-3" title="3">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb148-4" title="4"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb148-5" title="5">    <span class="dt">t =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">3</span>, <span class="dt">u_t =</span> <span class="kw">rnorm</span>(N), <span class="dt">trend =</span> <span class="kw">as.numeric</span>(t), </a>
-<a class="sourceLine" id="cb148-6" title="6">                  <span class="dt">p =</span> <span class="kw">c</span>(p_W1, p_W1 <span class="op">+</span><span class="st"> </span>p_W2, p_W1 <span class="op">+</span><span class="st"> </span>p_W2 <span class="op">+</span><span class="st"> </span>p_W3)),</a>
-<a class="sourceLine" id="cb148-7" title="7">    <span class="dt">i =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">8</span>, <span class="dt">u_i =</span> <span class="kw">rnorm</span>(N), <span class="dt">nest =</span> <span class="ot">FALSE</span>),</a>
-<a class="sourceLine" id="cb148-8" title="8">    <span class="dt">obs =</span> <span class="kw">cross_levels</span>(<span class="dt">by =</span> <span class="kw">join</span>(t, i), <span class="dt">u_ti =</span> <span class="kw">rnorm</span>(N))) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb148-9" title="9"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb148-10" title="10">    <span class="dt">Y_Z_0 =</span> u_i <span class="op">+</span><span class="st"> </span>u_t <span class="op">+</span><span class="st"> </span>u_ti,</a>
-<a class="sourceLine" id="cb148-11" title="11">    <span class="dt">Y_Z_1 =</span> u_i <span class="op">+</span><span class="st"> </span>u_t <span class="op">+</span><span class="st"> </span>u_ti <span class="op">+</span><span class="st"> </span>trend) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb148-12" title="12"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">clusters =</span> i, </a>
-<a class="sourceLine" id="cb148-13" title="13">                     <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, </a>
-<a class="sourceLine" id="cb148-14" title="14">                     <span class="dt">prob_each =</span> <span class="kw">c</span>(p_W1, p_W2, p_W3, p_<span class="dv">00</span>),</a>
-<a class="sourceLine" id="cb148-15" title="15">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;wave&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb148-16" title="16"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">Z =</span> <span class="kw">as.numeric</span>(t <span class="op">&gt;=</span><span class="st"> </span>wave), </a>
-<a class="sourceLine" id="cb148-17" title="17">               <span class="dt">ip =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(Z <span class="op">*</span><span class="st"> </span>p <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p)),</a>
-<a class="sourceLine" id="cb148-18" title="18">               <span class="dt">handler =</span> fabricate) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb148-19" title="19"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb148-20" title="20"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ate =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb148-21" title="21"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Unweighted SW&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb148-22" title="22"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Weighted SW&quot;</span>, <span class="dt">weights =</span> ip) </a></code></pre></div>
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb149-1" title="1"><span class="kw">draw_data</span>(design) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">i =</span> <span class="kw">fct_reorder</span>(i, wave), <span class="dt">Assignment =</span> <span class="kw">ifelse</span>(Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span>, <span class="st">&quot;Treatment&quot;</span>, <span class="st">&quot;Control&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb149-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> t, <span class="dt">y =</span> i, <span class="dt">fill =</span> Assignment)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-4" title="4"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_fill_grey</span>(<span class="dt">start =</span> <span class="fl">.9</span>,<span class="dt">end =</span> <span class="fl">.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-5" title="5"><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> <span class="kw">round</span>(ip,<span class="dv">1</span>))) <span class="op">+</span></a>
-<a class="sourceLine" id="cb149-6" title="6"><span class="st">  </span><span class="kw">dd_theme</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb148-3" title="3">design &lt;-<span class="st"> </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb148-4" title="4">  <span class="dt">t =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">3</span>, <span class="dt">trend =</span> <span class="kw">as.numeric</span>(t), </a>
+<a class="sourceLine" id="cb148-5" title="5">                <span class="co"># u_t = rnorm(N), </span></a>
+<a class="sourceLine" id="cb148-6" title="6">                <span class="dt">p =</span> <span class="kw">c</span>(p_W1, p_W1 <span class="op">+</span><span class="st"> </span>p_W2, p_W1 <span class="op">+</span><span class="st"> </span>p_W2 <span class="op">+</span><span class="st"> </span>p_W3)),</a>
+<a class="sourceLine" id="cb148-7" title="7">  <span class="dt">i =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">8</span>, <span class="dt">u_i =</span> <span class="kw">rnorm</span>(N), <span class="dt">nest =</span> <span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb148-8" title="8">  <span class="dt">obs =</span> <span class="kw">cross_levels</span>(<span class="dt">by =</span> <span class="kw">join</span>(t, i), <span class="dt">u_it =</span> <span class="kw">rnorm</span>(N))) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb148-9" title="9"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(<span class="dt">Y_Z_0 =</span> u_i <span class="op">+</span><span class="st"> </span>u_it, <span class="dt">Y_Z_1 =</span> u_i <span class="op">+</span><span class="st"> </span>u_it <span class="op">+</span><span class="st"> </span>trend) <span class="op">+</span></a>
+<a class="sourceLine" id="cb148-10" title="10"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">clusters =</span> i, <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, </a>
+<a class="sourceLine" id="cb148-11" title="11">                     <span class="dt">prob_each =</span> <span class="kw">c</span>(p_W1, p_W2, p_W3, p_<span class="dv">00</span>),</a>
+<a class="sourceLine" id="cb148-12" title="12">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;wave&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb148-13" title="13"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">Z =</span> <span class="kw">as.numeric</span>(t <span class="op">&gt;=</span><span class="st"> </span>wave), </a>
+<a class="sourceLine" id="cb148-14" title="14">               <span class="dt">ip =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(Z <span class="op">*</span><span class="st"> </span>p <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p)),</a>
+<a class="sourceLine" id="cb148-15" title="15">               <span class="dt">handler =</span> fabricate) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb148-16" title="16"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb148-17" title="17"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ate =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb148-18" title="18"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;1: Wave 2 only&quot;</span>, <span class="dt">subset =</span> t <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb148-19" title="19"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;2: Weighted, clustered SW&quot;</span>, <span class="dt">weights =</span> ip, <span class="dt">clusters =</span> i) <span class="op">+</span></a>
+<a class="sourceLine" id="cb148-20" title="20"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;3: Unweighted, unclustered SW&quot;</span>) </a></code></pre></div>
 <p><img src="book_files/figure-html/unnamed-chunk-380-1.png" width="672" /></p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1"><span class="co"># Diagnose design</span></a>
-<a class="sourceLine" id="cb150-2" title="2">diagnoses &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design)</a></code></pre></div>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb151-1" title="1"><span class="kw">reshape_diagnosis</span>(diagnoses) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb149-1" title="1"><span class="co"># Diagnose design</span></a>
+<a class="sourceLine" id="cb149-2" title="2">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design)</a></code></pre></div>
 <table>
 <thead>
 <tr>
 <th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
 Estimator Label
 </th>
 <th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
-<th style="text-align:left;">
 Bias
-</th>
-<th style="text-align:left;">
-RMSE
 </th>
 <th style="text-align:left;">
 Power
@@ -456,69 +472,43 @@ SD Estimate
 <th style="text-align:left;">
 Mean Se
 </th>
-<th style="text-align:left;">
-Type S Rate
-</th>
-<th style="text-align:left;">
-Mean Estimand
-</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-design
+1: Wave 2 only
 </td>
 <td style="text-align:left;">
-ate
+0.06
 </td>
 <td style="text-align:left;">
-Unweighted SW
+0.38
 </td>
 <td style="text-align:left;">
-Z
+0.92
 </td>
 <td style="text-align:left;">
-500
+2.06
 </td>
 <td style="text-align:left;">
-0.31
+1.04
 </td>
 <td style="text-align:left;">
-0.84
-</td>
-<td style="text-align:left;">
-0.87
-</td>
-<td style="text-align:left;">
-0.91
-</td>
-<td style="text-align:left;">
-2.31
-</td>
-<td style="text-align:left;">
-0.78
-</td>
-<td style="text-align:left;">
-0.69
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
+0.95
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
+(0.04)
 </td>
 <td style="text-align:left;">
+(0.02)
 </td>
 <td style="text-align:left;">
-</td>
-<td style="text-align:left;">
+(0.01)
 </td>
 <td style="text-align:left;">
 (0.04)
@@ -527,673 +517,37 @@ Z
 (0.03)
 </td>
 <td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
 (0.01)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-design
+2: Weighted, clustered SW
 </td>
 <td style="text-align:left;">
-ate
+0.04
 </td>
 <td style="text-align:left;">
-Weighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
--0.04
-</td>
-<td style="text-align:left;">
-0.74
-</td>
-<td style="text-align:left;">
-0.69
+0.53
 </td>
 <td style="text-align:left;">
 0.96
 </td>
 <td style="text-align:left;">
-1.96
-</td>
-<td style="text-align:left;">
-0.74
-</td>
-<td style="text-align:left;">
-0.77
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>Change assignment allocation</li>
-</ul>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb152-1" title="1"><span class="co"># Diagnose design</span></a>
-<a class="sourceLine" id="cb152-2" title="2">no_SW &lt;-<span class="st"> </span><span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="fl">.5</span>, <span class="dt">p_W1 =</span> <span class="fl">.5</span>, <span class="dt">p_W2 =</span> <span class="dv">0</span>, <span class="dt">p_W3 =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb152-3" title="3">no_control &lt;-<span class="st"> </span><span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">0</span>, <span class="dt">p_W1 =</span> <span class="fl">.34</span>, <span class="dt">p_W2 =</span> <span class="fl">.33</span>, <span class="dt">p_W3 =</span> <span class="fl">.33</span>)</a>
-<a class="sourceLine" id="cb152-4" title="4">more_earlier &lt;-<span class="st"> </span><span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="fl">.5</span>, <span class="dt">p_W1 =</span> <span class="fl">.30</span>, <span class="dt">p_W2 =</span> <span class="fl">.10</span>, <span class="dt">p_W3 =</span> <span class="fl">.10</span>)</a>
-<a class="sourceLine" id="cb152-5" title="5">sw_comparisons &lt;-<span class="st"> </span><span class="kw">diagnose_designs</span>(no_SW, no_control, more_earlier)</a></code></pre></div>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb153-1" title="1"><span class="kw">reshape_diagnosis</span>(sw_comparisons) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-p_00
-</th>
-<th style="text-align:left;">
-p_W1
-</th>
-<th style="text-align:left;">
-p_W2
-</th>
-<th style="text-align:left;">
-p_W3
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
-<th style="text-align:left;">
-Bias
-</th>
-<th style="text-align:left;">
-RMSE
-</th>
-<th style="text-align:left;">
-Power
-</th>
-<th style="text-align:left;">
-Coverage
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-SD Estimate
-</th>
-<th style="text-align:left;">
-Mean Se
-</th>
-<th style="text-align:left;">
-Type S Rate
-</th>
-<th style="text-align:left;">
-Mean Estimand
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-no_SW
-</td>
-<td style="text-align:left;">
-0.5
-</td>
-<td style="text-align:left;">
-0.5
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-ate
-</td>
-<td style="text-align:left;">
-Unweighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
--0.06
-</td>
-<td style="text-align:left;">
-0.86
-</td>
-<td style="text-align:left;">
-0.71
-</td>
-<td style="text-align:left;">
-0.88
-</td>
-<td style="text-align:left;">
-1.94
-</td>
-<td style="text-align:left;">
-0.86
-</td>
-<td style="text-align:left;">
-0.68
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-no_SW
-</td>
-<td style="text-align:left;">
-0.5
-</td>
-<td style="text-align:left;">
-0.5
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-ate
-</td>
-<td style="text-align:left;">
-Weighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
--0.06
-</td>
-<td style="text-align:left;">
-0.86
-</td>
-<td style="text-align:left;">
-0.71
-</td>
-<td style="text-align:left;">
-0.88
-</td>
-<td style="text-align:left;">
-1.94
-</td>
-<td style="text-align:left;">
-0.86
-</td>
-<td style="text-align:left;">
-0.68
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-no_control
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0.34
-</td>
-<td style="text-align:left;">
-0.33
-</td>
-<td style="text-align:left;">
-0.33
-</td>
-<td style="text-align:left;">
-ate
-</td>
-<td style="text-align:left;">
-Unweighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.37
-</td>
-<td style="text-align:left;">
-1.02
-</td>
-<td style="text-align:left;">
-0.83
-</td>
-<td style="text-align:left;">
-0.83
-</td>
-<td style="text-align:left;">
-2.37
-</td>
-<td style="text-align:left;">
-0.95
-</td>
-<td style="text-align:left;">
-0.70
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.05)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.05)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-no_control
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-0.34
-</td>
-<td style="text-align:left;">
-0.33
-</td>
-<td style="text-align:left;">
-0.33
-</td>
-<td style="text-align:left;">
-ate
-</td>
-<td style="text-align:left;">
-Weighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.01
-</td>
-<td style="text-align:left;">
-0.84
-</td>
-<td style="text-align:left;">
-0.71
-</td>
-<td style="text-align:left;">
-0.92
-</td>
-<td style="text-align:left;">
-2.01
-</td>
-<td style="text-align:left;">
-0.84
-</td>
-<td style="text-align:left;">
-0.76
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-more_earlier
-</td>
-<td style="text-align:left;">
-0.5
-</td>
-<td style="text-align:left;">
-0.3
-</td>
-<td style="text-align:left;">
-0.1
-</td>
-<td style="text-align:left;">
-0.1
-</td>
-<td style="text-align:left;">
-ate
-</td>
-<td style="text-align:left;">
-Unweighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.17
-</td>
-<td style="text-align:left;">
-0.79
+2.04
 </td>
 <td style="text-align:left;">
 0.80
 </td>
 <td style="text-align:left;">
-0.92
-</td>
-<td style="text-align:left;">
-2.17
-</td>
-<td style="text-align:left;">
-0.77
-</td>
-<td style="text-align:left;">
-0.70
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
+0.76
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
 (0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
 </td>
 <td style="text-align:left;">
 (0.02)
@@ -1209,97 +563,39 @@ Z
 </td>
 <td style="text-align:left;">
 (0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-more_earlier
+3: Unweighted, unclustered SW
 </td>
 <td style="text-align:left;">
-0.5
+0.36
 </td>
 <td style="text-align:left;">
-0.3
+0.94
 </td>
 <td style="text-align:left;">
-0.1
+0.86
 </td>
 <td style="text-align:left;">
-0.1
+2.36
 </td>
 <td style="text-align:left;">
-ate
+0.68
 </td>
 <td style="text-align:left;">
-Weighted SW
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
--0.00
-</td>
-<td style="text-align:left;">
-0.77
-</td>
-<td style="text-align:left;">
-0.74
-</td>
-<td style="text-align:left;">
-0.93
-</td>
-<td style="text-align:left;">
-2.00
-</td>
-<td style="text-align:left;">
-0.77
-</td>
-<td style="text-align:left;">
-0.71
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-2.00
+0.59
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
 (0.03)
 </td>
 <td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 <td style="text-align:left;">
 (0.01)
@@ -1312,22 +608,50 @@ Z
 </td>
 <td style="text-align:left;">
 (0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="references-3" class="section level3">
-<h3><span class="header-section-number">19.5.2</span> References</h3>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<ul>
+<li><p>Comparing 1 and 2, stepped wedge gives a big improvement in power, is
+unbiased, and gets the coverage correct. Clearly better than just doing a
+cross-section at wave 2.</p></li>
+<li><p>Estimator 3 shows two pitfalls, however, that can lead us to overestimate
+benefits of SW.</p></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><p>First, it is biased: [explain how treated POs are more commonly observed in
+periods when they’re higher, we need to weight for this. How weights come about:
+There is one way that a unit can be observed in a treated state in wave 1: they
+are assigned to W1 with probability <code>p_W1</code>. There are two ways in which a unit
+can be treated in wave 2: they are assigned in W1 with <code>p_W1</code> or in W2 with
+<code>p_W2</code>. Because being assigned in W1 or in W2 are exclusive and independent
+events, we can get the prob of being treated in any period by wave 2 by summing
+the probs.]</p></li>
+<li><p>Second, standard errors are wrong. Units should be treated as clusters (draw
+analogue to two-stage random assignment in saturation design?)</p></li>
+</ol>
+<p>A natural question is how power changes as more or fewer units are assigned.
+Here, we consider variations on the stepped wedge design declared above, in
+which we hold constant at 3 the number of units assigned to the pure control,
+and shift an increasing proportion of the assignment to later waves.</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1">designs &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb150-2" title="2">  <span class="dt">a =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb150-3" title="3">  <span class="dt">b =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb150-4" title="4">  <span class="dt">c =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb150-5" title="5">  <span class="dt">d =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb150-6" title="6">  <span class="dt">e =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>),</a>
+<a class="sourceLine" id="cb150-7" title="7">  <span class="dt">f =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb150-8" title="8">  )</a></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb151-1" title="1"><span class="co"># Diagnose design</span></a>
+<a class="sourceLine" id="cb151-2" title="2">diagnoses &lt;-<span class="st"> </span><span class="kw">diagnose_designs</span>(designs)</a></code></pre></div>
+<p><img src="book_files/figure-html/unnamed-chunk-387-1.png" width="672" /></p>
+<ul>
+<li>We see a monotonic decrease in the power as more of the sample is treated
+later. This occurs because treating units later means observing less of the
+potential outcomes. The potential outcomes are more variant, so we’re better
+off when we observe more of them [I think!]</li>
+</ul>
 </div>
 </div>
             </section>
@@ -1336,7 +660,7 @@ Z
         </div>
       </div>
 <a href="encouragement-designs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="randomized-saturation-design.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="spillovers.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
