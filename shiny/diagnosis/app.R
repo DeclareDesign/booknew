@@ -59,9 +59,10 @@ server <- function(input, output) {
         # values$df_data <- temp
         
         values$run_dat_df <- draw_data(des)
-        values$run_est_df <- bind_cols(get_estimates(des, data = values$run_dat_df), draw_estimands(des))
+        values$run_est_df <- bind_cols(get_estimates(des, data = values$run_dat_df), draw_estimands(des)) 
         
-        values$sims_df <- bind_rows(values$sims_df, values$run_est_df)
+        values$sims_df <- bind_rows(values$sims_df, values$run_est_df) %>% 
+            mutate(latest_estimate = (1:n()) == n())
         
         summary_df <-
             values$run_dat_df %>%
@@ -90,8 +91,8 @@ server <- function(input, output) {
         
         estimates_plot <- 
             ggplot(data = values$run_est_df) + 
-            geom_errorbar(aes(x = 0, ymin = conf.low, ymax = conf.high), width = 0.1) + 
-            geom_point(aes(x = 0, y = estimate)) + 
+            geom_errorbar(aes(x = 0, ymin = conf.low, ymax = conf.high), color = "blue", width = 0.1) + 
+            geom_point(aes(x = 0, y = estimate), color = "blue") + 
             coord_cartesian(xlim = c(-1, 1), ylim = c(-3, 3)) + 
             ylab("Estimated ATE (95% confidence interval)") + 
             ggtitle("Estimate from data draw") + 
@@ -99,14 +100,19 @@ server <- function(input, output) {
             theme(axis.title.x = element_blank(), axis.text.x = element_blank()) 
         # estimates_plot
         
+        print(values$sims_df)
+        
         diagnostic_stat_plot <- 
-            ggplot(data = values$sims_df, aes(x = estimate)) + 
+            ggplot(data = values$sims_df, aes(x = estimate, fill = latest_estimate)) + 
             geom_histogram(aes(y = ..density..), binwidth = 0.1) + 
+            scale_fill_manual(breaks = c(FALSE, TRUE), values = c("black", "blue")) + 
             # coord_cartesian(ylim = c(0, 5)) + 
-            xlab("Density of ATE Estimates") + 
+            ylab("Density") + 
+            xlab("Estimated ATE") + 
             ggtitle("Histogram of ATE estimates") + 
             coord_flip(xlim = c(-3, 3), ylim = c(0, 5)) + 
-            dd_theme()
+            dd_theme() +
+            theme(legend.position = "none") 
         
         data_plot + estimates_plot + diagnostic_stat_plot + plot_layout(widths = c(1, .5, 1))
         
