@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 14 Part II Exercises | Research Design: Declare, Diagnose, Redesign</title>
+  <title>12.1 Estimating diagnosands analytically | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 14 Part II Exercises | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="12.1 Estimating diagnosands analytically | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 14 Part II Exercises | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="12.1 Estimating diagnosands analytically | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="redesign-to-assess-the-robustness-of-designs-to-models-gb.html"/>
-<link rel="next" href="design-library.html"/>
+<link rel="prev" href="returning-to-the-formalization.html"/>
+<link rel="next" href="estimating-diagnosands-via-simulation.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -370,86 +370,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="part-ii-exercises" class="section level1">
-<h1><span class="header-section-number">Chapter 14</span> Part II Exercises</h1>
-<p><span class="citation">Imai, King, and Stuart (<a href="#ref-imai2008">2008</a>)</span></p>
-<!-- make sure to rename the section title below -->
-<!-- You can use the global bib file via rmarkdown cites like this: @imai2008 -->
-<ol style="list-style-type: decimal">
-<li>Imagine you are a reviewer on a paper that claims smoking causes a smoking addiction. The data offered in support of this claim shows that all 100 subjects who smoke are addicted to smoking and that all 100 subject who do not smoke are not addicted.</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>is not addicted to smoking</th>
-<th>is addicted to smoking</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>does not smoke</td>
-<td>0</td>
-<td>100</td>
-</tr>
-<tr class="even">
-<td>smokes</td>
-<td>100</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<ol style="list-style-type: lower-alpha">
-<li>Do the data support the conclusion that smoking causes addiction to smoking?</li>
-<li>Now imagine you are a reviewer on a paper that claims sailing causes a sailing addiction. The data offered in support of this claim shows that all 100 subjects who sail are addicted to sailing and that all 100 subject who do not sail are not addicted. Do the data support the conclusion that sailing causes addiction to sailing?</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>is not addicted to sailing</th>
-<th>is addicted to sailing</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>does not sail</td>
-<td>0</td>
-<td>100</td>
-</tr>
-<tr class="even">
-<td>sails</td>
-<td>100</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<ol start="3" style="list-style-type: lower-alpha">
-<li><p>How do your answers to (a) and (b) differ? Sketch (either in words or with a DAG) the alternative causal models for smoking and sailing that could have produced the two datasets.</p></li>
-<li><p>Propose a data and answer strategy that would distinguish between the two causal models you described in (c).</p></li>
-</ol>
-<ol start="2" style="list-style-type: decimal">
-<li>The Complier Average Causal Effect (CACE) is defined as the average effect of treatment on a subset of subjects who “comply” with their treatment assignment, i.e., if assigned to treatment, they take treatment but if assigned to control, they do not take treatment. The Average Treatment Effect on the Treated (ATT) is defined as the average effect of the treatment on those subjects who <em>were</em> treated. These two estimands are subtley different. Declare a design and <code>draw_estimands</code> from it to demonstrate that these two estimands can be different. Hint: the ATT depends on the data strategy but the CACE does not.</li>
-</ol>
-
-</div>
-
-
-
-</div>
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-imai2008">
-<p>Imai, Kosuke, Gary King, and Elizabeth A. Stuart. 2008. “Misunderstandings Between Experimentalists and Observationalists About Causal Inference.” <em>Journal of the Royal Statistical Society: Series A (Statistics in Society)</em> 171 (2): 481–502.</p>
-</div>
+<div id="estimating-diagnosands-analytically" class="section level2">
+<h2><span class="header-section-number">12.1</span> Estimating diagnosands analytically</h2>
+<p>Research design diagnosis can be done analytically. Indeed, research design textbooks often contain many formulas for calculating power under a variety of designs. For example, Gerber and Green include the following power formula:</p>
+<p>They write:</p>
+<blockquote>
+<p>“To illustrate a power analysis, consider a completely randomized experiment where <span class="math inline">\(N&gt;2\)</span> of <span class="math inline">\(N\)</span> units are selected into a binary treatment. The researcher must now make assumptions about the distributions of outcomes for treatment and for control units. In this example, the researcher assumes that the control group has a normally distributed outcome with mean <span class="math inline">\(\mu_c\)</span>, the treatment group has a normally distributed outcome with mean <span class="math inline">\(\mu_t\)</span>, and both group’s outcomes have a standard deviation <span class="math inline">\(\sigma\)</span>. The researcher must also choose <span class="math inline">\(\alpha\)</span>, the desired level of statistical significance (typically 0.05).
+Under this scenario, there exists a simple asymptotic approximation for the power of the experiment (assuming that the significance test is two-tailed):
+<span class="math display">\[
+\beta = \Phi \bigg(\frac{|\mu_t - \mu_c| \sqrt{N}}{2\sigma} - \Phi^{-1} (1 - \frac{\alpha}{2}) \bigg)
+\]</span>
+where <span class="math inline">\(\beta\)</span> is the statistical power of the experiment, <span class="math inline">\(\Phi(\cdot)\)</span> is the normal cumulative distribution function (CDF), and <span class="math inline">\(\Phi^{-1}(\cdot)\)</span> is the inverse of the normal CDF.”</p>
+</blockquote>
+<p>See how this power formula makes specific assumptions about <span class="math inline">\(M\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span>? Under <span class="math inline">\(M\)</span>, it assumes that the potential outcomes are both normally distributed with group specific means and a common variance. Under <span class="math inline">\(D\)</span>, it assumes a particular randomization strategy. Under <span class="math inline">\(A\)</span>, it assumes a particular hypothesis testing approach (equal variance t-test with <span class="math inline">\(N - 2\)</span> degrees of freedom). This set of assumptions may be “close enough” in many research settings, but it can be difficult to understand the specific impacts of different beliefs about <span class="math inline">\(M\)</span>, <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> on the value of the diagnosand. What if instead of being normally distributed, the potential outcomes are measured in 1 - 5 Likert scales? What if the randomization procedure includes blocking? What if we include covariates in our treatment effect estimation approach? Formulas for some large sources of design variation have been derived (such as clustering), but certainly not for every design variant.</p>
+<p>Very quickly, hope for analytic design diagnosis fades. The analytic formulas are abstractions – they abstract away from design details and sometimes those design details are important. This problem is not confined to the “power” diagnosand. In randomized experiments, claims about the bias diagnosand are quite general. Many randomized designs are unbiased for the ATE, but not all. Designs that encounter noncompliance, attrition, or some forms of spillover may not be unbiased for the ATE. Even without any of those complications, cluster randomized trials with heteogeneous cluster sizes are not unbiased (joel, imai).</p>
+<p>Diagnosands depend on design details, because how you conduct you conduct your study matters for its properties. That means design diagnosis must be design-aware. Since designs are so heteogenous and can vary on so many dimensions, computer simulation is only feasible way to characterize any study but the most ideal-type designs (assuming normality and ignoring heterogeneity) in the simplest of terms (power, bias, variance, but nothing further).</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="redesign-to-assess-the-robustness-of-designs-to-models-gb.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="design-library.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="returning-to-the-formalization.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="estimating-diagnosands-via-simulation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
