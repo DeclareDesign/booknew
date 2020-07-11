@@ -26,7 +26,8 @@ gg_df <-
 gg_df <-
   gg_df %>%
   mutate(arced_left = (name == "U" & to == "Yt0"),
-         arced_right = (name == "U" & to %in% c("Yt1", "Yt2"))) %>%
+         arced_right = (name == "U" & to %in% c("Yt1", "Yt2")),
+         dashed = (name == "U" & to == "Z")) %>%
   arrange(name)
 
 
@@ -41,11 +42,12 @@ g <-
   geom_dag_text(color = "black",
                 parse = TRUE,
                 label = TeX(c("C", "D", "U", "Y_{t=0}", "Y_{t=1}", "Y_{t=2}", "Z")),
-                size = 2) +
-  geom_dag_edges() +
+                size = 4) +
+  geom_dag_edges(aes(edge_linetype = dashed)) +
   geom_dag_edges_arc(data = filter(gg_df, arced_left), curvature = -.5) +
   geom_dag_edges_arc(data = filter(gg_df, arced_right), curvature = +.3) +
-  theme_dag()
+  theme_dag() +
+  theme(legend.position = "none")
 g
 
 ggsave("figures/AFG.png", g, height = 3.5, width = 5.5)

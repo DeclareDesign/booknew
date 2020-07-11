@@ -26,7 +26,6 @@ b_sims <- 20
 
 ```{r, echo = FALSE}
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-library(blockTools)
 ```
 
 # Improving research designs
@@ -142,23 +141,80 @@ Third, emphasis on the statistical properties of a design can obscure the substa
 
 Finally, we see a risk that the variation in the suitability of design declaration to different research strategies may be taken as evidence of the relative superiority of different types of research strategies. While we believe that the range of strategies that can be declared and diagnosed is wider than what one might at first think possible, there is no reason to believe that all strong designs can be declared either ex ante or ex post. An advantage of our framework, we hope, is that it can help clarify when a strategy can or cannot be completely declared. When a design cannot be declared, nondeclarability is all the framework provides, and in such cases we urge caution in drawing conclusions about design quality.
 
-## Appendix: A formal definition of a research design and design diagnosis
+## Formal definition of a research design and design diagnosis
 
-We formally define a research design. In doing so, we employ elements from Pearl's [-@Pearl2009] approach to structural modeling, which provides a syntax for mapping design inputs to design outputs as well as the potential outcomes framework as presented, for example, in @Imbens2015, which many social scientists use to clarify their inferential targets. 
+In this section, we set the MIDA approach on firmer mathematical grounds. In doing so, we employ elements from Pearl's [-@Pearl2009] approach to causal modeling (directed acycling graphs, or DAGs for short), which provides a syntax for mapping design inputs to design outputs. We also use the potential outcomes framework as presented, for example, in @Imbens2015, which many social scientists use to clarify their inferential targets. We'll dive much more deeply into both DAGs and potential outcomes in Part II.
 
-We think of a research design, $\Delta$, as including four elements $<M,I,D,A>$:
+A research design $\Delta$ includes four elements $<M,I,D,A>$:
 
-*  A **model**, $M$, of how the world works. In general following Pearl's definition of a probabilistic causal model we will assume that a model contains three core elements. First, a specification of the variables $X$  about which research is being conducted. This includes endogenous and exogenous variables ($V$ and $U$ respectively) and the ranges of these variables. In the formal literature this is sometimes called the *signature* of a model [@halpern2000].   Second, a specification of how each endogenous variable depends on other variables (the "functional relations" or, as in @Imbens2015, "potential outcomes"), $F$. Third, a probability distribution over exogenous variables, $P(U)$.  
+*  A **model**, $M$, of how the world works. In general following Pearl's definition of a probabilistic causal model we will assume that a model contains three core elements. First, a specification of the variables $X$ about which research is being conducted. This includes endogenous and exogenous variables ($V$ and $U$ respectively) and the ranges of these variables. In the formal literature this is sometimes called the *signature* of a model [@halpern2000]. Second, a specification of how each endogenous variable depends on other variables (the "functional relations" or, as in @Imbens2015, "potential outcomes"), $F$. Third, a probability distribution over exogenous variables, $P(U)$. We write a draw from this distribution as $M() = m$.  
 
-* An **inquiry**, $I$, about the distribution of variables, $X$, perhaps given interventions on some variables.  Using Pearl's notation we can distinguish between questions that ask about the conditional values of variables, such as $\Pr(X_1 | X_2 =1)$ and questions that ask about values that would arise under interventions: $\Pr(X_1 | do(X_2 = 1))$.\footnote{
-    The distinction lies in whether the conditional probability is recorded through passive observation or active intervention to manipulate the probabilities of the conditioning distribution. For example, $\Pr(X_1 | X_2 =1)$ might indicate the conditional probability that it is raining, given that Jack has his umbrella, whereas $\Pr(X_1 | do(X_2 =1))$ would indicate the probability with which it would rain, given Jack is made to carry an umbrella.
-  } We let $a^M$ denote the answer to $I$ \textit{under the model}. Conditional on the model, $a^M$ is the value of the estimand, the quantity that the researcher wants to learn about.  
+* An **inquiry**, $I$, about the distribution of variables, $X$, perhaps given interventions on some variables. Using Pearl's notation we can distinguish between questions that ask about the conditional values of variables, such as $\Pr(X_1 | X_2 =1)$ and questions that ask about values that would arise under interventions: $\Pr(X_1 | do(X_2 = 1))$. The distinction lies in whether the conditional probability is recorded through passive observation or active intervention to manipulate the probabilities of the conditioning distribution. For example, $\Pr(X_1 | X_2 =1)$ might indicate the conditional probability that it is raining, given that Jack has his umbrella, whereas $\Pr(X_1 | do(X_2 =1))$ would indicate the probability with which it would rain, given that Jack is made to carry an umbrella. We let $a^M$ denote the answer to $I$ \textit{under the model}. Conditional on the model, $a^M$ is the value of the estimand, the quantity that the researcher wants to learn about. The connection of $a^M$ to the model can be seen in the following equality: $I(m) = a^M$.
 
-* A **data** strategy, $D$, generates data $d$ on $X$. Data $d$ arises, under model $M$ with probability $P_M(d|D)$. The data strategy includes sampling strategies and assignment strategies, which we denote with $P_S$ and $P_Z$ respectively. Measurement techniques are also a part of data strategies and can be thought of as a selection of observable variables that carry information about unobservable variables.
+* A **data** strategy, $D$, generates data $d$ on $X$. Data $d$ arises, under model $M$ with probability $P_M(d|D)$. The data strategy includes sampling strategies and assignment strategies, which we denote with $P_S$ and $P_Z$ respectively. Measurement techniques are also a part of data strategies and can be thought of as a selection of observable variables that carry information about unobservable variables. The data strategy operates on a draw from the model to produce the observed data: $D(m) = d$.
 
-* An **answer** strategy, $A$, that generates answer $a^A$ using data $d$. 
+* An **answer** strategy, $A$, that generates answer $a^A$ using data $d$. We encode this relationship as $A(d) = a^A$.
 
-A key feature of this bare specification is that if $M$, $D$, and $A$ are sufficiently well described, the answer to question $I$ has a distribution $P_M(a^A|D)$. Moreover, one can construct a distribution of comparisons of this answer to the correct answer, under $M$, for example by assessing $P_M(a^M-a^A|D)$. One can also compare this to results under different data or analysis strategies, $P_M(a^M-a^A|D')$ and $P_M(a^M-a^{A'}|D)$, and to answers generated under alternative models, $P_M(a^{M'}-a^{A}|D)$, as long as these possess signatures that are consistent with inquiries and answer strategies.  
+<!-- A key feature of this bare specification is that if $M$, $D$, and $A$ are sufficiently well described, the answer to question $I$ has a distribution $P_M(a^A|D)$. Moreover, one can construct a distribution of comparisons of this answer to the correct answer, under $M$, for example by assessing $P_M(a^M-a^A|D)$. One can also compare this to results under different data or analysis strategies, $P_M(a^M-a^A|D')$ and $P_M(a^M-a^{A'}|D)$, and to answers generated under alternative models, $P_M(a^{M'}-a^{A}|D)$, as long as these possess signatures that are consistent with inquiries and answer strategies.   -->
+
+The full set of causal relationships between $M$, $I$, $D$, and $A$ with respect to $m$, $a^M$, $d$ and $a^A$ can be seen in the DAG schematic representation of a research design.
+
+```{r, echo=FALSE, fig.cap="testing"}
+dag <-
+  dagify(m ~ M,
+         aM ~ m + I,
+         d ~ D + m,
+         aA ~ A + d)
+
+gg_df <-
+  tidy_dagitty(
+    dag,
+    layout = "manual",
+    x = c(4, 3, 2, 1, 3, 1, 4, 2),
+    y = c(1.1, 1.1, 1.1, 1.1, 1, 1, 1, 1)
+  )
+
+gg_df <-
+  gg_df %>%
+  mutate(arced = (name == "m" & to == "d"),) %>%
+  arrange(name)
+
+
+g <-
+  ggplot(data = filter(gg_df, !arced), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_dag_node(color = "gray") +
+  geom_dag_text(color = "black",
+                parse = TRUE,
+                label = TeX(c(
+                  "A",
+                  "a^A",
+                  "a^M",
+                  "d",
+                  "D",
+                  "I",
+                  "m",
+                  "M"
+                )),
+                size = 4) +
+  geom_dag_edges() +
+  geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.025) +
+  theme_dag()
+g
+```
+
+
+
+
+
+
+
+
+
 
 *MIDA* captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived or interventions are implemented. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, logistical details of data collection such as the duration of time between a treatment being administered and endline data collection enter into the model if the longer time until data collection affects subject recall of the treatment. However, information in *MIDA* is typically insufficient to assess those substantive elements, an important and separate part of assessing the quality of a research study.
 
