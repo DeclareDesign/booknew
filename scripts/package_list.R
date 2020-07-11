@@ -25,5 +25,11 @@ bookwide_packages <-
     "purrr",
     "tibble",
     "stringr",
-    "forcats"
+    "forcats",
+    # DAGs packages
+    "dagitty",
+    "ggdag",
+    "ggraph",
+    # ggplot pacakges
+    "latex2exp" #for plotting mathematical text
   )
