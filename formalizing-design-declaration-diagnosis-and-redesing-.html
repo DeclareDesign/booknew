@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5.3 Mixing methods | Research Design: Declare, Diagnose, Redesign</title>
+  <title>2.4 Formalizing design declaration, diagnosis, and redesing. | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5.3 Mixing methods | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="2.4 Formalizing design declaration, diagnosis, and redesing. | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5.3 Mixing methods | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="2.4 Formalizing design declaration, diagnosis, and redesing. | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="novelty.html"/>
-<link rel="next" href="specifying-the-model.html"/>
+<link rel="prev" href="redesign.html"/>
+<link rel="next" href="relationship-to-other-ways-of-thinking-about-research-design.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -388,23 +388,74 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="mixing-methods" class="section level2">
-<h2><span class="header-section-number">5.3</span> Mixing methods</h2>
-<p>A common piece of advice for young scholars who are interested in a topic is to mix methods. The thinking goes like this: I have an important question but none of my methods perfectly answers the question. I’ll take a multifaceted approach that gets that many different aspects of the question which I hope to aggregate into a whole.￼￼</p>
-<p>We caution against this approach. Mastering one method is difficult; mastering three is very difficult.￼
-Even when mastery of the methods is not an obstacle, the problem that often occurs is that the three research designs actually address <em>different</em> research questions. That is, not only do the three research designs use different data strategies and answer strategies, they also employ different models and inquiries. As a result, mixed methods work often gives three incomplete answers to three related, but ultimately different, research questions.</p>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you are running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<div id="formalizing-design-declaration-diagnosis-and-redesing." class="section level2">
+<h2><span class="header-section-number">2.4</span> Formalizing design declaration, diagnosis, and redesing.</h2>
+<p>In this section, we set the our approach on firmer mathematical grounds. In doing so, we employ elements from Pearl’s <span class="citation">(<a href="#ref-Pearl2009">2009</a>)</span> approach to causal modeling (directed acycling graphs, or DAGs for short), which provides a syntax for mapping design inputs to design outputs. We also use the potential outcomes framework as presented, for example, in <span class="citation">Imbens and Rubin (<a href="#ref-Imbens2015">2015</a>)</span>, which many social scientists use to clarify their inferential targets. We’ll dive much more deeply into both DAGs and potential outcomes in Part II.</p>
+<div id="formalizing-mida" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> Formalizing MIDA</h3>
+<p>A research design <span class="math inline">\(\Delta\)</span> includes four elements <span class="math inline">\(&lt;M,I,D,A&gt;\)</span>:</p>
+<p>A <strong>model</strong>, <span class="math inline">\(M\)</span>, of how the world works. In general following Pearl’s definition of a probabilistic causal model we will assume that a model contains three core elements. First, a specification of the variables <span class="math inline">\(X\)</span> about which research is being conducted. This includes endogenous and exogenous variables (<span class="math inline">\(V\)</span> and <span class="math inline">\(U\)</span> respectively) and the ranges of these variables. In the formal literature this is sometimes called the <em>signature</em> of a model <span class="citation">(Halpern <a href="#ref-halpern2000">2000</a>)</span>. Second, a specification of how each endogenous variable depends on other variables (the “functional relations” or, as in <span class="citation">Imbens and Rubin (<a href="#ref-Imbens2015">2015</a>)</span>, “potential outcomes”), <span class="math inline">\(F\)</span>. Third, a probability distribution over exogenous variables, <span class="math inline">\(P(U)\)</span>. We write a draw from this distribution as <span class="math inline">\(M() = m\)</span>.</p>
+<p>An <strong>inquiry</strong>, <span class="math inline">\(I\)</span>, about the distribution of variables, <span class="math inline">\(X\)</span>, perhaps given interventions on some variables. Using Pearl’s notation we can distinguish between questions that ask about the conditional values of variables, such as <span class="math inline">\(\Pr(X_1 | X_2 =1)\)</span> and questions that ask about values that would arise under interventions: <span class="math inline">\(\Pr(X_1 | do(X_2 = 1))\)</span>. The distinction lies in whether the conditional probability is recorded through passive observation or active intervention to manipulate the probabilities of the conditioning distribution. For example, <span class="math inline">\(\Pr(X_1 | X_2 =1)\)</span> might indicate the conditional probability that it is raining, given that Jack has his umbrella, whereas <span class="math inline">\(\Pr(X_1 | do(X_2 =1))\)</span> would indicate the probability with which it would rain, given that Jack is made to carry an umbrella. We let <span class="math inline">\(a^M\)</span> denote the answer to <span class="math inline">\(I\)</span> . Conditional on the model, <span class="math inline">\(a^M\)</span> is the value of the estimand, the quantity that the researcher wants to learn about. The connection of <span class="math inline">\(a^M\)</span> to the model can be seen in the following equality: <span class="math inline">\(I(m) = a^M\)</span>.</p>
+<p>A <strong>data</strong> strategy, <span class="math inline">\(D\)</span>, generates data <span class="math inline">\(d\)</span> on <span class="math inline">\(X\)</span>. Data <span class="math inline">\(d\)</span> arises, under model <span class="math inline">\(M\)</span> with probability <span class="math inline">\(P_M(d|D)\)</span>. The data strategy includes sampling strategies and assignment strategies, which we denote with <span class="math inline">\(P_S\)</span> and <span class="math inline">\(P_Z\)</span> respectively. Measurement techniques are also a part of data strategies and can be thought of as a selection of observable variables that carry information about unobservable variables. The data strategy operates on a draw from the model to produce the observed data: <span class="math inline">\(D(m) = d\)</span>.</p>
+<p>An <strong>answer</strong> strategy, <span class="math inline">\(A\)</span>, that generates answer <span class="math inline">\(a^A\)</span> using data <span class="math inline">\(d\)</span>. We encode this relationship as <span class="math inline">\(A(d) = a^A\)</span>.</p>
+<p>The full set of causal relationships between <span class="math inline">\(M\)</span>, <span class="math inline">\(I\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span> with respect to <span class="math inline">\(m\)</span>, <span class="math inline">\(a^M\)</span>, <span class="math inline">\(d\)</span> and <span class="math inline">\(a^A\)</span> can be seen in the DAG schematic representation of a research design.</p>
+<div class="figure"><span id="fig:unnamed-chunk-15"></span>
+<img src="book_files/figure-html/unnamed-chunk-15-1.png" alt="testing" width="672" />
+<p class="caption">
+Figure 2.1: testing
+</p>
 </div>
-<!-- </div> -->
+<p>The tight correspondence between <span class="math inline">\(I(m) = a^M\)</span> and <span class="math inline">\(A(d) = a^A\)</span> points out how a research design is a correspondence between two joint distributions and their summaries. The joint distributions described by <span class="math inline">\(M\)</span> and <span class="math inline">\(D\)</span> are causally related, but they are distinct. <span class="math inline">\(M\)</span> reflects our beliefs about true underlying causal processes at work where <span class="math inline">\(D\)</span> is the procedure that results in the collection or creation of data. (The phrase “data generating process” can be a little confusing – usually people use “true DGP” to refer to <span class="math inline">\(M\)</span>, even though <span class="math inline">\(M\)</span> doesn’t create data, <span class="math inline">\(D\)</span> does). <span class="math inline">\(I\)</span> is a summary of a draw from <span class="math inline">\(M\)</span> (<span class="math inline">\(m\)</span>); <span class="math inline">\(A\)</span> is a summary of a draw from <span class="math inline">\(D\)</span> (<span class="math inline">\(d\)</span>).</p>
+</div>
+<div id="formalizing-diagnosis" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> Formalizing Diagnosis</h3>
+<p>Research designs are stronger when the distributions of <span class="math inline">\(a^M\)</span> and <span class="math inline">\(a^M\)</span> are more similar. To characterize how close the two distributions are, we turn to research design <em>diagnosis</em>. Design diagnosis is the process of simulating both <span class="math inline">\(I(m) = a^M\)</span> and <span class="math inline">\(A(d) = a^M\)</span> over many draws from <span class="math inline">\(M()\)</span> and <span class="math inline">\(D(m)\)</span>, and comparing them.</p>
+<p>A “diagnostic statistic” is (usually) a scalar function <span class="math inline">\(g()\)</span> of both <span class="math inline">\(a^M\)</span> and <span class="math inline">\(a^A\)</span>, though some diagnostic statistics may be a function of just one or the other. [CAN DIAGNOSTIC STATISTICS BE VECTOR VALUED?]</p>
+<p><span class="math display">\[
+\Gamma = g(a^M, a^A)
+\]</span></p>
+<p>Because <span class="math inline">\(a^M\)</span> and <span class="math inline">\(a^A\)</span> are random variables, and any function of random variables is also a random variable, <span class="math inline">\(\Gamma\)</span> is itself a random variable. A diagnosand is a summary of that random variable. Just like we summarise random variables with statistical functionals like the expectation and variance operators, a diagnosand is a statistical functional of the diagnostic statistic random variable <span class="math inline">\(\Gamma\)</span>.</p>
+<p><span class="math display">\[
+\phi = f(\Gamma)
+\]</span></p>
+<p>Since <span class="math inline">\(f()\)</span> is a statistical functional (like <span class="math inline">\(E[]\)</span> or <span class="math inline">\(V[]\)</span>), it is itself <em>not</em> a random variable. It is a description of the distribution of the random variable <span class="math inline">\(\Gamma\)</span>. We’ll use the greek letter <span class="math inline">\(\phi\)</span> to describe the idea of a diagnosand in general.</p>
+<p>Let’s back up a moment to work through a concrete example of a diagnosand. Consider the diagnosand “bias”. Bias is the average difference between the estimand and the estimate. Under a model that has two potential outcomes, a treated potential outcome and an untreated potential outcome, the inquiry might be the ATE. Under a single realization <span class="math inline">\(m\)</span> of the model <span class="math inline">\(M\)</span>, the value of the ATE will be a particular number, which we call <span class="math inline">\(a^M\)</span>. If our data strategy is simply to collect data on those who come to be treated versus those who don’t (i.e., we do not use random assignment), and our answer strategy is difference-in-means, our answer <span class="math inline">\(a^A\)</span> could be systematically different from <span class="math inline">\(a^M\)</span>. The diagnostic statistic is the error <span class="math inline">\(a^A - a^M\)</span>; this error is a random variable because each draw of <span class="math inline">\(m\)</span> from <span class="math inline">\(M\)</span> is slightly different. The expectation of this random variable is <span class="math inline">\(E[a^A - a^M]\)</span>, which is bias.</p>
+<p>Similarly, the common diagnosand power is also an expectation. It is the expectation of the diagnostic statistic <span class="math inline">\(\mathbb{1}p &lt;= 0.05\)</span>, which is an indicator function that equals 1 if the <span class="math inline">\(p\)</span>-value is below 0.05 and 0 otherwise.</p>
+<p>A key feature of this bare specification is that if <span class="math inline">\(M\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span> are sufficiently well described, the answer to question <span class="math inline">\(I\)</span> has a distribution <span class="math inline">\(P_M(a^A|D)\)</span>. Moreover, one can construct a distribution of comparisons of this answer to the correct answer, under <span class="math inline">\(M\)</span>, for example by assessing <span class="math inline">\(P_M(a^M-a^A|D)\)</span>.</p>
+<p>Some diagnosands can be calculated analytically, though most require Monte Carlo computer simulation. A main purpose of the DeclareDesign software package is making the simulation step easier.</p>
+</div>
+<div id="formalizing-redesign" class="section level3">
+<h3><span class="header-section-number">2.4.3</span> Formalizing Redesign</h3>
+<p>Diagnosis the process of learning the value of a diagnosand for a single design. Redesign is the process of <em>changing</em> parts of MIDA in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) design among the feasible set, as measured by the changing values of the diagnosand.</p>
+<p>For example, we can compare how the distribution of errors changes if we use a different data strategy <span class="math inline">\(D&#39;\)</span>: <span class="math inline">\(P_M(a^M-a^A|D&#39;)\)</span> or a different answer strategy <span class="math inline">\(A&#39;\)</span>: <span class="math inline">\(P_M(a^M-a^{A&#39;}|D)\)</span>. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model <span class="math inline">\(M&#39;\)</span>: <span class="math inline">\(P_M(a^{M&#39;}-a^{A}|D)\)</span>.</p>
+<p>In all cases, the full evaluation of a design (declaration, diagnosis, redesign) depends on the assessment of a diagnosand, and comparing the diagnoses to what could be achieved under alternative designs.</p>
+</div>
+<div id="brief-illustration" class="section level3">
+<h3><span class="header-section-number">2.4.4</span> Brief Illustration</h3>
+<p>To illustrate, consider the following design. A model <em>M</em> specifies three variables <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> (all defined on the reals). These form the signature. In additional we assume functional relationships between them that allow for the possibility of confounding (for example, <span class="math inline">\(Y = bX + Z + \epsilon_Y; X = Z+ \epsilon_X\)</span>, with <span class="math inline">\(Z, \epsilon_X, \epsilon_Z\)</span> distributed standard normal). The inquiry <span class="math inline">\(I\)</span> is ``what would be the average effect of a unit increase in <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> in the population?’’ Note that this question depends on the signature of the model, but not the functional equations of the model (the answer provided by the model does of course depend on the functional equations). Consider now a data strategy, <span class="math inline">\(D\)</span>, in which data is gathered on <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> for <span class="math inline">\(n\)</span> randomly selected units. An answer <span class="math inline">\(a^A\)</span>, is then generated using ordinary least squares as the answer strategy, <span class="math inline">\(A\)</span>.</p>
+<p>We have specified all the components of MIDA. We now ask: How strong is this research design? One way to answer this question is with respect to the diagnosand “expected error.” Here the model’s functional equations provide an answer, <span class="math inline">\(a^M\)</span> to the inquiry (for any draw of <span class="math inline">\(\beta\)</span>), and so the distribution of the expected error, <em>given the model</em>, <span class="math inline">\(a^A-a^M\)</span>, can be calculated. In this example the expected performance of the design may be poor, as measured by this diagnosand, because the data and analysis strategy do not handle the confounding described by the model.</p>
+<p>In comparison, better performance may be achieved through an alternative data strategy (e.g., where <span class="math inline">\(D&#39;\)</span> randomly assigned <span class="math inline">\(X\)</span> to <span class="math inline">\(n\)</span> units before recording <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>) or an alternative analysis strategy (e.g., <span class="math inline">\(A&#39;\)</span> conditions on <span class="math inline">\(Z\)</span>). These design evaluations depend on the model, and so one might reasonably ask how performance would look were the model different (for example if the underlying process involved nonlinearities).</p>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-halpern2000">
+<p>Halpern, Joseph Y. 2000. “Axiomatizing Causal Reasoning.” <em>Journal of Artificial Intelligence Research</em> 12: 317–37.</p>
+</div>
+<div id="ref-Imbens2015">
+<p>Imbens, Guido W., and Donald B. Rubin. 2015. <em>Causal Inference in Statistics, Social, and Biomedical Sciences</em>. Cambridge: Cambridge University Press.</p>
+</div>
+<div id="ref-Pearl2009">
+<p>Pearl, Judea. 2009. <em>Causality</em>. Cambridge: Cambridge: Cambridge University Press.</p>
+</div>
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="novelty.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="specifying-the-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="redesign.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="relationship-to-other-ways-of-thinking-about-research-design.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
