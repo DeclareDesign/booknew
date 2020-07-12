@@ -399,27 +399,27 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" title="1">n1 &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb156-2" title="2">n2 &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb156-3" title="3">n3 &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb156-4" title="4">rho &lt;-<span class="st"> </span><span class="fl">.5</span></a>
-<a class="sourceLine" id="cb156-5" title="5">gamma &lt;-<span class="st"> </span>tau &lt;-<span class="st"> </span><span class="fl">.2</span></a>
-<a class="sourceLine" id="cb156-6" title="6"></a>
-<a class="sourceLine" id="cb156-7" title="7">generate_study_sample &lt;-<span class="st"> </span><span class="cf">function</span>(n, rho, tau, gamma, data){</a>
-<a class="sourceLine" id="cb156-8" title="8">  <span class="kw">fabricate</span>(<span class="dt">N =</span> n, <span class="dt">X =</span> <span class="kw">rnorm</span>(N), <span class="dt">M =</span> <span class="kw">rnorm</span>(N, X <span class="op">*</span><span class="st"> </span>rho, <span class="kw">sqrt</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>rho<span class="op">^</span><span class="dv">2</span>)), </a>
-<a class="sourceLine" id="cb156-9" title="9">            <span class="dt">U =</span> <span class="kw">rnorm</span>(N), <span class="dt">Y =</span> tau <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>gamma <span class="op">*</span><span class="st"> </span>M <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U)</a>
-<a class="sourceLine" id="cb156-10" title="10">}</a>
-<a class="sourceLine" id="cb156-11" title="11"></a>
-<a class="sourceLine" id="cb156-12" title="12">three_study_design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb156-13" title="13"><span class="st">  </span><span class="co"># Study 1 -- Bivariate correlation between X and Y</span></a>
-<a class="sourceLine" id="cb156-14" title="14"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">n =</span> n1, <span class="dt">tau =</span> tau, <span class="dt">gamma =</span> gamma, <span class="dt">rho =</span> rho, <span class="dt">handler =</span> generate_study_sample) <span class="op">+</span></a>
-<a class="sourceLine" id="cb156-15" title="15"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>X, <span class="dt">term =</span> <span class="st">&quot;X&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Study 1&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb156-16" title="16"><span class="st">  </span><span class="co"># Study 2 -- Bivariate correlation between M and X</span></a>
-<a class="sourceLine" id="cb156-17" title="17"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">n =</span> n2, <span class="dt">tau =</span> tau, <span class="dt">gamma =</span> gamma, <span class="dt">rho =</span> rho, <span class="dt">handler =</span> generate_study_sample) <span class="op">+</span></a>
-<a class="sourceLine" id="cb156-18" title="18"><span class="st">  </span><span class="kw">declare_estimator</span>(M <span class="op">~</span><span class="st"> </span>X, <span class="dt">term =</span> <span class="st">&quot;X&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Study 2&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb156-19" title="19"><span class="st">  </span><span class="co"># Study 3 -- Interaction in X and M </span></a>
-<a class="sourceLine" id="cb156-20" title="20"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">n =</span> n3, <span class="dt">tau =</span> tau, <span class="dt">gamma =</span> gamma, <span class="dt">rho =</span> rho, <span class="dt">handler =</span> generate_study_sample) <span class="op">+</span></a>
-<a class="sourceLine" id="cb156-21" title="21"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>M <span class="op">+</span><span class="st"> </span>X<span class="op">:</span>M, <span class="dt">term =</span> <span class="st">&quot;X:M&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Study 3&quot;</span>) </a></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb154-1" title="1">n1 &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb154-2" title="2">n2 &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb154-3" title="3">n3 &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb154-4" title="4">rho &lt;-<span class="st"> </span><span class="fl">.5</span></a>
+<a class="sourceLine" id="cb154-5" title="5">gamma &lt;-<span class="st"> </span>tau &lt;-<span class="st"> </span><span class="fl">.2</span></a>
+<a class="sourceLine" id="cb154-6" title="6"></a>
+<a class="sourceLine" id="cb154-7" title="7">generate_study_sample &lt;-<span class="st"> </span><span class="cf">function</span>(n, rho, tau, gamma, data){</a>
+<a class="sourceLine" id="cb154-8" title="8">  <span class="kw">fabricate</span>(<span class="dt">N =</span> n, <span class="dt">X =</span> <span class="kw">rnorm</span>(N), <span class="dt">M =</span> <span class="kw">rnorm</span>(N, X <span class="op">*</span><span class="st"> </span>rho, <span class="kw">sqrt</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>rho<span class="op">^</span><span class="dv">2</span>)), </a>
+<a class="sourceLine" id="cb154-9" title="9">            <span class="dt">U =</span> <span class="kw">rnorm</span>(N), <span class="dt">Y =</span> tau <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>gamma <span class="op">*</span><span class="st"> </span>M <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U)</a>
+<a class="sourceLine" id="cb154-10" title="10">}</a>
+<a class="sourceLine" id="cb154-11" title="11"></a>
+<a class="sourceLine" id="cb154-12" title="12">three_study_design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb154-13" title="13"><span class="st">  </span><span class="co"># Study 1 -- Bivariate correlation between X and Y</span></a>
+<a class="sourceLine" id="cb154-14" title="14"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">n =</span> n1, <span class="dt">tau =</span> tau, <span class="dt">gamma =</span> gamma, <span class="dt">rho =</span> rho, <span class="dt">handler =</span> generate_study_sample) <span class="op">+</span></a>
+<a class="sourceLine" id="cb154-15" title="15"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>X, <span class="dt">term =</span> <span class="st">&quot;X&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Study 1&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb154-16" title="16"><span class="st">  </span><span class="co"># Study 2 -- Bivariate correlation between M and X</span></a>
+<a class="sourceLine" id="cb154-17" title="17"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">n =</span> n2, <span class="dt">tau =</span> tau, <span class="dt">gamma =</span> gamma, <span class="dt">rho =</span> rho, <span class="dt">handler =</span> generate_study_sample) <span class="op">+</span></a>
+<a class="sourceLine" id="cb154-18" title="18"><span class="st">  </span><span class="kw">declare_estimator</span>(M <span class="op">~</span><span class="st"> </span>X, <span class="dt">term =</span> <span class="st">&quot;X&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Study 2&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb154-19" title="19"><span class="st">  </span><span class="co"># Study 3 -- Interaction in X and M </span></a>
+<a class="sourceLine" id="cb154-20" title="20"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">n =</span> n3, <span class="dt">tau =</span> tau, <span class="dt">gamma =</span> gamma, <span class="dt">rho =</span> rho, <span class="dt">handler =</span> generate_study_sample) <span class="op">+</span></a>
+<a class="sourceLine" id="cb154-21" title="21"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>M <span class="op">+</span><span class="st"> </span>X<span class="op">:</span>M, <span class="dt">term =</span> <span class="st">&quot;X:M&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;Study 3&quot;</span>) </a></code></pre></div>
 </div>
 <div id="takeaways-4" class="section level3">
 <h3><span class="header-section-number">18.1.2</span> Takeaways</h3>
@@ -428,11 +428,11 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb157-1" title="1"><span class="co"># Simulate design</span></a>
-<a class="sourceLine" id="cb157-2" title="2">simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(three_study_design)</a>
-<a class="sourceLine" id="cb157-3" title="3"><span class="co"># Simulate null design</span></a>
-<a class="sourceLine" id="cb157-4" title="4">null_three_study_design &lt;-<span class="st"> </span><span class="kw">redesign</span>(three_study_design, <span class="dt">tau =</span> <span class="dv">0</span>, <span class="dt">gamma =</span> <span class="dv">0</span>, <span class="dt">rho =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb157-5" title="5">null_simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(null_three_study_design)</a></code></pre></div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb155-1" title="1"><span class="co"># Simulate design</span></a>
+<a class="sourceLine" id="cb155-2" title="2">simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(three_study_design)</a>
+<a class="sourceLine" id="cb155-3" title="3"><span class="co"># Simulate null design</span></a>
+<a class="sourceLine" id="cb155-4" title="4">null_three_study_design &lt;-<span class="st"> </span><span class="kw">redesign</span>(three_study_design, <span class="dt">tau =</span> <span class="dv">0</span>, <span class="dt">gamma =</span> <span class="dv">0</span>, <span class="dt">rho =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb155-5" title="5">null_simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(null_three_study_design)</a></code></pre></div>
 <p>In the first three rows of the table, the theory is correct in that <code>tau</code>,<br />
 <code>gamma</code>, and <code>rho</code> are positive, in the second three rows it is incorrect because
 both the main effect and interaction are zero. The “power” column tells us the

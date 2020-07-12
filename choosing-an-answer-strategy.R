@@ -20,9 +20,9 @@ simple_design <- population + potential_outcomes + estimand +
   sampling + assignment + reveal_outcomes + estimator
 simple_design_data <- draw_data(simple_design)
 
-declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")
+## declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")
 
-declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")(simple_design_data) %>% kable
+declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")(simple_design_data) %>% kable(digits = 3)
 
 report_lower_p_value <- function(data){
   fit_nocov <- lm_robust(Y ~ Z, data)
