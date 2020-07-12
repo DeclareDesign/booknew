@@ -20,9 +20,6 @@ simple_design <- population + potential_outcomes + estimand +
   sampling + assignment + reveal_outcomes + estimator
 simple_design_data <- draw_data(simple_design)
 
-estimates_df <- difference_in_means(Y ~ Z, data = simple_design_data)
-kable(tidy(estimates_df))
-
 report_if_significant <- function(data){
   fit_nocov <- lm_robust(Y ~ Z, data)
   fit_cov <- lm_robust(Y ~ Z + X, data)
