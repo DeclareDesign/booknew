@@ -1,6 +1,9 @@
 ---
 title: "Choosing an answer strategy"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
 bibliography: ../bib/book.bib 
 ---
 
@@ -45,26 +48,12 @@ simple_design <- population + potential_outcomes + estimand +
 simple_design_data <- draw_data(simple_design)
 ```
 
-## Example
 
-## In DeclareDesign
+After implementing a data strategy, with data in hand you need to have a procedure to develop an answer or a decision from it. The result of an answer strategy is a quantitative or qualitative estimate that provides an answer to one of the inquiries in your design. An answer strategy is, conceptually, a function that produces that an estimate. A simple answer strategy is a difference-in-means between the outcomes in a treatment group and the outcomes in a control group, which we select as an estimator of the true average treatment effect, the mean difference in potential outcomes under treatment and potential outcomes under control. 
 
-### estimate-estimand pairs 
+We also commonly produce measures of uncertainty in our estimates and also statistics related to hypothesis testing. These are also part of the answer strategy: we want to know our best guess answer to the inquiry, and also how certain we are in our answer. Regression software commonly returns an estimate, estimated standard error, test statistic, p-value, and confidence interval.
 
-- once you have the data, you need to have a procedure to develop an answer or a decision from it. it should be quantitative or qualitative. 
-
-- you will connect an estimator to an estimand, and the estimator designed to produces estimates of the estimand. distinguish estimate/estimator, using the notation from the paper (am Am etc.).
-
-- a function to produce an estimate and measure(s) of uncertainty of the estimate.
-
-- may be as simple as a mean or difference-in-means, as in our simple design:
-
-```{r}
-estimates_df <- difference_in_means(Y ~ Z, data = simple_design_data)
-kable(tidy(estimates_df))
-```
-
-- in this case, there is a single statistic (the average difference between outcomes in treated and controlled) that represents the *estimate*. this is our guess of the estimand, the average treatment effect. 
+Yet there are also a set of procedures we use to return an answer to our inquiry that fall outside of this common set of estimation procedures. The answer to our inquiry is found in a set of procedures to select a final estimators, the ways we report on and interpret the estimates visually and in writing, and the ancillary analyses we conduct to build confidence in the main estimates (i.e., robustness checks). When the data strategy does not go according to plan, and for example participants do not comply with assigned treatments or respond to survey questions, the set of alternative analyses to adjust for these problems are also part of the answer strategy. If the analysis strategy depends on how the data turn out, we need to assess the if-then analysis procedure under different possible realizations of the data to know if the procedure is a good one.
 
 ### measures of uncertainty 
 
@@ -374,13 +363,14 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
 
 - *procedures for addressing deviations from expected analyses* are part of the answer strategy. whether a study has a PAP or not, we often have a way we expect to analyze the data if things go well. when they do not -- because data are missing, there is noncompliance to an intervention, or the study is suspended for example -- the answers will change. these procedures determine the answer the study provides (or in some cases does not), so are part of the answer strategy. *standard operating procedures* (lin and green) are documents that systematize these procedures in advange.
 
-- point is about what you do not the model aspects of this
-
 - properties of imputation procedure
 
 - standard operating procedures
 
-### How to select an answer strategy
+## Example
+
+
+## In DeclareDesign
 
 - introduce classes of estimators: qual/quant, frequentist/bayesian, design based and model based (logit probit etc.)
 
