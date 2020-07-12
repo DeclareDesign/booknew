@@ -6,8 +6,135 @@ packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+library(dagitty)
+library(ggdag)
+library(ggraph)
 
-population <- declare_population(N = 8, e = runif(N), X = rnorm(N, e, 1)) 
+a_blue <- "#0072B2"
+a_gray <- "grey80"
+
+dag <-
+  dagify(Y ~ X + Z + U,
+         X ~ U,
+         latent = "U")
+
+gg_df <-
+  tidy_dagitty(dag,
+               layout = "manual",
+               x = c(1, 0, -1, 1),
+               y = c(1, 1, 0, 0))
+
+gg_df <-
+  gg_df %>%
+  mutate(
+    color = case_when(
+      name == "U" ~ a_gray,
+      name == "X" ~ a_blue,
+      name == "Y" ~ a_blue,
+      name == "Z" ~ a_blue
+    )
+  )
+
+
+g <- 
+ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_node(aes(color = color)) +
+  scale_color_identity() +
+  geom_dag_text(color = "black", family = "Helvetica") +
+  geom_dag_edges() +
+  theme_dag()
+
+g
+
+diff_in_cates <- 0.5
+design <-
+  declare_population(N = 100,
+                     U = rnorm(N),
+                     X = rbinom(N, 1, prob = pnorm(0.5 * U + rnorm(N)))) +
+  declare_potential_outcomes(Y ~ 0.5 * X + 0.5 * Z + diff_in_cates * X * Z + 0.5 * U) +
+  declare_estimands(
+    ATE = mean(Y_Z_1 - Y_Z_0),
+    CATE_1 = mean(Y_Z_1[X == 1] - Y_Z_0[X == 1]),
+    CATE_0 = mean(Y_Z_1[X == 0] - Y_Z_0[X == 0]),
+    DiC = mean(Y_Z_1[X == 1] - Y_Z_0[X == 1]) - mean(Y_Z_1[X == 0] - Y_Z_0[X == 0])
+  )
+
+design %>% draw_estimands %>% kable
+
+tau <- 0.15
+cutoff <- 0.5
+bandwidth <- 0.5
+
+polynom_func <- function(x, coefs){ 
+  as.vector(poly(x, length(coefs), raw = T) %*% coefs)
+}
+
+cholera_design <- 
+  declare_population(
+    houses = add_level(
+      N = 1722,
+      pump_border_distance = runif(N, 0, 1) - cutoff, 
+      bsp = if_else(pump_border_distance > 0, 1, 0),
+      noise = rnorm(N, mean = 0, sd = 0.1)
+    )
+  ) +
+  
+  declare_potential_outcomes(
+    ln_prices_1864_bsp_0 = polynom_func(pump_border_distance, coefs = c(0.5, 0.5)) + noise, 
+    ln_prices_1864_bsp_1 = polynom_func(pump_border_distance, coefs = c(-5, 1)) + tau + noise
+  ) + 
+  
+  declare_estimand(
+    LATE_bsp = (polynom_func(0, coefs = c(-5, 1)) + tau) - polynom_func(0, coefs = c(0.5, 0.5))) + 
+  
+  declare_reveal(ln_prices_1864, bsp) + 
+  
+  declare_estimator(
+    ln_prices_1864 ~ stats::poly(pump_border_distance, degree = 4) * bsp, 
+    subset = (pump_border_distance > 0 - abs(bandwidth)) & pump_border_distance < 0 + abs(bandwidth),
+    model = lm_robust, 
+    term = "bsp", estimand = "LATE_bsp")
+  
+diagnose_design(cholera_design, sims = 500)
+
+pro_con_colors <- c("#C67800", "#205C8A")
+mock_data <- draw_data(cholera_design)
+pump_border_distance <- seq(-.5,.5,.005)
+treatment_frame <- data.frame(
+  pump_border_distance = pump_border_distance,
+  ln_prices_1864 = polynom_func(pump_border_distance, coefs = c(-5, 1)),
+  observed = if_else(pump_border_distance > 0, "a", "b"),
+  bsp = 1
+  )
+control_frame <- data.frame(
+  pump_border_distance = pump_border_distance,
+  ln_prices_1864 = polynom_func(pump_border_distance, coefs = c(0.5, 0.5)),
+  observed = if_else(pump_border_distance <= 0, "a", "b"),
+  bsp = 0
+  )
+plot_frame <- bind_rows(treatment_frame, control_frame)
+
+ggplot(plot_frame, aes(x = pump_border_distance, y = ln_prices_1864, color = as.factor(bsp))) +
+  geom_line(aes(linetype = observed)) +
+  geom_point(data = mock_data, alpha = .2, size = .5) +
+  scale_linetype_discrete(name = "", labels = c("Observable", "Unobservable")) +
+  scale_color_manual(
+    name = "",
+    labels = c("Untreated", "Treated"),
+    values = pro_con_colors
+  ) +
+  geom_vline(xintercept = 0, size = .05) +
+  ylab("Ln House Prices (1864)") + 
+  xlab("Distance from Broad Street Pump Coverage Boundary") +
+  geom_segment(aes(
+    x = 0,
+    xend = 0,
+    y = polynom_func(0, coefs = c(0.5, 0.5)),
+    yend = polynom_func(0, coefs = c(-5, 1))
+  ), color = "black") +
+  dd_theme()
+
+population <- declare_population(N = 8, e = runif(N), X = rnorm(N, mean = e, sd = 1)) 
 
 population()
 
@@ -34,74 +161,3 @@ potential_outcomes <- declare_potential_outcomes(
   X_Z_1 = .5 < e * 1.25,
   Y_X_0 = .5 < e,
   Y_X_1 = .5 < e + .05)
-
-## hawthorne_POs <- declare_potential_outcomes(
-##   Y_Z_1_M_0 = .5 < e,
-##   Y_Z_2_M_0 = .5 < e + .05,
-##   Y_Z_3_M_0 = .5 < e + .05,
-##   Y_Z_1_M_1 = .5 < e + .05,
-##   Y_Z_2_M_1 = .5 < e + .05 + .05,
-##   Y_Z_3_M_1 = .5 < e + .05 + .05)
-
-## assignment <- declare_assignment(conditions = c(1,2,3))
-## estimand_no_m <- declare_estimand(ate_2_no_m = mean(Y_Z_2_M_0 - Y_Z_1_M_0))
-## measurement <- declare_step(M = 1, handler = fabricate)
-## reveal_outcomes_measurement <- declare_reveal(Y, c(Z, M))
-## hawthorne_design <- population + hawthorne_POs + estimand_no_m +
-##   sampling + assignment + measurement + reveal_outcomes_measurement + estimator
-
-## experimenter_demand_POs <- declare_potential_outcomes(
-##   Y_Z_1_M_0 = .5 < e,
-##   Y_Z_2_M_0 = .5 < e + .05,
-##   Y_Z_3_M_0 = .5 < e + .05,
-##   Y_Z_1_M_1 = .5 < e,
-##   Y_Z_2_M_1 = .5 < e + .05 + .05,
-##   Y_Z_3_M_1 = .5 < e + .05 + .10)
-## demand_design <- replace_step(design = hawthorne_design,
-##                               step = "hawthorne_POs",
-##                               new_step = experimenter_demand_POs)
-
-interference_design  <- 
-  declare_population(N = 3, e = runif(N)) +
-  declare_potential_outcomes(
-    Y_J_1 = c(.5 < e[1] + 1, .5 < e[2] - 1, .5 < e[3]),
-    Y_J_2 = c(.5 < e[1] - 1, .5 < e[2] + 1, .5 < e[3]),
-    Y_J_3 = c(.5 < e[1], .5 < e[2], .5 < e[3] + 1)) +
-  declare_assignment(conditions = c("1","2","3"), assignment_variable = "J") +
-  declare_step(Z = as.numeric(ID == J), handler = fabricate) +
-  declare_reveal(Y, J) +
-  declare_estimator(Y ~ Z, model = lm_robust)
-
-## spillover_POs <- declare_potential_outcomes(
-##   Y_Z_0_S_0 = .5 < e,
-##   Y_Z_1_S_0 = .5 < e + .05,
-##   Y_Z_0_S_1 = .5 < e - .05 / 2,
-##   Y_Z_1_S_1 = .5 < e + .05 / 2)
-## neighbors <- declare_step(next_neighbor = c(N,(1:(N-1))),
-##                           S = Z[next_neighbor],
-##                           handler = fabricate)
-## reveal_spillovers <- declare_reveal(Y, c(Z, S))
-## spillover_design <- population + spillover_POs +
-##   sampling + assignment + neighbors + reveal_spillovers + estimator
-
-## compliance_POs <- declare_potential_outcomes(
-##   D_Z_0 = 0,
-##   D_Z_1 = ifelse(order(e) > 4, 1, 0),
-##   Y_D_0 = .5 < e,
-##   Y_D_1 = .5 < e + .05)
-## ate_estimand <- declare_estimand(ate = mean(Y_D_1 - Y_D_0))
-## cace_estimand <- declare_estimand(cace = mean(Y_D_1 - Y_D_0),
-##                                   subset = D_Z_0 == 0 & D_Z_1 == 1)
-
-## attrition_POs <- declare_potential_outcomes(
-##   R_Z_0 = ifelse(order(e) <= 4, 1, 0),
-##   R_Z_1 = 1,
-##   Y_R_0_Z_0 = NA,
-##   Y_R_0_Z_1 = NA,
-##   Y_R_1_Z_0 = .5 < e,
-##   Y_R_1_Z_1 = .5 < e + .05)
-
-population <- declare_population(N = 8, e = rnorm(N, 0, 1))
-model_1 <- population + declare_potential_outcomes(Y ~ e)
-model_2 <- population + declare_potential_outcomes(Y ~ e + e * 2 * Z)
-model_3 <- population + declare_potential_outcomes(Y ~ ifelse(e > .5, Z * .2, -Z * .2))
