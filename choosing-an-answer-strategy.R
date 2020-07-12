@@ -8,9 +8,9 @@ lapply(packages, require, character.only = T)
 tau <- .10
 N <- 8
 N_sampled <- 4
-population <- declare_population(N = N, e = runif(N)) 
+population <- declare_population(N = N, e = runif(N), covariate = rnorm(N)) 
 potential_outcomes <- declare_potential_outcomes(
-  Y_Z_0 = .5 < e, Y_Z_1 = .5 < e + tau)
+  Y_Z_0 = covariate + .5 < e, Y_Z_1 = covariate + .5 < e + tau)
 estimand <- declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0))
 sampling <- declare_sampling(n = N_sampled)
 assignment <- declare_assignment(prob = .5)
@@ -20,7 +20,11 @@ simple_design <- population + potential_outcomes + estimand +
   sampling + assignment + reveal_outcomes + estimator
 simple_design_data <- draw_data(simple_design)
 
-report_if_significant <- function(data){
+declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")
+
+declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")(simple_design_data) %>% kable
+
+report_lower_p_value <- function(data){
   fit_nocov <- lm_robust(Y ~ Z, data)
   fit_cov <- lm_robust(Y ~ Z + X, data)
   
@@ -44,41 +48,13 @@ design <-
   declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") + 
   declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") + 
   declare_estimator(
-    handler = label_estimator(report_if_significant),
+    handler = label_estimator(report_lower_p_value),
     label = "select-lower-p-value",
     estimand = "ATE") 
 
-dg <- diagnose_design(design, sims = sims)
+diags <- diagnose_design(design, sims = sims)
 
-conditional_on_placebo_test <- function(data) {
-  placebo_test <- lm_robust(Y_placebo ~ Z, data) %>% tidy %>% filter(term == "Z")
-  estimate <- lm_robust(Y ~ Z, data) %>% tidy %>% filter(term == "Z")
-  if(placebo_test$p.value <= 0.05) {
-    tibble(estimate = NA, reject = TRUE, term = "Z")
-  } else {
-    estimate %>% mutate(reject = FALSE)
-  }
-}
-
-library(sn)
-
-placebo_design <- 
-  declare_population(N = 100, u = rsn(n = N, xi = 0, omega = 1, alpha = 10)) +
-  declare_potential_outcomes(Y ~ 0.25 * Z + u) + 
-  declare_potential_outcomes(Y_placebo = 0.1 + 1.2 * u) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_assignment(prob = 0.5) + 
-  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "unconditional") + 
-  declare_estimator(handler = label_estimator(conditional_on_placebo_test), 
-                    estimand = "ATE", label = "conditional")
-
-simulations_df <- simulate_design(placebo_design, sims = sims)
-
-# diag <- diagnose_design(placebo_design, sims = sims)
-
-simulations_df %>% 
-  group_by(estimator_label) %>% 
-  summarize(bias = mean(estimate - estimand, na.rm = TRUE))
+kable(get_diagnosands(diags))
 
 bivariate_correlation_decision <- function(data) {
   fit <- lm_robust(y2 ~ y1, data) %>% tidy %>% filter(term == "y1")
