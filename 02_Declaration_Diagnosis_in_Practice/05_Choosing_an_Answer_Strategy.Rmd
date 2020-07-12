@@ -70,14 +70,14 @@ In addition to an estimate and measure of uncertainty in it, we often need to co
 
 We declare an answer strategy with an estimator for the average treatment effect and its standard error and a method for constructing confidence intervals and a null hypothesis as follows, using linear regressions:
 
-```{r}
+```{r, eval = FALSE}
 declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")
 ```
 
-This declaration asserts a choice about the model (linear regression using the built-in `lm` function), the functional form (linear terms for the treatment variable and a covariate), selects the coefficient of interest that forms our estimate (`Z`), and links that estimate to an estimate ("ATE"). 
+This declaration asserts a choice about the model (linear regression using the built-in `lm` function), the functional form (linear terms for the treatment variable and a covariate), selects the coefficient of interest that forms our estimate (`Z`), and links that estimate to an estimate ("ATE"). The result is:
 
-```{r}
-declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")(simple_design_data) %>% kable
+```{r, echo = FALSE}
+declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")(simple_design_data) %>% kable(digits = 3)
 ```
 
 **Multiple estimates.** Answer strategies can account how many statistical tests you are conducting. Often, when generating an answer to a single inquiry, we may construct multiple estimates that provide different types of answers of varying quality. When you present the results from many null hypothesis tests, the rate of falsely rejecting at least one of those tests even when all are true goes up, due to the multiple comparisons problem. If you plan to adjust for this problem, those adjustments are part of your answer strategy, because they will typically adjust the p-values you report and the decisions readers make with them. We may have three survey items that imperfectly estimate a latent quantity. In presenting the results, we could present three estimates from three regressions, we could adjust the three estimates using a procedure such as a family-wise error rate correction, or we could average the three items together into an index and present one estimate from one regression. Which of these three methods we select will change the properties of our answer strategy. 
@@ -349,6 +349,8 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
 -->
 
 ## Connections to MIDA
+
+The answer strategy provides an answer to the inquiry about the model using data that result from the data strategy. But as we have seen, the choice of answer strategy is also intimately connected to our causal model of the world, to the inquiry about the model, and to our chosen data strategy. Our model helps guide our choices about what variables to control for --- and which controls would lead to bias. Our inquiry can shape our choices about which subsets of the data to analyze and how to weight them. And our data strategy can shape the estimators and standard errors we use in our answer strategy depending on how we stratified samples and treatment assignments.
 
 ## How you already choose answer strategies in current practice
 
