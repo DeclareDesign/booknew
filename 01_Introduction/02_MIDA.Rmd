@@ -58,12 +58,24 @@ Declaring a design entails separating out which parts of your idea belong in $M$
 
 <!-- MIDA captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived, how interventions are implemented, or even, qualitatively, how outcomes are measured. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, if treatment effects decay, logistical details of data collection (such as the duration of time between a treatment being administered and endline data collection) may enter into the model. Similarly, if a researcher anticipates noncompliance, substantive knowledge of how treatments are taken up can be included in many parts of the design. -->
 
-<!--  -->
 
 ### Example: @Gulzar2020
 
 In an experiment in two districts in Pakistan, @Gulzar2020 study how to motivate citizens to run for political office for the first time. Thus, their set of units is all citizens in Haripur and Abbottabad, about whom they consider baseline policy preferences, in order to characterize how different the policy preferences of citizens are from those eventually elected. Their endogenous outcomes of interest are whether the citizen filed papers to run for office; was elected; and the Euclidean distance from average citizen preferences. The outcomes are a function in their causal model of three treatments, which emphasize either the social or personal benefits to holding public office or do not encourage anyone to run for office at all. Their model would include an expected treatment effect magnitude for each treatment and their suppositions about how correlated outcomes are within villages that they study. 
 
+```{r}
+gulzar_khan_design <- 
+  declare_population(
+    villages = add_level(),
+    citizens = add_level()
+  ) +
+  
+  declare_potential_outcomes(
+    
+  ) + 
+  
+  declare_estimand()
+```
 The inquiry is the average difference in the rate of filing papers to run for office between people living in villages randomly assigned to receive an encouragement to vote focused on prosocial motivations for officeholding compared to those to whom personal benefits were emphasized.
 
 The data strategy in @Gulzar2020 entailed three steps: (1) randomly sampling 192 villages from among all villages in Haripur and Abbottabad districts, and using a random walk procedure to select 48 citizens in each village to participate in the experiment; (2) randomly-assigning each village with equal probability to one of three conditions (neutral, social benefits, or personal benefits); and (3) collecting administrative data on who filed papers to run and matching that back to pretreatment survey data on the 9,216 citizens. Sampling, treatment assignment, and measurement are the three common data strategy steps in an experiment; some experiments, instead, do not include a sampling step and instead assign treatments within a convenience sample. 
@@ -248,18 +260,6 @@ Third, emphasis on the statistical properties of a design can obscure the substa
 Finally, we see a risk that the variation in the suitability of design declaration to different research strategies may be taken as evidence of the relative superiority of different types of research strategies. While we believe that the range of strategies that can be declared and diagnosed is wider than what one might at first think possible, there is no reason to believe that all strong designs can be declared either ex ante or ex post. An advantage of our framework, we hope, is that it can help clarify when a strategy can or cannot be completely declared. When a design cannot be declared, nondeclarability is all the framework provides, and in such cases we urge caution in drawing conclusions about design quality.
 
 *MIDA* captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived or interventions are implemented. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, logistical details of data collection such as the duration of time between a treatment being administered and endline data collection enter into the model if the longer time until data collection affects subject recall of the treatment. However, information in *MIDA* is typically insufficient to assess those substantive elements, an important and separate part of assessing the quality of a research study.
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

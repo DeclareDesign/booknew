@@ -1,6 +1,9 @@
 ---
 title: "Specifying the model"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you are running just this .Rmd or compiling the book-->
@@ -49,6 +52,8 @@ Implicit in the very definition of the average treatment effect here, however, i
 In practice, we never get to know whether our $M$odel is right. For example, we can never really know how many potential outcomes there are. So we also cannot know if we got the right answer. What we can do, however, is study our procedure for generating answers under $M$odels of the world that we find plausible. That way, we do get to know which answers we should and should not trust, given the assumptions we are willing to make about the world.
 
 ## Two languages for describing causal models
+
+[ better initial introduction to DAGs; DAG and PO intro for first timers ]
 
 We make use of two different formal languages for describing causal models: DAGs and potential outcomes. DAGs are "directed acyclic graphs," where each node on a graph is a variable and the edges that connect them represent causal effects. DAGs emphasize a mechanical notion of causality: when the exposure variable changes, the outcome variable changes as a result. By contrast, the potential outcomes formalization emphasizes a counterfactual notion of causality. $Y_i(0)$ is the outcome for unit $i$ when the exposure variable is set to zero and $Y_i(1)$ is the outcome when it is set to one. The difference between them is the effect of the treatment on the outcome for unit $i$. Since at most only one potential outcome can ever be revealed, at least one of the two potential outcomes is necessarily counterfactual. Unrevealed potential outcomes are counter-to-facts; they do not exist. Nevertheless, the potential outcomes model is useful for thinking about what would have happened had things been different.
 
@@ -170,6 +175,82 @@ DAGs and potential outcomes are two languages for expressing beliefs about causa
 ## Example section
 
 JOHN SNOWWWWWW
+```{r cholera-declaration}
+tau <- 0.15
+cutoff <- 0.5
+bandwidth <- 0.5
+
+polynom_func <- function(x, coefs){ 
+  as.vector(poly(x, length(coefs), raw = T) %*% coefs)
+}
+
+cholera_design <- 
+  declare_population(
+    houses = add_level(
+      N = 1722,
+      pump_border_distance = runif(N, 0, 1) - cutoff, 
+      bsp = if_else(pump_border_distance > 0, 1, 0),
+      noise = rnorm(N, mean = 0, sd = 0.1)
+    )
+  ) +
+  
+  declare_potential_outcomes(
+    ln_prices_1864_bsp_0 = polynom_func(pump_border_distance, coefs = c(0.5, 0.5)) + noise, 
+    ln_prices_1864_bsp_1 = polynom_func(pump_border_distance, coefs = c(-5, 1)) + tau + noise
+  ) + 
+  
+  declare_estimand(
+    LATE_bsp = (polynom_func(0, coefs = c(-5, 1)) + tau) - polynom_func(0, coefs = c(0.5, 0.5))) + 
+  
+  declare_reveal(ln_prices_1864, bsp) + 
+  
+  declare_estimator(
+    ln_prices_1864 ~ stats::poly(pump_border_distance, degree = 4) * bsp, 
+    subset = (pump_border_distance > 0 - abs(bandwidth)) & pump_border_distance < 0 + abs(bandwidth),
+    model = lm_robust, 
+    term = "bsp", estimand = "LATE_bsp")
+  
+diagnose_design(cholera_design, sims = 500)
+```
+
+```{r, fig.width = 4, fig.height = 3}
+pro_con_colors <- c("#C67800", "#205C8A")
+mock_data <- draw_data(cholera_design)
+pump_border_distance <- seq(-.5,.5,.005)
+treatment_frame <- data.frame(
+  pump_border_distance = pump_border_distance,
+  ln_prices_1864 = polynom_func(pump_border_distance, coefs = c(-5, 1)),
+  observed = if_else(pump_border_distance > 0, "a", "b"),
+  bsp = 1
+  )
+control_frame <- data.frame(
+  pump_border_distance = pump_border_distance,
+  ln_prices_1864 = polynom_func(pump_border_distance, coefs = c(0.5, 0.5)),
+  observed = if_else(pump_border_distance <= 0, "a", "b"),
+  bsp = 0
+  )
+plot_frame <- bind_rows(treatment_frame, control_frame)
+
+ggplot(plot_frame, aes(x = pump_border_distance, y = ln_prices_1864, color = as.factor(bsp))) +
+  geom_line(aes(linetype = observed)) +
+  geom_point(data = mock_data, alpha = .2, size = .5) +
+  scale_linetype_discrete(name = "", labels = c("Observable", "Unobservable")) +
+  scale_color_manual(
+    name = "",
+    labels = c("Untreated", "Treated"),
+    values = pro_con_colors
+  ) +
+  geom_vline(xintercept = 0, size = .05) +
+  ylab("Ln House Prices (1864)") + 
+  xlab("Distance from Broad Street Pump Coverage Boundary") +
+  geom_segment(aes(
+    x = 0,
+    xend = 0,
+    y = polynom_func(0, coefs = c(0.5, 0.5)),
+    yend = polynom_func(0, coefs = c(-5, 1))
+  ), color = "black") +
+  dd_theme()
+```
 
 
 ## Connections to MIDA
