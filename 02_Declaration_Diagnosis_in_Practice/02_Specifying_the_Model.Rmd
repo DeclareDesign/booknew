@@ -174,6 +174,58 @@ DAGs and potential outcomes are two languages for expressing beliefs about causa
 
 ## Example section
 
+JOHN SNOWWWWWW
+```{r, echo=FALSE}
+dag <-
+  dagify(Yt2 ~ Yt1 + U,
+         Yt1 ~ D + C + Yt0 + U,
+         Yt0 ~ U,
+         Z ~ U,
+         C ~ Z + U,
+         D ~ C + U)
+
+tidy_dagitty(dag) %>% as_tibble %>% pull(name) %>% unique
+
+gg_df <-
+  tidy_dagitty(
+    dag,
+    layout = "manual",
+    x = c(3, 4, 3, 1, 5, 2, 6),
+    y = c(1, 1, 2, 0, 0, 1, 0)
+  )
+
+gg_df <-
+  gg_df %>%
+  mutate(arced_left = (name == "U" & to == "Yt0"),
+         arced_right = (name == "U" & to %in% c("Yt1", "Yt2")),
+         dashed = (name == "U" & to == "Z")) %>%
+  arrange(name)
+
+
+g <-
+  ggplot(data = filter(gg_df, !(arced_left | arced_right)), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_dag_node(color = "gray") +
+  geom_dag_text(color = "black",
+                parse = TRUE,
+                label = TeX(c("C", "D", "U", "Y_{t=0}", "Y_{t=1}", "Y_{t=2}", "Z")),
+                size = 4) +
+  geom_dag_edges(aes(edge_linetype = dashed)) +
+  geom_dag_edges_arc(data = filter(gg_df, arced_left), curvature = -.5) +
+  geom_dag_edges_arc(data = filter(gg_df, arced_right), curvature = +.3) +
+  theme_dag() +
+  theme(legend.position = "none")
+g
+
+```
+
+
+
+
 ```{r cholera-declaration}
 tau <- 0.15
 cutoff <- 0.5
@@ -254,6 +306,9 @@ ggplot(plot_frame, aes(x = pump_border_distance, y = ln_prices_1864, color = as.
 
 ## Connections to MIDA
 
+- attrition is a PO, noncompliance is a po. these depend on D and A?
+
+
 
 ## Specifying a model in DeclareDesign
 
@@ -313,7 +368,7 @@ potential_outcomes <- declare_potential_outcomes(Y ~ .5 < e + .05 * Z)
 
 By default, `declare_potential_outcomes()` assumes that the functional equation for `Y` will include a binary `Z` that it can split on to create `Y_Z_0` and `Y_Z_1`. But you can also tell the function to split on any other variables that take on any kind of value. For example, 
 ```{r}
-potential_outcomes <- declare_potential_outcomes(
+npotential_outcomes <- declare_potential_outcomes(
   income ~ employed + education + u, 
   assignment_variables = list(employed = c("No","Yes"), education = c(10,12)))
 ```
@@ -394,5 +449,10 @@ We are always uncertain about model parameters. You can directly incorporate thi
 -- selection on observables mostly is in M (I assert there is no additional confounding)
 
 goal here is not to point out that we should never make assumptions about the causal model, but rather we should be clear what they are and how those assumptions shape the choices we make as researchers in D and A
+
+## Last word on Models.
+
+Models are *models* -- they are abstractions and they are not the truth! The true causal structure of the world $W$ generates draws from the world $w$. The inquiry $I$ might not even defined under $W$, that is $I(w)$ might be $NA$. Applying the data strategy $D$ to $w$ might produce unexpected results. That is $D(w)$ need not be anything like $D(m)$. This disjuncture is unavoidable and is in large part, the whole point of doing research in the first place. We do not know $W$ -- that would require omniscience. We have learned parts of $W$ and put them in $M$ -- that's science. When research produces unexpected results, it's an indication that something in MIDA is out of whack and it is an opportunity for learning. The *next* research project will ammend MIDA in order to bring $M$ closer to $W$.
+
 
 

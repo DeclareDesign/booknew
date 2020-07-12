@@ -43,48 +43,6 @@ Not every diagnosand is relevant for every study. For example, in a descriptive 
 
 How should you choose your diagnosands? In our experience, writing out what would make the study either a success or a failure helps tremendously. If a successful study would yield an estimate that is higher than 4, has a standard error of 1 or less, and in which we find statistically significant evidence of treatmnet effect heterogeneity -- write down a diagnosand that is the probability of all three of those conditions being true at the same time. If a study is a failure (in terms of not having been worth the money and effort *ex post*) when the confidence interval is 20 points wide or wider, then the research team should design to minimize the probability of that occurance.
 
-# Returning to the formalization
-
-
-The model $M$ produces a realized state of the world $m$.
-The inquiry $I$ is a question about the model $M$ that produces an answer $a^M$. It is calculated on the realized state of the world $m$. In other words, it is the value of estimand.
-
-$$
-a^M = I(m)
-$$
-
-
-The data strategy $D$ uses the realized state of the world $m$ to produce a dataset $d$. 
-
-$$
-d = D(m)
-$$
-
-The answer strategy $A$ uses the realized data $d$ to produce an estimate $a^A$. 
-
-$$
-a^A = A(d)
-$$
-
-A "diagnostic statistic" is (usually) a scalar function $g()$ of both $a^M$ and $a^A$, though some diagnostic statistics may be a function of just one or the other.  [CAN DIAGNOSTIC STATISTICS BE VECTOR VALUED?] 
-
-
-$$
-\Gamma = g(a^M, a^A)
-$$
-
-Because $a^M$ and $a^A$ are random variables, and any function of random variables is also a random variable, $\Gamma$ is itself a random variable. A diagnosand is a summary of that random variable. Just like we summarise random variables with statistical functionals like the expectation and variance operators, a diagnosand is a statistical functional of the diagnostic statistic random variable $\Gamma$. 
-
-$$
-\phi = f(\Gamma)
-$$
-
-Since $f()$ is a statistical functional (like $E[]$ or $V[]$), it is itself *not* a random variable. It is a description of the distribution of the random variable $\Gamma$. We'll use the greek letter $\phi$ to describe the idea of a diagnosand in general.
-
-Let's back up a moment to work through a concrete example of a diagnosand. Consider the diagnosand "bias". Bias is the average difference between the estimand and the estimate. Under a model that has two potential outcomes, a treated potential outcome and an untreated potential outcome, the inquiry might be the ATE. Under a single realization $m$ of the model $M$, the value of the ATE will be a particular number, which we call $a^M$. If our data strategy is simply to collect data on those who come to be treated versus those who don't (i.e., we do not use random assignment), and our answer strategy is difference-in-means, our answer $a^A$ could be systematically different from $a^M$. The diagnostic statistic is the error $a^A - a^M$; this error is a random variable because each draw of $m$ from $M$ is slightly different. The expectation of this random variable is $E[a^A - a^M]$, which is bias. 
-
-Similarly, the common diagnosand power is also an expectation. It is the expectation of the diagnostic statistic $\mathbb{1}p <= 0.05$, which is an indicator function that equals 1 if the $p$-value is below 0.05 and 0 otherwise. 
-
 ## Estimating diagnosands analytically
 
 Research design diagnosis can be done analytically. Indeed, research design textbooks often contain many formulas for calculating power under a variety of designs. For example, Gerber and Green include the following power formula:
@@ -109,7 +67,8 @@ Diagnosands depend on design details, because how you conduct you conduct your s
 
 Our main trouble is learning the distribution of diagnostic statistics -- if we could simply write down the distribution of diagnostic statistics, it would be a straightforward matter to summarize them in order to calculate diagnosands. 
 
-
+Diagnosands can be estimated with higher levels of precision by increasing $m$. However, simulations are often computationally expensive. In order to assess whether researchers have conducted enough simulations to be confident in their diagnosand estimates, we recommend estimating the sampling distributions of the diagnosands via the nonparametric bootstrap.^[
+In their paper on simulating clinical trials through Monte Carlo, @morrisetal2019 provide helpful analytic formula for deriving Monte Carlo standard errors for several diagnosands ("performance measures"). In the companion software, we adopt a non-parametric bootstrap approach that is able to calculate standard errors for any user-provided diagnosand.] With the estimated diagnosand and its standard error, we can characterize our uncertainty about whether the range of likely values of the diagnosand compare favorably to reference values such as statistical power of $0.8$.^[This procedure depends on the researcher choosing a "good" diagnosand estimator. In nearly all cases, diagnosands will be features of the distribution of a diagnostic statistic that, given i.i.d. sampling, can be consistently estimated via plug-in estimation (for example taking sample means). Our simulation procedure, by construction, yields i.i.d. draws of the diagnostic statistic.]
 
 
 - Graphic of simulations (of multiple runs)
