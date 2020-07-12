@@ -30,6 +30,7 @@ b_sims <- 20
 
 ```{r, echo = FALSE}
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+library(ggforce)
 ```
 
 ## Diagnosing a design
@@ -241,4 +242,55 @@ biased_highprecision <- ggplot() +
 library(patchwork)
 
 unbiased_lowprecision + unbiased_highprecision + biased_highprecision
+```
+
+
+```{r}
+n <- 50
+
+points_df <- tibble(
+  rho = sqrt(runif(n, min = 0, max = 0.015)),
+  theta = runif(n, 0, 2*pi),
+  x = rho * cos(theta) + 0.5,
+  y = rho * sin(theta) - 0.2
+)
+
+summary_df <- points_df %>% 
+  summarize(
+    bias = round(mean(sqrt(x^2 + y^2)), 2),
+    mse = round(mean(x^2 + y^2), 2),
+    var = round(mean((x - mean(x))^2 + (y - mean(y))^2), 3)
+  )
+
+dual_estimands <- ggplot() + 
+  geom_circle(
+    data = tibble(
+      x0 = rep(0, 5),
+      y0 = rep(0, 5),
+      r = rev(seq(0.1, 1, length.out = 5))
+    ), 
+    aes(x0 = x0, y0 = y0, r = r, fill = fct_rev(as.factor(r))),
+    col = gray(0.25), lwd = 0.25) +
+  geom_circle(
+    data = tibble(
+      x0 = rep(0.05, 5),
+      y0 = rep(0.0, 5),
+      r = rev(seq(0.1, 1, length.out = 5))
+    ), 
+    aes(x0 = x0, y0 = y0, r = r, fill = fct_rev(as.factor(r))),
+    col = gray(0.25), lwd = 0.25) + 
+  geom_point(data = points_df, aes(x, y), size = 0.5) + 
+  scale_fill_manual(values = rev(c("yellow", "red", "cyan", "black", "white"))) + 
+  coord_fixed() + 
+  dd_theme() + 
+  xlab("") + ylab("") + 
+  ggtitle("Unbiased, imprecise", subtitle = glue::glue("Variance = {summary_df$var}\nBias = {summary_df$bias}\nRMSE = {summary_df$mse}")) + 
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank()
+  )
+dual_estimands
 ```

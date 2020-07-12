@@ -57,6 +57,20 @@ The model defines a set of units, people or neighborhoods or social groups, that
 
 In an experiment in two districts in Pakistan, @Gulzar2020 study how to motivate citizens to run for political office for the first time. Thus, their set of units is all citizens in Haripur and Abbottabad, about whom they consider baseline policy preferences, in order to characterize how different the policy preferences of citizens are from those eventually elected. Their endogenous outcomes of interest are whether the citizen filed papers to run for office; was elected; and the Euclidean distance from average citizen preferences. The outcomes are a function in their causal model of three treatments, which emphasize either the social or personal benefits to holding public office or do not encourage anyone to run for office at all. Their model would include an expected treatment effect magnitude for each treatment and their suppositions about how correlated outcomes are within villages that they study. 
 
+```{r}
+gulzar_khan_design <- 
+  declare_population(
+    villages = add_level(),
+    citizens = add_level()
+  ) +
+  
+  declare_potential_outcomes(
+    
+  ) + 
+  
+  declare_estimand()
+```
+
 Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. Yet declaring a model is often unavoidable when declaring reserach designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section XX). Further, researchers can inform their substantive models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
 
 The second component of a research design is the inquiry, often known as the estimand. This is a quantity that represents the true answer to the research question we are asking. Inquiries may be causal, as in the average treatment effect, or descriptive, as in the proportion of units who hold a certain characteristic. An inquiry is a function of the exogenous characteristics of units, of endogenous outcome variables, or both. It may be defined over all units in the population defined by the model, as in the average treatment effect for all units, or it may be defined over a subset of units, as in the conditional average treatment effect for women. Because we defined the distribution of the variables in the model, we can define the probability distribution of inquiries, which are a function of those variables. 
