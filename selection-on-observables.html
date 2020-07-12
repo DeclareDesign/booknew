@@ -398,25 +398,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>We want to know the effect of Z on Y, but it’s confounded by X</li>
 <li>DIM is biased, OLS is unbiased because we happen to get the functional forms right enough.</li>
 </ul>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-260"></span>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-261"></span>
 <img src="figures/regression_dag_1.png" alt="DAG with one observed confounder" width="40%" />
 <p class="caption">
 Figure 16.1: DAG with one observed confounder
 </p>
 </div>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" title="1">design_<span class="dv">1</span> &lt;-</a>
-<a class="sourceLine" id="cb94-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb94-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb94-4" title="4">                     <span class="dt">U_x =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb94-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb94-6" title="6">                     <span class="dt">X =</span> U_x) <span class="op">+</span></a>
-<a class="sourceLine" id="cb94-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
-<a class="sourceLine" id="cb94-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb94-9" title="9"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z <span class="op">+</span><span class="st"> </span>U_x), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb94-10" title="10"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb94-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1">dx_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">1</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
-<a class="sourceLine" id="cb95-2" title="2">dx_<span class="dv">1</span></a></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1">design_<span class="dv">1</span> &lt;-</a>
+<a class="sourceLine" id="cb95-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
+<a class="sourceLine" id="cb95-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb95-4" title="4">                     <span class="dt">U_x =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb95-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb95-6" title="6">                     <span class="dt">X =</span> U_x) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-9" title="9"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z <span class="op">+</span><span class="st"> </span>U_x), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-10" title="10"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb95-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" title="1">dx_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">1</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
+<a class="sourceLine" id="cb96-2" title="2">dx_<span class="dv">1</span></a></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (20 replicates).
 ## 
@@ -437,19 +437,19 @@ Figure 16.1: DAG with one observed confounder
 <li>Oh no, the functional form is wrong, so even though we’re controlling for all confounders, there’s still bias.</li>
 <li>Solution: matching might do a better job since it’s sort of a “nonparametric” form of covariate control.</li>
 </ul>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" title="1">design_<span class="dv">2</span> &lt;-</a>
-<a class="sourceLine" id="cb97-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb97-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb97-4" title="4">                     <span class="dt">U_x =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb97-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb97-6" title="6">                     <span class="dt">X =</span> U_x) <span class="op">+</span></a>
-<a class="sourceLine" id="cb97-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>X<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
-<a class="sourceLine" id="cb97-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb97-9" title="9"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z <span class="op">+</span><span class="st"> </span>U_x <span class="op">+</span><span class="st"> </span>U_x<span class="op">^</span><span class="dv">2</span>), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb97-10" title="10"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb97-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" title="1">dx_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">2</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
-<a class="sourceLine" id="cb98-2" title="2">dx_<span class="dv">2</span></a></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" title="1">design_<span class="dv">2</span> &lt;-</a>
+<a class="sourceLine" id="cb98-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
+<a class="sourceLine" id="cb98-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb98-4" title="4">                     <span class="dt">U_x =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb98-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb98-6" title="6">                     <span class="dt">X =</span> U_x) <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>X<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-9" title="9"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z <span class="op">+</span><span class="st"> </span>U_x <span class="op">+</span><span class="st"> </span>U_x<span class="op">^</span><span class="dv">2</span>), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-10" title="10"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb98-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" title="1">dx_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">2</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
+<a class="sourceLine" id="cb99-2" title="2">dx_<span class="dv">2</span></a></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (20 replicates).
 ## 
@@ -466,25 +466,25 @@ Figure 16.1: DAG with one observed confounder
 </div>
 <div id="what-if-you-have-unobserved-confounding" class="section level3">
 <h3><span class="header-section-number">16.1.3</span> What if you have unobserved confounding?</h3>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-265"></span>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-266"></span>
 <img src="figures/regression_dag_2.png" alt="DAG with unobserved confounding" width="40%" />
 <p class="caption">
 Figure 16.2: DAG with unobserved confounding
 </p>
 </div>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" title="1">design_<span class="dv">3</span> &lt;-</a>
-<a class="sourceLine" id="cb100-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb100-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb100-4" title="4">                     <span class="dt">U_x =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb100-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">correlate</span>(rnorm, <span class="dt">given =</span> U_z, <span class="dt">rho =</span> <span class="fl">0.9</span>),</a>
-<a class="sourceLine" id="cb100-6" title="6">                     <span class="dt">X =</span> U_x) <span class="op">+</span></a>
-<a class="sourceLine" id="cb100-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
-<a class="sourceLine" id="cb100-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb100-9" title="9"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z <span class="op">+</span><span class="st"> </span>U_x), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb100-10" title="10"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb100-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" title="1">dx_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">3</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
-<a class="sourceLine" id="cb101-2" title="2">dx_<span class="dv">3</span></a></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" title="1">design_<span class="dv">3</span> &lt;-</a>
+<a class="sourceLine" id="cb101-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
+<a class="sourceLine" id="cb101-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb101-4" title="4">                     <span class="dt">U_x =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb101-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">correlate</span>(rnorm, <span class="dt">given =</span> U_z, <span class="dt">rho =</span> <span class="fl">0.9</span>),</a>
+<a class="sourceLine" id="cb101-6" title="6">                     <span class="dt">X =</span> U_x) <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-9" title="9"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z <span class="op">+</span><span class="st"> </span>U_x), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-10" title="10"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb101-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" title="1">dx_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">3</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
+<a class="sourceLine" id="cb102-2" title="2">dx_<span class="dv">3</span></a></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (20 replicates).
 ## 
@@ -501,26 +501,26 @@ Figure 16.2: DAG with unobserved confounding
 </div>
 <div id="what-if-the-observed-covariate-is-post-treatment" class="section level3">
 <h3><span class="header-section-number">16.1.4</span> What if the observed covariate is post-treatment?</h3>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-268"></span>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-269"></span>
 <img src="figures/regression_dag_3.png" alt="DAG with one observed mediator" width="40%" />
 <p class="caption">
 Figure 16.3: DAG with one observed mediator
 </p>
 </div>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" title="1">design_<span class="dv">4</span> &lt;-</a>
-<a class="sourceLine" id="cb103-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb103-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb103-4" title="4">                     <span class="dt">U_m =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb103-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-6" title="6"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(M <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>U_m) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>(<span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>U_m) <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-8" title="8"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-9" title="9"><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="kw">c</span>(M, Y), Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-10" title="10"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb103-12" title="12"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>M, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" title="1">dx_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">4</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
-<a class="sourceLine" id="cb104-2" title="2">dx_<span class="dv">4</span></a></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" title="1">design_<span class="dv">4</span> &lt;-</a>
+<a class="sourceLine" id="cb104-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, </a>
+<a class="sourceLine" id="cb104-3" title="3">                     <span class="dt">U_z =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb104-4" title="4">                     <span class="dt">U_m =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb104-5" title="5">                     <span class="dt">U_y =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-6" title="6"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(M <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>U_m) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>(<span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>U_m) <span class="op">+</span><span class="st"> </span>U_y) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-8" title="8"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_unit =</span> <span class="kw">pnorm</span>(U_z), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-9" title="9"><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="kw">c</span>(M, Y), Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-10" title="10"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb104-12" title="12"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>M, <span class="dt">model =</span> lm, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;OLS&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" title="1">dx_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design_<span class="dv">4</span>, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a>
+<a class="sourceLine" id="cb105-2" title="2">dx_<span class="dv">4</span></a></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (20 replicates).
 ## 

@@ -398,8 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>a function to produce an estimate and measure(s) of uncertainty of the estimate.</p></li>
 <li><p>may be as simple as a mean or difference-in-means, as in our simple design:</p></li>
 </ul>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1">estimates_df &lt;-<span class="st"> </span><span class="kw">difference_in_means</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">data =</span> simple_design_data)</a>
-<a class="sourceLine" id="cb65-2" title="2"><span class="kw">kable</span>(<span class="kw">tidy</span>(estimates_df))</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1">estimates_df &lt;-<span class="st"> </span><span class="kw">difference_in_means</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">data =</span> simple_design_data)</a>
+<a class="sourceLine" id="cb66-2" title="2"><span class="kw">kable</span>(<span class="kw">tidy</span>(estimates_df))</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -483,68 +483,68 @@ Y
 <li><em>procedures where you run two procedures and pick the best fit or preferred on some dimensions</em></li>
 <li><p>show example of a procedure of this form (model selection?) where the coverage is off if you don’t account for the multi step</p></li>
 </ul>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1">report_if_significant &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
-<a class="sourceLine" id="cb66-2" title="2">  fit_nocov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, data)</a>
-<a class="sourceLine" id="cb66-3" title="3">  fit_cov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, data)</a>
-<a class="sourceLine" id="cb66-4" title="4">  </a>
-<a class="sourceLine" id="cb66-5" title="5">  <span class="co"># select fit with lower p.value on Z</span></a>
-<a class="sourceLine" id="cb66-6" title="6">  <span class="cf">if</span>(fit_cov<span class="op">$</span>p.value[<span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>fit_nocov<span class="op">$</span>p.value[<span class="dv">2</span>]){</a>
-<a class="sourceLine" id="cb66-7" title="7">    fit_selected &lt;-<span class="st"> </span>fit_cov</a>
-<a class="sourceLine" id="cb66-8" title="8">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb66-9" title="9">    fit_selected &lt;-<span class="st"> </span>fit_nocov</a>
-<a class="sourceLine" id="cb66-10" title="10">  }</a>
-<a class="sourceLine" id="cb66-11" title="11">  fit_selected <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb66-12" title="12">}</a>
-<a class="sourceLine" id="cb66-13" title="13"></a>
-<a class="sourceLine" id="cb66-14" title="14">design &lt;-</a>
-<a class="sourceLine" id="cb66-15" title="15"><span class="st">  </span><span class="kw">declare_population</span>(    </a>
-<a class="sourceLine" id="cb66-16" title="16">    <span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="dt">u =</span> <span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb66-17" title="17">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-18" title="18"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-19" title="19"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-20" title="20"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-21" title="21"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-22" title="22"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;nocov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-23" title="23"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;cov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-24" title="24"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb66-25" title="25">    <span class="dt">handler =</span> <span class="kw">label_estimator</span>(report_if_significant),</a>
-<a class="sourceLine" id="cb66-26" title="26">    <span class="dt">label =</span> <span class="st">&quot;select-lower-p-value&quot;</span>,</a>
-<a class="sourceLine" id="cb66-27" title="27">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) </a>
-<a class="sourceLine" id="cb66-28" title="28"></a>
-<a class="sourceLine" id="cb66-29" title="29">dg &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1">report_if_significant &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
+<a class="sourceLine" id="cb67-2" title="2">  fit_nocov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, data)</a>
+<a class="sourceLine" id="cb67-3" title="3">  fit_cov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, data)</a>
+<a class="sourceLine" id="cb67-4" title="4">  </a>
+<a class="sourceLine" id="cb67-5" title="5">  <span class="co"># select fit with lower p.value on Z</span></a>
+<a class="sourceLine" id="cb67-6" title="6">  <span class="cf">if</span>(fit_cov<span class="op">$</span>p.value[<span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>fit_nocov<span class="op">$</span>p.value[<span class="dv">2</span>]){</a>
+<a class="sourceLine" id="cb67-7" title="7">    fit_selected &lt;-<span class="st"> </span>fit_cov</a>
+<a class="sourceLine" id="cb67-8" title="8">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb67-9" title="9">    fit_selected &lt;-<span class="st"> </span>fit_nocov</a>
+<a class="sourceLine" id="cb67-10" title="10">  }</a>
+<a class="sourceLine" id="cb67-11" title="11">  fit_selected <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb67-12" title="12">}</a>
+<a class="sourceLine" id="cb67-13" title="13"></a>
+<a class="sourceLine" id="cb67-14" title="14">design &lt;-</a>
+<a class="sourceLine" id="cb67-15" title="15"><span class="st">  </span><span class="kw">declare_population</span>(    </a>
+<a class="sourceLine" id="cb67-16" title="16">    <span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="dt">u =</span> <span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb67-17" title="17">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-18" title="18"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-19" title="19"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-20" title="20"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-21" title="21"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-22" title="22"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;nocov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-23" title="23"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;cov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-24" title="24"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb67-25" title="25">    <span class="dt">handler =</span> <span class="kw">label_estimator</span>(report_if_significant),</a>
+<a class="sourceLine" id="cb67-26" title="26">    <span class="dt">label =</span> <span class="st">&quot;select-lower-p-value&quot;</span>,</a>
+<a class="sourceLine" id="cb67-27" title="27">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) </a>
+<a class="sourceLine" id="cb67-28" title="28"></a>
+<a class="sourceLine" id="cb67-29" title="29">dg &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <ul>
 <li><em>procedures for testing assumptions of identification strategy before running analysis</em>, such as falsification or placebo tests. in these tests, you run a test and only analyze the data using the analysis strategy you proposed if it passes the test indicating a failure to reject the null of no violation of the assumptions.</li>
 <li>show example of RDD where the method is <em>biased</em> if you don’t use the assumption test but the procedure is <em>unbiased</em></li>
 </ul>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1">conditional_on_placebo_test &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb67-2" title="2">  placebo_test &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y_placebo <span class="op">~</span><span class="st"> </span>Z, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb67-3" title="3">  estimate &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb67-4" title="4">  <span class="cf">if</span>(placebo_test<span class="op">$</span>p.value <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>) {</a>
-<a class="sourceLine" id="cb67-5" title="5">    <span class="kw">tibble</span>(<span class="dt">estimate =</span> <span class="ot">NA</span>, <span class="dt">reject =</span> <span class="ot">TRUE</span>, <span class="dt">term =</span> <span class="st">&quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb67-6" title="6">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb67-7" title="7">    estimate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">reject =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb67-8" title="8">  }</a>
-<a class="sourceLine" id="cb67-9" title="9">}</a>
-<a class="sourceLine" id="cb67-10" title="10"></a>
-<a class="sourceLine" id="cb67-11" title="11"><span class="kw">library</span>(sn)</a>
-<a class="sourceLine" id="cb67-12" title="12"></a>
-<a class="sourceLine" id="cb67-13" title="13">placebo_design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb67-14" title="14"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">u =</span> <span class="kw">rsn</span>(<span class="dt">n =</span> N, <span class="dt">xi =</span> <span class="dv">0</span>, <span class="dt">omega =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="dv">10</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-15" title="15"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-16" title="16"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(<span class="dt">Y_placebo =</span> <span class="fl">0.1</span> <span class="op">+</span><span class="st"> </span><span class="fl">1.2</span> <span class="op">*</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-17" title="17"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-18" title="18"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-19" title="19"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;unconditional&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-20" title="20"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(conditional_on_placebo_test), </a>
-<a class="sourceLine" id="cb67-21" title="21">                    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;conditional&quot;</span>)</a>
-<a class="sourceLine" id="cb67-22" title="22"></a>
-<a class="sourceLine" id="cb67-23" title="23">simulations_df &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(placebo_design, <span class="dt">sims =</span> sims)</a>
-<a class="sourceLine" id="cb67-24" title="24"></a>
-<a class="sourceLine" id="cb67-25" title="25"><span class="co"># diag &lt;- diagnose_design(placebo_design, sims = sims)</span></a>
-<a class="sourceLine" id="cb67-26" title="26"></a>
-<a class="sourceLine" id="cb67-27" title="27">simulations_df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-28" title="28"><span class="st">  </span><span class="kw">group_by</span>(estimator_label) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb67-29" title="29"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(estimate <span class="op">-</span><span class="st"> </span>estimand, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1">conditional_on_placebo_test &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb68-2" title="2">  placebo_test &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y_placebo <span class="op">~</span><span class="st"> </span>Z, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb68-3" title="3">  estimate &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb68-4" title="4">  <span class="cf">if</span>(placebo_test<span class="op">$</span>p.value <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>) {</a>
+<a class="sourceLine" id="cb68-5" title="5">    <span class="kw">tibble</span>(<span class="dt">estimate =</span> <span class="ot">NA</span>, <span class="dt">reject =</span> <span class="ot">TRUE</span>, <span class="dt">term =</span> <span class="st">&quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb68-6" title="6">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb68-7" title="7">    estimate <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">reject =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb68-8" title="8">  }</a>
+<a class="sourceLine" id="cb68-9" title="9">}</a>
+<a class="sourceLine" id="cb68-10" title="10"></a>
+<a class="sourceLine" id="cb68-11" title="11"><span class="kw">library</span>(sn)</a>
+<a class="sourceLine" id="cb68-12" title="12"></a>
+<a class="sourceLine" id="cb68-13" title="13">placebo_design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb68-14" title="14"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">u =</span> <span class="kw">rsn</span>(<span class="dt">n =</span> N, <span class="dt">xi =</span> <span class="dv">0</span>, <span class="dt">omega =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="dv">10</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb68-15" title="15"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-16" title="16"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(<span class="dt">Y_placebo =</span> <span class="fl">0.1</span> <span class="op">+</span><span class="st"> </span><span class="fl">1.2</span> <span class="op">*</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-17" title="17"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-18" title="18"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-19" title="19"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;unconditional&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-20" title="20"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(conditional_on_placebo_test), </a>
+<a class="sourceLine" id="cb68-21" title="21">                    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;conditional&quot;</span>)</a>
+<a class="sourceLine" id="cb68-22" title="22"></a>
+<a class="sourceLine" id="cb68-23" title="23">simulations_df &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(placebo_design, <span class="dt">sims =</span> sims)</a>
+<a class="sourceLine" id="cb68-24" title="24"></a>
+<a class="sourceLine" id="cb68-25" title="25"><span class="co"># diag &lt;- diagnose_design(placebo_design, sims = sims)</span></a>
+<a class="sourceLine" id="cb68-26" title="26"></a>
+<a class="sourceLine" id="cb68-27" title="27">simulations_df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-28" title="28"><span class="st">  </span><span class="kw">group_by</span>(estimator_label) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-29" title="29"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(estimate <span class="op">-</span><span class="st"> </span>estimand, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   estimator_label     bias
 ##   &lt;chr&gt;              &lt;dbl&gt;
@@ -560,80 +560,80 @@ Y
 <li><em>robustness checks</em> are part of the answer strategy. often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). the purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. when this is the case, the decision a reader makes based on their inferences about the estimand from the estimate depend not only on the main estimate but also the robustness checks. as a result, we want to assess the properties of the two together.</li>
 </ul>
 <p>We illustrate with a simple analysis of the correlation between two variables <code>y1</code> and <code>y2</code>, who have a true positive correlation. <code>y2</code> is also a function of an observed covariate <code>x</code> and measurement error. Our main analysis is a bivariate regression predicting <code>y2</code> with <code>y1</code>. We compare this answer strategy to one in which we run that analysis, but also run a robustness check controlling for <code>x</code>. We do this because as the analyst we are unsure of the true DGP and wish to demonstrate to reviewer’s that our results are not dependent on the functional form we choose.</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1">bivariate_correlation_decision &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb69-2" title="2">  fit &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(y2 <span class="op">~</span><span class="st"> </span>y1, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;y1&quot;</span>)</a>
-<a class="sourceLine" id="cb69-3" title="3">  <span class="kw">tibble</span>(<span class="dt">decision =</span> fit<span class="op">$</span>p.value <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>)</a>
-<a class="sourceLine" id="cb69-4" title="4">}</a>
-<a class="sourceLine" id="cb69-5" title="5"></a>
-<a class="sourceLine" id="cb69-6" title="6">interacted_correlation_decision &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb69-7" title="7">  fit &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(y2 <span class="op">~</span><span class="st"> </span>y1 <span class="op">+</span><span class="st"> </span>x, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;y1&quot;</span>)</a>
-<a class="sourceLine" id="cb69-8" title="8">  <span class="kw">tibble</span>(<span class="dt">decision =</span> fit<span class="op">$</span>p.value <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>)</a>
-<a class="sourceLine" id="cb69-9" title="9">}</a>
-<a class="sourceLine" id="cb69-10" title="10"></a>
-<a class="sourceLine" id="cb69-11" title="11">robustness_check_decision &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb69-12" title="12">  main_analysis &lt;-<span class="st"> </span><span class="kw">bivariate_correlation_decision</span>(data)</a>
-<a class="sourceLine" id="cb69-13" title="13">  robustness_check &lt;-<span class="st"> </span><span class="kw">interacted_correlation_decision</span>(data)</a>
-<a class="sourceLine" id="cb69-14" title="14">  <span class="kw">tibble</span>(<span class="dt">decision =</span> main_analysis<span class="op">$</span>decision <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span> <span class="op">&amp;</span><span class="st"> </span>robustness_check<span class="op">$</span>decision <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb69-15" title="15">}</a>
-<a class="sourceLine" id="cb69-16" title="16"></a>
-<a class="sourceLine" id="cb69-17" title="17">robustness_checks_design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb69-18" title="18"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb69-19" title="19">    <span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb69-20" title="20">    <span class="dt">x =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb69-21" title="21">    <span class="dt">y1 =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb69-22" title="22">    <span class="dt">y2 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>y1 <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb69-23" title="23">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb69-24" title="24"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">y1_y2_are_related =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb69-25" title="25"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(bivariate_correlation_decision), <span class="dt">label =</span> <span class="st">&quot;bivariate&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb69-26" title="26"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(robustness_check_decision), <span class="dt">label =</span> <span class="st">&quot;robustness-check&quot;</span>)</a>
-<a class="sourceLine" id="cb69-27" title="27"></a>
-<a class="sourceLine" id="cb69-28" title="28">decision_diagnosis &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(<span class="dt">correct =</span> <span class="kw">mean</span>(decision <span class="op">==</span><span class="st"> </span>estimand), <span class="dt">keep_defaults =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb69-29" title="29"></a>
-<a class="sourceLine" id="cb69-30" title="30">diag &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(robustness_checks_design, <span class="dt">sims =</span> sims, <span class="dt">diagnosands =</span> decision_diagnosis)</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">bivariate_correlation_decision &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb70-2" title="2">  fit &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(y2 <span class="op">~</span><span class="st"> </span>y1, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;y1&quot;</span>)</a>
+<a class="sourceLine" id="cb70-3" title="3">  <span class="kw">tibble</span>(<span class="dt">decision =</span> fit<span class="op">$</span>p.value <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>)</a>
+<a class="sourceLine" id="cb70-4" title="4">}</a>
+<a class="sourceLine" id="cb70-5" title="5"></a>
+<a class="sourceLine" id="cb70-6" title="6">interacted_correlation_decision &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb70-7" title="7">  fit &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(y2 <span class="op">~</span><span class="st"> </span>y1 <span class="op">+</span><span class="st"> </span>x, data) <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;y1&quot;</span>)</a>
+<a class="sourceLine" id="cb70-8" title="8">  <span class="kw">tibble</span>(<span class="dt">decision =</span> fit<span class="op">$</span>p.value <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.05</span>)</a>
+<a class="sourceLine" id="cb70-9" title="9">}</a>
+<a class="sourceLine" id="cb70-10" title="10"></a>
+<a class="sourceLine" id="cb70-11" title="11">robustness_check_decision &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb70-12" title="12">  main_analysis &lt;-<span class="st"> </span><span class="kw">bivariate_correlation_decision</span>(data)</a>
+<a class="sourceLine" id="cb70-13" title="13">  robustness_check &lt;-<span class="st"> </span><span class="kw">interacted_correlation_decision</span>(data)</a>
+<a class="sourceLine" id="cb70-14" title="14">  <span class="kw">tibble</span>(<span class="dt">decision =</span> main_analysis<span class="op">$</span>decision <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span> <span class="op">&amp;</span><span class="st"> </span>robustness_check<span class="op">$</span>decision <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb70-15" title="15">}</a>
+<a class="sourceLine" id="cb70-16" title="16"></a>
+<a class="sourceLine" id="cb70-17" title="17">robustness_checks_design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb70-18" title="18"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb70-19" title="19">    <span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb70-20" title="20">    <span class="dt">x =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb70-21" title="21">    <span class="dt">y1 =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb70-22" title="22">    <span class="dt">y2 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>y1 <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb70-23" title="23">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-24" title="24"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">y1_y2_are_related =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-25" title="25"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(bivariate_correlation_decision), <span class="dt">label =</span> <span class="st">&quot;bivariate&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-26" title="26"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(robustness_check_decision), <span class="dt">label =</span> <span class="st">&quot;robustness-check&quot;</span>)</a>
+<a class="sourceLine" id="cb70-27" title="27"></a>
+<a class="sourceLine" id="cb70-28" title="28">decision_diagnosis &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(<span class="dt">correct =</span> <span class="kw">mean</span>(decision <span class="op">==</span><span class="st"> </span>estimand), <span class="dt">keep_defaults =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb70-29" title="29"></a>
+<a class="sourceLine" id="cb70-30" title="30">diag &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(robustness_checks_design, <span class="dt">sims =</span> sims, <span class="dt">diagnosands =</span> decision_diagnosis)</a></code></pre></div>
 <p>We evaluate the two answer strategies in terms of the rate of correctly deciding there is a correlation between <code>y2</code> and <code>y1</code>. In the main analysis, this means we judge there is a correlation when the p-value is below <span class="math inline">\(0.05\)</span>. In our robustness check answer strategy, we decide there is a correlation when both the main analysis and the robustness check return p-values below <span class="math inline">\(0.05\)</span> on the coefficient on <code>y1</code>. We see that we are more likely to correctly judge there is a correlation in the simpler analysis strategy. This is because we added an additional criterion to our decision; both criteria, due to random noise, sometimes fail to reject the null of no correlation. Our second answer strategy is more robust in the sense that we have stronger evidence of a correlation when we run the two analyses together. But we are also less likely to decide (correctly) that there is a relationship. The robustness check is conservative. This exercise highlights that the properties of an answer strategy with secondary analyses will be different than the properties of the main analysis alone. If we planned (or conducted) robustness checks, we may wish to know how good the pair of strategies is together.</p>
 <ul>
 <li>distinguish this from changes to the model where we do robustnesss vis a vis a fixed answer and data strategy. i.e. two notions of “robustness”. one is fix I D A and change M, is this “design” robust to changes in M. the other is, within a given run, is the estimate “robust” to changing the estimation procedure, so this is a diagnostic statistic. note I must be defined across these changes in M.</li>
 </ul>
 <p>Using the MIDA way of thinking about designs, we can also think of another notion of the “robustness” of a design. The typical way we think of robustness checks is multiple secondary analyses <em>conditional on the observed data</em> to build confidence in an analysis of that fixed data. However, the motivation for these robustness checks is uncertainty about the true data generating process. By declaring a design in terms of MIDA, we can think about the robustness of a <em>single</em> estimator to multiple possible true data generating processes. An estimator that is robust in this sense is one that is unbiased with low uncertainty regardless of, say, the true functional form between <code>y1</code> and <code>y2</code>. To determine whether an estimator is robust, we can redefine a set of designs with different functional forms and assess the rate of correct decisions of our robustness checks strategy under each different model.</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">robustness_checks_design &lt;-</a>
-<a class="sourceLine" id="cb70-2" title="2"><span class="st">  </span>robustness_checks_design <span class="op">+</span></a>
-<a class="sourceLine" id="cb70-3" title="3"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(interacted_correlation_decision), <span class="dt">label =</span> <span class="st">&quot;interacted&quot;</span>)</a>
-<a class="sourceLine" id="cb70-4" title="4"></a>
-<a class="sourceLine" id="cb70-5" title="5">robustness_checks_design_dgp2 &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
-<a class="sourceLine" id="cb70-6" title="6">  robustness_checks_design,</a>
-<a class="sourceLine" id="cb70-7" title="7">  <span class="dt">step =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb70-8" title="8">  <span class="dt">new_step =</span> </a>
-<a class="sourceLine" id="cb70-9" title="9">    <span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb70-10" title="10">      <span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb70-11" title="11">      <span class="dt">x =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb70-12" title="12">      <span class="dt">y1 =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb70-13" title="13">      <span class="dt">y2 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>y1 <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span>y1 <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb70-14" title="14">    )</a>
-<a class="sourceLine" id="cb70-15" title="15">)</a>
-<a class="sourceLine" id="cb70-16" title="16"></a>
-<a class="sourceLine" id="cb70-17" title="17">robustness_checks_design_dgp3 &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
-<a class="sourceLine" id="cb70-18" title="18">  robustness_checks_design,</a>
-<a class="sourceLine" id="cb70-19" title="19">  <span class="dt">step =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb70-20" title="20">  <span class="dt">new_step =</span> </a>
-<a class="sourceLine" id="cb70-21" title="21">    <span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb70-22" title="22">      <span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb70-23" title="23">      <span class="dt">x =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb70-24" title="24">      <span class="dt">y1 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb70-25" title="25">      <span class="dt">y2 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb70-26" title="26">    )</a>
-<a class="sourceLine" id="cb70-27" title="27">)</a>
-<a class="sourceLine" id="cb70-28" title="28"></a>
-<a class="sourceLine" id="cb70-29" title="29">robustness_checks_design_dgp3 &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
-<a class="sourceLine" id="cb70-30" title="30">  robustness_checks_design_dgp3, </a>
-<a class="sourceLine" id="cb70-31" title="31">  <span class="dt">step =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb70-32" title="32">  <span class="dt">new_step =</span> <span class="kw">declare_estimand</span>(<span class="dt">y1_y2_are_related =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb70-33" title="33">)</a>
-<a class="sourceLine" id="cb70-34" title="34"></a>
-<a class="sourceLine" id="cb70-35" title="35">decision_diagnosis &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(<span class="dt">correct =</span> <span class="kw">mean</span>(decision <span class="op">==</span><span class="st"> </span>estimand), <span class="dt">keep_defaults =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb70-36" title="36"></a>
-<a class="sourceLine" id="cb70-37" title="37">diag &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(</a>
-<a class="sourceLine" id="cb70-38" title="38">  robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, </a>
-<a class="sourceLine" id="cb70-39" title="39">  <span class="dt">sims =</span> sims, <span class="dt">diagnosands =</span> decision_diagnosis)</a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1">robustness_checks_design &lt;-</a>
+<a class="sourceLine" id="cb71-2" title="2"><span class="st">  </span>robustness_checks_design <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-3" title="3"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">label_estimator</span>(interacted_correlation_decision), <span class="dt">label =</span> <span class="st">&quot;interacted&quot;</span>)</a>
+<a class="sourceLine" id="cb71-4" title="4"></a>
+<a class="sourceLine" id="cb71-5" title="5">robustness_checks_design_dgp2 &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
+<a class="sourceLine" id="cb71-6" title="6">  robustness_checks_design,</a>
+<a class="sourceLine" id="cb71-7" title="7">  <span class="dt">step =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb71-8" title="8">  <span class="dt">new_step =</span> </a>
+<a class="sourceLine" id="cb71-9" title="9">    <span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb71-10" title="10">      <span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb71-11" title="11">      <span class="dt">x =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb71-12" title="12">      <span class="dt">y1 =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb71-13" title="13">      <span class="dt">y2 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>y1 <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span>y1 <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb71-14" title="14">    )</a>
+<a class="sourceLine" id="cb71-15" title="15">)</a>
+<a class="sourceLine" id="cb71-16" title="16"></a>
+<a class="sourceLine" id="cb71-17" title="17">robustness_checks_design_dgp3 &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
+<a class="sourceLine" id="cb71-18" title="18">  robustness_checks_design,</a>
+<a class="sourceLine" id="cb71-19" title="19">  <span class="dt">step =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb71-20" title="20">  <span class="dt">new_step =</span> </a>
+<a class="sourceLine" id="cb71-21" title="21">    <span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb71-22" title="22">      <span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb71-23" title="23">      <span class="dt">x =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb71-24" title="24">      <span class="dt">y1 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb71-25" title="25">      <span class="dt">y2 =</span> <span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb71-26" title="26">    )</a>
+<a class="sourceLine" id="cb71-27" title="27">)</a>
+<a class="sourceLine" id="cb71-28" title="28"></a>
+<a class="sourceLine" id="cb71-29" title="29">robustness_checks_design_dgp3 &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
+<a class="sourceLine" id="cb71-30" title="30">  robustness_checks_design_dgp3, </a>
+<a class="sourceLine" id="cb71-31" title="31">  <span class="dt">step =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb71-32" title="32">  <span class="dt">new_step =</span> <span class="kw">declare_estimand</span>(<span class="dt">y1_y2_are_related =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb71-33" title="33">)</a>
+<a class="sourceLine" id="cb71-34" title="34"></a>
+<a class="sourceLine" id="cb71-35" title="35">decision_diagnosis &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(<span class="dt">correct =</span> <span class="kw">mean</span>(decision <span class="op">==</span><span class="st"> </span>estimand), <span class="dt">keep_defaults =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb71-36" title="36"></a>
+<a class="sourceLine" id="cb71-37" title="37">diag &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(</a>
+<a class="sourceLine" id="cb71-38" title="38">  robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, </a>
+<a class="sourceLine" id="cb71-39" title="39">  <span class="dt">sims =</span> sims, <span class="dt">diagnosands =</span> decision_diagnosis)</a></code></pre></div>
 </div>
 <div id="presentation-of-results" class="section level3">
 <h3><span class="header-section-number">9.5.5</span> presentation of results</h3>
@@ -642,9 +642,9 @@ Y
 <li><p>lots of advice to present graphically (cite), what are implications of that? the decisions made from your results by readers are not just a function of numerical estimates but how they are presented.</p></li>
 </ul>
 <p>We explore this by comparing two possible graphical displays of conditional avareage treatment effects in an experiment. A common presentational format is to present the average treatment effect in one group and then the other along with confidence intervals. Inferences are made — either by the author, or by readers — as a function of whether one is significant and not the other. If that is true, the inference is that there is a difference in CATEs. An alternative is to present the estimated difference along with the two effects. The inferences can then directly be based on whether the confidence interval of the difference crosses zero. We illustrate these two visual answer strategies below:</p>
-<p><img src="book_files/figure-html/unnamed-chunk-148-1.png" width="672" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-149-1.png" width="672" /></p>
 <p>We now demonstrate that the answer strategy on the left is flawed. XXYY describe sims.</p>
-<p><img src="book_files/figure-html/unnamed-chunk-152-1.png" width="672" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-153-1.png" width="672" /></p>
 </div>
 <div id="multiple-comparisons" class="section level3">
 <h3><span class="header-section-number">9.5.6</span> multiple comparisons</h3>
