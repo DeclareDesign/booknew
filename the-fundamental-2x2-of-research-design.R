@@ -1,5 +1,5 @@
 # ---
-# Research questions
+# The Fundamental 2x2 of Research Design
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
