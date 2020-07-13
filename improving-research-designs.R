@@ -51,7 +51,7 @@ g <-
                 parse = TRUE,
                 label = TeX(c(
                   "A",
-                  "a^A",
+                  "a^D",
                   "a^M",
                   "d",
                   "D",
