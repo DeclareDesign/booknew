@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 11 Diagnosis | Research Design: Declare, Diagnose, Redesign</title>
+  <title>7.3 Elements of the model | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 11 Diagnosis | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="7.3 Elements of the model | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 11 Diagnosis | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="7.3 Elements of the model | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="how-you-already-choose-answer-strategies-in-current-practice.html"/>
-<link rel="next" href="diagnosing-a-design.html"/>
+<link rel="prev" href="example-ambrus2020loss.html"/>
+<link rel="next" href="grab-bag-of-ideas-that-dont-yet-have-a-home.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -382,17 +382,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="diagnosis-1" class="section level1">
-<h1><span class="header-section-number">Chapter 11</span> Diagnosis</h1>
-<!-- make sure to rename the section title below -->
+<div id="elements-of-the-model" class="section level2">
+<h2><span class="header-section-number">7.3</span> Elements of the model</h2>
+<p>Declaring a <span class="math inline">\(M\)</span>odel means specifying exogenous and endogenous variables, how they are related to one another, and the probability distributions that determine which values the variables take. That might sound hard but it does not need to be. The following line of code contains a fully specified model:</p>
+<p>An <strong>exogenous variable</strong> is one whose values do not depend on the values of any other variable in the <span class="math inline">\(M\)</span>odel.
+Here, <code>e</code> is an exogenous variable: it is simply a random draw from the uniform distribution between 0 and 1, inclusive. So long as <code>N</code> stays fixed, no other variables influence the values that <code>e</code> takes on.</p>
+<p>An <strong>endogenous variable</strong> is one whose values <em>can</em> depend on another variable. Here, because <code>X</code> is defined as a function of the value that <code>e</code> takes, we say <code>X</code> is endogenous to its “parent,” <code>e</code> (we use the term “parent” to describe the variables that appear in the function defining an endogenous variable). The code says that the value that <code>X</code> takes for a given individual is equal to a random draw from a normal distribution whose mean is equal to their value of <code>e</code> and whose standard deviation is equal to 1.</p>
+<div id="exogenous-variables" class="section level3">
+<h3><span class="header-section-number">7.3.1</span> Exogenous variables</h3>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">8</span>, <span class="dt">e =</span> <span class="kw">runif</span>(N), <span class="dt">X =</span> <span class="kw">rnorm</span>(N, <span class="dt">mean =</span> e, <span class="dt">sd =</span> <span class="dv">1</span>)) </a></code></pre></div>
+</div>
+<div id="endogenous-variables" class="section level3">
+<h3><span class="header-section-number">7.3.2</span> Endogenous variables</h3>
+<p>[ the endogenous relations that <em>matter</em> for the design are specified here; others may be in the exogenous variables ]</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="kw">declare_potential_outcomes</span>()</a></code></pre></div>
+<pre><code>## declare_potential_outcomes()</code></pre>
+<p>Remember from section X that potential outcomes are the building blocks of your inquiry—they describe counterfactual states of the world that could exist, depending on some parent variable.</p>
+<p>Say the parent variable is whether you are contacted by an election campaign canvasser, who tries to convince you to vote for Jane Doe, a candidate running in your district. Then you might have at least two potential outcomes that depend on the value of this variable: whether you vote for Jane Doe when a canvasser from her campaign contacts you, on the one hand, and whether you vote for Jane Doe when that canvasser does not contact you, on the other. The difference in those two states of the world describes the treatment effect of the election campaign canvasser on whether you vote for Jane Doe.</p>
+<p>Say we did an experiment in which that canvasser visits five out of ten people who answer doors, selected at random. Then we could define the potential outcomes of the people they visit as endogenous variables: the “untreated” potential outcome of the experiment would encode whether each door-answerer would vote for Jane Doe if they were not contacted by the canvasser, and the “treated” potential ouctcome would encode whether they vote for Jane Doe if they <em>were</em> contacted by the canvasser.</p>
+<p>In addiiton to the untreated and treated potential outcomes of this experiment, we can add a third, distinct, variable: the vote choice that we would actually observe in an experiment where we actually assigned half of the people to canvassing. To reiterate, if a researcher wants to declare a study with two treatment conditions and no spillovers, her model will have to include at least three variables:</p>
+<ol style="list-style-type: decimal">
+<li>The untreated potential outcome</li>
+<li>The treated potential outcome</li>
+<li>The observed outcome</li>
+</ol>
+<p>That is why <code>DeclareDesign</code> has a whole step devoted to declaring potential outcomes. The <code>declare_potential_outcomes()</code> step is crucial because it splits up endogenous variables into the <em>counterfactual</em> sets of values they could take, given the variables they depend on. Consider this declaration:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1">potential_outcomes &lt;-<span class="st"> </span><span class="kw">declare_potential_outcomes</span>(<span class="dt">Y_Z_0 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e,</a>
+<a class="sourceLine" id="cb58-2" title="2">                                                 <span class="dt">Y_Z_1 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">+</span><span class="st"> </span><span class="fl">.05</span>)</a></code></pre></div>
+<p>Here, we have added two variables to the dataset, <code>Y_Z_0</code> and <code>Y_Z_1</code>. They are both endogenous, in the sense that they depend on the value that <code>e</code> takes and on the value that <code>Z</code> takes.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
+<p>So <code>Y_Z_1</code> is a list of the hypothetical values <code>Y</code> <em>could</em> take, if you were to set a specific variable it depends on, <code>Z</code>, to take the value of <code>1</code>. Suppose, for example, that <code>e</code> represents a person’s utility from voting for Jane Doe. Then, the code says that each person will vote for Jane Doe if <code>e</code> is greater than .5 when they’re untreated, and if they are treated, they vote for Jane Doe when <code>e + .05</code> is greater than .5. So, the <span class="math inline">\(M\)</span>odel stipulates that canvassing makes people roughly five percentage points more likely to vote for Jane Doe.</p>
+<p>A variable’s potential outcomes can either be expressed by defining each potential outcome explicitly, as we do above, or through what we call a “potential outcomes function:”</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1">potential_outcomes &lt;-<span class="st"> </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">+</span><span class="st"> </span><span class="fl">.05</span> <span class="op">*</span><span class="st"> </span>Z)</a></code></pre></div>
+<p>By default, <code>declare_potential_outcomes()</code> assumes that the functional equation for <code>Y</code> will include a binary <code>Z</code> that it can split on to create <code>Y_Z_0</code> and <code>Y_Z_1</code>. But you can also tell the function to split on any other variables that take on any kind of value. For example,</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1">npotential_outcomes &lt;-<span class="st"> </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb60-2" title="2">  income <span class="op">~</span><span class="st"> </span>employed <span class="op">+</span><span class="st"> </span>education <span class="op">+</span><span class="st"> </span>u, </a>
+<a class="sourceLine" id="cb60-3" title="3">  <span class="dt">assignment_variables =</span> <span class="kw">list</span>(<span class="dt">employed =</span> <span class="kw">c</span>(<span class="st">&quot;No&quot;</span>,<span class="st">&quot;Yes&quot;</span>), <span class="dt">education =</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">12</span>)))</a></code></pre></div>
+<p>will create four new variables: <code>income_employed_No_education_10</code>, <code>income_employed_No_education_12</code>, <code>income_employed_Yes_education_10</code>, and <code>income_employed_Yes_education_12</code>. In this setup, <code>income</code> is the observed variable and the other four variables are the potential outcomes that would result from assigning individuals to the corresponding values of <code>employed</code> and <code>education</code>. The resultant function, <code>potential_outcomes</code>, knows not to create potential outcomes corresponding to values of <code>u</code> because <code>u</code> does not appear in the list of <code>assignment_variables</code>.</p>
+<p>INCLUDE HETEROGENEITY DISCUSSION HERE</p>
+<p>Careful readers may have picked up on something a bit confusing in the preceding paragraphs: we have defined potential outcomes in terms of a variable that has not yet been realized in our design.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1">simple_design &lt;-<span class="st"> </span>population <span class="op">+</span><span class="st"> </span>potential_outcomes <span class="op">+</span><span class="st"> </span>estimand <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-2" title="2"><span class="st">  </span>sampling <span class="op">+</span><span class="st"> </span>assignment <span class="op">+</span><span class="st"> </span>reveal_outcomes <span class="op">+</span><span class="st"> </span>estimator</a></code></pre></div>
+<p>The potential outcomes <code>Y_Z_1</code> and <code>Y_Z_0</code> are already defined in terms of <code>Z</code> in the second step of our design, well before the variable <code>Z</code> gets created in the fifth step, <code>assignment</code>.</p>
+<p>How is this possible? Oddly, perhaps, the values of potential outcomes do not depend on the actual values that the parent variables happen to take<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>—that is what makes them <em>potential</em> outcomes and not plain old outcomes. Imagine, for example, that your design involves assigning everyone to the control, so that <span class="math inline">\(Z_i = 0~~\forall~~i\)</span> in practice. In that case, we still define the treated potential outcome, <span class="math inline">\(Y_i(Z_i = 1)\)</span>, exactly as before. We do not need to know what values <code>Z</code> will <em>actually</em> take in order to define the values that <code>Y</code> could <em>potentially</em> take.</p>
+<p>What this requires at the model specification stage is some forwards-looking: you are going to need to model the imaginary states of the world that could happen before they happen. So, for example, if you have a different potential outcome depending on whether you are treated <em>and</em> whether you are sampled, then you need to define potential outcomes in terms of treatment assignment <em>and</em> sampling before either of these steps have occurred. More on this below.</p>
+<ul>
+<li>attrition is a PO, noncompliance is a po. these depend on D and A?</li>
+</ul>
+</div>
+<div id="when-you-do-and-do-not-need-to-define-potential-outcomes" class="section level3">
+<h3><span class="header-section-number">7.3.3</span> When you do and do not need to define potential outcomes</h3>
+<p>So when should you split endogenous variables into all of the counterfactual values they can take on (potential outcomes), and when should you leave them whole? In other words, which variables belong in your <code>population</code> and which belong in your <code>potential_outcomes</code>? Why do we split on variables like <code>Z</code> and not on variables like <code>u</code> or <code>e</code>?</p>
+<p>The short answer is that it all depends on your <span class="math inline">\(I\)</span>nquiry.</p>
+<p>Let us take a simple example using the population declaration above. Suppose that you were interested in the average effect of <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span>, for any given value that <span class="math inline">\(X\)</span> can take: <span class="math inline">\(E[Y_i(1) - Y_i(0)]\)</span>. Then your inquiry depends only on <code>Y_Z_1</code> and <code>Y_Z_0</code>. Those are the only potential outcomes you need.</p>
+<p>What if you want to know the effect of <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span> among groups for whom <span class="math inline">\(X\)</span> happened to equal 1 or happened to equal 0: <span class="math inline">\(E[Y_i(1) - Y_i(0)\mid X_i = x]\)</span>. Here, you are not interested in the causal effect of <code>X</code>, just in whether, descriptively, the effect of <code>Z</code> on <code>Y</code> just happens to different among people for whom <code>X == 1</code>. There is no need to split on <code>X</code> in this case: you just need to look at the difference in <code>Y_Z_1</code> and <code>Y_Z_0</code> among the people for whom <code>X</code> is equal to 1 or to 0, which can be achieved through subsetting.</p>
+<p>Now, let us imagine that you were interested in the causal effects of both <code>X</code> and <code>Z</code> on <code>Y</code>. For example, you might want to know whether <code>X</code> <em>causes</em> the effects of <code>Z</code> on <code>Y</code> to be bigger:
+<span class="math display">\[E[(Y_i(Z_i = 1,X_i = 1) - Y_i(Z_i = 0,X_i = 1)) - \]</span>
+<span class="math display">\[~~~~~(Y_i(Z_i = 1,X_i = 0) - Y_i(Z_i = 0,X_i = 0))].\]</span>
+That is a claim about the counterfactual states of <code>Y</code> as a function of both variables, and would require something such as:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">potential_outcomes &lt;-<span class="st"> </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb62-2" title="2">  <span class="dt">Y_X_0_Z_0 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e,</a>
+<a class="sourceLine" id="cb62-3" title="3">  <span class="dt">Y_X_0_Z_1 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">+</span><span class="st"> </span><span class="fl">.05</span>,</a>
+<a class="sourceLine" id="cb62-4" title="4">  <span class="dt">Y_X_1_Z_0 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e,</a>
+<a class="sourceLine" id="cb62-5" title="5">  <span class="dt">Y_X_1_Z_1 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">+</span><span class="st"> </span><span class="fl">.05</span> <span class="op">+</span><span class="st"> </span><span class="fl">.05</span>)</a></code></pre></div>
+<p>Where <code>Y_X_0_Z_1</code>, for example, is a variable that lists every individual’s potential <code>Y</code> outcome if <code>X</code> were set to 0 and <code>Z</code> were set to 1. In this example, we have stipulated that <code>X</code> increases the effect of <code>Z</code> by .05. To see this, note that we can rewrite the potential outcomes declaration above using a potential outcomes function:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">+</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="fl">.05</span> <span class="op">+</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>X <span class="op">*</span><span class="st"> </span><span class="fl">.05</span>, </a>
+<a class="sourceLine" id="cb63-2" title="2">  <span class="dt">assignment_variables =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">X =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>))</a></code></pre></div>
+<p>What if the value of <span class="math inline">\(X\)</span> were itself a function of <span class="math inline">\(Z\)</span>, and your inquiry focused on the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>—<span class="math inline">\(E[Y_i(X_i = 1) - Y_i(X_i = 0)]\)</span>? In that case, you might model two sets of potential outcomes: the potential outcomes of <span class="math inline">\(X\)</span> as a function of <span class="math inline">\(Z\)</span>, and the potential outcomes of <span class="math inline">\(Y\)</span> as a function of <span class="math inline">\(X\)</span>:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1">potential_outcomes &lt;-<span class="st"> </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb64-2" title="2">  <span class="dt">X_Z_0 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">*</span><span class="st"> </span><span class="fl">0.75</span>,</a>
+<a class="sourceLine" id="cb64-3" title="3">  <span class="dt">X_Z_1 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">*</span><span class="st"> </span><span class="fl">1.25</span>,</a>
+<a class="sourceLine" id="cb64-4" title="4">  <span class="dt">Y_X_0 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e,</a>
+<a class="sourceLine" id="cb64-5" title="5">  <span class="dt">Y_X_1 =</span> <span class="fl">.5</span> <span class="op">&lt;</span><span class="st"> </span>e <span class="op">+</span><span class="st"> </span><span class="fl">.05</span>)</a></code></pre></div>
+<p>Here, we are assuming <code>Z</code> is exogenous in the sense that it is randomly assigned. However, <code>X</code>, the causal variable of interest, is endogenous to <code>e</code> and to <code>Z</code>. In fact, if we are interested in the effect of <code>X</code> on <code>Y</code>, <code>e</code> is no longer background noise here as it was in the examples above: it has become a confounder of the causal effect in which we are interested . To see this, note that higher levels of <code>e</code> make both <code>X</code> and <code>Y</code> more likely to be TRUE. This is the sort of setup in which analysts would typically use an “instrumental variables” approach (callout to IV).<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
+<p>In practice, there are always many many more potential outcomes lurking in your study than you need to model. Notice, for example, that we did not model the potential outcomes of <code>Y</code> as a function of specific levels of <code>e</code> above – unless we care about the causal effect of <code>e</code> on some outcome, there is little reason to model the counterfactuals it gives rise to. In the following two sections, we walk through some more concrete advice on which kinds of potential outcomes you need to consider modelling. Specifically, we think you should focus on potential outcomes generated through two processes: manipulation and interference.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="10">
+<li id="fn10"><p>In <code>DeclareDesign</code>, potential outcomes are labelled starting with the outcome (here, <code>Y</code>) followed by a specific parent variable whose effect we are interested in (here, <code>Z</code>), and the value that parent is set to (here <code>1</code> and <code>0</code>), all separated by underscores.<a href="elements-of-the-model.html#fnref10" class="footnote-back">↩</a></p></li>
+<li id="fn11"><p>Include reference to Pearl and truncation here? E.g. <span class="math inline">\(Pr(Y~ \mid ~do(X)) ~~|| ~~Pr(X)\)</span><a href="elements-of-the-model.html#fnref11" class="footnote-back">↩</a></p></li>
+<li id="fn12"><p>One shortcoming of this <span class="math inline">\(M\)</span>odel is that it has “baked in” the assumption of an exclusion restriction: <code>Y</code> is only affected by <code>Z</code> through <code>Z</code>’s effect on <code>X</code>—<code>Z</code> does not appear in the expression for <code>Y</code>. Returning to the fish example: showing that an instrumental variables answer strategy performs well under this <span class="math inline">\(M\)</span>odel would not be convincing to someone who worried about a particular, unmodeled, violation of the exclusion restriction.<a href="elements-of-the-model.html#fnref12" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="how-you-already-choose-answer-strategies-in-current-practice.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="diagnosing-a-design.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="example-ambrus2020loss.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="grab-bag-of-ideas-that-dont-yet-have-a-home.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

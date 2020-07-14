@@ -182,7 +182,7 @@ ggplot(plot_frame, aes(x = pump_border_distance, y = ln_prices_1864, color = as.
 
 population <- declare_population(N = 8, e = runif(N), X = rnorm(N, mean = e, sd = 1)) 
 
-population()
+declare_potential_outcomes()
 
 potential_outcomes <- declare_potential_outcomes(Y_Z_0 = .5 < e,
                                                  Y_Z_1 = .5 < e + .05)
