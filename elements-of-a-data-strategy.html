@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>17.5 Stepped wedge designs | Research Design: Declare, Diagnose, Redesign</title>
+  <title>8.2 Elements of a data strategy | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="17.5 Stepped wedge designs | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="8.2 Elements of a data strategy | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="17.5 Stepped wedge designs | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="8.2 Elements of a data strategy | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="encouragement-designs.html"/>
-<link rel="next" href="spillovers.html"/>
+<link rel="prev" href="example.html"/>
+<link rel="next" href="grab-bag.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -360,292 +360,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="stepped-wedge-designs" class="section level2">
-<h2><span class="header-section-number">17.5</span> Stepped wedge designs</h2>
-<p>In a stepped wedge design, individuals are randomly assigned to enter into
-treatment in different stages, and at each stage their outcomes are remeasured.
-The first panel of Figure X illustrates where the study gets its name: here, two
-randomly selected individuals (or clusters) enter the treatment at before each
-of the three waves of measurement, while two individuals are randomly selected
-to remain in control.</p>
-<p>Such designs have a remarkable feature: because who enters the treatment group
-at any given stage is random, the data collected in each measurement wave can
-(almost) be treated like a fresh experiment. Often, stepped wedge designs are
-vaunted for their policy appeal: stepped wedges are a good option for rigorous
-causal inference when it’s not fair or feasible to prevent some people from
-getting a treatment. Yet, that same goal can be achieved in the context of any
-experiment with one wave of measurement: just treat the control once you’ve
-conducted the final measurement. The real advantage of the stepped wedge is not
-its ethical appeal: it’s the ability to squeeze more power out of a small
-sample.</p>
-<p>Stepped-wedge designs are more complicated than they at first appear. Below, we
-explain why: this design can be thought of as a block-randomized experiment with
-heterogeneous probabilities and a high risk of spillovers.</p>
+<div id="elements-of-a-data-strategy" class="section level2">
+<h2><span class="header-section-number">8.2</span> Elements of a data strategy</h2>
+<div id="sampling-1" class="section level3">
+<h3><span class="header-section-number">8.2.1</span> Sampling</h3>
 <ul>
-<li>Show SW is better-powered but both coefficient and SE will be biased if not
-analyzed correctly.</li>
-<li>Show how allocating more sample in earlier waves better here due to high
-variance in treatment POs.</li>
-<li>Show how spillovers are very plausible and can be overcome.</li>
-<li>Show extreme case in which no power gain from SW (when u_it = 0, ICC = 1):
-this is the intuition behind SW – power gains derive from inter-temporal
-variation</li>
+<li>simple, complete, stratified, clustered, stratified and clustered</li>
+<li>weighted sampling (over/undersampling)</li>
+<li>quota sampling</li>
+<li>the inquiry and the model guide your choice of which units to sample and how to sample them</li>
 </ul>
-<div id="design-declaration-5" class="section level3">
-<h3><span class="header-section-number">17.5.1</span> Design Declaration</h3>
+</div>
+<div id="treatment-assignment" class="section level3">
+<h3><span class="header-section-number">8.2.2</span> Treatment assignment</h3>
 <ul>
-<li><p><strong>M</strong>odel: our design has eight units randomized and remeasured at three time
-points. Units’ untreated potential outcomes consist of an unit- and a
-unit-period-specific shock. Their treated potential increases relative to their
-control potential outcome by a rate of 1 each period (see second panel of Figure
-X).</p></li>
-<li><p><strong>I</strong>nquiry: Since any unit at any given point in time reveals one of only two
-potential outcomes, we can define our estimand simply as the average treatment
-effect. As panel 2 shows, the ATE averaged over the three periods is (1 + 2 + 3)
-/ 3 = 2. An important assumption that enables us to define the estimand in this
-way is that units reveal the same treated or untreated potential outcome,
-irrespective of what happened in the previous period. This amounts to a no
-spillovers assumption, which may be implausible in practice. We return to this
-below.</p></li>
-<li><p><strong>D</strong>ata strategy: our assignment strategy works in two stages. We first
-cluster-assign unit-periods to a <code>wave</code> in which they will be treated.
-One-quarter of the units are not treated in any wave (pure control): <code>p_00 = 2/8</code>. The remaining three quarters are distributed evenly among the three waves
-of treatment: <code>p_W1 &lt;- p_W2 &lt;- p_W3 &lt;- 2/8</code>. In a second phase, the wave
-assignment is converted into a simple indicator, <code>Z</code>, for whether the unit is
-treated in a given period or not. There is an important but subtle difference
-between the <code>wave</code> and <code>Z</code> variables [explain Z is joint prob]</p></li>
-<li><p><strong>A</strong>nswer strategy: [describe: we look at an approach that treats it like
-blocks. What are inverse propensities weights? Simply put, they correspond to
-the number of observations that a sampled observation “represents.” We also
-compare to the power of a design that only involves one wave of measurement,
-e.g. at wave 2 where units are treated 5050.]</p></li>
+<li>simple, complete, blocked, clustered, blocked and clustered</li>
+<li>point restricted randomization</li>
+<li>no assignment procedure at all</li>
+<li>multiple arms</li>
+<li>the inquiry and the model guide your choices of which treatments to assign and how to assign them</li>
 </ul>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb144-1" title="1">p_<span class="dv">00</span> &lt;-<span class="st"> </span>p_W1 &lt;-<span class="st"> </span>p_W2 &lt;-<span class="st"> </span>p_W3 &lt;-<span class="st"> </span><span class="dv">2</span><span class="op">/</span><span class="dv">8</span></a>
-<a class="sourceLine" id="cb144-2" title="2"></a>
-<a class="sourceLine" id="cb144-3" title="3">design &lt;-<span class="st"> </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb144-4" title="4">  <span class="dt">t =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">3</span>, <span class="dt">trend =</span> <span class="kw">as.numeric</span>(t), </a>
-<a class="sourceLine" id="cb144-5" title="5">                <span class="co"># u_t = rnorm(N), </span></a>
-<a class="sourceLine" id="cb144-6" title="6">                <span class="dt">p =</span> <span class="kw">c</span>(p_W1, p_W1 <span class="op">+</span><span class="st"> </span>p_W2, p_W1 <span class="op">+</span><span class="st"> </span>p_W2 <span class="op">+</span><span class="st"> </span>p_W3)),</a>
-<a class="sourceLine" id="cb144-7" title="7">  <span class="dt">i =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">8</span>, <span class="dt">u_i =</span> <span class="kw">rnorm</span>(N), <span class="dt">nest =</span> <span class="ot">FALSE</span>),</a>
-<a class="sourceLine" id="cb144-8" title="8">  <span class="dt">obs =</span> <span class="kw">cross_levels</span>(<span class="dt">by =</span> <span class="kw">join</span>(t, i), <span class="dt">u_it =</span> <span class="kw">rnorm</span>(N))) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb144-9" title="9"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(<span class="dt">Y_Z_0 =</span> u_i <span class="op">+</span><span class="st"> </span>u_it, <span class="dt">Y_Z_1 =</span> u_i <span class="op">+</span><span class="st"> </span>u_it <span class="op">+</span><span class="st"> </span>trend) <span class="op">+</span></a>
-<a class="sourceLine" id="cb144-10" title="10"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">clusters =</span> i, <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, </a>
-<a class="sourceLine" id="cb144-11" title="11">                     <span class="dt">prob_each =</span> <span class="kw">c</span>(p_W1, p_W2, p_W3, p_<span class="dv">00</span>),</a>
-<a class="sourceLine" id="cb144-12" title="12">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;wave&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb144-13" title="13"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">Z =</span> <span class="kw">as.numeric</span>(t <span class="op">&gt;=</span><span class="st"> </span>wave), </a>
-<a class="sourceLine" id="cb144-14" title="14">               <span class="dt">ip =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(Z <span class="op">*</span><span class="st"> </span>p <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p)),</a>
-<a class="sourceLine" id="cb144-15" title="15">               <span class="dt">handler =</span> fabricate) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb144-16" title="16"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb144-17" title="17"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ate =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb144-18" title="18"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;1: Wave 2 only&quot;</span>, <span class="dt">subset =</span> t <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb144-19" title="19"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;2: Weighted, clustered SW&quot;</span>, <span class="dt">weights =</span> ip, <span class="dt">clusters =</span> i) <span class="op">+</span></a>
-<a class="sourceLine" id="cb144-20" title="20"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;3: Unweighted, unclustered SW&quot;</span>) </a></code></pre></div>
-<p><img src="book_files/figure-html/unnamed-chunk-379-1.png" width="672" /></p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb145-1" title="1"><span class="co"># Diagnose design</span></a>
-<a class="sourceLine" id="cb145-2" title="2">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design)</a></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Bias
-</th>
-<th style="text-align:left;">
-Power
-</th>
-<th style="text-align:left;">
-Coverage
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-SD Estimate
-</th>
-<th style="text-align:left;">
-Mean Se
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-1: Wave 2 only
-</td>
-<td style="text-align:left;">
-0.06
-</td>
-<td style="text-align:left;">
-0.38
-</td>
-<td style="text-align:left;">
-0.92
-</td>
-<td style="text-align:left;">
-2.06
-</td>
-<td style="text-align:left;">
-1.04
-</td>
-<td style="text-align:left;">
-0.95
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2: Weighted, clustered SW
-</td>
-<td style="text-align:left;">
-0.04
-</td>
-<td style="text-align:left;">
-0.53
-</td>
-<td style="text-align:left;">
-0.96
-</td>
-<td style="text-align:left;">
-2.04
-</td>
-<td style="text-align:left;">
-0.79
-</td>
-<td style="text-align:left;">
-0.77
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-3: Unweighted, unclustered SW
-</td>
-<td style="text-align:left;">
-0.36
-</td>
-<td style="text-align:left;">
-0.94
-</td>
-<td style="text-align:left;">
-0.86
-</td>
-<td style="text-align:left;">
-2.36
-</td>
-<td style="text-align:left;">
-0.68
-</td>
-<td style="text-align:left;">
-0.59
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-</tbody>
-</table>
+</div>
+<div id="measurement" class="section level3">
+<h3><span class="header-section-number">8.2.3</span> Measurement</h3>
 <ul>
-<li><p>Comparing 1 and 2, stepped wedge gives a big improvement in power, is
-unbiased, and gets the coverage correct. Clearly better than just doing a
-cross-section at wave 2.</p></li>
-<li><p>Estimator 3 shows two pitfalls, however, that can lead us to overestimate
-benefits of SW.</p></li>
-</ul>
-<ol style="list-style-type: decimal">
-<li><p>First, it is biased: [explain how treated POs are more commonly observed in
-periods when they’re higher, we need to weight for this. How weights come about:
-There is one way that a unit can be observed in a treated state in wave 1: they
-are assigned to W1 with probability <code>p_W1</code>. There are two ways in which a unit
-can be treated in wave 2: they are assigned in W1 with <code>p_W1</code> or in W2 with
-<code>p_W2</code>. Because being assigned in W1 or in W2 are exclusive and independent
-events, we can get the prob of being treated in any period by wave 2 by summing
-the probs.]</p></li>
-<li><p>Second, standard errors are wrong. Units should be treated as clusters (draw
-analogue to two-stage random assignment in saturation design?)</p></li>
-</ol>
-<p>A natural question is how power changes as more or fewer units are assigned.
-Here, we consider variations on the stepped wedge design declared above, in
-which we hold constant at 3 the number of units assigned to the pure control,
-and shift an increasing proportion of the assignment to later waves.</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb146-1" title="1">designs &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb146-2" title="2">  <span class="dt">a =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>),</a>
-<a class="sourceLine" id="cb146-3" title="3">  <span class="dt">b =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>),</a>
-<a class="sourceLine" id="cb146-4" title="4">  <span class="dt">c =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>),</a>
-<a class="sourceLine" id="cb146-5" title="5">  <span class="dt">d =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>),</a>
-<a class="sourceLine" id="cb146-6" title="6">  <span class="dt">e =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">8</span>),</a>
-<a class="sourceLine" id="cb146-7" title="7">  <span class="dt">f =</span> <span class="kw">redesign</span>(design, <span class="dt">p_00 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W1 =</span>  <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W2 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dt">p_W3 =</span> <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>)</a>
-<a class="sourceLine" id="cb146-8" title="8">  )</a></code></pre></div>
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb147-1" title="1"><span class="co"># Diagnose design</span></a>
-<a class="sourceLine" id="cb147-2" title="2">diagnoses &lt;-<span class="st"> </span><span class="kw">diagnose_designs</span>(designs)</a></code></pre></div>
-<p><img src="book_files/figure-html/unnamed-chunk-386-1.png" width="672" /></p>
-<ul>
-<li>We see a monotonic decrease in the power as more of the sample is treated
-later. This occurs because treating units later means observing less of the
-potential outcomes. The potential outcomes are more variant, so we’re better
-off when we observe more of them [I think!]</li>
+<li>Should this be where we do the first bit of distinction between latent and observed</li>
+<li>more T (david McKenzie). How frequently to measure. Andy - arguing against intermediate measurement?</li>
+<li>multiple measurements of Y. make a scale</li>
+<li>the inquiry and model guide your choices of which endogenous outcomes to measure</li>
 </ul>
 </div>
 </div>
@@ -654,8 +396,8 @@ off when we observe more of them [I think!]</li>
           </div>
         </div>
       </div>
-<a href="encouragement-designs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="spillovers.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="example.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="grab-bag.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
