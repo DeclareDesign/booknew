@@ -1,0 +1,74 @@
+---
+title: "Knowledge accumulation"
+output: html_document
+bibliography: ../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+```
+
+<!-- start post here, do not edit above -->
+
+## "Knowledge accumulation"
+
+<!-- make sure to rename the section title below -->
+
+```{r putting_designs_to_use, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
+
+
+
+
+## The Metaketa design
+
+| Study Number | Place | What Works   | Design Implemented | Success? |
+| ------------ | ----- | ------------ | ------------------ | -------- |
+| 1            | A     | $Y_A ~ Z_A$  | $MIDA_A$           | Yes      |
+| 2            | B     | $Y_B ~ Z_B$  | $MIDA_B$           | Yes      |
+| 3            | C     | $Y_C ~ Z_C$  | $MIDA_C$           | Yes      |
+| 4            | D     | $Y_D ~ Z_D$  | $MIDA_D$           | Yes      |
+| 5            | E     | $Y_E ~ Z_E$  | $MIDA_E$           | Yes      |
+
+The worry is that $I_A$ and $I_B$ etc are fundamentally different inquiries about different dags
+
+[faceted figure of 5 different DAGs with nodes in different languages roman, greek, numeric, windings].  The purpose of *theory* is to tell us when the $I$'s across context are different, but that is HARD and that is how research has gone for YEARS.
+
+The metaketa design says WAIT -- LET'S agree on a $MIDA_{MK}$ that we will implement in all 5 places, mutatis mutandis. That is, everyone "localizes" their design because things work slightly differently in different places, but if we try hard, we can implement the same "important" treatment on the same "important" outcome, even though the details (like the language of the treatment materials, the specifics of the measurement strategies.) will differ from place to place.
+
+| Study Number | Place | What Works   | Design Implemented                               | Success? |
+| ------------ | ----- | ------------ | ------------------------------------------------ | -------- |
+| 1            | A     | $Y_A ~ Z_A$  | $\delta_A * MIDA_{MK} - (1 - \delta_A) * MIDA_A$ | ?        |
+| 2            | B     | $Y_B ~ Z_B$  | $\delta_B * MIDA_{MK} - (1 - \delta_B) * MIDA_B$ | ?        |
+| 3            | C     | $Y_C ~ Z_C$  | $\delta_C * MIDA_{MK} - (1 - \delta_C) * MIDA_C$ | ?        |
+| 4            | D     | $Y_D ~ Z_D$  | $\delta_D * MIDA_{MK} - (1 - \delta_D) * MIDA_D$ | ?        |
+| 5            | E     | $Y_E ~ Z_E$  | $\delta_E * MIDA_{MK} - (1 - \delta_E) * MIDA_E$ | ?        |
+
+
+Coordinating trials like the metaketa design means causing teams to implement designs that they otherwise would not have. Collaboration can bring many benefits and shared struggle, but fundamentally, it pulls all the designs towards the common $MIDA_{MK}$ design. The strength of the pull is given by the $\delta$ parameters. 
+
+Will the metaketa design be a success? Only if (1) the $MIDA_{MK}$ design is a strong one and it is correct about how $Y$ and $Z$ relate. If the $MIDA_{MK}$ design is poor, however, then all the studies will be a failure. Instead of learning $I_A$ in place $A$ and learning $I_B$ in place $B$, we learn nothing anywhere. 
+
+The trouble with the standard approach (separate teams investigating phenomena that later theory tries to label as instances of the same thing) is that theory is hard and we can never really be sure if $I_A$ means the same thing for $M_A$ as $I_B$ means for $M_B$. The metaketa design tries to solve this theoretical problem on the front end -- let's agree on what the $M$ we all have in mind is (with local variations), then run a study. This approach works well if the $M$ we all agree on is approximately correct, and it works *worse* than the standard approach if we're wrong.
+
+
+
+
+
+
