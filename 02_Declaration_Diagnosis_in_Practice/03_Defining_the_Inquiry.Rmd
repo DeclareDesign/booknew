@@ -26,124 +26,24 @@ sims <- 100
 b_sims <- 20
 ```
 
-# Defining the Inquiry
-
-There are two basic kinds of inquiries $I$ about a model $M$, descriptive and causal. One way to think about the difference is that descripitive inquiries are about the nodes of a dag and causal inquires are about the edges. A descriptive *inference* is a conclusion about a latent variable $Y^*$ on the basis of a measured variable $Y$. The feature we seek to describe -- our inquiry -- is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$.
-
-A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. You can't just observe edges -- you can see nodes but you can't see edges. 
-
-
-
-
-Causal inquires 
-
-like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
-
-
-
-
-
-
-
-
-
-Mediation Inquires:
-
-Consider $X -> B <- A$ and $X -> A$. In this DAG $A$ is a mediator. There are three causal inquiries:
-
-$X -> B$
-$X -> A$
-$A -> B$.
-
-If we randomize $X$, we can learn about $X -> A$ but not $X -> B$, because $X -> B$ is confounded.  We obviously don't learn anything about $A -> B$ because for that we'd need to randomize $A$. Mediation analysis tries to get all three for the price of one random assignment. At best we get $X -> A$ and the total effect of X on B, which is not just $X -> B$, but instead $X -> B$ + $(X -> A) * (A -> B)$. Mediation analysis tries to get something for nothing.
-
-
-
-
-
-
-
-We would like to use a measurement strategy
-
-
-
-
-
-
-
-
-Social scientists are picking research questions it can be hard to know where to start.
-
-Theory is imaginary. We have to to spend time imagining it. That's what theorists do (with different formalizations). The imagine models open parentheses M). Models are complex, there are many things to know about them. There are many inquiries.
-
-Data are real. We have to spend time making them real. That's what empiricists do (with many different measurement procedures). They make data real by creating them. Data come in many forms, there are many things to know about creating data. There are many ways to summarize them.
-
-
-Empiricists have to be concerned about research design. We have to develop empirical strategies to demonstrate I.  We have to learn a lot about how to select the date of strategy and the answer strategy in a way that demonstrates an inquiry about a model that anybody cares about. So empiricists have to learn about models and inquiries (theory) as well as about data strategies and answer strategies (empirics).
-
-
-How should you pick research questions?
-
-You should study M to understand which Is are worth knowing.
-
-You should study D and A in order to learn how to demonstrate I.
-
-It's a difficult mapping but we think to get started it's helpful to add a minimum write down your model your inquiry your data strategy in your answer strategy of any Consol model that interests you to get started learning how to map. I(M) to A(D).  Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on M, that is, how we make M truer.
-
-
-
-
-
-
 
 ```{r, echo = FALSE}
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 library(dagitty)
 ```
 
-## Example section
+[Introductory Material about the Inquiry]
 
-## Connections to MIDA
 
-## Defining the Inquiry in DeclareDesign
-
-A good inquiry is informative about the model. 
-- Existence of a node (descriptive mean)
-- Model suggests two variables should be correlated (descriptive correlation)
-- Arrow between a node (experiment)
-- CDF / PDF of a variable
-
-A bad inquiry:
-- does not exist
-- does not address a "central" part of the model
-- does not summarize the theory
-
-### Classes of estimands 
-
-A well defined research design usually requires a well defined question and the quality of a design can often be assessed in terms of how well the question can be answered. 
-
-In all that follows we will make use of the concept of an *estimand*, which we take to be quantity that you seek to estimate, it is the correct answer to the question you are asking.
-
-It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand, you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand.
+It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand ($a^M$), you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand -- your $a^D$ for your $a^M$.
 
 In this case the estimand is a number and one that will eventually be revealed, letting you assess how well your estimate measures up against your estimand. But in social science inequiry estimands can take many different forms. 
 
-We describe eight families of estimand. These different families  reflect different social scientific orientations and often different 
 
-It turns out that many estimands can be thought of as summaries of potential outcomes. TO describe these we will imagine a  simple model, in which $Y$ is thought to depend on $X$ and $M$ and $M$ in turn is thought to depend on $X$. We represent this barebones model using a DAG in figure \@ref(XMYgraph).
+## Kinds of Inquiries
 
-```{r XMYgraph, echo = FALSE, fig.caption = "X affects Y directly as well as indirectly via M"}
+There are two basic kinds of inquiries $I$ about a model $M$, descriptive and causal. One way to think about the difference is that descripitive inquiries are about the nodes of a dag and causal inquires are about the edges. A descriptive *inference* is a conclusion about a latent variable $Y^*$ on the basis of a measured variable $Y$. The feature we seek to describe -- our inquiry -- is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$. A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. You can't just observe edges -- you can see nodes but you can't see edges. 
 
-plot(dagitty::graphLayout(dagitty("dag{ 
-  X -> Y ;
-  X -> M ;
-  M -> Y
- }")))
-```
-
-ADD NUMBERS WITH POTENTIAL OUTCOMES
-
-USE ONLY PO NOTATION
 
 ### Descriptive estimands
 
@@ -169,107 +69,113 @@ where $\leftarrow$ is interpreted to mean that $X$ is "set" to the indicated val
 
 * Moments; covariance 
 
-### Simple causal estimands
+Example of a descriptive inquiry:
 
-The simplest causal estimand is the outcome that a unit (or group) would have under a possibly counterfactual condition. The expected **potential outcome**:
-
-$$\Pr(Y=1 | X \leftarrow 1)$$
-
-
-The **average treatment effect** is a summary of such potential outcomes across two conditions.
-
-$$\Pr(Y=1 | X \leftarrow 1) - \Pr(Y=1 | X \leftarrow 0)$$
-
-Defined over a population *N*, the average treatment effect is written using potential outcomes notation as:
-
-$$E_{i\in N}(Y(X=1) - Y(X=0))$$
-
-These simple estimands might condition on observational quantities, giving rise to the **conditional average treatment effect**:
-
-$$\Pr(Y=1 | X \leftarrow 1, M = 1) - \Pr(Y=1 | X \leftarrow 0, M = 1)$$
-
-or, perhaps,  **controlled conditional average treatment effects**:
-
-$$\Pr(Y=1 | X \leftarrow 1, M \leftarrow 1) - \Pr(Y=1 | X \leftarrow 0, M \leftarrow 1)$$
-
-or, perhaps *differences* in effects:
+```
+declare_population +
+declare_estimand(COV = )
+```
 
 
-**Causes of effects** estimand:
+### Causal Inquires
+
+Causal inquires are summaries that involve multiple potential outcomes. TO describe these we will imagine a  simple model, in which $Y$ is thought to depend on $X$ and $M$ and $M$ in turn is thought to depend on $X$. We represent this barebones model using a DAG in figure \@ref(XMYgraph).
+
+```{r XMYgraph, echo = FALSE, fig.caption = "X affects Y directly as well as indirectly via M"}
+
+plot(dagitty::graphLayout(dagitty("dag{ 
+  X -> Y ;
+  X -> M ;
+  M -> Y
+ }")))
+```
 
 
-### Local estimands / EStiamnds over latent classes, principal strata
+[Note, this section has a huge jumble of letters that will need to be harmonized!]
 
+Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
+
+
+Mediation Inquires:
+
+Consider $X -> B <- A$ and $X -> A$. In this DAG $A$ is a mediator. There are three causal inquiries:
+
+$X -> B$
+$X -> A$
+$A -> B$.
+
+If we randomize $X$, we can learn about $X -> A$ but not $X -> B$, because $X -> B$ is confounded.  We obviously don't learn anything about $A -> B$ because for that we'd need to randomize $A$. Mediation analysis tries to get all three for the price of one random assignment. At best we get $X -> A$ and the total effect of X on B, which is not just $X -> B$, but instead $X -> B$ + $(X -> A) * (A -> B)$. Mediation analysis tries to get something for nothing.
+
+
+Conditional Causal Inquiries
 Complier average is also a CATE
 RDD is also a CATE
-Estimands as summaries
-
-### Study dependent estimands
-Expected ATT vs realized ATT
-
-### Complex counterfactuals
 
 
-### Parametric estimands
+Example of a causal inquiry:
 
-Dimensionality reduction
-Model parameters
-
-### Vector-valued inquiries (set of predictions for N units), 
-
-The diagnostic statistic is ith respect to the vector
-
-e.g. the CEF
-
-QCA estimand.
-
-### Models as estimands
+```
+declare_population +
+declare_potential_outcomes +
+declare_estimand(ATE = )
+```
 
 
+## How should you select Inquiries?
 
-### Selecting estimands
+Social scientists are picking research questions it can be hard to know where to start.
 
-### You are responsible for your estimand
+Theory is imaginary. We have to to spend time *imagining* it. That's what theorists do (with different formalizations). The imagine models ($M$). Models are complex, there are many things to know about them, that is, there are many inquiries.
 
-### Estimands to purpose. Choice of inquiry is not valueless
+Data are real. We have to spend time *making* them real. That's what empiricists do (with many different measurement procedures). They make data real by creating them. Data come in many forms, there are many things to know about creating data. There are many ways to summarize them.
 
+Empiricists have to be concerned about research design. We have to develop empirical strategies to demonstrate $I$. We have to learn a lot about how to select the date of strategy and the answer strategy in a way that demonstrates an inquiry about a model that anybody cares about. So empiricists have to learn about models and inquiries (theory) as well as about data strategies and answer strategies (empirics).
 
-### Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over
+The sine qua non of a good research question ($I$) is that there is a feasible design ($MIDA$) that could answer it. That means picking a good question $I$ does not just involve theory.
 
-Implication of estimand definition for analysis
+Ofcourse, you should study $M$ to understand which $I$s are worth knowing. But you should also study $D$ and $A$ in order to learn how to demonstrate $I$.
 
-### Unknown estimands: Inquiries for discovery
+It can be a difficult mapping, but we think to get started it's helpful to -- at a minimum -- write down the $M$ and $I$ of any causal model that interests you to get started thinking about selecting strong $D$s and $A$s. The goal is to learn how to map $I(M)$ to $A(D)$. Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on $M$, that is, we bring $M$ closer to $W$, thereby making $M$ truer.
 
+A good inquiry is informative about the model. 
+- Existence of a node (descriptive mean)
+- Model suggests two variables should be correlated (descriptive correlation)
+- Arrow between a node (experiment)
+- CDF / PDF of a variable
 
-
-## Auxilliary Inquiries
-
-## Connections to MIDA
-
-## How you already specify inquiries in current practice
-
-
-- these inquiries are not the main substantive focus of the design, but they are features of the model that have observable implications and can be checked. 
-
-- For models that include mediating roles for a variable, need to demonstrate that Z affects M at a minimum.
-
-- Balance tables demonstrate a required assumption that Z is orthogonal to pre-treatment characteristics
-
-- A full DAG specification can enumerate the full set of conditional independencies that are implied by the model; these can be checked and verified.
+A bad inquiry:
+- does not exist
+- does not address a "central" part of the model
+- does not summarize the theory
 
 
+You are responsible for your inquiry.
+
+Choice of inquiry is not valueless.
 
 
+## Grab bag of ideas we don't know where to put
+
+- Study dependent estimands like Expected ATT vs realized ATT.  Yes, your I depends on D, but in a weird way. Since you can write down all possible ATTs in the model, you actually *can* write the estimand without realizing D, you just don't know which of the multiverse of estimands you've written down will actually eventuate. Since beliefs about the data strategy (it will create a class of subjects who will be treated) can sort of be hacked into the model, I wonder about how fundamental this wrinkle is.
+
+- Complex counterfactuals
+- Parametric estimands (Dimensionality reduction, Model parameters)
+- Vector-valued inquiries (set of predictions for N units or a function like the CEF), 
+- QCA estimand.
+- estimands like "TRUE"
+- Models as estimands (is this different from the CEF?)
+- Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over
+- Unknown estimands: Inquiries for discovery
+- Auxilliary Inquiries: these inquiries are not the main substantive focus of the design, but they are features of the model that have observable implications and can be checked. For models that include mediating roles for a variable, need to demonstrate that Z affects M at a minimum. Balance tables demonstrate a required assumption that Z is orthogonal to pre-treatment characteristics. A full DAG specification can enumerate the full set of conditional independencies that are implied by the model; these can be checked and verified.
 
 
-
-## ADVICE SECTION
+### ADVICE SECTION
 
 [note to all, this is a nuts stream-of-consciousness. I want there to be some advice because I don't want to punt, but I know this advice will have to change.]
 
-This strategy makes some sense. Since there are so many things we *don't know* about the social world, researchers are positively overbrimming with interesting theories to test. Then again, most of us are a little bit bewildered when it comes to actually formulating a research question that would simultaneously be worth knowing the answer to and that would be feasible to answer. This section considers and critiques some common research question formulation advice. Perhaps unsurprising, our overarching perspective is that we can't compromise on research design -- scientific conclusions depend essentially on strong research designs. That said, choosing research questions is much more art than science. Moreover, the choice of what to study is not valueless in the sense that scholars' research agendas are reflections of their values and their politics. While scientists seek to reveal objective truths, we also have to choose **which** truths to investigate, and that choice is value-laden.
+Since there are so many things we *don't know* about the social world, researchers are positively overbrimming with interesting theories to test. Then again, most of us are a little bit bewildered when it comes to actually formulating a research question that would simultaneously be worth knowing the answer to and that would be feasible to answer. This section considers and critiques some common research question formulation advice. Perhaps unsurprising, our overarching perspective is that we can't compromise on research design -- scientific conclusions depend essentially on strong research designs. That said, choosing research questions is much more art than science. Moreover, the choice of what to study is not valueless in the sense that scholars' research agendas are reflections of their values and their politics. While scientists seek to reveal objective truths, we also have to choose **which** truths to investigate, and that choice is value-laden.
 
-### The false choice between theory-first and method-first approaches.
+#### The false choice between theory-first and method-first approaches.
 
 Some research questions are boring and trivial -- no doubt you have encountered such research questions when reading bad research. Figuring our the best way to answer unimportant questions can be a stimulating intellectual puzzle, but the answers to those questions themselves will not advance scientific knowledge. Some research questions are exciting and vital -- those are the ones we want to answer using credible research designs. Giving weak or noncredible answers to important research questions is *dangerous* and unethical. 
 
@@ -287,7 +193,7 @@ People who are looking in the forest for mushrooms often don't see a mushroom fo
 
 In our experience, that means that the most important thing for young scholars to do is practice. Practice both searching for interesting questions and practice research design. Practicing research design often involves honing one's skills on less than interesting questions.￼ Looking for interesting questions entails reading other scholars' work carefully and generously. Even when their research designs are not strong, their questions might nevertheless be interesting. You may learn from reading bad work on interesting questions that some research questions are impossible to answer. That's OK -- now you’ve learned about the constraints on what we can learn. Operating within the constraints of what is knowable means you can anticipate when a poor research design on an interesting question is unlikely to lead to progress.
 
-### Novelty
+#### Novelty
 Another route for finding research questions is to try to determine what is unknown to the research community, then to seek to fill that gap. This approach can be quite generative, but it is not without pitfalls. Establishing primacy -- that a finding is "new" and that the knowledge generated by the study was previously unknown -- is hard. It's also risky, since peer reviewers have access to Google Scholar. False primacy claims are especially damaging during the review process because they are easily refuted and demonstrate ignorance of the published record.
 
 What does it mean for a research finding to be novel? There are two main cases. First, a finding is new if the empirical pattern was predicted by an earlier theory but had yet to be confirmed. That is, there was a theoretical prediction that had not yet found its empirical verification. The empirical finding is novel in that it confirms the previously unconfirmed theoretical prediction. Second, an empirical finding is also novel if the empirical reality was *not* predicted by the theory.
@@ -296,7 +202,7 @@ Findings that contradict theoretical predictions are also novel. Empirical findi
 
 This puts the advance of science in a funny position. Because we are worried that many of the advances made at the forefront of the scientific endeavor are incorrect or spurious, we really value replication of novel results. When an empirical claim in favor of a theoretical proposition is made in Place A at Time 1, we immediately want to know if it holds at Place B at Time 2 as well.
 
-### Mixing methods
+#### Mixing methods
 
 A common piece of advice for young scholars who are interested in a topic is to mix methods. The thinking goes like this: I have an important question but none of my methods perfectly answers the question. I'll take a multifaceted approach that gets that many different aspects of the question which I hope to aggregate into a whole.￼￼
 
