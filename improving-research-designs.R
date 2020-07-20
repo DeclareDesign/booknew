@@ -65,21 +65,24 @@ gulzar_khan_design <-
 
 dag <-
   dagify(m ~ M,
+         I ~ M,
          aM ~ m + I,
-         d ~ D + m,
+         d ~ D + W,
+         A ~ D,
+         D ~ M,
          aA ~ A + d)
 
 gg_df <-
   tidy_dagitty(
     dag,
     layout = "manual",
-    x = c(4, 3, 2, 1, 3, 1, 4, 2),
-    y = c(1.1, 1.1, 1.1, 1.1, 1, 1, 1, 1)
+    x = c(4, 3, 2, 1, 3, 3, 1, 4, 2),
+    y = c(1.1, 1.1, 1.1, 1.1, 0.9, 1, 1, 1, 1)
   )
 
 gg_df <-
   gg_df %>%
-  mutate(arced = (name == "m" & to == "d"),) %>%
+  mutate(arced = (name == "M" & to == "D")) %>%
   arrange(name)
 
 
@@ -101,10 +104,11 @@ g <-
                   "D",
                   "I",
                   "m",
-                  "M"
+                  "M",
+                  "W"
                 )),
                 size = 4) +
   geom_dag_edges() +
-  geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.025) +
+  geom_dag_edges_arc(data = filter(gg_df, arced), curvature = 0.025) +
   theme_dag()
 g
