@@ -1,5 +1,5 @@
 # ---
-# Improving research designs
+# Better Design
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
