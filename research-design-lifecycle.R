@@ -1,5 +1,5 @@
 # ---
-# Putting Designs to Use
+# Research Design Lifecycle
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
