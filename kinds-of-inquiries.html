@@ -397,12 +397,14 @@ declare_estimand(COV = )</code></pre>
 <p><img src="book_files/figure-html/XMYgraph-1.png" width="672" /></p>
 <p>[Note, this section has a huge jumble of letters that will need to be harmonized!]</p>
 <p>Causal inquiries like the average effect of A on B in a causal model like <span class="math inline">\(A -&gt; B &lt;- U\)</span> are helped enormously by good descriptive inference about the nodes <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, but the focus is on the edge between them. You typically can’t learn about the edge by doing desscripitve inference on the nodes only. If we measure <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> and find that they covary, we can’t be sure that <span class="math inline">\(A -&gt; B\)</span> because it could be that <span class="math inline">\(A &lt;- U -&gt; B\)</span>. This problem goes by the familiar phrase that “correlation doesn’t imply causation,” which is true and is a problem that can’t be wished away. But “correlation doesn’t imply causation” also kind of misses the point. The point is that you can’t see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.</p>
+<!-- MH -- suggest here and elsewhere we hold back on pushing on experimental designs; the focus here  here is on  I not A. People might be coming at this from a bounds a pproach, a Bayes approach, etc. Or may have other strategies we haven;t thought of. Here lets keep focus on I -->
 <p>Mediation Inquires:</p>
 <p>Consider <span class="math inline">\(X -&gt; B &lt;- A\)</span> and <span class="math inline">\(X -&gt; A\)</span>. In this DAG <span class="math inline">\(A\)</span> is a mediator. There are three causal inquiries:</p>
 <p><span class="math inline">\(X -&gt; B\)</span>
 <span class="math inline">\(X -&gt; A\)</span>
 <span class="math inline">\(A -&gt; B\)</span>.</p>
 <p>If we randomize <span class="math inline">\(X\)</span>, we can learn about <span class="math inline">\(X -&gt; A\)</span> but not <span class="math inline">\(X -&gt; B\)</span>, because <span class="math inline">\(X -&gt; B\)</span> is confounded. We obviously don’t learn anything about <span class="math inline">\(A -&gt; B\)</span> because for that we’d need to randomize <span class="math inline">\(A\)</span>. Mediation analysis tries to get all three for the price of one random assignment. At best we get <span class="math inline">\(X -&gt; A\)</span> and the total effect of X on B, which is not just <span class="math inline">\(X -&gt; B\)</span>, but instead <span class="math inline">\(X -&gt; B\)</span> + <span class="math inline">\((X -&gt; A) * (A -&gt; B)\)</span>. Mediation analysis tries to get something for nothing.</p>
+<!-- Again seem to be focused a bit on A rather than I.  A lot to be said about these I's though ; e.g. use of cross worl counterfactuals-->
 <p>Conditional Causal Inquiries
 Complier average is also a CATE
 RDD is also a CATE</p>
@@ -410,6 +412,7 @@ RDD is also a CATE</p>
 <pre><code>declare_population +
 declare_potential_outcomes +
 declare_estimand(ATE = )</code></pre>
+<!-- WOuld like to go back to look at text we had in an earlier version of paper that classified different types of estimand -->
 </div>
 </div>
             </section>
