@@ -1,0 +1,205 @@
+---
+title: "Formalizing MIDA"
+output: html_document
+bibliography: ../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+source("scripts/vayr.R")
+```
+
+<!-- start post here, do not edit above -->
+
+# Formalizing MIDA
+
+<!-- make sure to rename the section title below -->
+
+```{r research_questions, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
+
+In this section, we set the our approach on firmer mathematical grounds. In doing so, we employ elements from Pearl's [-@Pearl2009] approach to causal modeling (directed acycling graphs, or DAGs for short), which provides a syntax for mapping design inputs to design outputs. We also use the potential outcomes framework as presented, for example, in @Imbens2015, which many social scientists use to clarify their inferential targets. We'll dive much more deeply into both DAGs and potential outcomes in Part II.
+
+
+A research design $\Delta$ includes four elements $<M,I,D,A>$:
+
+A **model**, $M$, of how the world works. In general following Pearl's definition of a probabilistic causal model we will assume that a model contains three core elements. First, a specification of the variables $X$ about which research is being conducted. This includes endogenous and exogenous variables ($V$ and $U$ respectively) and the ranges of these variables. In the formal literature this is sometimes called the *signature* of a model [@halpern2000]. Second, a specification of how each endogenous variable depends on other variables (the "functional relations" or, as in @Imbens2015, "potential outcomes"), $F$. Third, a probability distribution over exogenous variables, $P(U)$. We write a draw from this distribution as $M() = m$.  
+
+An **inquiry**, $I$, about the distribution of variables, $X$, perhaps given interventions on some variables. Using Pearl's notation we can distinguish between questions that ask about the conditional values of variables, such as $\Pr(X_1 | X_2 =1)$ and questions that ask about values that would arise under interventions: $\Pr(X_1 | do(X_2 = 1))$. The distinction lies in whether the conditional probability is recorded through passive observation or active intervention to manipulate the probabilities of the conditioning distribution. For example, $\Pr(X_1 | X_2 =1)$ might indicate the conditional probability that it is raining, given that Jack has his umbrella, whereas $\Pr(X_1 | do(X_2 =1))$ would indicate the probability with which it would rain, given that Jack is made to carry an umbrella. We let $a^M$ denote the answer to $I$ \textit{under the model}. Conditional on the model, $a^M$ is the value of the estimand, the quantity that the researcher wants to learn about. The connection of $a^M$ to the model can be seen in the following equality: $I(m) = a^M$.
+
+A **data** strategy, $D$, generates data $d$ on $X$. Data $d$ arises, under model $M$ with probability $P_M(d|D)$. The data strategy includes sampling strategies and assignment strategies, which we denote with $P_S$ and $P_Z$ respectively. Measurement techniques are also a part of data strategies and can be thought of as a selection of observable variables that carry information about unobservable variables. The data strategy operates on a draw from the model to produce the observed data: $D(m) = d$.
+
+An **answer** strategy, $A$, that generates answer $a^D$ using data $d$. We encode this relationship as $A(d) = a^D$.
+
+The full set of causal relationships between $M$, $I$, $D$, and $A$ with respect to $m$, $a^M$, $d$ and $a^D$ can be seen in the DAG schematic representation of a research design.
+
+```{r, echo=FALSE, fig.cap="MIDA as a DAG"}
+
+dag <-
+  dagify(aW ~ w + I,
+         m ~ M,
+         aM ~ m + I,
+         d ~ D + w,
+         aD ~ A + d)
+
+dag_base <- tidy_dagitty(dag) %>%
+  select(name, direction, to, circular) %>%
+  as_tibble
+
+
+
+nodes_df <-
+  tibble(
+    name = c("M", "I", "D", "A", "m", "aM", "aW", "d", "aD", "w"),
+    label = TeX(c("M", "I", "D", "A", "m", "a^M", "a^W", "d", "a^D", "w")),
+    x = c(1, 2, 4, 5, 1, 2, 3, 4, 5, 3),
+    y = c(3, 3, 3, 3, 2, 2, 2.5, 2, 2, 1)
+  )
+
+endnodes_df <-
+  nodes_df %>%
+  transmute(to = name, xend = x, yend = y)
+
+gg_df <-
+  dag_base %>%
+  left_join(nodes_df, by = "name") %>%
+  left_join(endnodes_df, by = "to")
+
+gg_df <-
+  gg_df %>%
+  mutate(arced = (name == "w" & to == "R")) %>%
+  arrange(name)
+
+rect_df <-
+  tibble(
+    xmin = c(.5, 3.5),
+    xmax = c(2.5, 5.5),
+    ymin = c(1.5, 1.5),
+    ymax = c(3.5, 3.5)
+  )
+
+
+g <-
+  ggplot(data = filter(gg_df, !arced), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_dag_node(color = "gray") +
+  geom_dag_text(color = "black",
+                parse = TRUE,
+                aes(label = label),
+                size = 4) +
+  geom_dag_edges() +
+  geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.3) +
+  geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
+                                xend = NULL, yend = NULL,
+                                xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            alpha = 0.25) +
+  annotate("text", x = 1.5, y = 1.75, label = "Theory") +
+  annotate("text", x = 4.5, y = 1.75, label = "Empirics") +
+  annotate("text", x = 3, y = 2.75, label = "Truth") +
+  theme_dag()
+g
+
+
+
+```
+
+The tight correspondence between $I(m) = a^M$ and $A(d) = a^D$ points out how a research design is a correspondence between two joint distributions and their summaries. The joint distributions described by $M$ and $D$ are causally related, but they are distinct. $M$ reflects our beliefs about true underlying causal processes at work where $D$ is the procedure that results in the collection or creation of data. (The phrase "data generating process" can be a little confusing -- usually people use "true DGP" to refer to $M$, even though $M$ doesn't create data, $D$ does).  $I$ is a summary of a draw from $M$ ($m$); $A$ is a summary of a draw from $D$ ($d$). 
+
+
+Terminology note.  $I$ is the inquiry. $I(M) =a^M$ is the estimand. 
+$A$ is the estimator, inclusive of all the data munging steps.  $a^D$ is the estimate.
+
+
+
+
+### Formalizing Diagnosis
+
+Research designs are stronger when the distributions of $a^M$ and $a^D$ are more similar. To characterize how close the two distributions are, we turn to research design *diagnosis*.  Design diagnosis is the process of simulating both $I(m) = a^M$ and $A(d) = a^M$ over many draws from $M()$ and $D(m)$, and comparing them.
+
+A simple "diagnostic statistic" is a function, $g$,  of $a^M$ and $a^D$, such as the difference between them (though some diagnostic statistics may be a function of just one or the other).  If $a^M$ and $a^D$ are vector valued, one might have a vector of diagnostic statistics, such as the vector of differences between each element of  $a^M$ and $a^D$, or a scalar valued summary, such as a multidimensional distance measure. In some cases $a^M$ and $a^D$ might have different dimensions; for instance $a^D$ may be a a pair of bounds and the diagnostic statistic is "Is $a^M$ within $a^D$?"
+
+
+$$
+\Gamma = g(a^M, a^D)
+$$
+
+Because $a^M$ and $a^D$ are random variables, and any function of random variables is also a random variable, $\Gamma$ is itself a random variable. A diagnosand is a summary of that random variable. Just like we summarise random variables with statistical functionals like the expectation and variance operators, a diagnosand is a statistical functional of the diagnostic statistic random variable $\Gamma$. 
+
+$$
+\phi = f(\Gamma)
+$$
+
+Since $f()$ is a statistical functional (like $E[]$ or $V[]$), it is itself *not* a random variable. It is a description of the distribution of the random variable $\Gamma$. We'll use the greek letter $\phi$ to describe the idea of a diagnosand in general.
+
+Let's back up a moment to work through a concrete example of a diagnosand. Consider the diagnosand "bias". Bias is the average difference between the estimand and the estimate. Under a model that has two potential outcomes, a treated potential outcome and an untreated potential outcome, the inquiry might be the ATE. Under a single realization $m$ of the model $M$, the value of the ATE will be a particular number, which we call $a^M$. If our data strategy is simply to collect data on those who come to be treated versus those who don't (i.e., we do not use random assignment), and our answer strategy is difference-in-means, our answer $a^D$ could be systematically different from $a^M$. The diagnostic statistic is the error $a^D - a^M$; this error is a random variable because each draw of $m$ from $M$ is slightly different. The expectation of this random variable is $E[a^D - a^M]$, which is bias. 
+
+Similarly, the common diagnosand power is also an expectation. It is the expectation of the diagnostic statistic $\mathbb{1}(p \leq 0.05)$, which is an indicator function that equals 1 if the $p$-value is below 0.05 and 0 otherwise. 
+
+A key feature of this bare specification is that if $M$, $D$, and $A$ are sufficiently well described, the answer to question $I$ has a distribution $P_M(a^D|D)$. Moreover, one can construct a distribution of comparisons of this answer to the correct answer, under $M$, for example by assessing $P_M(a^M-a^D|D)$.
+
+Some diagnosands can be calculated analytically, though most require Monte Carlo computer simulation. A main purpose of the DeclareDesign software package is making the simulation step easier.
+
+### Formalizing Redesign
+
+Diagnosis the process of learning the value of a diagnosand for a single design. Redesign is the process of *changing* parts of MIDA in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) design among the feasible set, as measured by the changing values of the diagnosand.
+
+For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^M-a^D|D')$ or a different answer strategy $A'$: $P_M(a^M-a^{A'}|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{M'}-a^{A}|D)$.
+
+In all cases, the full evaluation of a design (declaration, diagnosis, redesign) depends on the assessment of a diagnosand, and comparing the diagnoses to what could be achieved under alternative designs.
+
+### Brief Illustration
+
+To illustrate, consider the following design. 
+
+* A model *M* specifies three variables $X$, $Y$ and $Z$ (all defined on the reals). These form the signature. In additional we assume functional relationships between them that allow for the possibility of confounding (for example, $Y =  bX + Z + \epsilon_Y; X = Z+ \epsilon_X$, with $Z, \epsilon_X, \epsilon_Z$ distributed standard normal). 
+
+* The inquiry $I$ is ``what would be the average effect of a unit increase in $X$ on $Y$ in the population?'' Note that this question depends on the signature of the model, but not the functional equations of the model (the answer provided by the model does of course depend on the functional equations). 
+
+* Under data strategy, $D$,  data is gathered on $X$ and $Y$ for $n$ randomly selected units. 
+
+* Answer $a^D$, is then generated using ordinary least squares as the answer strategy, $A$.
+
+We have specified all the components of MIDA. We now ask: How strong is this research design? One way to answer this question is with respect to the diagnosand "expected error." Here the model's functional equations provide an answer, $a^M$ to the inquiry (for any draw of $\beta$), and so the distribution of the expected error, *given the model*, $a^D-a^M$, can be calculated. In this example the expected performance of the design may be poor, as measured by this diagnosand, because the data and analysis strategy do not handle the confounding described by the model.
+
+In comparison, better performance may be achieved through an alternative data strategy (e.g., where $D'$ randomly assigned $X$ to $n$ units before recording $X$ and $Y$) or an alternative analysis strategy (e.g., $A'$  conditions on $Z$). These design evaluations depend on the model, and so one might reasonably ask how performance would look were the model different (for example if the underlying process involved nonlinearities).
+
+The central crux of good research design is generated by a deep analogy between the relationship of Models to Inquiries on the one hand and the relationship of Data Strategies to Answer Strategies on the other.
+
+$$
+M : I : : D : A
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
