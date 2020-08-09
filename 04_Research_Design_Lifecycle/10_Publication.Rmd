@@ -1,0 +1,72 @@
+---
+title: "Publication"
+output: html_document
+bibliography: ../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+```
+
+<!-- start post here, do not edit above -->
+
+## Publication
+
+<!-- make sure to rename the section title below -->
+
+```{r publication, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
+Comments can come in about all four aspects of the research design.
+
+- About M: please cite work that is about other edges and nodes in M. 
+- About I: the reviewers disagree that your I is "important"; they want you to write about a different I.
+- About D: they think the sample is poor, the randomziation scheme is lame, the measurement strategy is insufficient.
+- About A: they want logit.
+
+The goal is to respond to reviewer comments in a way that does not compromise the essential strength of your MIDA. Do not let the review process make your paper worse.
+
+You must understand how the reviewer's comments change MIDA -- do they make it stonger? if so, then adopt. Are they irrelevant to MIDA? if so, adopt.  Do they actively hurt MIDA? if so, use diagnosis to demonstrate that the proposed changes would harm the research design.
+
+### Publication bias
+
+ Here we look at risks from publication bias and illustrate two distinct types of upwards bias that arise from  a "[significance filter](https://andrewgelman.com/2011/09/10/the-statistical-significance-filter/)." A journal for publishing null results might help, but the results in there are *also* likely to be biased, *downwards*.
+
+Two distinct problems arise if only significant results are published:
+
+* The results of published studies will be *biased* towards larger magnitudes. 
+* The published studies will be *unrepresentative* of the distribution of true effects in the relevant population of studies. 
+
+These two problems are quite distinct. The first problem is more familiar: conditional on any true effect size, larger estimates have an easier time passing the statistical significance filter, so the distribution of published results will be biased upwards because it will be missing all of the smaller estimates.  The second problem is more subtle. If different studies seek to measure effects that are of different size, conditioning on statistical significance means that we are more likely to learn from places that have large effects than from places that have small effects. The significance filter means that our answers to any particular question will be biased *and* it means that the set of questions we see answers to will be biased as well. The *Journal of Significant Results* is a poor guide to the true distribution of causal effects.
+
+What about a *Journal of Null Results*? Such a journal would condition acceptance on *failing* to achieve statistical significance. The set of articles published in such a journal would *also* be biased.
+
+
+Looking first at the *Journal of Significant Results*, we see the familiar problem: the average estimate is biased away from the true value of the estimand. This problem is greatly helped by increasing the sample size. But we can also see the second problem -- the distribution of estimands (the true effects under study) is also biased towards larger effects, this problem is also allayed, though less dramatically, by larger sample sizes.
+
+The *Journal of Null Results* suffers from a parallel problem, only in reverse. Now estimands are smaller than is typical in the population and, on average, estimates are biased down relative to these estimands. Strikingly, the bias in estimand selection is *worse* at the larger sample size (though downwards bias within the set of published studies is smaller).
+
+Now, we agree that proactively publishing null results may help when considering entire research literatures as a whole, and for this reason alone a *Journal of Null Results* is probably a good thing. 
+
+But, better would be to not do any conditioning at all. The *Journal of Interesting Designs* would condition only on the question being interesting and the design being appropriate to answering the question. We see that the distribution of estimates and estimands are both centered on the correct average value. 
+
+
+
+
+
+
