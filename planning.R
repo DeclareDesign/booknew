@@ -1,5 +1,5 @@
 # ---
-# Writing a Preanalysis Plan
+# Planning
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
