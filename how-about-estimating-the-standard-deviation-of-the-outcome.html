@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 13 Part II Exercises | Research Design: Declare, Diagnose, Redesign</title>
+  <title>Chapter 22 How about estimating the standard deviation of the outcome? | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 13 Part II Exercises | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="Chapter 22 How about estimating the standard deviation of the outcome? | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 13 Part II Exercises | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="Chapter 22 How about estimating the standard deviation of the outcome? | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="redesign-to-assess-the-robustness-of-designs-to-models-gb.html"/>
-<link rel="next" href="design-library.html"/>
+<link rel="prev" href="piloting.html"/>
+<link rel="next" href="implementation.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -392,77 +392,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="part-ii-exercises" class="section level1">
-<h1><span class="header-section-number">Chapter 13</span> Part II Exercises</h1>
-<p><span class="citation">Imai, King, and Stuart (<a href="#ref-imai2008">2008</a>)</span></p>
-<!-- make sure to rename the section title below -->
-<!-- You can use the global bib file via rmarkdown cites like this: @imai2008 -->
-<ol style="list-style-type: decimal">
-<li>Imagine you are a reviewer on a paper that claims smoking causes a smoking addiction. The data offered in support of this claim shows that all 100 subjects who smoke are addicted to smoking and that all 100 subject who do not smoke are not addicted.</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>is not addicted to smoking</th>
-<th>is addicted to smoking</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>does not smoke</td>
-<td>0</td>
-<td>100</td>
-</tr>
-<tr class="even">
-<td>smokes</td>
-<td>100</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<ol style="list-style-type: lower-alpha">
-<li>Do the data support the conclusion that smoking causes addiction to smoking?</li>
-<li>Now imagine you are a reviewer on a paper that claims sailing causes a sailing addiction. The data offered in support of this claim shows that all 100 subjects who sail are addicted to sailing and that all 100 subject who do not sail are not addicted. Do the data support the conclusion that sailing causes addiction to sailing?</li>
-</ol>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th>is not addicted to sailing</th>
-<th>is addicted to sailing</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>does not sail</td>
-<td>0</td>
-<td>100</td>
-</tr>
-<tr class="even">
-<td>sails</td>
-<td>100</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<ol start="3" style="list-style-type: lower-alpha">
-<li><p>How do your answers to (a) and (b) differ? Sketch (either in words or with a DAG) the alternative causal models for smoking and sailing that could have produced the two datasets.</p></li>
-<li><p>Propose a data and answer strategy that would distinguish between the two causal models you described in (c).</p></li>
-</ol>
-<ol start="2" style="list-style-type: decimal">
-<li>The Complier Average Causal Effect (CACE) is defined as the average effect of treatment on a subset of subjects who “comply” with their treatment assignment, i.e., if assigned to treatment, they take treatment but if assigned to control, they do not take treatment. The Average Treatment Effect on the Treated (ATT) is defined as the average effect of the treatment on those subjects who <em>were</em> treated. These two estimands are subtley different. Declare a design and <code>draw_estimands</code> from it to demonstrate that these two estimands can be different. Hint: the ATT depends on the data strategy but the CACE does not.</li>
-</ol>
+<div id="how-about-estimating-the-standard-deviation-of-the-outcome" class="section level1">
+<h1><span class="header-section-number">Chapter 22</span> How about estimating the standard deviation of the outcome?</h1>
+<p>Now, let’s look at the second approach. Here, instead of using our pilot study to estimate the effect size for a power calculation, we estimate the <strong>standard deviation of the outcome</strong> and use this to calculate the main study’s minimum detectable effect. The decision we want to make is: is this MDE small enough to be able to rule out substantively important effects?</p>
+<p>We calculate the minimum detectable effect size using the approximation from <span class="citation">(Gelman and Hill <a href="#ref-gelman2006data">2006</a>, pg. 441)</span>, 2.8 times the estimated standard error. We estimate the standard error using Equation 3.6 from <span class="citation">(<span class="citeproc-not-found" data-reference-id="gerber2012field"><strong>???</strong></span>)</span>.</p>
+<p>In summary, pilot studies can be valuable in planning research for many reasons, but power calculations based on noisy effect size estimates can be misleading. A better approach is to use the pilot to learn about the distribution of outcome variables. The variability of the outcome variable can then be plugged into MDE formulas or even power calculations with, say, the smallest effect size of political, economic, or social importance.</p>
+<p>In the same spirit, pilot studies could also be used to learn the strength of the correlation between pre-treatment covariates and the outcome variable. With this knowledge in hand, researchers can develop their expectations about how much precision there is to be gained from covariate control or blocking.</p>
 
-</div>
-
-
-
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
-<div id="ref-imai2008">
-<p>Imai, Kosuke, Gary King, and Elizabeth A. Stuart. 2008. “Misunderstandings Between Experimentalists and Observationalists About Causal Inference.” <em>Journal of the Royal Statistical Society: Series A (Statistics in Society)</em> 171 (2): 481–502.</p>
+<div id="ref-gelman2006data">
+<p>Gelman, Andrew, and Jennifer Hill. 2006. <em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge: Cambridge University Press.</p>
 </div>
 </div>
             </section>
@@ -470,8 +413,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="redesign-to-assess-the-robustness-of-designs-to-models-gb.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="design-library.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="piloting.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="implementation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
