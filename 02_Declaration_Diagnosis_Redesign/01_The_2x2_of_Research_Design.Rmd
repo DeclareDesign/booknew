@@ -1,0 +1,186 @@
+---
+title: "The Fundamental 2x2 of Research Design"
+output: html_document
+bibliography: ../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+source("scripts/vayr.R")
+```
+
+<!-- start post here, do not edit above -->
+
+# The Fundamental 2x2 of Research Design
+
+<!-- make sure to rename the section title below -->
+
+```{r research_questions, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
+$M$, $I$, $D$, and $A$ are the four quadrants of the fundamental 2x2 of research design. Research design is fundamentally about two mappings. We have to map the theoretical to the empirical and we have to map joint distributions into summaries.
+
+|                    | Theory  | Empirics |
+| ------------------ | ------- | ---------|
+| Joint Distribution | $M$     | $D$      |
+| Summary            | $I$     | $A$      |
+
+
+When we map the joint distribution to the summary theoretically, we calculate $I(m) = a^M$. When we map the joint distribution to the summary empirically, we calculate $A(d) = a^D$. Research designs are stronger when $a^M$ and $a^D$ are more similar.
+
+Like all 2x2's, the fundamental 2x2 of research design suggests the possibility for interaction. If the effect of moving from joint distributions to summaries is **different** in theory than it is empirically, then the effects are interactive. (Equivalently, if the move from theory to empirics is different for the joint distribution and the summary, the effects are interactive.) This interaction is bad. It means the research design is distorted along some dimension. When the interactions are large, then $a^M$ and $a^D$ are further apart. Good research designs exhibit low interaction across the margins of the fundamental 2x2 of research design.
+
+
+<!-- MH: I know what you are getting at but I am not sure it *really* makes sense; the problem is the contents of the cells don't have a metric; this two by two is being used to classify objects but that's different to a 2 by 2 in which some variable is a function of two factors.   -->
+
+How do we achieve low interaction? How can we ensure that the move from joint to summary is symmetric across the theoretical and empirical? The answer is theoretical agnosticism and empirical flexibility, as demonstrated by the following example.
+
+<!-- Worried a little about imposing a preference over approaches at this stage  -->
+
+Here the model $M$ is a causal system with three variables -- a latent treatment variable $X$ that varies between 0 and 1, a latent outcome variable $Y$ that also varies between 0 and 1 and a small disturbance term. The outcome variable is a piecewise function of $X$ and the disturbance. One important inquiry $I$ for this system is the conditional expectation function of $Y$ with respect to $X$. 
+<!-- This is a slightly complex estimand for a first example; being a function. Also bounded data with a disturbance is a bit comolicated -->
+The shaded gray line represents $a^M$, which is a summary of the joint distribution under the model. This summary doesn't seek to explain everything about the joint distribution (like why some units have higher disturbances than others), only one important piece of it, the conditional expectation function.
+
+```{r, echo=FALSE}
+inquiry <- function(x) {
+  case_when(x <= 1 / 3 ~ 0,
+            x > 1 / 3 & x <= 2 / 3 ~ (x * 3 - 1),
+            x > 2 / 3 ~ 1)
+}
+
+design <-
+  declare_population(
+    N = 1000,
+    X_star = seq(0, 1, length.out = N),
+    error = rnorm(N, 0, 0.05),
+    prob_Y = inquiry(X_star + error),
+    Y_star = rbinom(N, 1, prob_Y)
+  ) +
+  # data strategy has measurement error in Y
+  declare_measurement(
+    Y_obs = rbinom(N, 1, prob = Y_star * 0.95 + (1 - Y_star) * 0.05)
+  ) + 
+  # Two alternative measurement strategies for X
+  declare_measurement(
+    X5 = as.numeric(cut(X_star, breaks = seq(0, 1, length.out = 6), include.lowest = TRUE))) +
+  declare_measurement(
+    X9 = as.numeric(cut(X_star, breaks = seq(0, 1, length.out = 10), include.lowest = TRUE)))
+
+dat <- draw_data(design)
+
+# Truth
+ggplot(dat, aes(X_star, prob_Y)) +
+  geom_path(stat = "function", fun = inquiry, size = 4, alpha = 0.5) +
+  geom_point(alpha = 0.5) +
+  theme_bw() +
+  labs(x = "Latent treatment variable X", 
+       y = "latent outcome variable Y",
+       title = "The inquiry under the model")
+```
+
+To generate an answer for this inquiry, we need to choose a data strategy $D$ and an answer strategy $A$. Let's start off choosing a $D$ and an $A$ that are *not* agnostic about the $M$ and that are *not* flexible. $D_1$ will measure $X$ with some error: instead of correctly placing each unit on the horizontal 0 to 1 scale, we will measure $X$ with a 1 to 5 Likert scale. It will also measure $Y$ with error: instead of correctly placing each unit on the vertical 0 to 1 scale, we'll measure $Y$ with a binary yes/no question that has a little bit of bias: most units that should be recorded as "yes" are recorded as "yes" (because their latent variable is equal to 1), but a few are recorded "no". Our answer strategy $A_1$ will approximate the conditional expectation function with an Ordinary Least Squares (OLS) regression (with classical standard errors) of measured $Y$ on measured $X$. 
+
+The data strategy $D_1$ produces data $d_1$. Applying the answer strategy, we obtain $a_1^{D_1} = A_1(d_1)$. How close are $a_1^{D_1}$ (the blue regression line) and $a^M$ (the gray truth)? Not that close. Even though the regression gets the sign right, it overestimates for the units classified as $X = 2$ and under estimates for the units classified as $X = 4$. We could calculate the expected RMSE of this research design by simulating the RMSE over many realizations of the model and taking the average. It is high. There is an *interaction* between how we have summarized the theoretical distribution and how we have summarized the emprical distribution; that interaction leads to a high RMSE.
+
+```{r, echo = FALSE}
+ggplot(dat, aes(X5, Y_obs)) +
+  geom_path(stat = "function", fun = function(x){inquiry((x - 0.5) / 5)}, size = 4, alpha = 0.5) +
+  geom_point(alpha = 0.5, position = position_jitter_ellipse(width = 0.1, height = 0.05)) +
+  stat_smooth(method = "lm", se = TRUE) +
+  theme_bw() +
+  labs(x = "Measured treatment variable X (1 - 5 Likert Scale)", 
+       y = "Measured outcome variable Y (0 - 1 binary scale)",
+       title = "Answer strategy 1 under Data strategy 1")
+```
+
+The trouble is that answer strategy 1 $A_1$ assumes a particular functional form (a straight line) and that functional form is wrong in this case. Let's choose a better answer strategy $A_2$. The field of nonparametric statistics is largely concerned with making fewer assumptions in order to be more flexible. There are a huge number of possible estimators (splines, trees, lowess, and many others) with this property. We'll use a very simple "plug-in" estimator where we just estimate the average value of Y for every value of X. If we then use straight-line interpolation between the X values, we obtain a more flexible fit ($a_2^{D_1}$) that does a better job of approximating the value of the inquiry ($a^M$). It is better in the sense of the RMSE diagnosand. The interaction effects in the fundamental 2x2 of research design have been muted by adopting a more agnostic answer strategy, i.e., we decline to assume things about the model $M$ that we don't know for sure (like functional form). Agnosticism and nonparametrics in the answer strategy help to induce smaller interactive distortions in the research design. 
+
+```{r, echo = FALSE}
+a2_d1 <-
+  dat %>%
+  group_by(X5) %>%
+  do(tidy(lm_robust(Y_obs ~ 1, data = .))) %>%
+  mutate(Y_obs = estimate)
+
+
+ggplot(a2_d1, aes(X5, Y_obs)) +
+  geom_path(stat = "function", fun = function(x){inquiry((x - 0.5) / 5)}, size = 4, alpha = 0.5) +
+  geom_point(color = "blue") +
+  geom_line(color = "blue") +
+  geom_linerange(aes(ymin = conf.low, ymax = conf.high), color = "blue") +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "blue", alpha = 0.1) +
+  geom_point(data = dat, alpha = 0.5, position = position_jitter_ellipse(width = 0.2, height = 0.1)) +
+  theme_bw()+
+  labs(x = "Measured treatment variable X (1 - 5 Likert Scale)", 
+       y = "Measured outcome variable Y (0 - 1 binary scale)",
+       title = "Answer strategy 2 under Data strategy 1")
+```
+
+The same principle holds true of the data strategy. We still have error in $a^D$ because we have measurement error in $X$ and in $Y$. An easy fix to the measurement error in $X$ is to use more categories. Suppose we measure $X$ with a 9-point scale instead of a 5-point scale: the scope for nonparametric flexibility nearly doubles. The interaction in the fundamental 2x2 quietens even further and our research design comes closer to faithfully answering the main research question $I$.
+
+```{r, echo = FALSE}
+a2_d2 <-
+  dat %>%
+  group_by(X9) %>%
+  do(tidy(lm_robust(Y_obs ~ 1, data = .))) %>%
+  mutate(Y_obs = estimate)
+
+
+ggplot(a2_d2, aes(X9, Y_obs)) +
+  geom_path(stat = "function", fun = function(x){inquiry((x - 0.5) / 9)}, size = 4, alpha = 0.5) +
+  geom_point(color = "blue") +
+  geom_line(color = "blue") +
+  geom_linerange(aes(ymin = conf.low, ymax = conf.high), color = "blue") +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), fill = "blue", alpha = 0.1) +
+  geom_point(data = dat, alpha = 0.5, position = position_jitter_ellipse(width = 0.2, height = 0.05)) +
+  theme_bw()+
+  labs(x = "Measured treatment variable X (1 - 9 Likert Scale)", 
+       y = "Measured outcome variable Y (0 - 1 binary scale)",
+       title = "Answer strategy 2 under Data strategy 2")
+```
+
+(We'll leave what happens when we apply answer strategy 1 to data strategy 2 as an exercise to the reader.)
+
+Flexibility and agnosticism are good features of a research design but they can be taken too far. If an answer strategy is too flexible, it risks overfitting the data. If the data strategy is too nuanced, underlying similarities can be missed, a corollary problem to overfitting in the answer strategy.
+
+The correspondence between $a^M$ and $a^D$ will never be perfect; interactions in the fundamental 2x2 of research design are unavoidable and inevitable. Good research design seeks to minimize those interactions.
+
+In experimental research, a common principle is "analyze as you randomize," and an instance of this principle is intention-to-treat analysis. Since the "intention" to treat some subjects but not others was the thing that was randomized, good analyses compare subjects on the basis of that intention rather than on the basis of something else (like whether or not they were *actually* treated). "Analyze as you randomize" means that the answer strategy $A$ should respect the data strategy $D$. The general principle applies well beyond experimental research: answer strategies often need to account for important features of data strategies.
+
+A parallel principle holds for the other side of the 2x2 as well. We might dub it "summarize as you theorize," by which we mean the choice of inquiry $I$ should respect the model $M$. An instance of this principle the avoidance of mediation inquiries. Suppose your model specifies that nothing affects $Z$, but that $Z$ affects $Y$ partially through $D$. The model also says that $Y$ and $D$ are affected by common unobserved variables $U$. The mediation inquiry (what portion of the effect of $Z$ travels through $D$) is a poor choice of $I$ because the model embeds the belief that we can't estimate it due to the confounding influence of $U$. Instead, we should choose the total effect of $Z$ on $Y$ as our inquiry because -- under the model at least -- it is identified. In order to study mediation, we would need to be studying a causal model in which $D$ and $Y$ are not confounded or could in principle be deconfounded. Undefined inquiries, created by conditioning on posttreatment variables for example, are another example of failing to summarize as you theorize. Inquiries must be definable in terms of the nodes and edges of a DAG.
+
+The fundamental 2x2 of research design is generated by a deep analogy between the relationship of Models to Inquiries on the one hand and the relationship of Data Strategies to Answer Strategies on the other.
+
+$$
+M : I : : D : A
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
