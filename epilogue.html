@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3.7 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign</title>
+  <title>Chapter 22 Epilogue | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3.7 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="Chapter 22 Epilogue | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3.7 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="Chapter 22 Epilogue | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="simulating-a-research-design.html"/>
-<link rel="next" href="comparing-designs.html"/>
+<link rel="prev" href="part-iv-exercises.html"/>
+<link rel="next" href="glossary.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -375,158 +375,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="diagnosing-a-research-design" class="section level2">
-<h2><span class="header-section-number">3.7</span> Diagnosing a research design</h2>
-<p>The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can, for example, use the following <code>dplyr</code> pipeline to calculate the bias, root mean-squared error, and power for each estimator-estimand pair.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">simulations_df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb39-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(estimand_label, estimator_label) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb39-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(estimate <span class="op">-</span><span class="st"> </span>estimand),</a>
-<a class="sourceLine" id="cb39-4" title="4">            <span class="dt">rmse =</span> <span class="kw">sqrt</span>(<span class="kw">mean</span>((estimate <span class="op">-</span><span class="st"> </span>estimand)<span class="op">^</span><span class="dv">2</span>)),</a>
-<a class="sourceLine" id="cb39-5" title="5">            <span class="dt">power =</span> <span class="kw">mean</span>(p.value <span class="op">&lt;</span><span class="st"> </span><span class="fl">.05</span>))</a></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:right;">
-bias
-</th>
-<th style="text-align:right;">
-rmse
-</th>
-<th style="text-align:right;">
-power
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-PATE
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:right;">
-0.0712198
-</td>
-<td style="text-align:right;">
-0.3844849
-</td>
-<td style="text-align:right;">
-0.2
-</td>
-</tr>
-</tbody>
-</table>
-<p>In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1">study_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(</a>
-<a class="sourceLine" id="cb40-2" title="2">  <span class="dt">select =</span> <span class="kw">c</span>(bias, rmse, power), </a>
-<a class="sourceLine" id="cb40-3" title="3">  <span class="dt">mse =</span> <span class="kw">mean</span>((estimate <span class="op">-</span><span class="st"> </span>estimand)<span class="op">^</span><span class="dv">2</span>))</a></code></pre></div>
-<p>Next, take your simulations data and the diagnosands, and diagnose. This runs a single operation, which is to calculate the diagnosands on your simulations data, just like in the <code>dplyr</code> version above.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="kw">diagnose_design</span>(simulations_df, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-design_label
-</th>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-mse
-</th>
-<th style="text-align:right;">
-se(mse)
-</th>
-<th style="text-align:right;">
-bias
-</th>
-<th style="text-align:right;">
-se(bias)
-</th>
-<th style="text-align:right;">
-rmse
-</th>
-<th style="text-align:right;">
-se(rmse)
-</th>
-<th style="text-align:right;">
-power
-</th>
-<th style="text-align:right;">
-se(power)
-</th>
-<th style="text-align:right;">
-n_sims
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-simple_design
-</td>
-<td style="text-align:left;">
-PATE
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.1478286
-</td>
-<td style="text-align:right;">
-0.0724626
-</td>
-<td style="text-align:right;">
-0.0712198
-</td>
-<td style="text-align:right;">
-0.2048244
-</td>
-<td style="text-align:right;">
-0.3844849
-</td>
-<td style="text-align:right;">
-0.0937049
-</td>
-<td style="text-align:right;">
-0.2
-</td>
-<td style="text-align:right;">
-0.1962373
-</td>
-<td style="text-align:right;">
-5
-</td>
-</tr>
-</tbody>
-</table>
-<p>We can also do this in a single step. When you send <code>diagnose_design</code> a design object, it will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="kw">diagnose_design</span>(simple_design, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
+<div id="epilogue" class="section level1">
+<h1><span class="header-section-number">Chapter 22</span> Epilogue</h1>
+<p>paragraph 1: revolutionary changes in each social science discipline to improve credibility of science that have changed incentives for researchers
+paragraph 2: lots of smart people trying to respond to them in their own fields
+paragraph 3: MIDA is a way of structuring your thinking about what your design is that can help respond to these changed incentives – and communicating that you are doing so</p>
+
+</div>
+
+
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="simulating-a-research-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="comparing-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="part-iv-exercises.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="glossary.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
