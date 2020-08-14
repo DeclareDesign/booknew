@@ -154,7 +154,7 @@ base_dag_plot <-
     label.padding = grid::unit(rep(0, 4), "pt")
   ) +
   # scales
-  coord_fixed(xlim = c(0, 6), 
+  coord_fixed(xlim = c(0.5, 5.5), 
               ylim = c(0.5, 4.5)) +
   scale_fill_identity() +
   scale_linetype_identity() +
