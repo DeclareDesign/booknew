@@ -22,7 +22,7 @@ nodes <-
     annotation = c("**Outcome**<br>measured only for sampled units",
                    "**Sampling indicator**<br>randomly set by designer"),
     x = c(5, 1),
-    y = c(1, 1),
+    y = c(2.5, 2.5),
     nudge_direction = c("N", "N"),
     answer_strategy = "uncontrolled"
   )
