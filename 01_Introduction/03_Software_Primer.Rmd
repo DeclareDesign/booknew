@@ -1,9 +1,9 @@
 ---
 title: "Software primer"
 output:
-  pdf_document: default
   html_document:
     number_sections: yes
+  pdf_document: default
 tables: yes
 bibliography: ../bib/book.bib
 ---
@@ -165,57 +165,6 @@ kable(head(voter_file))
 
 There are `r nrow(voter_file)` voters in the dataset. 
 
-### Using dplyr
-
-We plan to randomly assign 50 of the voters to treatment (door knock) and 50 to control (no door knock). We want to create an indicator variable `Z`, where `1` represents treatment and `0` control. In order to do this, we use R's `sample` function:
-
-```{r}
-voter_file <- voter_file %>% 
-  mutate(Z = sample(c(0, 1), size = 100, replace = TRUE, prob = c(0.5, 0.5)))
-```
-
-This says: draw a random sample with replacement 100 times (the number of voters) of `0`'s and `1`'s with probability `0.5` each. Recall that the `%>%` operator sends a data frame to the `dplyr` verb `mutate`, which can add new columns to a data frame. This is a short `dplyr` "pipeline".^[This pipeline could be expressed in base R as `voter_file$Z <- sample(c(0, 1), size = 100, replace = TRUE, prob = c(0.5, 0.5))`] (See chapter XX of R4DS for an introduction.)
-
-Now our data frame `voter_file` includes the `Z` indicator:
-
-```{r, echo = FALSE}
-kable(head(voter_file))
-```
-
-We can make things a bit easier with the `randomizr` package, which includes common random assignment functions including simple random assignment used here (see Chapter XX for a description of common kinds of random assignment). You can instead write:
-
-```{r}
-voter_file <- voter_file %>% 
-  mutate(Z = simple_ra(N = 100, prob = 0.5))
-```
-
-We might use this `dplyr` pipeline to actually implement the random assignment for a study. But to diagnose the properties of a research design, we want to know what would happen under *any* possible random assignment. To do this, we will need to run the assignment step over and over again and save the results.
-
-### As a function
-
-To simulate the design in order to diagnose it, we need to turn the assignment step into a *function*. The function can then be run again and again, each time resulting in a different random assignment.
-
-In `DeclareDesign`, we are going to use a special kind of function: a *tidy* function, which takes *in* a data frame and returns back *out* a data frame. The new data frame may have an additional variable (such as a random assignment) or it may have fewer rows (due to sampling, for example).
-
-For our random assignment step, we want to create a tidy function that adds our assignment indicator `Z` to the data, but leaves it otherwise unchanged. We write:
-
-```{r}
-simple_random_assignment_function <- function(data) {
-  data %>% mutate(Z = simple_ra(N = 100, prob = 0.5))
-}
-```
-
-We took the `dplyr` pipeline we built above, and put it on the inside of a tidy function. Now, when we run our random assignment function on the voter file, it adds in `Z`:
-
-```{r, eval = FALSE}
-simple_random_assignment_function(voter_file) 
-```
-```{r, echo = FALSE}
-simple_random_assignment_function(voter_file) %>% head %>% kable
-```
-
-### In DeclareDesign
-
 `DeclareDesign` makes writing each design step just a bit easier. Instead of writing a function each time, it writes a function for us. The core of `DeclareDesign` is a set of `declare_*` functions, including `declare_assignment`. Each one is a *function factory*, meaning it takes a set of parameters about your research design like the number of units and the random assignment probability as *inputs*, and returns a *function* as an output. 
 Instead of writing the function `simple_random_assignment_function` as we did above, in `DeclareDesign` we *declare* it:
 
@@ -232,9 +181,9 @@ simple_random_assignment_step(voter_file)
 simple_random_assignment_step(voter_file) %>% head %>% kable
 ```
 
-A few parts of the declaration may seem a little bit odd. First, we did not tell R anything about the number of units in our dataset, as we did in the function and in the `dplyr` pipeline we wrote earlier. Second, we didn't give it the data! This is because a step declaration creates a function that will work on any size dataset. We told `declare_assignment` that we want to assign treatment with probability `0.5` (and implicitly control with probability `1-0.5 = 0.5`), regardless of how large the dataset is. We did not send the declaration the data, because `declare_assignment` automatically creates a tidy function for us, one that takes data and returns data with an assignment step. We will see in a moment how `DeclareDesign` uses these functions to simulate data from a research design. But you can always use the function yourself with your own data. 
+A few parts of the declaration may seem a little bit odd. First, we did not tell R anything about the number of units in our dataset. Second, we didn't give it the data! This is because a step declaration creates a function that will work on any size dataset. We told `declare_assignment` that we want to assign treatment with probability `0.5` (and implicitly control with probability `1-0.5 = 0.5`), regardless of how large the dataset is. We did not send the declaration the data, because `declare_assignment` automatically creates a tidy function for us, one that takes data and returns data with an assignment step. We will see in a moment how `DeclareDesign` uses these functions to simulate data from a research design. But you can always use the function yourself with your own data. 
 
-In Chapter XX we describe how to implement your research design after you have conducted it, using the exact same functions you diagnosed the design with. This is one of the reasons we *declare* the assignment step --- because we'll learn about the properties of your design with the same code you can actually use to randomly assign treatment.
+When you implement your research design after you have conducted it, you can use the exact same functions you diagnosed the design with. This is one of the reasons we *declare* the assignment step --- because we'll learn about the properties of your design with the same code you can actually use to randomly assign treatment.
 
 Every step of a research design in MIDA can be written using one of the `declare_*` functions. In the next section, we walk through each step and how to declare it using `DeclareDesign`. 
 
@@ -493,34 +442,7 @@ The order encodes several important aspects of the design:
 
 Diagnosing a research design --- learning about its properties --- requires first simulating running the design over and over. We need to simulate the data generating process, then calculate the estimands, then calculate the estimates that will result. 
 
-### In `dplyr`
-
-We first demonstrate how to use the tidy functions created by the `declare_*` functions in a `dplyr` pipeline to simulate a design once. 
-
-We can run the population function, which generates the data structure, and then add the potential outcomes, and calculate the estimand as follows:
-
-```{r, eval = FALSE}
-population() %>% potential_outcomes %>% estimand
-```
-```{r, echo = FALSE}
-population() %>% potential_outcomes %>% estimand %>% kable
-```
-
-This is the same thing as running the functions one at a time on each other: `estimand(potential_outcomes(population()))`.
-
-Similarly, if we want to draw simulated estimates from the design, we again simulate a population, add potential outcomes, but now sample units, assign treatments to sampled units, reveal the outcomes, and calculate estimates:
-
-
-```{r, eval = FALSE}
-population() %>% potential_outcomes %>% sampling %>%  assignment %>% reveal %>% estimator
-```
-```{r, echo = FALSE}
-population() %>% potential_outcomes %>% sampling %>%  assignment %>% reveal %>% estimator %>% kable
-```
-
-### In `DeclareDesign`
-
-With simple design defined as an object, we can easily learn about what kind of data it generates, the values of its estimand and estimates, and other features with simple funtions in `DeclareDesign`. They chain together functions in a similar way to the `dplyr` pipelines abov.
+With simple design defined as an object, we can easily learn about what kind of data it generates, the values of its estimand and estimates, and other features with simple funtions in `DeclareDesign`. They chain together functions in a similar way to a `dplyr` or `ggplot` pipeline.
 
 To draw simulated data based on the design, we use `draw_data`:
 
@@ -564,25 +486,7 @@ simulations_df %>% kable
 
 ## Diagnosing a research design
 
-The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can, for example, use the following `dplyr` pipeline to calculate the bias, root mean-squared error, and power for each estimator-estimand pair.
-
-```{r, eval = FALSE}
-simulations_df %>% 
-  group_by(estimand_label, estimator_label) %>% 
-  summarize(bias = mean(estimate - estimand),
-            rmse = sqrt(mean((estimate - estimand)^2)),
-            power = mean(p.value < .05))
-```
-```{r, echo = FALSE}
-simulations_df %>% 
-  group_by(estimand_label, estimator_label) %>% 
-  summarize(bias = mean(estimate - estimand),
-            rmse = sqrt(mean((estimate - estimand)^2)),
-            power = mean(p.value < .05)) %>% 
-  kable
-```
-
-In `DeclareDesign`, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).
+The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can now calculate the bias, root mean-squared error, and power for each estimator-estimand pair. In `DeclareDesign`, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).
 
 ```{r}
 study_diagnosands <- declare_diagnosands(
@@ -590,7 +494,7 @@ study_diagnosands <- declare_diagnosands(
   mse = mean((estimate - estimand)^2))
 ```
 
-Next, take your simulations data and the diagnosands, and diagnose. This runs a single operation, which is to calculate the diagnosands on your simulations data, just like in the `dplyr` version above.
+Next, take your simulations data and the diagnosands, and diagnose. This runs a single operation, which is to calculate the diagnosands on your simulations data.
 
 ```{r, eval = FALSE}
 diagnose_design(simulations_df, diagnosands = study_diagnosands)
@@ -618,16 +522,20 @@ To compare the diagnoses, we run a diagnosis for each one and then calculate the
 ```{r, eval = FALSE}
 compare_diagnoses(simple_design, redesigned_simple_design)
 ```
-```{r, echo = FALSE, eval = FALSE}
+```{r, echo = FALSE}
 # temporarily disabled until we are are on CRAN 
 compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$diagnosands_df %>% kable
 ```
 
 ### Comparing many variants of a design
 
-[ plan to change this to compare using redesign; then introduce designers as an alternative ]
+In the diagnosis phase, you will often want to compare the properties of two designs to see which you prefer on the basis of the diagnosand values. We have two ways to compare. First, we can compare the designs themselves --- what kinds of estimates and estimands do they produce, what steps are in the design. And we can compare the diagnoses. We can do this using `redesign`:
 
-Often, we want to compare a large set of similar designs, varying key design parameters such as sample size, effect size, or the probability of treatment assignment. The easiest way to do this is to write a function that makes designs based on a set of these design inputs. We call these *designers*. Here's a simple designer based on our running example:
+```{r, eval = FALSE}
+redesign(simple_design, N = c(100, 200, 300, 400, 500))
+```
+
+An alternative way to do this is to write a function that makes designs based on a set of these design inputs. This offers the researcher more flexibility in setting up the design variants. We call these functions *designers*. Here's a simple designer based on our running example:
 
 ```{r}
 simple_designer <- function(sample_size, effect_size) {
