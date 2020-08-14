@@ -92,6 +92,7 @@ make_dag_df <-
 
 family <- "Helvetica"
 
+epsilon <- .29
 base_dag_plot <- 
   ggplot(data = NULL, aes(
     x = x,
@@ -154,11 +155,14 @@ base_dag_plot <-
     label.padding = grid::unit(rep(0, 4), "pt")
   ) +
   # scales
-  coord_fixed(xlim = c(0.5, 5.5), 
+  coord_fixed(xlim = c(0.5 - epsilon, 5.5 + epsilon), 
               ylim = c(0.5, 4.5)) +
   scale_fill_identity() +
   scale_linetype_identity() +
   scale_size_identity() +
   scale_color_identity() + 
   theme_dag() +
-  theme(legend.position = "none") 
+  theme(legend.position = "none",
+        plot.margin = unit(rep(0, 4), "cm"),
+        panel.background = element_rect(fill = "red"))
+

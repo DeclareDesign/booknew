@@ -18,7 +18,7 @@ for (file in rmds){
     
     fileConn <- file(file_r)
     line1 <- 'packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")'
-    line2 <- 'lapply(packages, require, character.only = T)'
+    line2 <- 'lapply(packages, require, character.only = TRUE)'
     writeLines(c("# ---", paste0("# ", yaml_title), "# --- \n", line1, line2, "", readLines(fileConn)), fileConn)
     close(fileConn)
   }
