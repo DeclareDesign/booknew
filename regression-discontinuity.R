@@ -5,6 +5,51 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
+
+cutoff <- 0.5
+control <- function(X) {
+  as.vector(poly(X, 4, raw = TRUE) %*% c(.7, -.8, .5, 1))}
+treatment <- function(X) {
+  as.vector(poly(X, 4, raw = TRUE) %*% c(0, -1.5, .5, .8)) + .15}
+
+design <-
+  declare_population(
+    N = 1000,
+    U = rnorm(N, 0, 0.1),
+    X = runif(N, 0, 1) + U - cutoff,
+    Z = 1 * (X > 0)
+  ) +
+  declare_potential_outcomes(Y ~ Z * treatment(X) + (1 - Z) * control(X) + U) +
+  declare_estimand(LATE = treatment(0) - control(0)) +
+  declare_reveal(Y, Z) +
+  declare_estimator(Y ~ poly(X, 4) * Z, model = lm_robust, estimand = "LATE")
+
+dag <- dagify(Y ~ Z + X + U,
+              Z ~ X,
+              X ~ U)
+
+nodes <-
+  tibble(
+    name = c("U", "X", "Z", "Y"),
+    label = c("U", "X", "Z", "Y"),
+    annotation = c(
+      "**Unknown heterogeneity**",
+      "**Exogenous variable**",
+      "**Treatment assignment**",
+      "**Outcome variable**"
+    ),
+    x = c(5, 1, 3, 5),
+    y = c(4, 2.5, 2, 1), 
+    nudge_direction = c("N", "S", "S", "S"),
+    answer_strategy = c("uncontrolled", "controlled", "uncontrolled", "uncontrolled")
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+
+
+
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 cutoff <- .5

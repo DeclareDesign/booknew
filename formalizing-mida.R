@@ -24,7 +24,7 @@ dag_base <- tidy_dagitty(dag) %>%
 nodes_df <-
   tibble(
     name = c("M", "I", "D", "A", "m", "aM", "aW", "d", "aD", "w"),
-    label = TeX(c("M", "I", "D", "A", "m", "a^M", "a^W", "d", "a^D", "w")),
+    label = c("M", "I", "D", "A", "m", "a<sup>M</sup>", "a<sup>W</sup>", "d", "a<sup>D</sup>", "w"),
     x = c(1, 2, 4, 5, 1, 2, 3, 4, 5, 3),
     y = c(3, 3, 3, 3, 2, 2, 2.5, 2, 2, 1)
   )
@@ -60,9 +60,12 @@ g <-
     yend = yend
   )) +
   geom_dag_node(color = "gray") +
-  geom_dag_text(color = "black",
+  geom_richtext(color = "black",
                 parse = TRUE,
                 aes(label = label),
+                fill = NA,
+                label.color = NA,
+                label.padding = grid::unit(rep(0, 4), "pt"),
                 size = 4) +
   geom_dag_edges() +
   geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.3) +

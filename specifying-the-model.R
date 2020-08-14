@@ -7,7 +7,7 @@ lapply(packages, require, character.only = T)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 library(dagitty)
-library(ggdag)
+library(dddag)
 library(ggraph)
 
 a_blue <- "#0072B2"
@@ -69,7 +69,7 @@ dag <-
          C ~ Z + U,
          D ~ C + U)
 
-tidy_dagitty(dag) %>% as_tibble %>% pull(name) %>% unique
+# tidy_dagitty(dag) %>% as_tibble %>% pull(name) %>% unique
 
 gg_df <-
   tidy_dagitty(
@@ -79,13 +79,21 @@ gg_df <-
     y = c(1, 1, 2, 0, 0, 1, 0)
   )
 
+
+label_df <- tibble(
+  name = c("C", "D", "U", "Yt0", "Yt1", "Yt2", "Z"),
+  label = c("C", "D", "U", "Y<sub>t=0</sub>", "Y<sub>t=1</sub>", "Y<sub>t=2</sub>", "Z")
+)
+
 gg_df <-
   gg_df %>%
   mutate(arced_left = (name == "U" & to == "Yt0"),
          arced_right = (name == "U" & to %in% c("Yt1", "Yt2")),
          dashed = (name == "U" & to == "Z")) %>%
-  arrange(name)
+  arrange(name) %>% 
+  as_tibble
 
+gg_df <- left_join(gg_df, label_df)
 
 g <-
   ggplot(data = filter(gg_df, !(arced_left | arced_right)), aes(
@@ -95,10 +103,12 @@ g <-
     yend = yend
   )) +
   geom_dag_node(color = "gray") +
-  geom_dag_text(color = "black",
-                parse = TRUE,
-                label = TeX(c("C", "D", "U", "Y_{t=0}", "Y_{t=1}", "Y_{t=2}", "Z")),
-                size = 4) +
+  geom_richtext(color = "black",
+                aes(label = label),
+                size = 4,
+                label.color = NA,
+                fill = NA,
+                label.padding = grid::unit(rep(0, 4), "pt")) +
   geom_dag_edges(aes(edge_linetype = dashed)) +
   geom_dag_edges_arc(data = filter(gg_df, arced_left), curvature = -.5) +
   geom_dag_edges_arc(data = filter(gg_df, arced_right), curvature = +.3) +

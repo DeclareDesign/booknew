@@ -5,28 +5,41 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
-# Model -------------------------------------------------------------------
-N <- 2100
-fixed_population <- declare_population(N = N, Y = sample(1:7, N, replace = TRUE))()
-population <- declare_population(data = fixed_population)
+fixed_population <- declare_population(N = 500, Y = sample(1:7, N, replace = TRUE))()
 
-# Inquiry -----------------------------------------------------------------
-estimand <- declare_estimand(Ybar = mean(Y))
+design <- 
+  declare_population(data = fixed_population) + 
+  declare_estimand(Y_bar = mean(Y)) + 
+  declare_sampling(n = 100) + 
+  declare_estimator(Y ~ 1, model = lm_robust, estimand = "Y_bar")
 
-# Data Strategy -----------------------------------------------------------
-n <- 100
-sampling <- declare_sampling(n = n)
+dag <- dagify(Y ~ S)
 
-# Answer Strategy ---------------------------------------------------------
-estimator <- declare_estimator(Y ~ 1,
-                               model = lm_robust,
-                                       estimand = estimand,
-                                       label = "Sample Mean Estimator")
+nodes <-
+  tibble(
+    name = c("Y", "S"),
+    label = c("Y", "S"),
+    annotation = c("**Outcome**<br>measured only for sampled units",
+                   "**Sampling indicator**<br>randomly set by designer"),
+    x = c(5, 1),
+    y = c(1, 1),
+    nudge_direction = c("N", "N"),
+    answer_strategy = "uncontrolled"
+  )
 
-# Design ------------------------------------------------------------------
-design <- population + estimand +  sampling + estimator
+ggdd_df <- make_dag_df(dag, nodes, design)
 
-diagnosands <- declare_diagnosands(select = c(bias, coverage, mean_estimate, sd_estimate))
+base_dag_plot %+% ggdd_df
+
+fixed_population <- declare_population(N = 500, Y = sample(1:7, N, replace = TRUE))()
+
+random_sampling_design <- 
+  declare_population(data = fixed_population) + 
+  declare_estimand(Ybar = mean(Y)) + 
+  declare_sampling(n = 100) + 
+  declare_estimator(Y ~ 1, model = lm_robust, estimand = "Ybar")
+
+plot(random_sampling_design)
 
 ## diagnosis <- diagnose_design(
 ##   design, sims = sims, bootstrap_sims = b_sims, diagnosands = diagnosands)

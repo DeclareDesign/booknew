@@ -5,6 +5,49 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
+design <- 
+  declare_population(
+    group = add_level(N = 10, X = rnorm(N)),
+    unit = add_level(N = 100, U = rnorm(N))
+  ) +
+  declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
+  declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
+  declare_assignment(blocks = group, prob_unit = S_prob) + 
+  declare_potential_outcomes(
+    Y ~ Z + (S == "high") + Z*(S == "high") + X + U,
+    conditions = list(Z = c(0, 1), S = c("low", "high"))) +
+  declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
+                   ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
+  declare_reveal(Y, c(Z, S)) +
+  declare_estimator(Y ~ Z + S, model = lm_robust, term = c("Z", "Shigh"), estimand = c("ATE_saturation", "ate_no_spill"), label = "main effect")
+
+
+dag <- dagify(Y ~ Z + S + U + X,
+              Z ~ S)
+
+nodes <-
+  tibble(
+    name = c("X", "U", "S", "Z", "Y"),
+    label = c("X", "U", "S", "Z", "Y"),
+    annotation = c(
+      "**Unknown heterogeneity**<br>Unit effects",
+      "**Unknown heterogeneity**",
+      "**Treatment assignment 1**<br>Saturation level",
+      "**Treatment assignment 2**<br>Individual assignment",
+      "**Outcome variable**"
+    ),
+    x = c(2, 5, 1, 1, 5),
+    y = c(2.5, 4, 4, 1, 2.5), 
+    nudge_direction = c("N", "N", "N", "S", "S"),
+    answer_strategy = "uncontrolled",
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+
+
+
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 library(blockTools)
 

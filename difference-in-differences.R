@@ -5,6 +5,46 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
+
+design <- 
+  declare_population(
+    unit = add_level(N = 2, X = rnorm(N, sd = 0.5)),
+    period = add_level(N = 2, nest = FALSE),
+    unit_period = cross_levels(by = join(unit, period), U = rnorm(N, sd = 0.01))
+  ) + 
+  declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + Z + U) + 
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 2) + 
+  declare_step(Z = X == max(X), handler = mutate) + 
+  declare_reveal(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1), handler = mutate) +
+  declare_estimator(Y ~ Z * period, model = lm_robust, se_type = "none")
+
+dag <- dagify(Y ~ X + period + Z + U,
+              Z ~ X)
+
+
+nodes <-
+  tibble(
+    name = c("U", "X", "period", "Z", "Y"),
+    label = c("U", "X", "T", "Z", "Y"),
+    annotation = c(
+      "**Unknown heterogeneity**",
+      "**Unit effect**",
+      "**Time period**",
+      "**Treatment assignment**",
+      "**Outcome variable**"
+    ),
+    x = c(5, 1, 1, 3, 5),
+    y = c(1.5, 3.5, 1, 2.5, 2.5),
+    nudge_direction = c("S", "N", "S", "S", "N"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+
+
+
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 N_units <- 2

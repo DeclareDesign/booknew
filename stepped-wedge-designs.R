@@ -5,6 +5,48 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
+
+design <- 
+  declare_population(
+    unit = add_level(N = 8, X = rnorm(N)),
+    period = add_level(N = 3, time = as.numeric(period), nest = FALSE),
+    obs = cross_levels(by = join(unit, period), U = rnorm(N))
+  ) + 
+  declare_potential_outcomes(Y ~ X + U + Z * time) +
+  declare_assignment(clusters = unit, conditions = 1:4, assignment_variable = "wave") + 
+  declare_assignment(Z = as.numeric(time >= wave), ipw = 1 / (Z * 2/8 + (1 - Z) * (1 - 2/8)), handler = fabricate) + 
+  declare_reveal(Y, Z) + 
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "1: Wave 2 only", subset = period == 2) +
+  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "2: Weighted, clustered SW", weights = ipw, clusters = unit) +
+  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "3: Unweighted, unclustered SW") 
+
+dag <- dagify(Y ~ Z + X + U + time,
+              Z ~ time)
+
+nodes <-
+  tibble(
+    name = c("X", "U", "time", "Z", "Y"),
+    label = c("X", "U", "T", "Z", "Y"),
+    annotation = c(
+      "**Unknown heterogeneity**<br>Unit effects",
+      "**Unknown heterogeneity**<br>",
+      "**Time period**<br>",
+      "**Treatment assignment**<br>",
+      "**Outcome variable**<br>"
+    ),
+    x = c(1, 5, 1, 3, 5),
+    y = c(4, 4, 1, 2.5, 2.5), 
+    nudge_direction = c("N", "N", "S", "N", "S"),
+    answer_strategy = "uncontrolled",
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+
+
+
 p_00 <- p_W1 <- p_W2 <- p_W3 <- 2/8
 
 design <- declare_population(

@@ -5,6 +5,45 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = T)
 
+ 
+design <-
+  declare_population(N = 100, 
+                     X_1 = rnorm(N),
+                     X_2 = rnorm(N),
+                     Z = if_else(X_1 + X_2 > 0, 1, 0),
+                     U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ Z + X_1 + X_2 + U) +
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_reveal() +
+  declare_estimator(Y ~ X_1 + X_2, model = lm_robust, estimand = "LATE") 
+
+
+dag <- dagify(Y ~ X_1 + X_2 + Z + U,
+              Z ~ X_1 + X_2)
+nodes <-
+  tibble(
+    name = c("X_1", "X_2", "U", "Z", "Y"),
+    label = c("X<sup>1</sup>", "X<sup>2</sup>", "U", "Z", "Y"),
+    annotation = c(
+      "**Control variable 1**",
+      "**Control variable 2**",
+      "**Unknown heterogeneity**",
+      "**Treatment assignment**",
+      "**Outcome variable**"
+    ),
+    x = c(1, 1, 5, 3, 5),
+    y = c(1, 4, 4, 2.5, 2.5),
+    nudge_direction = c("S", "N", "N", "N", "S"),
+    answer_strategy = c("controlled", "controlled",  "uncontrolled", "uncontrolled", "uncontrolled")
+  )
+
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+
+
+
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 knitr::include_graphics("figures/regression_dag_1.png")
