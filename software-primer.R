@@ -74,21 +74,6 @@ voter_file <- fabricate(
 
 kable(head(voter_file))
 
-voter_file <- voter_file %>% 
-  mutate(Z = sample(c(0, 1), size = 100, replace = TRUE, prob = c(0.5, 0.5)))
-
-kable(head(voter_file))
-
-voter_file <- voter_file %>% 
-  mutate(Z = simple_ra(N = 100, prob = 0.5))
-
-simple_random_assignment_function <- function(data) {
-  data %>% mutate(Z = simple_ra(N = 100, prob = 0.5))
-}
-
-## simple_random_assignment_function(voter_file)
-simple_random_assignment_function(voter_file) %>% head %>% kable
-
 simple_random_assignment_step <- declare_assignment(prob = 0.5)
 
 ## simple_random_assignment_step(voter_file)
@@ -202,12 +187,6 @@ simple_design <-
 
 ## population + potential_outcomes + estimand + sampling + assignment + reveal + estimator
 
-## population() %>% potential_outcomes %>% estimand
-population() %>% potential_outcomes %>% estimand %>% kable
-
-## population() %>% potential_outcomes %>% sampling %>%  assignment %>% reveal %>% estimator
-population() %>% potential_outcomes %>% sampling %>%  assignment %>% reveal %>% estimator %>% kable
-
 ## draw_data(simple_design)
 draw_data(simple_design) %>% head %>% kable
 
@@ -222,18 +201,6 @@ simulations_df <- simulate_design(simple_design, sims = 5)
 
 simulations_df %>% kable
 
-## simulations_df %>%
-##   group_by(estimand_label, estimator_label) %>%
-##   summarize(bias = mean(estimate - estimand),
-##             rmse = sqrt(mean((estimate - estimand)^2)),
-##             power = mean(p.value < .05))
-simulations_df %>% 
-  group_by(estimand_label, estimator_label) %>% 
-  summarize(bias = mean(estimate - estimand),
-            rmse = sqrt(mean((estimate - estimand)^2)),
-            power = mean(p.value < .05)) %>% 
-  kable
-
 study_diagnosands <- declare_diagnosands(
   select = c(bias, rmse, power), 
   mse = mean((estimate - estimand)^2))
@@ -246,8 +213,10 @@ diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% get_diagnos
 ## compare_designs(simple_design, redesigned_simple_design)
 
 ## compare_diagnoses(simple_design, redesigned_simple_design)
-## # temporarily disabled until we are are on CRAN
-## compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$diagnosands_df %>% kable
+# temporarily disabled until we are are on CRAN 
+compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$diagnosands_df %>% kable
+
+## redesign(simple_design, N = c(100, 200, 300, 400, 500))
 
 simple_designer <- function(sample_size, effect_size) {
   declare_population(N = sample_size, u = rnorm(N)) +

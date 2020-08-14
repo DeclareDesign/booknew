@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3.8 Comparing designs | Research Design: Declare, Diagnose, Redesign</title>
+  <title>1.2 How to work this book | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3.8 Comparing designs | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="1.2 How to work this book | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3.8 Comparing designs | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="1.2 How to work this book | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="diagnosing-a-research-design.html"/>
-<link rel="next" href="part-i-exercises.html"/>
+<link rel="prev" href="how-to-read-this-book.html"/>
+<link rel="next" href="what-this-book-will-not-do.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -460,60 +460,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="comparing-designs" class="section level2">
-<h2><span class="header-section-number">3.8</span> Comparing designs</h2>
-<p>In the diagnosis phase, you will often want to compare the properties of two designs to see which you prefer on the basis of the diagnosand values. We have two ways to compare. First, we can compare the designs themselves — what kinds of estimates and estimands do they produce, what steps are in the design. And we can compare the diagnoses.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">compare_designs</span>(simple_design, redesigned_simple_design)</a></code></pre></div>
-<p>To compare the diagnoses, we run a diagnosis for each one and then calculate the difference between each diagnosand for the two designs and conduct a statistical test of the null effect of no difference.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">compare_diagnoses</span>(simple_design, redesigned_simple_design)</a></code></pre></div>
-<table>
-<tbody>
-<tr>
-</tr>
-</tbody>
-</table>
-<div id="comparing-many-variants-of-a-design" class="section level3">
-<h3><span class="header-section-number">3.8.1</span> Comparing many variants of a design</h3>
-<p>In the diagnosis phase, you will often want to compare the properties of two designs to see which you prefer on the basis of the diagnosand values. We have two ways to compare. First, we can compare the designs themselves — what kinds of estimates and estimands do they produce, what steps are in the design. And we can compare the diagnoses. We can do this using <code>redesign</code>:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="kw">redesign</span>(simple_design, <span class="dt">N =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">500</span>))</a></code></pre></div>
-<p>An alternative way to do this is to write a function that makes designs based on a set of these design inputs. This offers the researcher more flexibility in setting up the design variants. We call these functions <em>designers</em>. Here’s a simple designer based on our running example:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">simple_designer &lt;-<span class="st"> </span><span class="cf">function</span>(sample_size, effect_size) {</a>
-<a class="sourceLine" id="cb39-2" title="2">  <span class="kw">declare_population</span>(<span class="dt">N =</span> sample_size, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb39-3" title="3"><span class="st">    </span><span class="kw">declare_potential_outcomes</span>(<span class="dt">Y_Z_0 =</span> u, <span class="dt">Y_Z_1 =</span> Y_Z_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>effect_size) <span class="op">+</span></a>
-<a class="sourceLine" id="cb39-4" title="4"><span class="st">    </span><span class="kw">declare_estimand</span>(<span class="dt">PATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb39-5" title="5"><span class="st">    </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">50</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb39-6" title="6"><span class="st">    </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb39-7" title="7"><span class="st">    </span><span class="kw">declare_reveal</span>(<span class="dt">outcome_variables =</span> Y, <span class="dt">assignment_variables =</span> Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb39-8" title="8"><span class="st">    </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="st">&quot;PATE&quot;</span>)</a>
-<a class="sourceLine" id="cb39-9" title="9">}</a></code></pre></div>
-<p>To create a single design, based on our original parameters of a 100-unit sample size and a treatment effect of <code>0.25</code>, we can run:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1">simple_design &lt;-<span class="st"> </span><span class="kw">simple_designer</span>(<span class="dt">sample_size =</span> <span class="dv">100</span>, <span class="dt">effect_size =</span> <span class="fl">0.25</span>)</a></code></pre></div>
-<p>Now to simulate multiple designs, we can use the <code>DeclareDesign</code> function <code>expand_design</code>. Here we examine our simple design under several possible sample sizes, which we might want to do to conduct a minimum power analysis. We hold the effect size constant.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1">simple_designs &lt;-<span class="st"> </span><span class="kw">expand_design</span>(simple_designer, <span class="dt">sample_size =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="dt">effect_size =</span> <span class="fl">0.25</span>)</a></code></pre></div>
-<p>Our simulation and diagnosis tools can take a set of expanded designs (an R list) and will simulate all of them at once, creating a column called <code>design_label</code> to keep them apart. For example:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="kw">diagnose_design</span>(simple_designs)</a></code></pre></div>
+<div id="how-to-work-this-book" class="section level2">
+<h2><span class="header-section-number">1.2</span> How to <strong>work</strong> this book</h2>
+<p>At many times throughout the book, we will describe research designs not just in words, but in computer code. You can read all of Part I without any coding, but some aspects of Part II and Part III are enhanced by engaging with the code.</p>
+<p>If you want to work though all of the code and exercises, fantastic. We’re here for you. This path requires investment in <code>R</code>, the <code>tidyverse</code> and the <code>DeclareDesign</code> set of software packages. We think it’s very rewarding but we understand that there is a learning curve. You could, of course, tackle the declaration, diagnosis, and redesign processes using bespoke simulations in any computer language you like, but it’s easier in <code>DeclareDesign</code>.</p>
+<p>If you want nothing to do with the code, you can skip all the code and exercises to just focus on the text. We’ve self-consciously written the book so that understanding of the code is not required in order to understand the research design concepts under discussions. If you are choosing this path, we promise our way of thinking about research design is useful even without any code.</p>
+<p>The free, online version of this book has many extra ways to engage with the material. You can download any section of code and you can play with interactive simulations. These bells and whistles are not necessary for understanding, but they can help make some of the finer points clearer.</p>
 </div>
-<div id="library-of-designs" class="section level3">
-<h3><span class="header-section-number">3.8.2</span> Library of designs</h3>
-<p>In our <code>DesignLibrary</code> package, we have created a set of common designs as designers, so you can get started quickly and also easily set up a range of design variants for comparison.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw">library</span>(DesignLibrary)</a>
-<a class="sourceLine" id="cb43-2" title="2"></a>
-<a class="sourceLine" id="cb43-3" title="3">b_c_design &lt;-<span class="st"> </span><span class="kw">block_cluster_two_arm_designer</span>(<span class="dt">N =</span> <span class="dv">1000</span>, <span class="dt">N_blocks =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb43-4" title="4"></a>
-<a class="sourceLine" id="cb43-5" title="5"><span class="kw">diagnose_design</span>(b_c_design)</a></code></pre></div>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
-</div>
-</div>
-<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
-<a href="diagnosing-a-research-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="part-i-exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="how-to-read-this-book.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="what-this-book-will-not-do.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

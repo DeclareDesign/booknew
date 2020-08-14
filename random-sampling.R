@@ -39,7 +39,7 @@ random_sampling_design <-
   declare_sampling(n = 100) + 
   declare_estimator(Y ~ 1, model = lm_robust, estimand = "Ybar")
 
-plot(random_sampling_design)
+## plot(random_sampling_design)
 
 ## diagnosis <- diagnose_design(
 ##   design, sims = sims, bootstrap_sims = b_sims, diagnosands = diagnosands)
