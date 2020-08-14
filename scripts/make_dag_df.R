@@ -163,6 +163,5 @@ base_dag_plot <-
   scale_color_identity() + 
   theme_dag() +
   theme(legend.position = "none",
-        plot.margin = unit(rep(0, 4), "cm"),
-        panel.background = element_rect(fill = "red"))
+        plot.margin = unit(rep(0, 4), "cm"))
 
