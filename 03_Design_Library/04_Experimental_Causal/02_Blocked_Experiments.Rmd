@@ -1,0 +1,74 @@
+---
+title: "Two arm trials"
+output: html_document
+bibliography: ../../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+```
+
+<!-- start post here, do not edit above -->
+
+## Blocked trials
+
+
+### Declaration
+
+```{r}
+
+design <-
+  declare_population(N = 100,
+                     X = rbinom(N, 1, 0.3),
+                     U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ Z + X + U) +
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(blocks = X, block_prob = c(0.1, 0.5)) +
+  declare_estimator(Y ~ Z, estimand = "ATE", label = "Naive DIM") +
+  declare_estimator(Y ~ Z,
+                    blocks = X,
+                    estimand = "ATE",
+                    label = "Blocked DIM")
+```
+
+
+
+
+
+### Dag
+
+
+```{r,echo=FALSE}
+dag <- dagify(
+  Y ~ Z + X + U,
+  Z ~ X
+)
+
+nodes <-
+  tibble(
+    name = c("Y", "Z", "U", "X"),
+    label = c("Y", "Z", "U", "X"),
+    annotation = c(
+      "**Outcome**<br>",
+      "**Random assignment**<br>",
+      "**Unknown heterogeneity**",
+      "**Covariate**<br>Used for blocking"),
+    x = c(5, 1, 5, 1),
+    y = c(2.5, 2.5, 4, 4), 
+    nudge_direction = c("S", "S", "N", "N"),
+    answer_strategy = "uncontrolled"
+  )
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
+
+
+### Example

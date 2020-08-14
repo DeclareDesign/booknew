@@ -6,7 +6,7 @@ bibliography: ../../bib/book.bib
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 ```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE, fig.width = 7, fig.height = 5)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
 ```
 
@@ -19,6 +19,54 @@ source("scripts/before_chapter_script.R")
 
 ## Multilevel regression and poststratification
 
+
+
+### Declaration
+
+```{r}
+fixed_population <- declare_population(N = 500, 
+                                       X = sample(c("A", "B", "C"), N, replace = TRUE),
+                                       Y = sample(1:7, N, replace = TRUE))()
+
+design <- 
+  declare_population(data = fixed_population) + 
+  declare_estimand(Ybar = mean(Y)) + 
+  declare_sampling(strata_prob = c(0.2, 0.1, 0.3), strata = X) + 
+  declare_step(B_demeaned = (X == "B") - mean(X == "B"),
+               C_demeaned = (X == "C") - mean(X == "C"), mutate) + 
+  declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, estimand = "Ybar")
+```
+
+### Dag
+
+
+```{r, echo=FALSE}
+dag <- dagify(Y ~ S + X,
+              S ~ X)
+nodes <-
+  tibble(
+    name = c("X", "Y", "S"),
+    label = c("X", "Y", "S"),
+    annotation = c(
+      "**Strata**<br>changes sampling probabilites",
+      "**Outcome**<br>measured only for sampled units",
+      "**Sampling indicator**<br>randomly set by designer"),
+    x = c(1, 5, 1),
+    y = c(4, 1, 1),
+    nudge_direction = c("N", "S", "S"),
+    answer_strategy = "uncontrolled",
+  ) 
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
+
+
+
+### Example
+
+
 <!-- make sure to rename the section title below -->
 
 ```{r multilevel_regression_and_poststratification, echo = FALSE, output = FALSE, purl = FALSE}
@@ -30,10 +78,10 @@ b_sims <- 20
 
 ```{r, echo = FALSE}
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-library(brms)
 library(lme4)
 library(prediction)
 ```
+### Example
 
 You can use the global bib file via rmarkdown cites like this: @imai2008
 

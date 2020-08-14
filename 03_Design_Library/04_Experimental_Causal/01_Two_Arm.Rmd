@@ -19,6 +19,48 @@ source("scripts/before_chapter_script.R")
 
 ## Two arm trials
 
+### Declaration
+
+```{r}
+design <-
+  declare_population(N = 100, U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ Z + U) +
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(prob = 0.5) +
+  declare_estimator(Y ~ Z, estimand = "ATE")
+```
+### Dag
+
+```{r, echo=FALSE}
+dag <- 
+dagify(
+  Y ~ Z + U
+)
+
+# dag <- get_dag(design)
+
+nodes <-
+  tibble(
+    name = c("Y", "Z", "U"),
+    label = c("Y", "Z", "U"),
+    annotation = c(
+      "**Outcome**<br>",
+      "**Random assignment**<br>",
+      "**Unknown heterogeneity**"),
+    x = c(5, 1, 5),
+    y = c(2.5, 2.5, 4), 
+    nudge_direction = c("S", "S", "N"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
+
+### Example
+
+
 <!-- make sure to rename the section title below -->
 
 ```{r two_arm_trials, echo = FALSE, output = FALSE, purl = FALSE}
