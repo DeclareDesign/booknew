@@ -20,6 +20,8 @@ aes_df <-
     fill = if_else(data_strategy == "unmanipulated", NA_character_, dd_light_blue),
     linetype = case_when(answer_strategy == "controlled" ~ "dashed", answer_strategy == "uncontrolled" ~ "solid"),
     size = case_when(answer_strategy == "controlled" ~ 0.2, answer_strategy == "uncontrolled" ~ 0),
+    color_manipulated = if_else(data_strategy == "unmanipulated", dd_gray, dd_gray),
+    size_manipulated = if_else(data_strategy == "unmanipulated", 0, 0.3),
     sides = case_when(
       data_strategy == "sampling" ~ 3,
       data_strategy == "assignment" ~ 1000,
@@ -88,12 +90,6 @@ make_dag_df <-
     
   }
 
-
-
-
-
-
-
 family <- "Helvetica"
 
 base_dag_plot <- 
@@ -107,7 +103,7 @@ base_dag_plot <-
   geom_dag_edges(
     edge_colour = dd_gray,
     edge_width = 0.7,
-    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed"),
+    arrow_directed = grid::arrow(length = grid::unit(3, "pt"), type = "closed"),
   ) +
   # fill
   geom_regon(
@@ -118,9 +114,9 @@ base_dag_plot <-
       angle = angle,
       r = r * 0.89,
       fill = fill,
-    ),
-    size = 0,
-    color = dd_gray
+      color = color_manipulated,
+      size = size_manipulated
+    )
   ) +
   
   # lty
@@ -163,5 +159,6 @@ base_dag_plot <-
   scale_fill_identity() +
   scale_linetype_identity() +
   scale_size_identity() +
+  scale_color_identity() + 
   theme_dag() +
   theme(legend.position = "none") 
