@@ -3,7 +3,7 @@
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
-lapply(packages, require, character.only = T)
+lapply(packages, require, character.only = TRUE)
 
 fixed_population <- declare_population(N = 500, Y = sample(1:7, N, replace = TRUE))()
 

@@ -3,7 +3,7 @@
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
-lapply(packages, require, character.only = T)
+lapply(packages, require, character.only = TRUE)
 
  
 direct_effect_of_encouragement <- 0.0

@@ -3,7 +3,7 @@
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
-lapply(packages, require, character.only = T)
+lapply(packages, require, character.only = TRUE)
 
  
 design <-
@@ -45,7 +45,7 @@ nodes <-
       "Z"
     ),
     annotation = c(
-      "**Unknown heterogeneity**",
+      "Unknown<br>heterogeneity",
       "**Sensitivity bias**",
       "**Latent**<br> Sensitive trait",
       "Control item count",

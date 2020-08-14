@@ -3,7 +3,7 @@
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
-lapply(packages, require, character.only = T)
+lapply(packages, require, character.only = TRUE)
 
 design <- 
   declare_population(N = 100,
@@ -31,9 +31,9 @@ nodes <-
       "**Random assignment**<br> Subject sent email",
       "**Outcome 1**<br>Subject replies to email",
       "**Outcome 2**<br>Email quality",
-      "**Unknown heterogeneity**"),
+      "Unknown<br>heterogeneity"),
     x = c(1, 3, 3, 5),
-    y = c(2.5, 4, 1, 2.5), 
+    y = c(2.5, 3.5, 1.5, 2.5), 
     nudge_direction = c("N", "N", "S", "N"),
     answer_strategy = c("uncontrolled", "controlled", "uncontrolled", "uncontrolled")
   )
