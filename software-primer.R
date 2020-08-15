@@ -213,8 +213,7 @@ diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% get_diagnos
 ## compare_designs(simple_design, redesigned_simple_design)
 
 ## compare_diagnoses(simple_design, redesigned_simple_design)
-# temporarily disabled until we are are on CRAN 
-compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$diagnosands_df %>% kable
+compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% kable
 
 ## redesign(simple_design, N = c(100, 200, 300, 400, 500))
 

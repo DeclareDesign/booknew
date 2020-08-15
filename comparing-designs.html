@@ -467,8 +467,508 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To compare the diagnoses, we run a diagnosis for each one and then calculate the difference between each diagnosand for the two designs and conduct a statistical test of the null effect of no difference.</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">compare_diagnoses</span>(simple_design, redesigned_simple_design)</a></code></pre></div>
 <table>
+<thead>
+<tr>
+<th style="text-align:left;">
+design_label_1
+</th>
+<th style="text-align:left;">
+design_label_2
+</th>
+<th style="text-align:left;">
+estimand_label
+</th>
+<th style="text-align:left;">
+estimator_label
+</th>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:left;">
+diagnosand
+</th>
+<th style="text-align:right;">
+mean_1
+</th>
+<th style="text-align:right;">
+mean_2
+</th>
+<th style="text-align:right;">
+mean_difference
+</th>
+<th style="text-align:right;">
+se_1
+</th>
+<th style="text-align:right;">
+se_2
+</th>
+<th style="text-align:right;">
+se_difference
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+<th style="text-align:right;">
+sims
+</th>
+<th style="text-align:right;">
+bootstrap_sims
+</th>
+</tr>
+</thead>
 <tbody>
 <tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+bias
+</td>
+<td style="text-align:right;">
+-0.0053775
+</td>
+<td style="text-align:right;">
+-0.0220402
+</td>
+<td style="text-align:right;">
+-0.0190894
+</td>
+<td style="text-align:right;">
+0.0242635
+</td>
+<td style="text-align:right;">
+0.0200515
+</td>
+<td style="text-align:right;">
+0.0273644
+</td>
+<td style="text-align:right;">
+-0.0719768
+</td>
+<td style="text-align:right;">
+0.0262178
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+rmse
+</td>
+<td style="text-align:right;">
+0.2852495
+</td>
+<td style="text-align:right;">
+0.1824328
+</td>
+<td style="text-align:right;">
+-0.1025093
+</td>
+<td style="text-align:right;">
+0.0222088
+</td>
+<td style="text-align:right;">
+0.0128611
+</td>
+<td style="text-align:right;">
+0.0244487
+</td>
+<td style="text-align:right;">
+-0.1480153
+</td>
+<td style="text-align:right;">
+-0.0529266
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+power
+</td>
+<td style="text-align:right;">
+0.1300000
+</td>
+<td style="text-align:right;">
+0.1600000
+</td>
+<td style="text-align:right;">
+0.0274000
+</td>
+<td style="text-align:right;">
+0.0299960
+</td>
+<td style="text-align:right;">
+0.0363118
+</td>
+<td style="text-align:right;">
+0.0444409
+</td>
+<td style="text-align:right;">
+-0.0500000
+</td>
+<td style="text-align:right;">
+0.1200000
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+coverage
+</td>
+<td style="text-align:right;">
+0.9600000
+</td>
+<td style="text-align:right;">
+0.9800000
+</td>
+<td style="text-align:right;">
+0.0177000
+</td>
+<td style="text-align:right;">
+0.0195451
+</td>
+<td style="text-align:right;">
+0.0141436
+</td>
+<td style="text-align:right;">
+0.0231750
+</td>
+<td style="text-align:right;">
+-0.0200000
+</td>
+<td style="text-align:right;">
+0.0700000
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+mean_estimate
+</td>
+<td style="text-align:right;">
+0.2446225
+</td>
+<td style="text-align:right;">
+0.2279598
+</td>
+<td style="text-align:right;">
+-0.0190894
+</td>
+<td style="text-align:right;">
+0.0242635
+</td>
+<td style="text-align:right;">
+0.0200515
+</td>
+<td style="text-align:right;">
+0.0273644
+</td>
+<td style="text-align:right;">
+-0.0719768
+</td>
+<td style="text-align:right;">
+0.0262178
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+sd_estimate
+</td>
+<td style="text-align:right;">
+0.2866356
+</td>
+<td style="text-align:right;">
+0.1820089
+</td>
+<td style="text-align:right;">
+-0.1043900
+</td>
+<td style="text-align:right;">
+0.0223555
+</td>
+<td style="text-align:right;">
+0.0124902
+</td>
+<td style="text-align:right;">
+0.0245660
+</td>
+<td style="text-align:right;">
+-0.1498266
+</td>
+<td style="text-align:right;">
+-0.0552178
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+mean_se
+</td>
+<td style="text-align:right;">
+0.2781579
+</td>
+<td style="text-align:right;">
+0.2001667
+</td>
+<td style="text-align:right;">
+-0.0778759
+</td>
+<td style="text-align:right;">
+0.0029039
+</td>
+<td style="text-align:right;">
+0.0014320
+</td>
+<td style="text-align:right;">
+0.0031198
+</td>
+<td style="text-align:right;">
+-0.0840392
+</td>
+<td style="text-align:right;">
+-0.0710707
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+type_s_rate
+</td>
+<td style="text-align:right;">
+0.0769231
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+-0.0699940
+</td>
+<td style="text-align:right;">
+0.0756587
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0756587
+</td>
+<td style="text-align:right;">
+-0.2500000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design1
+</td>
+<td style="text-align:left;">
+design2
+</td>
+<td style="text-align:left;">
+PATE
+</td>
+<td style="text-align:left;">
+estimator
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+mean_estimand
+</td>
+<td style="text-align:right;">
+0.2500000
+</td>
+<td style="text-align:right;">
+0.2500000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
 </tr>
 </tbody>
 </table>
