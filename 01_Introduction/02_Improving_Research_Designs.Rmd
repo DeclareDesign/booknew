@@ -164,7 +164,6 @@ Redesign entails playing with each of the design parameters to understand the im
 
 [This UNWRITTEN secion should be a bit of a history of how different fields think about research designs, including beyond political science ]
 
-
 We build on two influential research design frameworks. [@kkv1994, p. 13] enumerate four components of a research design: a theory, a research question, data, and an approach to using the data. @geddes2003paradigms articulates the links between theory formation, research question formulation, case selection and coding strategies, and strategies for case comparison and inference. In both cases, the set of components are closely aligned to those in the framework we propose.
 
 
@@ -194,7 +193,7 @@ A more coherent strategy facilitated by design simulations would be to use a des
 
 ## Avoiding declaration and diagnosis pitfalls
 
-Declaring a design is just like writing out a recipe. You *can* cook without writing out a recipe, but when you do, you can think through the whole process start to finish, you can critique the process, and you can modify it. That said, designing high quality research is difficult and comes with many pitfalls, only a subset of which are ameliorated by the *MIDA* framework. Others we fail to address entirely and in some cases, we may even exacerbate them. We outline four concerns.
+Declaring a design is just like writing out a recipe. You *can* cook without writing out a recipe, but when you do, you can think through the whole process start to finish, you can critique the process, and you can modify it. That said, designing high quality research is difficult and comes with many pitfalls, only a subset of which are addressed by the *MIDA* framework. Others we fail to help with entirely and, in some cases, we may even exacerbate them. We outline four concerns.
 
 The first is the worry that evaluative weight could get placed on essentially meaningless diagnoses. Given that design declaration includes declarations of conjectures about the world it is possible to choose inputs so that a design passes any diagnostic test set for it. For instance, a simulation-based claim to unbiasedness that incorporates all features of a design is still only good with respect to the precise conditions of the simulation (in contrast, analytic results, when available, may extend over general classes of designs). Still worse, simulation parameters might be selected because of their properties. A power analysis, for instance,  may be useless if implausible parameters are chosen to raise power artificially. While MIDA may encourage more honest declarations, there is nothing in the framework that enforces them. As ever, garbage-in, garbage-out.
 
@@ -212,7 +211,20 @@ You can implement the MIDA framework in any software package. Indeed, a design c
 
 Social scientists use [a number of tools](https://stackoverflow.blog/2017/10/10/impressive-growth-r) for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. Stata and R are most commonly used.
 
-We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free-to-use. 
+We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free-to-use.
 
-We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have a [translation](https://declaredesign.org/pap) of parts of the declaration and diagnosis process into Stata, Python, and Excel. In addition we link to a ["Design wizard"](https://eos.wzb.eu/ipi/DDWizard/) that lets you declare and diagnose variations of standard designs via a web interface. 
+A declared design can be as simple as:
+
+```{r}
+design <- 
+  declare_population(N = 100) + 
+  declare_potential_outcomes(Y ~ Z) +
+  declare_assignment(prob = 0.5) + 
+  declare_estimator(Y ~ Z, model = difference_in_means)
+```
+
+With the declared design, you can learn about it in a number of ways. You can "diagnose" or simulate its properties via `diagnose_design(design)`, you can simulate mock data from it to explore possible estimation strategies before analyzing the real data with `draw_data(design`), you can obtain simulated estimates via `draw_estimates(design)`, and after the data comes in you can apply the planned design to your data via `get_estimates(design, data = study_data)`. We introduce the software in more detail in the next section.
+
+We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have a [translation](https://declaredesign.org/pap) of parts of the declaration and diagnosis process into Stata, Python, and Excel. In addition, we link to a ["Design wizard"](https://eos.wzb.eu/ipi/DDWizard/) that lets you declare and diagnose variations of standard designs via a web interface.
+
 
