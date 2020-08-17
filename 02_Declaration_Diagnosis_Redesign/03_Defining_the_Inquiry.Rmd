@@ -1,7 +1,9 @@
 ---
 title: "Defining the inquiry"
-output: html_document
-bibliography: ../bib/book.bib 
+output:
+  html_document: default
+  pdf_document: default
+bibliography: ../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -34,12 +36,24 @@ library(dagitty)
 
 # Defining the inquiry
 
-[Introductory Material about the Inquiry]
+An inquiry is a summary of a theoretical model. Suppose your theory is that $X$ affects $Y$, but that the effect is bigger for units with higher values of a third variable C. One inquiry might be the average level of $Y$. A second might be the average treatment effect of $X$ on $Y$. A third might be the difference in the effect of $X$ on $Y$ for units with high values of $C$ versus units with low values. 
+
+In general, an inquiry is a summary function $I$ that operates on the model $M$. When we summarize the model with the inquiry, we obtain an "answer under the model." We formalized this as $I(m) = a^m$. You can think of the difference between $I$ and $a^M$ as the difference between a question and its answer. $I$ is the question we ask about the model and $a^m$ is the answer. Alternatively, you can think of $I$ as the "estimand" (that which is to be estimated) and $a^m$ as the value of the estimand.  
+
+In this book when we talk about inquiries, we will usually be referring to single-number summaries of the models. Some common estimands are descripitive, such as the means, conditional means, correlations, partial correlations, quantiles, and truth statements about variable in the model. Others are causal, such as the average difference in one variable when a second varible is set to two different values. You can think of a single-number inquiry as the atom of research question. 
+
+While most inquiries are "atomic" in this way, some inquiries are more complex than a single-number summary of the model. For example, the best linear predictor of Y given X is a two-number summary: it is the pair of numbers (the slope and intercept) that minimizes the total squared distance between the line and each value of Y. Why stop at two-number summaries? We could imagine the best quadratic predictor of Y given X (three-number summary) or the best cubic predictor (four), and so on. We could have an inquiry that is the full conditional expectation function of Y given X, no matter how wiggly, nonlinear, and nuanced the shape of that function -- it could in principle be a 1,000 number summary of the model, or much more.
+
+Complex inquiries can also be something along the lines of "should I reject $M$" as a causal model of the world? A researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries -- we're interested in the sub-inquiries only insofar as they help us understand the real inquiry -- is this model of the world a good one or not.
 
 
-It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand ($a^M$), you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand -- your $a^D$ for your $a^M$.
 
-In this case the estimand is a number and one that will eventually be revealed, letting you assess how well your estimate measures up against your estimand. But in social science inequiry estimands can take many different forms. 
+<!-- [Introductory Material about the Inquiry] -->
+
+
+<!-- It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand ($a^M$), you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand -- your $a^D$ for your $a^M$. -->
+
+<!-- In this case the estimand is a number and one that will eventually be revealed, letting you assess how well your estimate measures up against your estimand. But in social science inequiry estimands can take many different forms.  -->
 
 
 ## Kinds of Inquiries
@@ -50,54 +64,42 @@ In this case the estimand is a number and one that will eventually be revealed, 
 
 There are two basic kinds of inquiries $I$ about a model $M$, descriptive and causal. One way to think about the difference is that descripitive inquiries are about the nodes of a dag and causal inquires are about the edges. A descriptive *inference* is a conclusion about a latent variable $Y^*$ on the basis of a measured variable $Y$. The feature we seek to describe -- our inquiry -- is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$. A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. You can't just observe edges -- you can see nodes but you can't see edges. 
 
+Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. In the descriptive case, we want to learn about the fundamentally unobservable latent variables the measured variables are meant to represent. In the causal case, we want to learn about the fundamentally impossible to observe difference between two possible worlds. We can't measure $Y$ in both the $X = 1$ and $X = 0$ because only one of those values could ever be revealed by the world. This problem is commonly known as the fundamental problem of causal inference. The fundamental problem of descriptive inference is similar -- we don't get to observe the true latent values because they are latent. We can only ever observe measured variables.
+
 
 ### Descriptive estimands
 
-Descriptive estimands can also require inference, not simply measurement. 
+Descriptive estimands are usually about latent variables. We care about the true values of the variables in the models. No matter how excellent the measurements taken as part of the Data strategy, the measured variables are always distinct from the latent variables since measurement always involves error. For the most part, we define our inquiries in terms of the "true" latent variables rather than in terms of their measured counterparts.
 
-Simplest case level estimand:
+Table ZZZ enumerates some common descriptive estimands. 
 
-$$X = 1$$
-"Yes"
-
-An example of a descriptive estimand is:
-
-$$E_{i\in N}(Y)$$
-
-$$E_{i\in N}(Y | X=1)$$
-
-This descriptive estimand is to be distinguished from the counterfactual estimand:
-
-
-$$\Pr(Y=1 | X \leftarrow 1)$$
-
-where $\leftarrow$ is interpreted to mean that $X$ is "set" to the indicated value. 
-
-* Moments; covariance 
-
-Example of a descriptive inquiry:
-
-```
-declare_population +
-declare_estimand(COV = )
-```
-
+| Inquiry           | Description                                   |
+| ----------------- | --------------------------------------------- |
+| $E_{i\in N}(Y)$   | The average value of the variable Y           | 
+| $E[Y | X = 1]$    | A conditional expectation of Y given X = 1.
+| $V[Y]$            | The variance of Y                             |
+| $Cov(X, Y)$       | The covariance of X and Y                     |
+| $BLP(Y | X)$      | The best linear predictor of Y given X        |
+| $CEF(Y | X)$      | Conditional expectation function of Y given X |
+| Truth status of X | Is X True or False                            |
 
 ### Causal Inquires
 
-Causal inquires are summaries that involve multiple potential outcomes. TO describe these we will imagine a  simple model, in which $Y$ is thought to depend on $X$ and $M$ and $M$ in turn is thought to depend on $X$. We represent this barebones model using a DAG in figure \@ref(XMYgraph).
+Causal inquires involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of $X$ on $Y$ for a single unit. In order to infer that causal effect, we would need to know the value of $Y$ in two worlds: one world in which $X$ is set to 1 and one in which $X$ is set to 0. You can think of causal inference as repeated descriptive inference: we have to describe $Y$ in multiple possible worlds.
 
-```{r XMYgraph, echo = FALSE, fig.caption = "X affects Y directly as well as indirectly via M"}
+Table ZZZ enumerates some common causal estimands. 
 
-plot(dagitty::graphLayout(dagitty("dag{ 
-  X -> Y ;
-  X -> M ;
-  M -> Y
- }")))
-```
+| Inquiry                                                  | Description                                                                    |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| $E[Y_i(1) - Y_i(0)]$                                     | Average treatment effect  (ATE)                                                |
+| $E[Y_i(1) - Y_i(0) | X = 1]$                             | Conditional average treatment effect (CATE)                                    |
+| $E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]$                | Complier average causal effect (CACE) or local average treatment effect (LATE) |
+| $E[Y_i(1) - Y_i(0)]$                                     | PATE                                                                           |
+| $E[Y_i(1) - Y_i(0) | S = 1]$                             | SATE                                                                           |
 
 
-[Note, this section has a huge jumble of letters that will need to be harmonized!]
+
+
 
 Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
 
