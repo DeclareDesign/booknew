@@ -11,59 +11,6 @@ lapply(packages, require, character.only = TRUE)
 
 ## install.packages("tidyverse")
 
-# we should turn this into a picture labeling MIDA
-simple_design <- 
-  
-  # M: model
-  
-  # a 100-unit population with an unobserved shock 'e'
-  declare_population(N = 100, u = rnorm(N)) +
-  
-  # two potential outcomes, Y_Z_0 and Y_Z_1
-  # Y_Z_0 is the control potential outcome (what would happen if the unit is untreated)
-  #   it is equal to the unobserved shock 'u'
-  # Y_Z_1 is the treated potential outcome 
-  #   it is equal to the control potential outcome plus a treatment effect of 0.25
-  declare_potential_outcomes(Y_Z_0 = u, Y_Z_1 = Y_Z_0 + 0.25) +
-  
-  # I: inquiry
-  
-  # we are interested in the average treatment effect in the population (PATE)
-  declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
-  
-  # D: data strategy
-  
-  # sampling: we randomly sample 50 of the 100 units in the population
-  declare_sampling(n = 50) +
-  
-  # assignment: we randomly assign half of the 50 sampled units to treatment (half to control)
-  declare_assignment(prob = 0.5) +
-  
-  # reveal outcomes: construct outcomes from the potential outcomes named Y depending on 
-  #   the realized value of their assignment variable named Z
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
-  
-  # A: answer strategy
-  
-  # calculate the difference-in-means of Y depending on Z 
-  # we link this estimator to PATE because this is our estimate of our inquiry
-  declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
-
-# Select diagnosands
-simple_design_diagnosands <- 
-  declare_diagnosands(select = c(bias, rmse, power))
-
-# Diagnose the design
-simple_design_diagnosis <- 
-  diagnose_design(simple_design, diagnosands = simple_design_diagnosands, sims = 500)
-
-get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable
-
-redesigned_simple_design <-
-  replace_step(simple_design, 
-               step = 4, 
-               new_step = declare_sampling(n = 100))
-
 voter_file <- fabricate(
   N = 100,
   age = sample(18:80, N, replace = TRUE),
@@ -213,7 +160,7 @@ diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% get_diagnos
 ## compare_designs(simple_design, redesigned_simple_design)
 
 ## compare_diagnoses(simple_design, redesigned_simple_design)
-compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% kable
+## compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% kable
 
 ## redesign(simple_design, N = c(100, 200, 300, 400, 500))
 
