@@ -460,33 +460,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">15.3</span> Conjoint experimetns</h2>
 <div id="declaration-8" class="section level3">
 <h3><span class="header-section-number">15.3.1</span> Declaration</h3>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" title="1"><span class="co"># applies the function to each pair</span></a>
-<a class="sourceLine" id="cb87-2" title="2">Y_function &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb87-3" title="3">  data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb87-4" title="4"><span class="st">    </span><span class="kw">group_by</span>(pair) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb87-5" title="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Y =</span> <span class="kw">if_else</span>(E <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(E), <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb87-6" title="6"><span class="st">    </span>ungroup</a>
-<a class="sourceLine" id="cb87-7" title="7">}</a>
-<a class="sourceLine" id="cb87-8" title="8">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb87-9" title="9"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb87-10" title="10">    <span class="dt">subject =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">500</span>),</a>
-<a class="sourceLine" id="cb87-11" title="11">    <span class="dt">pair =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb87-12" title="12">    <span class="dt">candidate =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">2</span>, <span class="dt">U =</span> <span class="kw">runif</span>(N))</a>
-<a class="sourceLine" id="cb87-13" title="13">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb87-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A1&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb87-15" title="15"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A2&quot;</span>, </a>
-<a class="sourceLine" id="cb87-16" title="16">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;young&quot;</span>, <span class="st">&quot;middle&quot;</span>, <span class="st">&quot;old&quot;</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb87-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A3&quot;</span>)  <span class="op">+</span></a>
-<a class="sourceLine" id="cb87-18" title="18"><span class="st">  </span><span class="kw">declare_step</span>(</a>
-<a class="sourceLine" id="cb87-19" title="19">    <span class="dt">E =</span> </a>
-<a class="sourceLine" id="cb87-20" title="20">      <span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb87-21" title="21"><span class="st">      </span><span class="fl">0.04</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;middle&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb87-22" title="22"><span class="st">      </span><span class="fl">0.08</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;old&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb87-23" title="23"><span class="st">      </span><span class="fl">0.02</span> <span class="op">*</span><span class="st"> </span>A3 <span class="op">+</span><span class="st"> </span>U,</a>
-<a class="sourceLine" id="cb87-24" title="24">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
-<a class="sourceLine" id="cb87-25" title="25"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">handler =</span> Y_function) <span class="op">+</span></a>
-<a class="sourceLine" id="cb87-26" title="26"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>A3,</a>
-<a class="sourceLine" id="cb87-27" title="27">                    <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" title="1"><span class="co"># applies the function to each pair</span></a>
+<a class="sourceLine" id="cb86-2" title="2">Y_function &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb86-3" title="3">  data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb86-4" title="4"><span class="st">    </span><span class="kw">group_by</span>(pair) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb86-5" title="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Y =</span> <span class="kw">if_else</span>(E <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(E), <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb86-6" title="6"><span class="st">    </span>ungroup</a>
+<a class="sourceLine" id="cb86-7" title="7">}</a>
+<a class="sourceLine" id="cb86-8" title="8">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb86-9" title="9"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb86-10" title="10">    <span class="dt">subject =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">500</span>),</a>
+<a class="sourceLine" id="cb86-11" title="11">    <span class="dt">pair =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb86-12" title="12">    <span class="dt">candidate =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">2</span>, <span class="dt">U =</span> <span class="kw">runif</span>(N))</a>
+<a class="sourceLine" id="cb86-13" title="13">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A1&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-15" title="15"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A2&quot;</span>, </a>
+<a class="sourceLine" id="cb86-16" title="16">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;young&quot;</span>, <span class="st">&quot;middle&quot;</span>, <span class="st">&quot;old&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A3&quot;</span>)  <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-18" title="18"><span class="st">  </span><span class="kw">declare_step</span>(</a>
+<a class="sourceLine" id="cb86-19" title="19">    <span class="dt">E =</span> </a>
+<a class="sourceLine" id="cb86-20" title="20">      <span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-21" title="21"><span class="st">      </span><span class="fl">0.04</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;middle&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-22" title="22"><span class="st">      </span><span class="fl">0.08</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;old&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-23" title="23"><span class="st">      </span><span class="fl">0.02</span> <span class="op">*</span><span class="st"> </span>A3 <span class="op">+</span><span class="st"> </span>U,</a>
+<a class="sourceLine" id="cb86-24" title="24">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-25" title="25"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">handler =</span> Y_function) <span class="op">+</span></a>
+<a class="sourceLine" id="cb86-26" title="26"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>A3,</a>
+<a class="sourceLine" id="cb86-27" title="27">                    <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 <div id="dag-6" class="section level3">
 <h3><span class="header-section-number">15.3.2</span> Dag</h3>

@@ -461,30 +461,88 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- MH: My vote: four types of queries: the three from Pearl (descriptive, interventionist, counterfactual) plus "model" queries in which you try to learn the model. -->
 <!-- MH: Suggest a table that gives a real broad set of inequiries that people can use as a reference; ATE, LATE, PATEs, SATEs, CDEs, lots and lots. Even better if we can define most of them off a simple DAG. -->
 <p>There are two basic kinds of inquiries <span class="math inline">\(I\)</span> about a model <span class="math inline">\(M\)</span>, descriptive and causal. One way to think about the difference is that descripitive inquiries are about the nodes of a dag and causal inquires are about the edges. A descriptive <em>inference</em> is a conclusion about a latent variable <span class="math inline">\(Y^*\)</span> on the basis of a measured variable <span class="math inline">\(Y\)</span>. The feature we seek to describe – our inquiry – is some summary of <span class="math inline">\(Y^*\)</span> like its mean or perhaps its covariance with a second latent variable <span class="math inline">\(X^*\)</span>. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model <span class="math inline">\(M\)</span>. A causal <em>inference</em> is a conclusion about the edge between two latent variables <span class="math inline">\(X^*\)</span> and <span class="math inline">\(Y^*\)</span>. You can’t just observe edges – you can see nodes but you can’t see edges.</p>
+<p>Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. In the descriptive case, we want to learn about the fundamentally unobservable latent variables the measured variables are meant to represent. In the causal case, we want to learn about the fundamentally impossible to observe difference between two possible worlds. We can’t measure <span class="math inline">\(Y\)</span> in both the <span class="math inline">\(X = 1\)</span> and <span class="math inline">\(X = 0\)</span> because only one of those values could ever be revealed by the world. This problem is commonly known as the fundamental problem of causal inference. The fundamental problem of descriptive inference is similar – we don’t get to observe the true latent values because they are latent. We can only ever observe measured variables.</p>
 <div id="descriptive-estimands" class="section level3">
 <h3><span class="header-section-number">7.1.1</span> Descriptive estimands</h3>
-<p>Descriptive estimands can also require inference, not simply measurement.</p>
-<p>Simplest case level estimand:</p>
-<p><span class="math display">\[X = 1\]</span>
-“Yes”</p>
-<p>An example of a descriptive estimand is:</p>
-<p><span class="math display">\[E_{i\in N}(Y)\]</span></p>
-<p><span class="math display">\[E_{i\in N}(Y | X=1)\]</span></p>
-<p>This descriptive estimand is to be distinguished from the counterfactual estimand:</p>
-<p><span class="math display">\[\Pr(Y=1 | X \leftarrow 1)\]</span></p>
-<p>where <span class="math inline">\(\leftarrow\)</span> is interpreted to mean that <span class="math inline">\(X\)</span> is “set” to the indicated value.</p>
-<ul>
-<li>Moments; covariance</li>
-</ul>
-<p>Example of a descriptive inquiry:</p>
-<pre><code>declare_population +
-declare_estimand(COV = )</code></pre>
+<p>Descriptive estimands are usually about latent variables. We care about the true values of the variables in the models. No matter how excellent the measurements taken as part of the Data strategy, the measured variables are always distinct from the latent variables since measurement always involves error. For the most part, we define our inquiries in terms of the “true” latent variables rather than in terms of their measured counterparts.</p>
+<p>Table ZZZ enumerates some common descriptive estimands.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Inquiry</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(E_{i\in N}(Y)\)</span></td>
+<td>The average value of the variable Y</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E[Y | X = 1]\)</span></td>
+<td>A conditional expectation of Y given X = 1.</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(V[Y]\)</span></td>
+<td>The variance of Y</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Cov(X, Y)\)</span></td>
+<td>The covariance of X and Y</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(BLP(Y | X)\)</span></td>
+<td>The best linear predictor of Y given X</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(CEF(Y | X)\)</span></td>
+<td>Conditional expectation function of Y given X</td>
+</tr>
+<tr class="odd">
+<td>Truth status of X</td>
+<td>Is X True or False</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="causal-inquires" class="section level3">
 <h3><span class="header-section-number">7.1.2</span> Causal Inquires</h3>
-<p>Causal inquires are summaries that involve multiple potential outcomes. TO describe these we will imagine a simple model, in which <span class="math inline">\(Y\)</span> is thought to depend on <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> in turn is thought to depend on <span class="math inline">\(X\)</span>. We represent this barebones model using a DAG in figure <a href="#XMYgraph"><strong>??</strong></a>.</p>
-<p><img src="book_files/figure-html/XMYgraph-1.png" width="100%" /></p>
-<p>[Note, this section has a huge jumble of letters that will need to be harmonized!]</p>
+<p>Causal inquires involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0. You can think of causal inference as repeated descriptive inference: we have to describe <span class="math inline">\(Y\)</span> in multiple possible worlds.</p>
+<p>Table ZZZ enumerates some common causal estimands.</p>
+<table>
+<colgroup>
+<col width="41%" />
+<col width="58%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Inquiry</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0)]\)</span></td>
+<td>Average treatment effect (ATE)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | X = 1]\)</span></td>
+<td>Conditional average treatment effect (CATE)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]\)</span></td>
+<td>Complier average causal effect (CACE) or local average treatment effect (LATE)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0)]\)</span></td>
+<td>PATE</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | S = 1]\)</span></td>
+<td>SATE</td>
+</tr>
+</tbody>
+</table>
 <p>Causal inquiries like the average effect of A on B in a causal model like <span class="math inline">\(A -&gt; B &lt;- U\)</span> are helped enormously by good descriptive inference about the nodes <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, but the focus is on the edge between them. You typically can’t learn about the edge by doing desscripitve inference on the nodes only. If we measure <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> and find that they covary, we can’t be sure that <span class="math inline">\(A -&gt; B\)</span> because it could be that <span class="math inline">\(A &lt;- U -&gt; B\)</span>. This problem goes by the familiar phrase that “correlation doesn’t imply causation,” which is true and is a problem that can’t be wished away. But “correlation doesn’t imply causation” also kind of misses the point. The point is that you can’t see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.</p>
 <!-- MH -- suggest here and elsewhere we hold back on pushing on experimental designs; the focus here  here is on  I not A. People might be coming at this from a bounds a pproach, a Bayes approach, etc. Or may have other strategies we haven;t thought of. Here lets keep focus on I -->
 <p>Mediation Inquires:</p>
