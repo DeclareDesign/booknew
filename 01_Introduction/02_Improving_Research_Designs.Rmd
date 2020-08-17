@@ -68,15 +68,9 @@ Declaring a design entails separating out which parts of your idea belong in $M$
 
 ### Example: @Gulzar2020
 
-We illustrate the application of the MIDA framework to a study of the motivations of political office-seekers in Pakistan. @Gulzar2020 conducted a experiment to test whether prosocial or personal benefits were more important motivations for running for office. They randomly-assigned villages to receive different encouragements to run and measured how this affected the rate of running for office, the types of people who chose to run, and the congruence of their policy positions with the general population.
+We illustrate the application of the MIDA framework to a study of the motivations of political office-seekers in Pakistan. @Gulzar2020 conducted a experiment to test whether prosocial or personal benefits were more important motivations for running for office. They randomly-assigned villages to receive different encouragements to run and measured how this affected the rate of running for office, the types of people who chose to run, and the congruence of their policy positions with the general population. 
 
-The *model* for the study describes the set of units: citizens living in the two Pakistani districts the study took place in, Haripur and Abbottabad. The endogenous outcomes of interest are whether the citizen filed papers to run for office; whether the citizen was elected; and the Euclidean distance of the citizen's preferences from average citizen preferences. The outcomes are a function in their causal model of three treatments, which emphasize either the social or personal benefits to holding public office or do not encourage anyone to run for office at all. Their model would include an expected treatment effect magnitude for each treatment and their suppositions about how correlated outcomes are within villages that they study. 
-
-The *inquiry* is the effect of an encouragement to vote focused on prosocial motivations for officeholding (rather than encouragements that emphasized  personal benefits) on the rate of filing papers to run for office between people living in villages randomly assigned to receive.
-
-The *data strategy* in @Gulzar2020 entailed three steps: (1) randomly sampling 192 villages from among all villages in Haripur and Abbottabad districts, and using a random walk procedure to select 48 citizens in each village to participate in the experiment; (2) randomly-assigning each village with equal probability to one of three conditions (neutral, social benefits, or personal benefits); and (3) collecting administrative data on who filed papers to run and matching that back to pretreatment survey data on the 9,216 citizens. Sampling, treatment assignment, and measurement are the three common data strategy steps in an experiment; some experiments, instead, do not include a sampling step and instead assign treatments within a convenience sample. 
-
-@Gulzar2020 have a two-step *answer strategy*, fitting a linear model predicting whether a citizen ran for office (the outcome) with indicators for the social benefits and the personal benefits treatments, and then calculating the difference between the two coefficients as an estimate of whether social benefits are more or less effective than the personal benefits. Their answer strategy includes presenting a table with estimated difference, a standard error clustered on village to account for village-level random assignment, and a *p*-value calculated using permutation inference.
+The *model* describes the citizens in the villages they conduct the study, and which village they live in. It describes both their individual characteristics and their potential outcomes in response to the possible treatment assignments. The *inquiry* is the average treatment effect between receiving and not receiving an encouragement to run for office. The *data strategy* is (1) randomly sampling 50 citizens per village; (2) random assignment of villages into either an encouragement to run for office (treatment) or no encouragement (control); and (3) measurement via a posttreatment survey. The *answer strategy* is calculating the difference-in-means, with standard errors accounting for the clustering of the treatment assignment by village.
 
 <!-- MIDA captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived, how interventions are implemented, or even, qualitatively, how outcomes are measured. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, if treatment effects decay, logistical details of data collection (such as the duration of time between a treatment being administered and endline data collection) may enter into the model. Similarly, if a researcher anticipates noncompliance, substantive knowledge of how treatments are taken up can be included in many parts of the design. -->
 
@@ -86,7 +80,7 @@ You can implement the MIDA framework in any software package. Indeed, a design c
 
 Social scientists use [a number of tools](https://stackoverflow.blog/2017/10/10/impressive-growth-r) for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. Stata and R are most commonly used. We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free-to-use.
 
-To illustrate declaring a design in code, we declare a simplified version of the @Gulzar2020 study. In Appendix XX we declare the complete design.
+To illustrate declaring a design in code, we declare a simplified version of the @Gulzar2020 study. (In Part II we declare the complete design.)
 
 ```{r}
 # we should turn this into a picture labeling MIDA
@@ -94,19 +88,13 @@ simple_design <-
   
   # M: model
   
-  # # a 100-unit population with an unobserved shock 'e'
-  # declare_population(N = 100, u = rnorm(N)) +
-  
+  # 50 citizens in each of 100 villages
   declare_population(
     # 100 villages
-    villages = add_level(N = 100),
+    villages = add_level(N = 100, N_citizens_per_village = sample(20:100, N, replace = TRUE)),
     
-    # 100 citizens in each village
-    citizens = add_level(
-      N = 50, 
-      # unobserved shock 'u' with intra-class correlation of 0.1
-      u = draw_normal_icc(mean = 0, sd = 1, clusters = villages, ICC = 0.1)
-    )
+    # 50 citizens in each village
+    citizens = add_level(N = N_citizens_per_village, u = rnorm(N))
   ) +
   
   # two potential outcomes, Y_Z_0 and Y_Z_1
@@ -114,12 +102,14 @@ simple_design <-
   #   it is equal to the unobserved shock 'u'
   # Y_Z_1 is the treated potential outcome 
   #   it is equal to the control potential outcome plus a treatment effect of 0.25
-  declare_potential_outcomes(Y_Z_0 = u, Y_Z_1 = Y_Z_0 + 0.25) +
+  declare_potential_outcomes(
+    Y_Z_0 = u, 
+    Y_Z_1 = Y_Z_0 + 0.25) +
   
   # I: inquiry
   
-  # we are interested in the average treatment effect in the population (PATE)
-  declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
+  # we are interested in the average treatment effect in the population
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
   
   # D: data strategy
   
@@ -129,15 +119,24 @@ simple_design <-
   # assignment: we randomly assign half of the 50 sampled units to treatment (half to control)
   declare_assignment(prob = 0.5, clusters = villages) +
   
-  # reveal outcomes: construct outcomes from the potential outcomes named Y depending on 
+  # measurement: construct outcomes from the potential outcomes named Y depending on 
   #   the realized value of their assignment variable named Z
+  #   we measure a binary outcome Yobs from the unobserved, latent variable Y
+  declare_measurement(
+    Yobs = case_when(
+      Z == 1 & Y_Z_1 > 0 ~ 1,
+      Z == 1 & Y_Z_1 <= 0 ~ 0,
+      Z == 0 & Y_Z_0 > 0 ~ 1,
+      Z == 0 & Y_Z_0 <= 0 ~ 0)
+  ) + 
+                        
   declare_reveal(outcome_variables = Y, assignment_variables = Z) +
   
   # A: answer strategy
   
   # calculate the difference-in-means of Y depending on Z 
-  # we link this estimator to PATE because this is our estimate of our inquiry
-  declare_estimator(Y ~ Z, clusters = villages, model = difference_in_means, estimand = "PATE")
+  # we link this estimator to ATE because this is our estimate of our inquiry
+  declare_estimator(Y ~ Z, clusters = villages, model = difference_in_means, estimand = "ATE")
 ```
 
 With the declared design, you can learn about it in a number of ways. You can "diagnose" or simulate its properties via `diagnose_design(design)`, you can simulate mock data from it to explore possible estimation strategies before analyzing the real data with `draw_data(design`), you can obtain simulated estimates via `draw_estimates(design)`, and after the data comes in you can apply the planned design to your data via `get_estimates(design, data = study_data)`. We introduce the software in more detail in the next section.
@@ -230,70 +229,6 @@ Third, emphasis on the statistical properties of a design can obscure the substa
 Finally, we see a risk that the variation in the suitability of design declaration to different research strategies may be taken as evidence of the relative superiority of different types of research strategies. While we believe that the range of strategies that can be declared and diagnosed is wider than what one might at first think possible, there is no reason to believe that all strong designs can be declared either ex ante or ex post. An advantage of our framework, we hope, is that it can help clarify when a strategy can or cannot be completely declared. When a design cannot be declared, nondeclarability is all the framework provides, and in such cases we urge caution in drawing conclusions about design quality.
 
 *MIDA* captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived or interventions are implemented. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, logistical details of data collection such as the duration of time between a treatment being administered and endline data collection enter into the model if the longer time until data collection affects subject recall of the treatment. However, information in *MIDA* is typically insufficient to assess those substantive elements, an important and separate part of assessing the quality of a research study.
-
-## Appendix: Detailed research design declaration of @Gulzar2020
-
-In this section, we declare the @Gulzar2020 example in finer detail. The aim is to capture all of the analytically-relevant features of the design. 
-
-```{r}
-gulzar_khan_design <- 
-  
-  declare_population(
-    # study is conducted in two districts in Pakistan, with 311 and 359 villages in them
-    districts = add_level(N = 2, name = c("Haripur", "Abbottabad"), N_villages = c(311, 359)),
-    
-    # villages nested within districts
-    villages = add_level(N = N_villages),
-    
-    # avg. 6500 citizens per village
-    citizens = add_level(N = 6500)
-  ) +
-  
-  # main outcome is whether a citizen filed papers to run for office
-  # we define potential outcomes in response to being assigned to a social, personal, or neutral appeal to run
-  declare_potential_outcomes(
-    filed_papers ~ rbinom(N, 1, prob = 0.05 + 0.05 * (Z_appeal == "social") + 0.01 * (Z_appeal == "personal")),
-    assignment_variable = Z_appeal, conditions = c("neutral", "social", "personal")
-  ) + 
-  
-  # inquiry is the difference in rates of filing papers between the social and personal appeal conditions
-  declare_estimand(ATE = mean(filed_papers_Z_appeal_social - filed_papers_Z_appeal_personal)) + 
-  
-  # sample 192 villages
-  declare_sampling(clusters = villages, n = 192, sampling_variable = "S_villages") + 
-  
-  # sample 48 citizens in each village via random walk
-  declare_sampling(strata = villages, n = 48, sampling_variable = "S_citizens") + 
-  
-  # assign villages to three arms with equal probabilities for three types of appeals to run for office
-  declare_assignment(
-    m_each = c(48, 72, 72),
-    clusters = villages,
-    conditions = c("neutral", "social", "personal"),
-    assignment_variable = Z_appeal
-  ) + 
-  
-  # recode treatment assignment for analysis into indicators for the two conditions of interest
-  declare_step(
-    Z_social_village = if_else(Z_appeal == "social", 1, 0),
-    Z_personal_village = if_else(Z_appeal == "personal", 1, 0),
-    handler = mutate
-  ) +
-  
-  # 1. run a linear regression with condition indicators
-  # 2. calculate the difference in effects between people in villages assigned to social appeals compared
-  #    to those assigned to personal appeals
-  # 3. calculate robust standard errors clustered on village
-  declare_estimator(
-    filed_papers ~ Z_social_village + Z_personal_village, 
-    linear_hypothesis = "Z_social_village - Z_personal_village = 0",
-    term = "Z_social_village - Z_personal_village = 0",
-    clusters = villages,
-    model = lh_robust
-  )
-```
-
-
 
 
 
