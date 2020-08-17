@@ -464,22 +464,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">17.3</span> Blocked trials</h2>
 <div id="declaration-16" class="section level3">
 <h3><span class="header-section-number">17.3.1</span> Declaration</h3>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" title="1">design &lt;-</a>
-<a class="sourceLine" id="cb138-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb138-3" title="3">                     <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.3</span>),</a>
-<a class="sourceLine" id="cb138-4" title="4">                     <span class="dt">U =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb138-5" title="5"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span></a>
-<a class="sourceLine" id="cb138-6" title="6"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb138-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> X, <span class="dt">block_prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb138-8" title="8"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb138-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z,</a>
-<a class="sourceLine" id="cb138-10" title="10">                    <span class="dt">blocks =</span> X,</a>
-<a class="sourceLine" id="cb138-11" title="11">                    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>,</a>
-<a class="sourceLine" id="cb138-12" title="12">                    <span class="dt">label =</span> <span class="st">&quot;Blocked DIM&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" title="1">design &lt;-</a>
+<a class="sourceLine" id="cb139-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb139-3" title="3">                     <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.3</span>),</a>
+<a class="sourceLine" id="cb139-4" title="4">                     <span class="dt">U =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-5" title="5"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-6" title="6"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> X, <span class="dt">block_prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-8" title="8"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb139-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z,</a>
+<a class="sourceLine" id="cb139-10" title="10">                    <span class="dt">blocks =</span> X,</a>
+<a class="sourceLine" id="cb139-11" title="11">                    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>,</a>
+<a class="sourceLine" id="cb139-12" title="12">                    <span class="dt">label =</span> <span class="st">&quot;Blocked DIM&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-15" class="section level3">
 <h3><span class="header-section-number">17.3.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-355-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-356-1.png" width="100%" /></p>
 </div>
 <div id="example-18" class="section level3">
 <h3><span class="header-section-number">17.3.3</span> Example</h3>

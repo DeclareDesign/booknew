@@ -463,11 +463,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="diagnosing-a-research-design" class="section level2">
 <h2><span class="header-section-number">3.7</span> Diagnosing a research design</h2>
 <p>The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can now calculate the bias, root mean-squared error, and power for each estimator-estimand pair. In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1">study_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(</a>
-<a class="sourceLine" id="cb33-2" title="2">  <span class="dt">select =</span> <span class="kw">c</span>(bias, rmse, power), </a>
-<a class="sourceLine" id="cb33-3" title="3">  <span class="dt">mse =</span> <span class="kw">mean</span>((estimate <span class="op">-</span><span class="st"> </span>estimand)<span class="op">^</span><span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1">study_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(</a>
+<a class="sourceLine" id="cb34-2" title="2">  <span class="dt">select =</span> <span class="kw">c</span>(bias, rmse, power), </a>
+<a class="sourceLine" id="cb34-3" title="3">  <span class="dt">mse =</span> <span class="kw">mean</span>((estimate <span class="op">-</span><span class="st"> </span>estimand)<span class="op">^</span><span class="dv">2</span>))</a></code></pre></div>
 <p>Next, take your simulations data and the diagnosands, and diagnose. This runs a single operation, which is to calculate the diagnosands on your simulations data.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">diagnose_design</span>(simulations_df, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">diagnose_design</span>(simulations_df, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -557,7 +557,7 @@ Z
 </tbody>
 </table>
 <p>We can also do this in a single step. When you send <code>diagnose_design</code> a design object, it will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">diagnose_design</span>(simple_design, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1"><span class="kw">diagnose_design</span>(simple_design, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
 </div>
             </section>
 

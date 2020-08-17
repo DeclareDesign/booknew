@@ -464,42 +464,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">6.2</span> Example</h2>
 <!-- cite ambrus2020loss-->
 <p>[ TO BE WRITTEN: example with DAG and declaration based on this amazing AER paper that reanalyzes John Snow’s analysis of the Broad Street Pump and estimates its effect on contemporary and present day housing prices. idea is to show John Snow’s idea, then switch to them for the real estate price inference. ]</p>
-<p><img src="book_files/figure-html/unnamed-chunk-101-1.png" width="100%" /></p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">tau &lt;-<span class="st"> </span><span class="fl">0.15</span></a>
-<a class="sourceLine" id="cb45-2" title="2">cutoff &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
-<a class="sourceLine" id="cb45-3" title="3">bandwidth &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
-<a class="sourceLine" id="cb45-4" title="4"></a>
-<a class="sourceLine" id="cb45-5" title="5">polynom_func &lt;-<span class="st"> </span><span class="cf">function</span>(x, coefs){ </a>
-<a class="sourceLine" id="cb45-6" title="6">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(x, <span class="kw">length</span>(coefs), <span class="dt">raw =</span> T) <span class="op">%*%</span><span class="st"> </span>coefs)</a>
-<a class="sourceLine" id="cb45-7" title="7">}</a>
-<a class="sourceLine" id="cb45-8" title="8"></a>
-<a class="sourceLine" id="cb45-9" title="9">cholera_design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb45-10" title="10"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb45-11" title="11">    <span class="dt">houses =</span> <span class="kw">add_level</span>(</a>
-<a class="sourceLine" id="cb45-12" title="12">      <span class="dt">N =</span> <span class="dv">1722</span>,</a>
-<a class="sourceLine" id="cb45-13" title="13">      <span class="dt">pump_border_distance =</span> <span class="kw">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">-</span><span class="st"> </span>cutoff, </a>
-<a class="sourceLine" id="cb45-14" title="14">      <span class="dt">bsp =</span> <span class="kw">if_else</span>(pump_border_distance <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb45-15" title="15">      <span class="dt">noise =</span> <span class="kw">rnorm</span>(N, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="fl">0.1</span>)</a>
-<a class="sourceLine" id="cb45-16" title="16">    )</a>
-<a class="sourceLine" id="cb45-17" title="17">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb45-18" title="18"><span class="st">  </span></a>
-<a class="sourceLine" id="cb45-19" title="19"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb45-20" title="20">    <span class="dt">ln_prices_1864_bsp_0 =</span> <span class="kw">polynom_func</span>(pump_border_distance, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span>noise, </a>
-<a class="sourceLine" id="cb45-21" title="21">    <span class="dt">ln_prices_1864_bsp_1 =</span> <span class="kw">polynom_func</span>(pump_border_distance, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span>tau <span class="op">+</span><span class="st"> </span>noise</a>
-<a class="sourceLine" id="cb45-22" title="22">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-23" title="23"><span class="st">  </span></a>
-<a class="sourceLine" id="cb45-24" title="24"><span class="st">  </span><span class="kw">declare_estimand</span>(</a>
-<a class="sourceLine" id="cb45-25" title="25">    <span class="dt">LATE_bsp =</span> (<span class="kw">polynom_func</span>(<span class="dv">0</span>, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span>tau) <span class="op">-</span><span class="st"> </span><span class="kw">polynom_func</span>(<span class="dv">0</span>, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-26" title="26"><span class="st">  </span></a>
-<a class="sourceLine" id="cb45-27" title="27"><span class="st">  </span><span class="kw">declare_reveal</span>(ln_prices_<span class="dv">1864</span>, bsp) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-28" title="28"><span class="st">  </span></a>
-<a class="sourceLine" id="cb45-29" title="29"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb45-30" title="30">    ln_prices_<span class="dv">1864</span> <span class="op">~</span><span class="st"> </span>stats<span class="op">::</span><span class="kw">poly</span>(pump_border_distance, <span class="dt">degree =</span> <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span>bsp, </a>
-<a class="sourceLine" id="cb45-31" title="31">    <span class="dt">subset =</span> (pump_border_distance <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">-</span><span class="st"> </span><span class="kw">abs</span>(bandwidth)) <span class="op">&amp;</span><span class="st"> </span>pump_border_distance <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(bandwidth),</a>
-<a class="sourceLine" id="cb45-32" title="32">    <span class="dt">model =</span> lm_robust, </a>
-<a class="sourceLine" id="cb45-33" title="33">    <span class="dt">term =</span> <span class="st">&quot;bsp&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;LATE_bsp&quot;</span>)</a>
-<a class="sourceLine" id="cb45-34" title="34">  </a>
-<a class="sourceLine" id="cb45-35" title="35"><span class="kw">diagnose_design</span>(cholera_design, <span class="dt">sims =</span> <span class="dv">500</span>)</a></code></pre></div>
+<p><img src="book_files/figure-html/unnamed-chunk-102-1.png" width="100%" /></p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1">tau &lt;-<span class="st"> </span><span class="fl">0.15</span></a>
+<a class="sourceLine" id="cb46-2" title="2">cutoff &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb46-3" title="3">bandwidth &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb46-4" title="4"></a>
+<a class="sourceLine" id="cb46-5" title="5">polynom_func &lt;-<span class="st"> </span><span class="cf">function</span>(x, coefs){ </a>
+<a class="sourceLine" id="cb46-6" title="6">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(x, <span class="kw">length</span>(coefs), <span class="dt">raw =</span> T) <span class="op">%*%</span><span class="st"> </span>coefs)</a>
+<a class="sourceLine" id="cb46-7" title="7">}</a>
+<a class="sourceLine" id="cb46-8" title="8"></a>
+<a class="sourceLine" id="cb46-9" title="9">cholera_design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb46-10" title="10"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb46-11" title="11">    <span class="dt">houses =</span> <span class="kw">add_level</span>(</a>
+<a class="sourceLine" id="cb46-12" title="12">      <span class="dt">N =</span> <span class="dv">1722</span>,</a>
+<a class="sourceLine" id="cb46-13" title="13">      <span class="dt">pump_border_distance =</span> <span class="kw">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">-</span><span class="st"> </span>cutoff, </a>
+<a class="sourceLine" id="cb46-14" title="14">      <span class="dt">bsp =</span> <span class="kw">if_else</span>(pump_border_distance <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb46-15" title="15">      <span class="dt">noise =</span> <span class="kw">rnorm</span>(N, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb46-16" title="16">    )</a>
+<a class="sourceLine" id="cb46-17" title="17">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb46-18" title="18"><span class="st">  </span></a>
+<a class="sourceLine" id="cb46-19" title="19"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb46-20" title="20">    <span class="dt">ln_prices_1864_bsp_0 =</span> <span class="kw">polynom_func</span>(pump_border_distance, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span>noise, </a>
+<a class="sourceLine" id="cb46-21" title="21">    <span class="dt">ln_prices_1864_bsp_1 =</span> <span class="kw">polynom_func</span>(pump_border_distance, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span>tau <span class="op">+</span><span class="st"> </span>noise</a>
+<a class="sourceLine" id="cb46-22" title="22">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-23" title="23"><span class="st">  </span></a>
+<a class="sourceLine" id="cb46-24" title="24"><span class="st">  </span><span class="kw">declare_estimand</span>(</a>
+<a class="sourceLine" id="cb46-25" title="25">    <span class="dt">LATE_bsp =</span> (<span class="kw">polynom_func</span>(<span class="dv">0</span>, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">1</span>)) <span class="op">+</span><span class="st"> </span>tau) <span class="op">-</span><span class="st"> </span><span class="kw">polynom_func</span>(<span class="dv">0</span>, <span class="dt">coefs =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-26" title="26"><span class="st">  </span></a>
+<a class="sourceLine" id="cb46-27" title="27"><span class="st">  </span><span class="kw">declare_reveal</span>(ln_prices_<span class="dv">1864</span>, bsp) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-28" title="28"><span class="st">  </span></a>
+<a class="sourceLine" id="cb46-29" title="29"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb46-30" title="30">    ln_prices_<span class="dv">1864</span> <span class="op">~</span><span class="st"> </span>stats<span class="op">::</span><span class="kw">poly</span>(pump_border_distance, <span class="dt">degree =</span> <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span>bsp, </a>
+<a class="sourceLine" id="cb46-31" title="31">    <span class="dt">subset =</span> (pump_border_distance <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">-</span><span class="st"> </span><span class="kw">abs</span>(bandwidth)) <span class="op">&amp;</span><span class="st"> </span>pump_border_distance <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(bandwidth),</a>
+<a class="sourceLine" id="cb46-32" title="32">    <span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb46-33" title="33">    <span class="dt">term =</span> <span class="st">&quot;bsp&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;LATE_bsp&quot;</span>)</a>
+<a class="sourceLine" id="cb46-34" title="34">  </a>
+<a class="sourceLine" id="cb46-35" title="35"><span class="kw">diagnose_design</span>(cholera_design, <span class="dt">sims =</span> <span class="dv">500</span>)</a></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 500 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (100 replicates).
 ## 
@@ -509,7 +509,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##  Coverage Mean Estimate SD Estimate Mean Se Type S Rate Mean Estimand
 ##      0.95          0.22        0.67    0.67        0.22          0.15
 ##    (0.01)        (0.03)      (0.02)  (0.00)      (0.08)        (0.00)</code></pre>
-<p><img src="book_files/figure-html/unnamed-chunk-102-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-103-1.png" width="100%" /></p>
 </div>
             </section>
 

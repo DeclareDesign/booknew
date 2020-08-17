@@ -465,7 +465,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Diagnosing a research design — learning about its properties — requires first simulating running the design over and over. We need to simulate the data generating process, then calculate the estimands, then calculate the estimates that will result.</p>
 <p>With simple design defined as an object, we can easily learn about what kind of data it generates, the values of its estimand and estimates, and other features with simple funtions in <code>DeclareDesign</code>. They chain together functions in a similar way to a <code>dplyr</code> or <code>ggplot</code> pipeline.</p>
 <p>To draw simulated data based on the design, we use <code>draw_data</code>:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">draw_data</span>(simple_design)</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">draw_data</span>(simple_design)</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -656,7 +656,7 @@ Y
 </table>
 <p><code>draw_data</code> runs all of the “data steps” in a design, which are both from the model (population and potential outcomes) and from the data strategy (typically sampling and assignment).</p>
 <p>To simulate the estimands from a single run of the design, we use <code>draw_estimands</code>. This runs two operations at once: it draws the data, and calculates the estimands at the point defined by the design. For example, in our design the estimand comes just after the potential outcomes. In this design, <code>draw_estimands</code> will run the first two steps and then calculate the estimands from the <code>estimand</code> function we declared:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">draw_estimands</span>(simple_design)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">draw_estimands</span>(simple_design)</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -680,7 +680,7 @@ PATE
 </tbody>
 </table>
 <p>Similarly, we can simulate the estimates from a single run with <code>draw_estimates</code> which draws data and at the appropriate moment calculates estimates.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">draw_estimates</span>(simple_design)</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">draw_estimates</span>(simple_design)</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -758,7 +758,7 @@ PATE
 </tbody>
 </table>
 <p>To diagnose a design, we want a data frame that includes the estimates <em>and</em> estimands from many runs of a design. That is, we want to run the design, draw estimates and estimands, and then do that over and over and stack the results. This is exactly what <code>simulate_design</code> does:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">simulate_design</span>(simple_design, <span class="dt">sims =</span> <span class="dv">500</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">simulate_design</span>(simple_design, <span class="dt">sims =</span> <span class="dv">500</span>)</a></code></pre></div>
 <table>
 <thead>
 <tr>

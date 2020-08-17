@@ -62,3 +62,9 @@ gulzar_khan_design <-
     clusters = villages,
     model = lh_robust
   )
+
+design <- 
+  declare_population(N = 100) + 
+  declare_potential_outcomes(Y ~ Z) +
+  declare_assignment(prob = 0.5) + 
+  declare_estimator(Y ~ Z, model = difference_in_means)
