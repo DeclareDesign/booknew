@@ -39,13 +39,11 @@ library(ggraph)
 
 In this chapter, we will talk about how to go about the tricky task of specifying a $M$odel and why it is so important to do so. 
 
-We are not talking about "statistical models" used to estimate unknown parameters---those are part of your answer strategy. We are talking about specifying simulation models: a set of assumptions about how your data could be generated, encoded in math or computer language, which we can use to generate imaginary datasets. 
-
-The distinction is a subtle but important one. We should only trust the inferences we draw from a statistical model if we think they would be good inferences to draw based on a plausible $M$odel of how the data was generated. 
+(more here)
 
 $M$odels often lurk where you might not expect them. When researchers do experiments, they often compare the average observed outcome in the treatment group to the average observed outcome in the control group in order to get an estimate of the average treatment effect.^[...of putting one person in treatment and everyone else in control] This comparison requires no statistical modelling of the distributions of the observed variables: it follows from the fact that the average difference in two potential outcomes is equal to the difference in the averages of those two potential outcomes. So it seems as though such strategies are completely agnostic as to how the data was generated. 
 
-Implicit in the very definition of the average treatment effect here, however, is a $M$odel: specifically, one in which any particular draw of the random assignment is able to reveal no more than two potential outcomes for any given individual---this is sometimes referred to as a "no spillovers" assumption. But many social processes violate this assumption. If I do something differently every time you get treated and I do not, then I have at least three potential outcomes: one in which I am treated, one in which neither of us are treated, and one in which you are treated but I am not. The average observed difference-in-means across random assignments might diverge quite substantially from the average effect we are interested in (say, of putting just one person in treatment and the rest in control). So even the simplest, most agnostic research design is relying on the plausibility of an implicit $M$odel in order to generate insights that are correct on average. 
+Implicit in the very definition of the average treatment effect here, however, is a $M$odel: specifically, one in which any particular draw of the random assignment is able to reveal no more than two potential outcomes for any given individual. This is often referred to as a "no spillovers" assumption. But many social processes violate this assumption. If I do something differently every time you get treated and I am left untreated, then I have at least three potential outcomes: one in which I am treated, one in which neither of us are treated, and one in which you are treated but I am not. The average observed difference-in-means across random assignments might diverge quite substantially from the average effect we are interested in (say, of putting just one person in treatment and the rest in control). So even the simplest, most agnostic research design is relying on the plausibility of an implicit $M$odel in order to generate insights that are correct on average. 
 
 In practice, we never get to know whether our $M$odel is right. For example, we can never really know how many potential outcomes there are. So we also cannot know if we got the right answer. What we can do, however, is study our procedure for generating answers under $M$odels of the world that we find plausible. That way, we do get to know which answers we should and should not trust, given the assumptions we are willing to make about the world.
 
@@ -53,7 +51,7 @@ In practice, we never get to know whether our $M$odel is right. For example, we 
 
 We make use of two different formal languages for describing causal models: DAGs and potential outcomes. DAGs are "directed acyclic graphs," where each node on a graph is a variable and the edges that connect them represent causal effects. DAGs emphasize a mechanical notion of causality: when the exposure variable changes, the outcome variable changes as a result. By contrast, the potential outcomes formalization emphasizes a counterfactual notion of causality. $Y_i(0)$ is the outcome for unit $i$ when the exposure variable is set to zero and $Y_i(1)$ is the outcome when it is set to one. The difference between them is the effect of the treatment on the outcome for unit $i$. Since at most only one potential outcome can ever be revealed, at least one of the two potential outcomes is necessarily counterfactual. Unrevealed potential outcomes are counter-to-facts; they do not exist. Nevertheless, the potential outcomes model is useful for thinking about what would have happened had things been different.
 
-Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. A theorem in one language is a theorem in the other (CITE???). We use both languages because they are useful for expressing different facets of research design. We'll take the example of heterogeneous treatment effects to show how the two languages convey different aspects of the research setting.
+Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. A theorem in one language is a theorem in the other (CITE). We use both languages because they are useful for expressing different facets of research design. We'll take the example of heterogeneous treatment effects to show how the two languages convey different aspects of the research setting.
 
 ### DAGs
 
@@ -79,15 +77,13 @@ Sometimes the switching equation is written in a more compact algebraic form: $Y
 
 The switching equation underlines the fact that at most, we can only observe the one potential outcome that happened to be revealed by the world. We either see $Y_i(1)$ or $Y_i(0)$, but we can never see both. This problem has famously been dubbed the "Fundamental Problem of Causal Inference" (Holland 1986). The problem is indeed fundamental and common to all causal inference settings. 
 
-That said, the Fundamental Problem of Causal Inference is more *severe* in some settings than others. Consider the causal inference problem of measuring the average causal effect of a light switch on the lamp turning on. Suppose we flip the switch on at exactly 2020-07-08 12:33:38 EDT and the lamp illuminates. We literally can't know whether the lamp would be on or off if the switch were in the off position at exactly that moment -- that's the Fundamental Problem of Causal Inference at work. But we can nevertheless get a good sense of the average effect of the switch on the lamp by flicking it back and forth a few times. Conditional on everything else in the system working (the electricity to the house, the lightbulb filament, etc), the average effect of the switch on illumination is 100 percentage points. The fundamental problem just isn't a big deal in this case because we have fine control over the causal variable (the switch) and the outcome variable (is the light on?) is measured perfectly. 
+That said, the Fundamental Problem of Causal Inference is more *severe* in some settings than others. Consider the causal inference problem of measuring the average causal effect of a light switch on the lamp turning on. Suppose we flip the switch on at exactly 2020-07-08 12:33:38 EDT and the lamp illuminates. We can't know whether the lamp would be on or off if the switch were in the off position at exactly that moment -- that's the Fundamental Problem of Causal Inference at work. But we can nevertheless get a good sense of the average effect of the switch on the lamp by flicking it back and forth a few times. Conditional on everything else in the system working (the electricity to the house, the lightbulb filament, etc), the average effect of the switch on illumination is 100 percentage points. The fundamental problem isn't a big deal in this case because we have fine control over the causal variable (the switch) and the outcome variable (is the light on?) is measured perfectly. However, even in this case, we could be wrong. If a troublesome sibling is watching from the around the corner our efforts to learn whether the light switches causes the light to turn on --- and knows the switch is broken --- they might flick a second, functioning switch just as you are flicking yours. It would appear that your switch causes the lights, but in fact it is your sibling and the other switch. This is bias due to a confounding factor: your sibling.
 
-<!-- MH: I think we really need something else here: we think it very unlikely that anything else is confounded with our control---e.g. that our decision to turn on or off isnt; responding to some subtle information about what's about to happen -->
-
-Most social scientific research questions are much harder. Measuring the average effect of university education on earnings, for example, is a notoriously difficult research task. First, different kinds of people do and don't attend university; those who do attend have different experiences and develop different social networks; those who don't attend university *also* have heterogeneous experiences in their early careers. The Fundamental Problem of Causal Inference is quite severe in this case because it is very hard to know what the lives of well-educated offices worker would have been like had they not gone to college. 
+Most social scientific research questions are much harder. Measuring the average effect of university education on earnings, for example, is a notoriously difficult research task. First, different kinds of people do and don't attend university; those who do attend have different experiences and develop different social networks; those who don't attend university *also* have heterogeneous experiences in their early careers. The Fundamental Problem of Causal Inference is quite severe in this case because it is very hard to know what the lives of well-educated offices worker would have been like had they not gone to college. And we cannot measure let alone know what all the confounding factors are, unlike in the light example, where the giggles of our sibling might give the confounder away.
 
 ### Complementary strengths of DAGs and potential outcomes
 
-The DAG below has just four variables. $Y$ is the outcome variable. It is affected by all of the other variables: $Z$, the treatment variable, $X$, a pre-treatment covariate, and $U$, an unobserved source of variation in both $X$ and $Y$. Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given seeting. Here, the causal relationship between $X$ and $Y$ is confounded. Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned or otherwise exogenous. The DAG shows that even though we can't learn about the causal effects of $X$ on $Y$, we *can* learn about average causal effects of Z on Y. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances.
+The DAG below has just four variables. $Y$ is the outcome variable. It is affected by all of the other variables: $Z$, the treatment variable, $X$, a pre-treatment covariate, and $U$, an unobserved source of variation in both $X$ and $Y$. Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting. Here, the causal relationship between $X$ and $Y$ is confounded. Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly-assigned or otherwise exogenous. The DAG shows that even though we can't learn about the causal effects of $X$ on $Y$, we *can* learn about average causal effects of Z on Y. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances.
 
 ```{r, echo = FALSE}
 a_blue <- "#0072B2"
@@ -127,7 +123,7 @@ ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
 g
 ```
 
-This DAG conveys beliefs about whether *whether* two variables are causally related, but it does not encode beliefs about *how* they are related. The DAG doesn't show whether the effects are positive or negative, large or small, constant or heterogeneous. For example, we can't read from the DAG whether the average effect of $Z$ should be higher or lower depending on whether $X$ is set to 0 or 1. This is no criticism of DAGs -- they just don't encode all of our causal beliefs about a system.
+This DAG conveys beliefs about whether *whether* two variables are causally related, but it does not encode beliefs about *how* they are related. The DAG doesn't show whether the effects are positive or negative, large or small, constant or heterogeneous. For example, we can't read from the DAG whether the average effect of $Z$ should be higher or lower depending on whether $X$ is set to 0 or 1. This is no criticism of DAGs --- they just don't encode all of our causal beliefs about a system.
 
 A potential outcomes representation of this same system can fill in some of the details. 
 
@@ -135,7 +131,7 @@ A potential outcomes representation of this same system can fill in some of the 
 
 More specifically, we will make the two potential outcomes of $Y$ with respect to $Z$ explicit, since we are focused on the effects of $Z$ on $Y$. We will skip writing out the potential outcomes of $X$ and $Y$ with respect to $U$ to reduce complexity, though of course the causal process by which $U$ affects its descendant variables could also be represented in potential outcomes. 
 
-Potential outcomes notation is especially useful for defining *inquiries*. Estimands are the inferential target -- what we call the Inquiry in the MIDA framework. The most common estimand is the Average Treatment Effect (ATE), which is written like this^[The expectation operator $E[]$ is a way of describing the average of a random variable. In general, $E[X] = \sum_{x \in X} x * pr(X = x)$. Here we are slightly abusing the notation, since in a fixed population, $Y_i(1)$ and $Y_i(0)$ are not random variables. We could write the ATE as $\frac{1}{N}\sum_1^N Y_i(1) - Y_i(0)$, or we could just imagine that we drawing one unit at random from the fixed population; the expectation operator can be defined with respect to this imaginary random variable in order to save ourselves some notational headaches.]:
+Potential outcomes notation is especially useful for defining *inquiries*. Estimands are the inferential target -- what we call the Inquiry in the MIDA framework. The most common estimand is the Average Treatment Effect (ATE), which is written like this^[The expectation operator $E[]$ is a way of describing the average of a random variable. In general, $E[X] = \sum_{x \in X} x * pr(X = x)$ for discrete outcomes. Here we are slightly abusing the notation, since in a fixed population, $Y_i(1)$ and $Y_i(0)$ are not random variables. We could write the ATE as $\frac{1}{N}\sum_1^N Y_i(1) - Y_i(0)$, or we could just imagine that we drawing one unit at random from the fixed population; the expectation operator can be defined with respect to this imaginary random variable in order to save ourselves notational headaches.]:
 
 $$
 ATE \equiv E[Y_i(1) - Y_i(0)]
@@ -143,11 +139,11 @@ $$
 
 We want to emphasize that the ATE is an *average*. The difference between $Y_i(1)$ and $Y_i(0)$ for unit $i$ is an individual-level treatment effect (sometimes we'll refer to $Y_i(1) - Y_i(0)$ as $\tau_i$). The ATE averages over all of the individual-level treatment effects in the relevant population. Some units will have a $tau_i$ that is higher than the ATE, some will have a $\tau_i$ that is lower. We emphasize this because sometimes people mistakenly thing that by focusing on an ATE, researchers are "assuming" that everyone experiences the same treatment effect. This is not true. The ATE is just a single-number summary of a possibly very heterogeneous set of responses to treatment.
 
-We can also use potential outcomes notation to define other, more complicated estimands. Throughout the book, we'll describe a series of them -- local average treatment effects, average treatment effects on the treated, average direct effects, average indirect effects, and spillover effects, to name a few -- all using potential outcomes notation. 
+We can also use potential outcomes notation to define other, more complicated estimands. Throughout the book, we'll describe a series of them: local average treatment effects, average treatment effects on the treated, average direct effects, average indirect effects, and spillover effects, to name a few. We'll define each using potential outcomes. 
 
 In the next example, we'll illustrate how using both DAGs and potential outcomes together, we can describe and learn about research designs in a more complete way. The DAG above encodes the beliefs that $Y$ is a function of $Z$, $X$, and $U$ and also that we can learn about the effects of $Z$ on $Y$ but not $X$ on $Y$. The DAG is silent, however, on the question of whether the effect of $Z$ is on average different for units with different values of $X$. In other words, the DAG doesn't reflect beliefs about treatment effect heterogeneity. 
 
-Using potential outcomes, we can write down three new estimands: the conditional average treatment effect (CATE) of $Z$ on $Y$ for units with $X = 1$, the CATE among units with $X = 0$, and the difference-in-cates:
+Using potential outcomes, we can write down three new estimands: the conditional average treatment effect (CATE) of $Z$ on $Y$ for units with $X = 1$, the CATE among units with $X = 0$, and the difference-in-CATEs:
 
 $$
 \begin{aligned}
@@ -157,7 +153,7 @@ Diff-in-CATEs &\equiv E[Y_i(1) - Y_i(0) | X = 1] - E[Y_i(1) - Y_i(0) | X = 0]
 \end{aligned}
 $$
 
-Suppose we think that the effect of treatment is larger for units with $X = 1$, which is to say we think the difference-in-cates is positive. We can supplement the DAG representation of the causal model with a design declaration that includes these beliefs.
+Suppose we think that the effect of treatment is larger for units with $X = 1$, which is to say we think the difference-in-CATEs is positive. We can supplement the DAG representation of the causal model with a design declaration that includes these beliefs.
 
 ```{r}
 diff_in_cates <- 0.5
@@ -246,8 +242,6 @@ g <-
 g
 
 ```
-
-
 
 
 ```{r cholera-declaration}
@@ -475,11 +469,11 @@ Models are *models* -- they are abstractions and they are not the truth! The tru
 How do you come up with a model (or DAG)? Read a book, try to write down the DAG.
 
 
-### Grab bag of things we don't know where they go
+<!-- ### Grab bag of things we don't know where they go -->
 
-- your model includes your priors and likelihood functions for how you will learn from data.
+<!-- - your model includes your priors and likelihood functions for how you will learn from data. -->
 
-- "upper model set" and "lower model set" --- similar to solution sets in GT, we want the model set to be likely to include the truth and not likely to include more than the truth
+<!-- - "upper model set" and "lower model set" --- similar to solution sets in GT, we want the model set to be likely to include the truth and not likely to include more than the truth -->
 
 
 
