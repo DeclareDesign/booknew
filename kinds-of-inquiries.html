@@ -198,13 +198,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
 <li class="chapter" data-level="7.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Kinds of Inquiries</a><ul>
-<li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-estimands"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive estimands</a></li>
-<li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquires"><i class="fa fa-check"></i><b>7.1.2</b> Causal Inquires</a></li>
+<li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquiries"><i class="fa fa-check"></i><b>7.1.2</b> Causal inquiries</a></li>
+<li class="chapter" data-level="7.1.3" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#relationship-between-causal-and-descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.3</b> Relationship between causal and descriptive inquiries</a></li>
 </ul></li>
 <li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select Inquiries?</a></li>
-<li class="chapter" data-level="7.3" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.3</b> Grab bag of ideas we don’t know where to put</a><ul>
-<li class="chapter" data-level="7.3.1" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html#advice-section"><i class="fa fa-check"></i><b>7.3.1</b> ADVICE SECTION</a></li>
-</ul></li>
+<li class="chapter" data-level="7.3" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.3</b> Grab bag of ideas we don’t know where to put</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
 <li class="chapter" data-level="8.1" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>8.1</b> Example</a></li>
@@ -459,12 +458,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="kinds-of-inquiries" class="section level2">
 <h2><span class="header-section-number">7.1</span> Kinds of Inquiries</h2>
 <!-- MH: My vote: four types of queries: the three from Pearl (descriptive, interventionist, counterfactual) plus "model" queries in which you try to learn the model. -->
+<!-- AC: Could you say more about "interventionist"? not sure I understadn the difference vs. counterfactual. Also, I was thinking here that the basic distinction between descriptive and causal is the most important, "model" queries are made up of a series of sub-inquiries that themselves are either descriptive or causal. Model queries can mix both. Would that cover it?-->
 <!-- MH: Suggest a table that gives a real broad set of inequiries that people can use as a reference; ATE, LATE, PATEs, SATEs, CDEs, lots and lots. Even better if we can define most of them off a simple DAG. -->
-<p>There are two basic kinds of inquiries <span class="math inline">\(I\)</span> about a model <span class="math inline">\(M\)</span>, descriptive and causal. One way to think about the difference is that descripitive inquiries are about the nodes of a dag and causal inquires are about the edges. A descriptive <em>inference</em> is a conclusion about a latent variable <span class="math inline">\(Y^*\)</span> on the basis of a measured variable <span class="math inline">\(Y\)</span>. The feature we seek to describe – our inquiry – is some summary of <span class="math inline">\(Y^*\)</span> like its mean or perhaps its covariance with a second latent variable <span class="math inline">\(X^*\)</span>. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model <span class="math inline">\(M\)</span>. A causal <em>inference</em> is a conclusion about the edge between two latent variables <span class="math inline">\(X^*\)</span> and <span class="math inline">\(Y^*\)</span>. You can’t just observe edges – you can see nodes but you can’t see edges.</p>
-<p>Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. In the descriptive case, we want to learn about the fundamentally unobservable latent variables the measured variables are meant to represent. In the causal case, we want to learn about the fundamentally impossible to observe difference between two possible worlds. We can’t measure <span class="math inline">\(Y\)</span> in both the <span class="math inline">\(X = 1\)</span> and <span class="math inline">\(X = 0\)</span> because only one of those values could ever be revealed by the world. This problem is commonly known as the fundamental problem of causal inference. The fundamental problem of descriptive inference is similar – we don’t get to observe the true latent values because they are latent. We can only ever observe measured variables.</p>
-<div id="descriptive-estimands" class="section level3">
-<h3><span class="header-section-number">7.1.1</span> Descriptive estimands</h3>
-<p>Descriptive estimands are usually about latent variables. We care about the true values of the variables in the models. No matter how excellent the measurements taken as part of the Data strategy, the measured variables are always distinct from the latent variables since measurement always involves error. For the most part, we define our inquiries in terms of the “true” latent variables rather than in terms of their measured counterparts.</p>
+<!-- AC: tough for one DAG, but We've got the table started now at least -->
+<p>Atomic inquiries <span class="math inline">\(I\)</span> about a model <span class="math inline">\(M\)</span> fall into two basic categories, descripitive and causal. Descriptive inquiries are about how the world was, is, and will be whereas causal inquiries are about how the world would have been, would be, or would be in the future if some variables were set to different levels. You might think of the distinction in terms of a DAG. Descripitive inquiries are about the nodes of a dag whereas causal inquires are about the edges.</p>
+<p>Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. The fundamental problem of causal inference is well known. For the same reason that a unit cannot simultaneously be both treated and untreated, we can only every observe at most one potential outcome for any particular unit. The fundamental problem of descriptive inference is similar. The concepts we want to measure are latent constructs. Perfect measurement is impossible, so our measurements of the latent constructs always include some measurement error. Just like we can’t know for sure how, counterfactually, a unit would have responded if the treatment had been set to a different level, we likewise can’t know for sure whether our measurements accurately reflect the latent construct.</p>
+<p>More specifically, a descriptive <em>inference</em> is a conclusion about a latent variable <span class="math inline">\(Y^*\)</span> on the basis of a measured variable <span class="math inline">\(Y\)</span>. The feature we seek to describe – our inquiry – is some summary of <span class="math inline">\(Y^*\)</span> like its mean or perhaps its covariance with a second latent variable <span class="math inline">\(X^*\)</span>. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model <span class="math inline">\(M\)</span>. A causal <em>inference</em> is a conclusion about the edge between two latent variables <span class="math inline">\(X^*\)</span> and <span class="math inline">\(Y^*\)</span>. Even if we do an exceptional job measuring <span class="math inline">\(X^*\)</span> and <span class="math inline">\(Y^*\)</span> with <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we will still have trouble learning about edges because causal effects are quite literally unobservable. We have to <em>infer</em> causality on the basis of a strong research design because we can’t just see it.</p>
+<div id="descriptive-inquiries" class="section level3">
+<h3><span class="header-section-number">7.1.1</span> Descriptive inquiries</h3>
+<p>Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Because of the fundamental problem of descriptive inference, measured variables are always distinct from latent variables. For the most part, we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts.</p>
 <p>Table ZZZ enumerates some common descriptive estimands.</p>
 <table>
 <thead>
@@ -505,10 +507,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 </div>
-<div id="causal-inquires" class="section level3">
-<h3><span class="header-section-number">7.1.2</span> Causal Inquires</h3>
-<p>Causal inquires involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0. You can think of causal inference as repeated descriptive inference: we have to describe <span class="math inline">\(Y\)</span> in multiple possible worlds.</p>
+<div id="causal-inquiries" class="section level3">
+<h3><span class="header-section-number">7.1.2</span> Causal inquiries</h3>
+<p>Causal inquiries involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0.</p>
 <p>Table ZZZ enumerates some common causal estimands.</p>
+<ul>
+<li>Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over</li>
+</ul>
 <table>
 <colgroup>
 <col width="41%" />
@@ -543,23 +548,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
+<p>Generations of students have been told to excise words that connote causality from their empirical writing. “Affects” becomes “is associated with” and “impacts” becomes “moves with.” Being careful about causal language is of course very important (it’s really true that correlation does not imply causation!). But this change in language is not usually accompanied by a change in inquiry. Many times we are faced with drawing causal inferences from than ideal data – but the deficiencies of the data strategy should not lead us too far away from our inferential targets. If the inquiry is a causal inquiry, then the move from “causes” to “is correlated with” might be a good description of the actual data analysis, but it doesn’t move us closer to providing an answer to the inquiry.</p>
+</div>
+<div id="relationship-between-causal-and-descriptive-inquiries" class="section level3">
+<h3><span class="header-section-number">7.1.3</span> Relationship between causal and descriptive inquiries</h3>
+<p>You can think of causal inference as repeated descriptive inference: we have to describe <span class="math inline">\(Y\)</span> in multiple possible worlds.</p>
 <p>Causal inquiries like the average effect of A on B in a causal model like <span class="math inline">\(A -&gt; B &lt;- U\)</span> are helped enormously by good descriptive inference about the nodes <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, but the focus is on the edge between them. You typically can’t learn about the edge by doing desscripitve inference on the nodes only. If we measure <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> and find that they covary, we can’t be sure that <span class="math inline">\(A -&gt; B\)</span> because it could be that <span class="math inline">\(A &lt;- U -&gt; B\)</span>. This problem goes by the familiar phrase that “correlation doesn’t imply causation,” which is true and is a problem that can’t be wished away. But “correlation doesn’t imply causation” also kind of misses the point. The point is that you can’t see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.</p>
-<!-- MH -- suggest here and elsewhere we hold back on pushing on experimental designs; the focus here  here is on  I not A. People might be coming at this from a bounds a pproach, a Bayes approach, etc. Or may have other strategies we haven;t thought of. Here lets keep focus on I -->
-<p>Mediation Inquires:</p>
-<p>Consider <span class="math inline">\(X -&gt; B &lt;- A\)</span> and <span class="math inline">\(X -&gt; A\)</span>. In this DAG <span class="math inline">\(A\)</span> is a mediator. There are three causal inquiries:</p>
-<p><span class="math inline">\(X -&gt; B\)</span>
-<span class="math inline">\(X -&gt; A\)</span>
-<span class="math inline">\(A -&gt; B\)</span>.</p>
-<p>If we randomize <span class="math inline">\(X\)</span>, we can learn about <span class="math inline">\(X -&gt; A\)</span> but not <span class="math inline">\(X -&gt; B\)</span>, because <span class="math inline">\(X -&gt; B\)</span> is confounded. We obviously don’t learn anything about <span class="math inline">\(A -&gt; B\)</span> because for that we’d need to randomize <span class="math inline">\(A\)</span>. Mediation analysis tries to get all three for the price of one random assignment. At best we get <span class="math inline">\(X -&gt; A\)</span> and the total effect of X on B, which is not just <span class="math inline">\(X -&gt; B\)</span>, but instead <span class="math inline">\(X -&gt; B\)</span> + <span class="math inline">\((X -&gt; A) * (A -&gt; B)\)</span>. Mediation analysis tries to get something for nothing.</p>
-<!-- Again seem to be focused a bit on A rather than I.  A lot to be said about these I's though ; e.g. use of cross worl counterfactuals-->
-<p>Conditional Causal Inquiries
-Complier average is also a CATE
-RDD is also a CATE</p>
-<p>Example of a causal inquiry:</p>
-<pre><code>declare_population +
-declare_potential_outcomes +
-declare_estimand(ATE = )</code></pre>
-<!-- WOuld like to go back to look at text we had in an earlier version of paper that classified different types of estimand -->
 </div>
 </div>
             </section>

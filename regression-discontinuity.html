@@ -198,13 +198,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
 <li class="chapter" data-level="7.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Kinds of Inquiries</a><ul>
-<li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-estimands"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive estimands</a></li>
-<li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquires"><i class="fa fa-check"></i><b>7.1.2</b> Causal Inquires</a></li>
+<li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquiries"><i class="fa fa-check"></i><b>7.1.2</b> Causal inquiries</a></li>
+<li class="chapter" data-level="7.1.3" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#relationship-between-causal-and-descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.3</b> Relationship between causal and descriptive inquiries</a></li>
 </ul></li>
 <li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select Inquiries?</a></li>
-<li class="chapter" data-level="7.3" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.3</b> Grab bag of ideas we don’t know where to put</a><ul>
-<li class="chapter" data-level="7.3.1" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html#advice-section"><i class="fa fa-check"></i><b>7.3.1</b> ADVICE SECTION</a></li>
-</ul></li>
+<li class="chapter" data-level="7.3" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.3</b> Grab bag of ideas we don’t know where to put</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
 <li class="chapter" data-level="8.1" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>8.1</b> Example</a></li>
@@ -460,23 +459,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">16.4</span> Regression Discontinuity</h2>
 <div id="declaration-13" class="section level3">
 <h3><span class="header-section-number">16.4.1</span> Declaration</h3>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" title="1">cutoff &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
-<a class="sourceLine" id="cb114-2" title="2">control &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
-<a class="sourceLine" id="cb114-3" title="3">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">-.8</span>, <span class="fl">.5</span>, <span class="dv">1</span>))}</a>
-<a class="sourceLine" id="cb114-4" title="4">treatment &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
-<a class="sourceLine" id="cb114-5" title="5">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-1.5</span>, <span class="fl">.5</span>, <span class="fl">.8</span>)) <span class="op">+</span><span class="st"> </span><span class="fl">.15</span>}</a>
-<a class="sourceLine" id="cb114-6" title="6"></a>
-<a class="sourceLine" id="cb114-7" title="7">design &lt;-</a>
-<a class="sourceLine" id="cb114-8" title="8"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb114-9" title="9">    <span class="dt">N =</span> <span class="dv">1000</span>,</a>
-<a class="sourceLine" id="cb114-10" title="10">    <span class="dt">U =</span> <span class="kw">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.1</span>),</a>
-<a class="sourceLine" id="cb114-11" title="11">    <span class="dt">X =</span> <span class="kw">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span>U <span class="op">-</span><span class="st"> </span>cutoff,</a>
-<a class="sourceLine" id="cb114-12" title="12">    <span class="dt">Z =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span>(X <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb114-13" title="13">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb114-14" title="14"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="kw">treatment</span>(X) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span><span class="kw">control</span>(X) <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span></a>
-<a class="sourceLine" id="cb114-15" title="15"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">LATE =</span> <span class="kw">treatment</span>(<span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">control</span>(<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb114-16" title="16"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb114-17" title="17"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="kw">poly</span>(X, <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;LATE&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" title="1">cutoff &lt;-<span class="st"> </span><span class="fl">0.5</span></a>
+<a class="sourceLine" id="cb113-2" title="2">control &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
+<a class="sourceLine" id="cb113-3" title="3">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">-.8</span>, <span class="fl">.5</span>, <span class="dv">1</span>))}</a>
+<a class="sourceLine" id="cb113-4" title="4">treatment &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
+<a class="sourceLine" id="cb113-5" title="5">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-1.5</span>, <span class="fl">.5</span>, <span class="fl">.8</span>)) <span class="op">+</span><span class="st"> </span><span class="fl">.15</span>}</a>
+<a class="sourceLine" id="cb113-6" title="6"></a>
+<a class="sourceLine" id="cb113-7" title="7">design &lt;-</a>
+<a class="sourceLine" id="cb113-8" title="8"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb113-9" title="9">    <span class="dt">N =</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb113-10" title="10">    <span class="dt">U =</span> <span class="kw">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.1</span>),</a>
+<a class="sourceLine" id="cb113-11" title="11">    <span class="dt">X =</span> <span class="kw">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span>U <span class="op">-</span><span class="st"> </span>cutoff,</a>
+<a class="sourceLine" id="cb113-12" title="12">    <span class="dt">Z =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span>(X <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb113-13" title="13">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb113-14" title="14"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="kw">treatment</span>(X) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span><span class="kw">control</span>(X) <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span></a>
+<a class="sourceLine" id="cb113-15" title="15"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">LATE =</span> <span class="kw">treatment</span>(<span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">control</span>(<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb113-16" title="16"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb113-17" title="17"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="kw">poly</span>(X, <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;LATE&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-11" class="section level3">
 <h3><span class="header-section-number">16.4.2</span> Dag</h3>
@@ -497,41 +496,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>A major assumption required for regression discontinuity is that the conditional expectation functions for both treatment and control potential outcomes are continuous at the cutoff.<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a> To satisfy this assumption, we specify two smooth conditional expectation functions, one for each potential outcome. The figure plots <span class="math inline">\(Y\)</span> (the Democratic vote margin at time <span class="math inline">\(t\)</span>) against <span class="math inline">\(X\)</span> (the margin at time <span class="math inline">\(t-1\)</span>). We’ve also plotted the true conditional expectation functions for the treated and control potential outcomes. The solid lines correspond to the observed data and the dashed lines correspond to the unobserved data.</p></li>
 </ul>
 <!-- make sure to rename the section title below -->
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" title="1">cutoff &lt;-<span class="st"> </span><span class="fl">.5</span></a>
-<a class="sourceLine" id="cb115-2" title="2">control &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
-<a class="sourceLine" id="cb115-3" title="3">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">-.8</span>, <span class="fl">.5</span>, <span class="dv">1</span>))}</a>
-<a class="sourceLine" id="cb115-4" title="4">treatment &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
-<a class="sourceLine" id="cb115-5" title="5">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-1.5</span>, <span class="fl">.5</span>, <span class="fl">.8</span>)) <span class="op">+</span><span class="st"> </span><span class="fl">.15</span>}</a>
-<a class="sourceLine" id="cb115-6" title="6"></a>
-<a class="sourceLine" id="cb115-7" title="7">rd_design &lt;-</a>
-<a class="sourceLine" id="cb115-8" title="8"><span class="st">  </span><span class="co"># Model -------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb115-9" title="9"><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb115-10" title="10">  <span class="dt">N =</span> <span class="dv">1000</span>,</a>
-<a class="sourceLine" id="cb115-11" title="11">  <span class="dt">X =</span> <span class="kw">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">-</span><span class="st"> </span>cutoff,</a>
-<a class="sourceLine" id="cb115-12" title="12">  <span class="dt">noise =</span> <span class="kw">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">.1</span>),</a>
-<a class="sourceLine" id="cb115-13" title="13">  <span class="dt">Z =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span>(X <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb115-14" title="14">) <span class="op">+</span></a>
-<a class="sourceLine" id="cb115-15" title="15"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="kw">treatment</span>(X) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span><span class="kw">control</span>(X) <span class="op">+</span><span class="st"> </span>noise) <span class="op">+</span></a>
-<a class="sourceLine" id="cb115-16" title="16"><span class="st">  </span></a>
-<a class="sourceLine" id="cb115-17" title="17"><span class="st">  </span><span class="co"># Inquiry -----------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb115-18" title="18"><span class="kw">declare_estimand</span>(<span class="dt">LATE =</span> <span class="kw">treatment</span>(<span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">control</span>(<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb115-19" title="19"><span class="st">  </span></a>
-<a class="sourceLine" id="cb115-20" title="20"><span class="st">  </span><span class="co"># Data Strategy -----------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb115-21" title="21"><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb115-22" title="22"><span class="st">  </span></a>
-<a class="sourceLine" id="cb115-23" title="23"><span class="st">  </span><span class="co"># Answer Strategy ---------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb115-24" title="24"><span class="kw">declare_estimator</span>(<span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span><span class="kw">poly</span>(X, <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span>Z,</a>
-<a class="sourceLine" id="cb115-25" title="25">                  <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb115-26" title="26">                  <span class="dt">estimand =</span> <span class="st">&quot;LATE&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" title="1">cutoff &lt;-<span class="st"> </span><span class="fl">.5</span></a>
+<a class="sourceLine" id="cb114-2" title="2">control &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
+<a class="sourceLine" id="cb114-3" title="3">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(.<span class="dv">7</span>, <span class="fl">-.8</span>, <span class="fl">.5</span>, <span class="dv">1</span>))}</a>
+<a class="sourceLine" id="cb114-4" title="4">treatment &lt;-<span class="st"> </span><span class="cf">function</span>(X) {</a>
+<a class="sourceLine" id="cb114-5" title="5">  <span class="kw">as.vector</span>(<span class="kw">poly</span>(X, <span class="dv">4</span>, <span class="dt">raw =</span> <span class="ot">TRUE</span>) <span class="op">%*%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="fl">-1.5</span>, <span class="fl">.5</span>, <span class="fl">.8</span>)) <span class="op">+</span><span class="st"> </span><span class="fl">.15</span>}</a>
+<a class="sourceLine" id="cb114-6" title="6"></a>
+<a class="sourceLine" id="cb114-7" title="7">rd_design &lt;-</a>
+<a class="sourceLine" id="cb114-8" title="8"><span class="st">  </span><span class="co"># Model -------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb114-9" title="9"><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb114-10" title="10">  <span class="dt">N =</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb114-11" title="11">  <span class="dt">X =</span> <span class="kw">runif</span>(N, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">-</span><span class="st"> </span>cutoff,</a>
+<a class="sourceLine" id="cb114-12" title="12">  <span class="dt">noise =</span> <span class="kw">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">.1</span>),</a>
+<a class="sourceLine" id="cb114-13" title="13">  <span class="dt">Z =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span>(X <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb114-14" title="14">) <span class="op">+</span></a>
+<a class="sourceLine" id="cb114-15" title="15"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="kw">treatment</span>(X) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span><span class="kw">control</span>(X) <span class="op">+</span><span class="st"> </span>noise) <span class="op">+</span></a>
+<a class="sourceLine" id="cb114-16" title="16"><span class="st">  </span></a>
+<a class="sourceLine" id="cb114-17" title="17"><span class="st">  </span><span class="co"># Inquiry -----------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb114-18" title="18"><span class="kw">declare_estimand</span>(<span class="dt">LATE =</span> <span class="kw">treatment</span>(<span class="dv">0</span>) <span class="op">-</span><span class="st"> </span><span class="kw">control</span>(<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb114-19" title="19"><span class="st">  </span></a>
+<a class="sourceLine" id="cb114-20" title="20"><span class="st">  </span><span class="co"># Data Strategy -----------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb114-21" title="21"><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb114-22" title="22"><span class="st">  </span></a>
+<a class="sourceLine" id="cb114-23" title="23"><span class="st">  </span><span class="co"># Answer Strategy ---------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb114-24" title="24"><span class="kw">declare_estimator</span>(<span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span><span class="kw">poly</span>(X, <span class="dv">4</span>) <span class="op">*</span><span class="st"> </span>Z,</a>
+<a class="sourceLine" id="cb114-25" title="25">                  <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb114-26" title="26">                  <span class="dt">estimand =</span> <span class="st">&quot;LATE&quot;</span>)</a></code></pre></div>
 <p><img src="book_files/figure-html/unnamed-chunk-307-1.png" width="100%" /></p>
 <ul>
 <li><p><strong>I</strong>nquiry: Our estimand is the effect of a Democratic win in an election on the Democratic vote margin of the next election, when the Democratic vote margin of the first election is zero. Formally, it is the difference in the conditional expectation functions of the control and treatment potential outcomes when the running variable is exactly zero. The black vertical line in the plot shows this difference.</p></li>
 <li><p><strong>D</strong>ata strategy: We collect data on the Democratic vote share at time <span class="math inline">\(t-1\)</span> and time <span class="math inline">\(t\)</span> for all 1,000 pairs of elections. There is no sampling or random assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises.</p></li>
 </ul>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" title="1">rd_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(rd_design, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" title="1">rd_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(rd_design, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" title="1"><span class="kw">summary</span>(rd_diagnosis)</a></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" title="1"><span class="kw">summary</span>(rd_diagnosis)</a></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (20 replicates).
 ## 
