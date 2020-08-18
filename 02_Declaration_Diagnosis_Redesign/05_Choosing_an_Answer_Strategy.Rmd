@@ -381,7 +381,15 @@ ggplot(gg_df, aes(ATE, power, color = condition)) +
 - Flexibility / overfitting? relationship to nonparametrics claim in 2.1?
 - If you are a bayesian, you can diagnose w.r.t. the location and stregth of your priors.
 
+Mediation Inquires:
 
+Consider $X -> B <- A$ and $X -> A$. In this DAG $A$ is a mediator. There are three causal inquiries:
+
+$X -> B$
+$X -> A$
+$A -> B$.
+
+If we randomize $X$, we can learn about $X -> A$ but not $X -> B$, because $X -> B$ is confounded.  We obviously don't learn anything about $A -> B$ because for that we'd need to randomize $A$. Mediation analysis tries to get all three for the price of one random assignment. At best we get $X -> A$ and the total effect of X on B, which is not just $X -> B$, but instead $X -> B$ + $(X -> A) * (A -> B)$. Mediation analysis tries to get something for nothing.
 
 
 
