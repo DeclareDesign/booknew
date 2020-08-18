@@ -38,56 +38,58 @@ library(dagitty)
 
 An inquiry is a summary of a theoretical model. Suppose your theory is that $X$ affects $Y$, but that the effect is bigger for units with higher values of a third variable C. One inquiry might be the average level of $Y$. A second might be the average treatment effect of $X$ on $Y$. A third might be the difference in the effect of $X$ on $Y$ for units with high values of $C$ versus units with low values. 
 
+Your inquiry is your research question. Simple or complex, causal or descriptive, your inquiry is a summary feature of your theoretical model. Like models, inquiries themselves are theoretical objects. A common confusion occurs between inquiries and the output of answer strategies. If our theory posits the existence of an Average Treatment Effect, we might use an answer strategy like difference-in-means to estimate it, but the estimate is fundamentally distinct from the inquiry. Estimates are empirical, inquiries are theoretical.
+
 In general, an inquiry is a summary function $I$ that operates on the model $M$. When we summarize the model with the inquiry, we obtain an "answer under the model." We formalized this as $I(m) = a^m$. You can think of the difference between $I$ and $a^M$ as the difference between a question and its answer. $I$ is the question we ask about the model and $a^m$ is the answer. Alternatively, you can think of $I$ as the "estimand" (that which is to be estimated) and $a^m$ as the value of the estimand.  
 
-In this book when we talk about inquiries, we will usually be referring to single-number summaries of the models. Some common estimands are descripitive, such as the means, conditional means, correlations, partial correlations, quantiles, and truth statements about variable in the model. Others are causal, such as the average difference in one variable when a second varible is set to two different values. You can think of a single-number inquiry as the atom of research question. 
+In this book when we talk about inquiries, we will usually be referring to single-number summaries of models. Some common estimands are descripitive, such as the means, conditional means, correlations, partial correlations, quantiles, and truth statements about variable in the model. Others are causal, such as the average difference in one variable when a second varible is set to two different values. You can think of a single-number inquiry as the atom of research question. 
 
-While most inquiries are "atomic" in this way, some inquiries are more complex than a single-number summary of the model. For example, the best linear predictor of Y given X is a two-number summary: it is the pair of numbers (the slope and intercept) that minimizes the total squared distance between the line and each value of Y. Why stop at two-number summaries? We could imagine the best quadratic predictor of Y given X (three-number summary) or the best cubic predictor (four), and so on. We could have an inquiry that is the full conditional expectation function of Y given X, no matter how wiggly, nonlinear, and nuanced the shape of that function -- it could in principle be a 1,000 number summary of the model, or much more.
+While most inquiries are "atomic" in this way, some inquiries are more complex than a single-number summary. For example, the best linear predictor of Y given X is a two-number summary: it is the pair of numbers (the slope and intercept) that minimizes the total squared distance between the line and each value of Y. Why stop at two-number summaries? We could imagine the best quadratic predictor of Y given X (three-number summary) or the best cubic predictor (four), and so on. We could have an inquiry that is the full conditional expectation function of Y given X, no matter how wiggly, nonlinear, and nuanced the shape of that function -- it could in principle be a 1,000 number summary of the model, or much more.
 
 Complex inquiries can also be something along the lines of "should I reject $M$" as a causal model of the world? A researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries -- we're interested in the sub-inquiries only insofar as they help us understand the real inquiry -- is this model of the world a good one or not.
 
 
-
-<!-- [Introductory Material about the Inquiry] -->
-
-
-<!-- It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand ($a^M$), you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand -- your $a^D$ for your $a^M$. -->
-
-<!-- In this case the estimand is a number and one that will eventually be revealed, letting you assess how well your estimate measures up against your estimand. But in social science inequiry estimands can take many different forms.  -->
-
-
 ## Kinds of Inquiries
 
-<!-- MH: My vote: four types of queries: the three from Pearl (descriptive, interventionist, counterfactual) plus "model" queries in which you try to learn the model. -->
+<!-- MH: My vote: four types of queries: the three from Pearl (descriptive, interventionist, counterfactual) plus "model" queries in which you try to learn the model. --> 
+<!-- AC: Could you say more about "interventionist"? not sure I understadn the difference vs. counterfactual. Also, I was thinking here that the basic distinction between descriptive and causal is the most important, "model" queries are made up of a series of sub-inquiries that themselves are either descriptive or causal. Model queries can mix both. Would that cover it?-->
 
 <!-- MH: Suggest a table that gives a real broad set of inequiries that people can use as a reference; ATE, LATE, PATEs, SATEs, CDEs, lots and lots. Even better if we can define most of them off a simple DAG. -->
 
-There are two basic kinds of inquiries $I$ about a model $M$, descriptive and causal. One way to think about the difference is that descripitive inquiries are about the nodes of a dag and causal inquires are about the edges. A descriptive *inference* is a conclusion about a latent variable $Y^*$ on the basis of a measured variable $Y$. The feature we seek to describe -- our inquiry -- is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$. A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. You can't just observe edges -- you can see nodes but you can't see edges. 
 
-Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. In the descriptive case, we want to learn about the fundamentally unobservable latent variables the measured variables are meant to represent. In the causal case, we want to learn about the fundamentally impossible to observe difference between two possible worlds. We can't measure $Y$ in both the $X = 1$ and $X = 0$ because only one of those values could ever be revealed by the world. This problem is commonly known as the fundamental problem of causal inference. The fundamental problem of descriptive inference is similar -- we don't get to observe the true latent values because they are latent. We can only ever observe measured variables.
+<!-- AC: tough for one DAG, but We've got the table started now at least -->
 
+Atomic inquiries $I$ about a model $M$ fall into two basic categories, descripitive and causal. Descriptive inquiries are about how the world was, is, and will be whereas causal inquiries are about how the world would have been, would be, or would be in the future if some variables were set to different levels. You might think of the distinction in terms of a DAG. Descripitive inquiries are about the nodes of a dag whereas causal inquires are about the edges. 
 
-### Descriptive estimands
+Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. The fundamental problem of causal inference is well known. For the same reason that a unit cannot simultaneously be both treated and untreated, we can only every observe at most one potential outcome for any particular unit. The fundamental problem of descriptive inference is similar. The concepts we want to measure are latent constructs. Perfect measurement is impossible, so our measurements of the latent constructs always include some measurement error. Just like we can't know for sure how, counterfactually, a unit would have responded if the treatment had been set to a different level, we likewise can't know for sure whether our measurements accurately reflect the latent construct.
 
-Descriptive estimands are usually about latent variables. We care about the true values of the variables in the models. No matter how excellent the measurements taken as part of the Data strategy, the measured variables are always distinct from the latent variables since measurement always involves error. For the most part, we define our inquiries in terms of the "true" latent variables rather than in terms of their measured counterparts.
+More specifically, a descriptive *inference* is a conclusion about a latent variable $Y^*$ on the basis of a measured variable $Y$. The feature we seek to describe -- our inquiry -- is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$. A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. Even if we do an exceptional job measuring $X^*$ and $Y^*$ with $X$ and $Y$, we will still have trouble learning about edges because causal effects are quite literally unobservable. We have to *infer* causality on the basis of a strong research design because we can't just see it.
+
+### Descriptive inquiries
+
+Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Because of the fundamental problem of descriptive inference, measured variables are always distinct from latent variables. For the most part, we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts.
 
 Table ZZZ enumerates some common descriptive estimands. 
 
 | Inquiry           | Description                                   |
 | ----------------- | --------------------------------------------- |
 | $E_{i\in N}(Y)$   | The average value of the variable Y           | 
-| $E[Y | X = 1]$    | A conditional expectation of Y given X = 1.
+| $E[Y | X = 1]$    | A conditional expectation of Y given X = 1.   |
 | $V[Y]$            | The variance of Y                             |
 | $Cov(X, Y)$       | The covariance of X and Y                     |
 | $BLP(Y | X)$      | The best linear predictor of Y given X        |
 | $CEF(Y | X)$      | Conditional expectation function of Y given X |
 | Truth status of X | Is X True or False                            |
 
-### Causal Inquires
+### Causal inquiries
 
-Causal inquires involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of $X$ on $Y$ for a single unit. In order to infer that causal effect, we would need to know the value of $Y$ in two worlds: one world in which $X$ is set to 1 and one in which $X$ is set to 0. You can think of causal inference as repeated descriptive inference: we have to describe $Y$ in multiple possible worlds.
+Causal inquiries involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of $X$ on $Y$ for a single unit. In order to infer that causal effect, we would need to know the value of $Y$ in two worlds: one world in which $X$ is set to 1 and one in which $X$ is set to 0. 
 
 Table ZZZ enumerates some common causal estimands. 
+
+- Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over
+
+
 
 | Inquiry                                                  | Description                                                                    |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -97,57 +99,43 @@ Table ZZZ enumerates some common causal estimands.
 | $E[Y_i(1) - Y_i(0)]$                                     | PATE                                                                           |
 | $E[Y_i(1) - Y_i(0) | S = 1]$                             | SATE                                                                           |
 
+Generations of students have been told to excise words that connote causality from their empirical writing. "Affects" becomes "is associated with" and "impacts" becomes "moves with." Being careful about causal language is of course very important (it's really true that correlation does not imply causation!). But this change in language is not usually accompanied by a change in inquiry. Many times we are faced with drawing causal inferences from than ideal data -- but the deficiencies of the data strategy should not lead us too far away from our inferential targets. If the inquiry is a causal inquiry, then the move from "causes" to "is correlated with" might be a good description of the actual data analysis, but it doesn't move us closer to providing an answer to the inquiry.
 
 
+### Relationship between causal and descriptive inquiries
 
+You can think of causal inference as repeated descriptive inference: we have to describe $Y$ in multiple possible worlds.
 
 Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
 
-<!-- MH -- suggest here and elsewhere we hold back on pushing on experimental designs; the focus here  here is on  I not A. People might be coming at this from a bounds a pproach, a Bayes approach, etc. Or may have other strategies we haven;t thought of. Here lets keep focus on I -->
 
-Mediation Inquires:
-
-Consider $X -> B <- A$ and $X -> A$. In this DAG $A$ is a mediator. There are three causal inquiries:
-
-$X -> B$
-$X -> A$
-$A -> B$.
-
-If we randomize $X$, we can learn about $X -> A$ but not $X -> B$, because $X -> B$ is confounded.  We obviously don't learn anything about $A -> B$ because for that we'd need to randomize $A$. Mediation analysis tries to get all three for the price of one random assignment. At best we get $X -> A$ and the total effect of X on B, which is not just $X -> B$, but instead $X -> B$ + $(X -> A) * (A -> B)$. Mediation analysis tries to get something for nothing.
-
-<!-- Again seem to be focused a bit on A rather than I.  A lot to be said about these I's though ; e.g. use of cross worl counterfactuals-->
-
-Conditional Causal Inquiries
-Complier average is also a CATE
-RDD is also a CATE
-
-
-Example of a causal inquiry:
-
-```
-declare_population +
-declare_potential_outcomes +
-declare_estimand(ATE = )
-```
-
-<!-- WOuld like to go back to look at text we had in an earlier version of paper that classified different types of estimand -->
 
 
 ## How should you select Inquiries?
 
-Social scientists are picking research questions it can be hard to know where to start.
+It's hard to know where to start when picking a research question. We want to pick one that is interesting in its own right or one that would a facilitate real-world decision. We want to pick research questions that we can learn the answer to someday, with a lot of effort. Infeasible research questions should be abandoned as soon as possible, but of course that's hard to do. The trouble is that it's hard to know what research questions are feasible before you start looking into it, and it's really hard to quit research projects once you learn they are infeasible because of the sunk cost fallacy. 
 
-Theory is imaginary. We have to to spend time *imagining* it. That's what theorists do (with different formalizations). The imagine models ($M$). Models are complex, there are many things to know about them, that is, there are many inquiries.
+Sometimes, people give advice to students to follow a "theory-first" route to picking a research question. Read the literature, find an unsolved puzzle, then start choosing among the methodlogical approaches that might answer the problem. Others eschew the theory-first approach: "How on earth are you going to happen to land upon an unsolved -- and yet somehow solvable -- puzzle just by reading!?". These advice-givers emphasize a method-first route. Master the technical data-gathering and analysis procedures first, then set off to find opportunies to apply them. The theory-first people then say: "how would you know an interesting theoretical question if it smacked you in the face!?"
 
-Data are real. We have to spend time *making* them. That's what empiricists do (with many different measurement procedures). They make data real by creating them. Data come in many forms, there are many things to know about creating data. There are many ways to summarize them.
+Both routes work just fine because in most any research project, scholars necessarily toggle between both modes iteratively. In order to select research questions, empiricists have to be concerned about the entire research design. We have to develop empirical strategies to provide answers to our inquiries. We have to learn a lot about how to select data and answer strategies in ways that map on to inquiries about models. So empiricists have to learn both about about models and inquiries (theory) as well as about data strategies and answer strategies (empirics).
 
-Empiricists have to be concerned about research design. We have to develop empirical strategies to demonstrate $I$. We have to learn a lot about how to select the date of strategy and the answer strategy in a way that demonstrates an inquiry about a model that anybody cares about. So empiricists have to learn about models and inquiries (theory) as well as about data strategies and answer strategies (empirics).
+The sine qua non of a good research question ($I$) is that there is a feasible design ($MIDA$) that could answer it. That means picking a good question $I$ does not just involve theory. You should study $M$ to understand which $I$s are worth knowing. But you should also study $D$ and $A$ in order to learn how to demonstrate $I$.
 
-The sine qua non of a good research question ($I$) is that there is a feasible design ($MIDA$) that could answer it. That means picking a good question $I$ does not just involve theory.
+Here's our best advice for how to get started picking a research question: Write down the $M$ and $I$ of any causal model that interests you to get started thinking about selecting strong $D$s and $A$s. The goal is to learn how to map $I(M)$ to $A(D)$. Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on $M$, that is, we bring $M$ closer to $W$, thereby making $M$ truer.
 
-Ofcourse, you should study $M$ to understand which $I$s are worth knowing. But you should also study $D$ and $A$ in order to learn how to demonstrate $I$.
+People who are looking in the forest for mushrooms often don't see a mushroom for a long period of time. After a while, they acclimate. They get their ``eyes on,'' and successful finds seem to be around every bend. In this analogy, the theory building process is going for a walk in the forest and methods training is learning to spot mushrooms -- you need get your eyes on answerable research questions worth answering.
 
-It can be a difficult mapping, but we think to get started it's helpful to -- at a minimum -- write down the $M$ and $I$ of any causal model that interests you to get started thinking about selecting strong $D$s and $A$s. The goal is to learn how to map $I(M)$ to $A(D)$. Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on $M$, that is, we bring $M$ closer to $W$, thereby making $M$ truer.
+## Grab bag of ideas we don't know where to put
+
+- Study dependent estimands like Expected ATT vs realized ATT.  Yes, your I depends on D, but in a weird way. Since you can write down all possible ATTs in the model, you actually *can* write the estimand without realizing D, you just don't know which of the multiverse of estimands you've written down will actually eventuate. Since beliefs about the data strategy (it will create a class of subjects who will be treated) can sort of be hacked into the model, I wonder about how fundamental this wrinkle is.
+
+- Complex counterfactuals
+- QCA estimand.
+- Unknown estimands: Inquiries for discovery
+
+- Auxilliary Inquiries: these inquiries are not the main substantive focus of the design, but they are features of the model that have observable implications and can be checked. For models that include mediating roles for a variable, need to demonstrate that Z affects M at a minimum. Balance tables demonstrate a required assumption that Z is orthogonal to pre-treatment characteristics. A full DAG specification can enumerate the full set of conditional independencies that are implied by the model; these can be checked and verified.
+
+
 
 A good inquiry is informative about the model. 
 - Existence of a node (descriptive mean)
@@ -166,76 +154,14 @@ You are responsible for your inquiry.
 Choice of inquiry is not valueless.
 
 
-## Grab bag of ideas we don't know where to put
-
-- Study dependent estimands like Expected ATT vs realized ATT.  Yes, your I depends on D, but in a weird way. Since you can write down all possible ATTs in the model, you actually *can* write the estimand without realizing D, you just don't know which of the multiverse of estimands you've written down will actually eventuate. Since beliefs about the data strategy (it will create a class of subjects who will be treated) can sort of be hacked into the model, I wonder about how fundamental this wrinkle is.
-
-- Complex counterfactuals
-- Parametric estimands (Dimensionality reduction, Model parameters)
-- Vector-valued inquiries (set of predictions for N units or a function like the CEF), 
-- QCA estimand.
-- estimands like "TRUE"
-- Models as estimands (is this different from the CEF?)
-- Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over
-- Unknown estimands: Inquiries for discovery
-- Auxilliary Inquiries: these inquiries are not the main substantive focus of the design, but they are features of the model that have observable implications and can be checked. For models that include mediating roles for a variable, need to demonstrate that Z affects M at a minimum. Balance tables demonstrate a required assumption that Z is orthogonal to pre-treatment characteristics. A full DAG specification can enumerate the full set of conditional independencies that are implied by the model; these can be checked and verified.
-
-
-### ADVICE SECTION
-
-[note to all, this is a nuts stream-of-consciousness. I want there to be some advice because I don't want to punt, but I know this advice will have to change.]
-
-Since there are so many things we *don't know* about the social world, researchers are positively overbrimming with interesting theories to test. Then again, most of us are a little bit bewildered when it comes to actually formulating a research question that would simultaneously be worth knowing the answer to and that would be feasible to answer. This section considers and critiques some common research question formulation advice. Perhaps unsurprising, our overarching perspective is that we can't compromise on research design -- scientific conclusions depend essentially on strong research designs. That said, choosing research questions is much more art than science. Moreover, the choice of what to study is not valueless in the sense that scholars' research agendas are reflections of their values and their politics. While scientists seek to reveal objective truths, we also have to choose **which** truths to investigate, and that choice is value-laden.
-
-#### The false choice between theory-first and method-first approaches.
-
-Some research questions are boring and trivial -- no doubt you have encountered such research questions when reading bad research. Figuring our the best way to answer unimportant questions can be a stimulating intellectual puzzle, but the answers to those questions themselves will not advance scientific knowledge. Some research questions are exciting and vital -- those are the ones we want to answer using credible research designs. Giving weak or noncredible answers to important research questions is *dangerous* and unethical. 
-
-
-<!-- Not sure boring/trivial versus exiciting/vital cuts it! Wonder if there are desiderata here we can point to: -->
-<!-- welfare implications -->
-<!-- implications for understanding past research -->
-<!-- expected updating (e.g. in Bayes: expected posterior variance) (though here leaning into D/A rathr than I) -->
-
-Sometimes scholarly debate about research design treat these two desiderata (good questions and strong designs) as forming a one-dimensional spectrum. To the left we have boring studies done well and to the right we have interesting studies with weak empirics. This "spectrum" view manufactures a tradeoff between the quality of the question and the strength of the research design. It tricks students into thinking that they have to make compromises on the research design (i.e., control for enough things and hope for the best) in order to do great things. 
-
-The reality is that research is hard and sometimes it is so hard that we must abandon them. Good questions might be too damn hard to answer and we must deliberately walk away from them even though they are interesting. Bad questions aren't worth the effort, even if they are feasible -- walk away from them too. Both interesting questions and strong research designs to answer them are required.
-
-Advice about how to solve this dilemma often takes one of two forms: theory-first approaches and method-first approachs. Under the theory-driven approach, you read a lot of others' work in order to formulate a good research question; you then search among the available methods to find the "right" method for the question. This approach is risky because it is very hard to abandon a good research questions, even if none of the available methods is good enough. The worst case scenario for the theory-first is a research process that takes forever, scholars falling prey to the sunk cost fallacy and falling to abandon a hopeless project, and a final research project that relies on heroic assumptions and makes no real progress on the interesting research question.  
-
-The method-first approach involves learning a method well first, then looking for interesting projects to apply it to later. This frequently means *practicing* the method for the method's sake. To become an expert interviewer, you must conduct many interviews. To become an expert experimentalist, you must randomize many treatments. To become an expert observational data analyst, you must download many datasets and develop a sense for when inferences are reliable and when they are not. The worst-case scenario for the method-first approach is that scholars never stop *practicing* research to actually finally *conduct* research on important topics. What good is it to be a top-flight archivist if those skills are never applied to good questions.
-
-Obviously, a mix of the two approaches is required, and most of variation in advice given to young scholars isn't just one or the other, but the relative weight given to the two. As a team of authors, we disagree amongst ourselves about the right weights. That said, the downsides to boring but well-done research don't seem as bad to us as the downsides of interesting but poorly-done research. Bad studies on important questions are used by disingenous and bad faith actors to push for policies that are bad for society. The ethical stakes are higher for important questions than they are for unimportant questions. For that reason alone, we think it is vitally important that researchers master their methods so as to assiduously avoid making unknowably incorrect claims.
-
-People who are looking in the forest for mushrooms often don't see a mushroom for a long period of time. After a while, they acclimate. They get their ``eyes on,'' and successful finds seem to be around every bend. In this analogy, the theory building process is going for a walk in the forest and methods training is learning to spot mushrooms -- you need get your eyes on answerable research questions worth answering.
-
-In our experience, that means that the most important thing for young scholars to do is practice. Practice both searching for interesting questions and practice research design. Practicing research design often involves honing one's skills on less than interesting questions. Looking for interesting questions entails reading other scholars' work carefully and generously. Even when their research designs are not strong, their questions might nevertheless be interesting. You may learn from reading bad work on interesting questions that some research questions are impossible to answer. That's OK -- now you’ve learned about the constraints on what we can learn. Operating within the constraints of what is knowable means you can anticipate when a poor research design on an interesting question is unlikely to lead to progress.
-
-#### Novelty
-Another route for finding research questions is to try to determine what is unknown to the research community, then to seek to fill that gap. This approach can be quite generative, but it is not without pitfalls. Establishing primacy -- that a finding is "new" and that the knowledge generated by the study was previously unknown -- is hard. It's also risky, since peer reviewers have access to Google Scholar. False primacy claims are especially damaging during the review process because they are easily refuted and demonstrate ignorance of the published record.
-
-What does it mean for a research finding to be novel? There are two main cases. First, a finding is new if the empirical pattern was predicted by an earlier theory but had yet to be confirmed. That is, there was a theoretical prediction that had not yet found its empirical verification. The empirical finding is novel in that it confirms the previously unconfirmed theoretical prediction. Second, an empirical finding is also novel if the empirical reality was *not* predicted by the theory.
-If the empirical funding is trustworthy, it means that the original theory is incomplete or incorrect in a particular way. 
-Findings that contradict theoretical predictions are also novel. Empirical findings are not novel when the theoretical predictions that pertain to the finding have already been well-documented.  
-
-This puts the advance of science in a funny position. Because we are worried that many of the advances made at the forefront of the scientific endeavor are incorrect or spurious, we really value replication of novel results. When an empirical claim in favor of a theoretical proposition is made in Place A at Time 1, we immediately want to know if it holds at Place B at Time 2 as well.
-
-#### Mixing methods
-
-A common piece of advice for young scholars who are interested in a topic is to mix methods. The thinking goes like this: I have an important question but none of my methods perfectly answers the question. I'll take a multifaceted approach that gets that many different aspects of the question which I hope to aggregate into a whole.
-
-We caution against this approach. Mastering one method is difficult; mastering three is very difficult.
-Even when mastery of the methods is not an obstacle, the problem that often occurs is that the three research designs actually address *different* research questions. That is, not only do the three research designs use different data strategies and answer strategies, they also employ different models and inquiries. As a result, mixed methods work often gives three incomplete answers to three related, but ultimately different, research questions. 
-
-<!-- Would much rather a more positive approach here where rather than cautioning against we highlight complexity and  give guidance on how this might be done. Feels though that this shold be in A not I anyhow?-->
-
-
-
-#### Things to incorporate
-
-- "model" inquiries in which I'm trying to rule out some Ms.  Process tracing is 
 
 
 
 
+<!-- [Introductory Material about the Inquiry] -->
+
+
+<!-- It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand ($a^M$), you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand -- your $a^D$ for your $a^M$. -->
+
+<!-- In this case the estimand is a number and one that will eventually be revealed, letting you assess how well your estimate measures up against your estimand. But in social science inequiry estimands can take many different forms.  -->
 
