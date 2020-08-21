@@ -32,43 +32,15 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
+Design diagnosis is about estimating the diagnosands for a single design. Redesign is about changing design parameters to understand how diagnosands change in reponse. The purpose of redesign is to choose a strong design among the set of feasible designs -- or to learn than no feasible design is worth implementing. 
 
+We usually redesign with respect to the data and answer strategies. We tweak the data strategy by carying $N$ to see how RMSE changes. We change the answer strategy to see how the inclusion of covariates decreases bias. While we usually redesign the empirical side, redesign can take place with respect to the theoretical side (model and inquiry) as well.^[There are some subtleties here. Sometimes a single design includes ncertainty about the model -- for example when we draw parameter values from a random distribution. We have a parameter be drawn from a normal distribution centered at 0.3 with an SD of 0.1 because we think a resonable value for the parameter is "about three, plus or minus". We \textit{could} imagine that we are "redesigning" with respect to each value of parameter, but only if the goal is to see how the changes in the model change the diagnosands. Otherwise, it's not redesign, it's just plain diagnosis, averaging over multiple models.]
 
-Redesign is about changing design parameters to understand their effects on diagnosands. 
-
-The most common redesign is a tweak to the data strategy: varying $N$ to see what samples yields statistical power of 80\%. Redesign can take place with respect to any of $M$, $I$, $D$, and $A$, with possible consequences for the diagnosands. 
-
-The redesign process is about enumerating a family of feasible designs, then selecting the best one, where "best" is determined by the diagnosands.
+You may have encountered some figures that implicitly do redesign. Power curves are an example of the redesign process. A power curve has sample size on the horizontal axis and statistical power on the vertical axis. From a power curve, you can learn how big a study needs to be in order to achieve a desired level of statistical power. A "minimum detectable effect" figure is similar. It has sample size on the horizontal axis too, but plots the smallest effect size for which 80% power can be achieved. These plots are useful for learning something like, "given my budget, I can only sample 400 units. At 400 units, the MDE is a 0.5 standard deviation effect. My theory says that that the effect should be smaller than that, something closer to 0.1 SDs. I should apply for more funding or study something else."
 
 The highest level advice we have about redesign is, at the beginning of the processes at least, change one design parameter at a time. Vary the data strategy, holding the model, inquiry, and answer strategy constant. Change the answer strategy, while holding the other aspects of the design constant. 
 
-Redesign with respect to a model: I want to know that I'm right when I'm right, and I want to know that I'm wrong when I'm wrong. That's with respect to *TWO* models.
-
-
-Diagnosis is like this:
-
-(we need a math glyph for left relation composition notation)
-
-$$
-MIDA |> \\
-  simulate |> \\
-  summarize
-$$
-
-Redesign is like this
-
-$$
-map(parameters) |> \\
-  MIDA |>  \\
-  simulate |> \\ 
-  group\_by(parameters) |> \\
-  summarize
-$$
-
-
-
 ## Redesign Mountain
-
 
 This figure shows a schematic of the redesign process. We vary design parameter 1 and design parameter 2 independently to learn the value of the diagnosand for each combination of design parameters. The redesign process can be in more than 2 dimensions of course. We suggest varying the design parameters you have control over first.
 
@@ -84,7 +56,6 @@ expand.grid(param_1 = seq(0, 1, length.out = 100),
   labs(x = "Design Parameter 1",
        y = "Design Parameter 2",
        title = "Diagnosands change as design parameters change")
-
 ```
 
 
@@ -101,3 +72,28 @@ expand.grid(param_1 = seq(0, 1, length.out = 100),
 - Hold three constant, vary one of MIDA at a time
 - M: ICC, null model, alternative DAGs, heterogeneity
 - I:
+
+
+
+
+
+
+<!-- Diagnosis is like this: -->
+
+<!-- (we need a math glyph for left relation composition notation) -->
+
+<!-- $$ -->
+<!-- MIDA |> \\ -->
+<!--   simulate |> \\ -->
+<!--   summarize -->
+<!-- $$ -->
+
+<!-- Redesign is like this -->
+
+<!-- $$ -->
+<!-- map(parameters) |> \\ -->
+<!--   MIDA |>  \\ -->
+<!--   simulate |> \\  -->
+<!--   group\_by(parameters) |> \\ -->
+<!--   summarize -->
+<!-- $$ -->
