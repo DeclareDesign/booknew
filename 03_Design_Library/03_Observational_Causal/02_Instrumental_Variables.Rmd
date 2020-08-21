@@ -17,6 +17,19 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+<!-- make sure to rename the section title below -->
+
+```{r instrumental_variables, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
 ## Instrumental variables
 
 ### Declaration
@@ -33,8 +46,10 @@ design <-
   declare_estimator(Y ~ D | Z, model = iv_robust, estimand = "LATE") 
 ```
 
-### Dag
+- explain the IV estimator is the ratio of ITT_y^\widehat / ITT_d^\widehat
+- identical to noncompliance in an experiment
 
+### Dag
 
 ```{r, echo = FALSE}
 dag <- dagify(Y ~ D + U,
@@ -61,55 +76,20 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 base_dag_plot %+% ggdd_df
 ```
 
+### Redesign
+
+- excludability violations
+- if you do, go ITT_d and ITT_y
+
+### Suggested readings
+
+Applications
+- Mo, Cecilia Hyunjung, Katherine Conn, Georgia Anderson-Nilsson. 2019. “Can National Service Activism Activate Women’s Political Ambition? Evidence from Teach For America.”  Politics, Groups, and Identities 7(4): 864-877.
+
+Methodological literature
+- Angrist and Pischke ch. 4
+- Gerber and Green ch. 5 and ch. 6
 
 ### Example
 
-
-
-<!-- make sure to rename the section title below -->
-
-```{r instrumental_variables, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
-```
-
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-```
-
-You can use the global bib file via rmarkdown cites like this: @imai2008
-
-```{r}
-design <-
-  declare_population(N = 100, u = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + u) +
-  declare_assignment(prob = 0.5) +
-  declare_reveal(Y, Z) +
-  declare_estimator(Y ~ Z, model = difference_in_means)
-```
-
-
-This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_pilot <- simulate_design(design, sims = sims)
-```
-
-Right after you do simulations, you want to save the simulations rds. 
-
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("section_template"), "/simulations_pilot.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_pilot, path = rds_file_path)
-}
-simulations_pilot <- read_rds(rds_file_path)
-```
-
-Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
-
-```{r}
-kable(head(simulations_pilot))
-```
 
