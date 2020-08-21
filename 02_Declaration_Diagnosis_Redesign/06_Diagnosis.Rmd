@@ -35,17 +35,20 @@ library(ggforce)
 
 ## Diagnosing a design
 
-Research diagnosis is two steps: simulating running a design over and over, and a quantitative summary of runs of the design. 
-
-Diagnosis is the process of evaluating the properties of a research design. Since "property of a research design" is a cumbersome phrase, we made up the word "diagnosand" to refer to those properties of a research design we would like to diagnose. Many diagnosands are familiar. Power is the probability of obtaining a statistically significant result. Bias is the average deviation of estimates from the true value of the estimand. Others are more exotic, like the Type-S error rate, which is the probability the estimate has the incorrect sign, conditional on being statistically significant (Gelman and Carlin 2014).
+Research design diagnosis is the process of evaluating the properties of a research design. Since "property of a research design" is a cumbersome phrase, we made up the word "diagnosand" to refer to those properties of a research design we would like to diagnose. Many diagnosands are familiar. Power is the probability of obtaining a statistically significant result. Bias is the average deviation of estimates from the true value of the estimand. Other diagnosands are more exotic, like the Type-S error rate, which is the probability the estimate has the incorrect sign, conditional on being statistically significant (Gelman and Carlin 2014).
 
 Not every diagnosand is relevant for every study. For example, in a descriptive study whose goal is to estimate the fraction of people in France who are left-handed, statistical power is irrelevant. A hypothesis test against the null hypothesis that 0 percent of the people in France are left-handed is preposterous. We know for sure that the fraction is not zero, we just don't know its precise value. A much more important diagnosand for this study would be RMSE (root-mean-squared-error), which is a measure of how well-measured the estimand that incorporates both bias and variance.
 
-How should you choose your diagnosands? In our experience, writing out what would make the study either a success or a failure helps tremendously. If a successful study would yield an estimate that is higher than 4, has a standard error of 1 or less, and in which we find statistically significant evidence of treatmnet effect heterogeneity -- write down a diagnosand that is the probability of all three of those conditions being true at the same time. If a study is a failure (in terms of not having been worth the money and effort *ex post*) when the confidence interval is 20 points wide or wider, then the research team should design to minimize the probability of that occurance.
+How should you choose your diagnosands? In our experience, writing out what would make the study either a success or a failure helps tremendously. Suppose your study would be a success if it produced an estimate that is higher than 4, had a standard error of 1 or less, and yielded statistically significant evidence of treatment effect heterogeneity -- write down a diagnosand that is the probability of all three of those conditions being true at the same time. If a study is a failure (in terms of not having been worth the money and effort *ex post*) when the confidence interval is 20 points wide or wider, then the research team should design to minimize the probability of that occurance.
+
+A brief aside on the most common diagnosand of statistical power. This diagnosand is the probability of getting a statistically significant result, which of course depends on many things about your design including, crucially, the unknown magnitude of the parameter to be estimated. You can think of statistical power as the probability of a success, where success is defined as getting a significant results. The conventional "power target" is 80\% power. One could imagine redefining statistical power as "null risk," or the probability of obtaining a null result. In these terms, the conventional power target is a 20\% null risk, or a one in five chance of "failure." Those odds aren't great, so we recommend designing studies with lower null risk. We also think that statistical power is often over-emphasized relative to other more important diagnosands like bias and rmse. If your design is systematically biased away from zero, your statistical power will be high, but your design is nevertheless weak.
+
+
+
 
 ## Estimating diagnosands analytically
 
-Research design diagnosis can be done analytically. Indeed, research design textbooks often contain many formulas for calculating power under a variety of designs. For example, Gerber and Green include the following power formula:
+Diagnosis can be be done with analytic, pencil-and-paper methods. Indeed, research design textbooks often contain many formulas for calculating power under a variety of designs. For example, Gerber and Green include the following power formula:
 
 They write: 
 
@@ -56,34 +59,114 @@ Under this scenario, there exists a simple asymptotic approximation for the powe
 > $$
 where $\beta$ is the statistical power of the experiment, $\Phi(\cdot)$ is the normal cumulative distribution function (CDF), and $\Phi^{-1}(\cdot)$ is the inverse of the normal CDF."
 
-See how this power formula makes specific assumptions about $M$, $D$, and $A$? Under $M$, it assumes that the potential outcomes are both normally distributed with group specific means and a common variance. Under $D$, it assumes a particular randomization strategy. Under $A$, it assumes a particular hypothesis testing approach (equal variance t-test with $N - 2$ degrees of freedom). This set of assumptions may be "close enough" in many research settings, but it can be difficult to understand the specific impacts of different beliefs about $M$, $D$ and $A$ on the value of the diagnosand. What if instead of being normally distributed, the potential outcomes are measured in 1 - 5 Likert scales? What if the randomization procedure includes blocking? What if we include covariates in our treatment effect estimation approach? Formulas for some large sources of design variation have been derived (such as clustering), but certainly not for every design variant.
+This power formula makes **detailed** assumptions about $M$, $D$, and $A$? Under $M$, it assumes that both potential outcomes are normally distributed with group specific means and a common variance. Under $D$, it assumes a particular randomization strategy (simple random assignment). Under $A$, it assumes a particular hypothesis testing approach (equal variance $t$-test with $N - 2$ degrees of freedom). This set of assumptions may be "close enough" in many research settings, but it can be difficult to understand the specific impacts of different beliefs about $M$, $D$ and $A$ on the value of the diagnosand. What if instead of being normally distributed, the potential outcomes are measured in 1 - 5 Likert scales? What if the randomization procedure includes blocking? What if we include covariates in our treatment effect estimation approach? Formulas for some large sources of design variation have been derived (such as clustering), but certainly not for every design variant.
 
-Very quickly, hope for analytic design diagnosis fades. The analytic formulas are abstractions -- they abstract away from design details and sometimes those design details are important. This problem is not confined to the "power" diagnosand. In randomized experiments, claims about the bias diagnosand are quite general.  Many randomized designs are unbiased for the ATE, but not all. Designs that encounter noncompliance, attrition, or some forms of spillover may not be unbiased for the ATE. Even without any of those complications, cluster randomized trials with heteogeneous cluster sizes are not unbiased (joel, imai). 
+Very quickly, hope for analytic design diagnosis fades. The analytic formulas are abstractions -- they abstract away from design details and sometimes those design details are important. This problem is not confined to the "power" diagnosand. In randomized experiments, claims about the bias diagnosand are quite general. Many randomized designs are unbiased for the ATE, but not all. Designs that encounter noncompliance, attrition, or some forms of spillover may not be unbiased for the ATE. Even without any of those complications, cluster randomized trials with heteogeneous cluster sizes are not unbiased (joel, imai). 
 
-Diagnosands depend on design details, because how you conduct you conduct your study matters for its properties. That means design diagnosis must be design-aware. Since designs are so heteogenous and can vary on so many dimensions, computer simulation is only feasible way to characterize any study but the most ideal-type designs (assuming normality and ignoring heterogeneity) in the simplest of terms (power, bias, variance, but nothing further).
-
+Diagnosands depend on design details, because how you conduct your study matters for its properties. That means design diagnosis must be design-aware. Since designs are so heteogenous and can vary on so many dimensions, computer simulation is only feasible way to diagnose anything beyond the simplest ideal-type designs.
 
 ## Estimating diagnosands via simulation
 
-Our main trouble is learning the distribution of diagnostic statistics -- if we could simply write down the distribution of diagnostic statistics, it would be a straightforward matter to summarize them in order to calculate diagnosands. 
+Research design diagnosis usually occurs in a two-step, simulation-based procedure. First we simulate research designs over and cover, collecting "diagnostic statistics" from each run of the simulation. Second, we summarise the distribution of the diganostic statistics in order to estimate the diagnosands.
 
-Diagnosands can be estimated with higher levels of precision by increasing $m$. However, simulations are often computationally expensive. In order to assess whether researchers have conducted enough simulations to be confident in their diagnosand estimates, we recommend estimating the sampling distributions of the diagnosands via the nonparametric bootstrap.^[
-In their paper on simulating clinical trials through Monte Carlo, @morrisetal2019 provide helpful analytic formula for deriving Monte Carlo standard errors for several diagnosands ("performance measures"). In the companion software, we adopt a non-parametric bootstrap approach that is able to calculate standard errors for any user-provided diagnosand.] With the estimated diagnosand and its standard error, we can characterize our uncertainty about whether the range of likely values of the diagnosand compare favorably to reference values such as statistical power of $0.8$.^[This procedure depends on the researcher choosing a "good" diagnosand estimator. In nearly all cases, diagnosands will be features of the distribution of a diagnostic statistic that, given i.i.d. sampling, can be consistently estimated via plug-in estimation (for example taking sample means). Our simulation procedure, by construction, yields i.i.d. draws of the diagnostic statistic.]
+So we estimate diagnosands by summarizing the distribution of diagnostic statistics -- of course this raises the question: what is a diagnostic statistic? We take a draw from the model ($m$) and calculate the value of the inquiry $I(m) = a^m$. We take one draw from the data strategy ($D(m) = d$), and calculates the value of the answer strategy $A(d) = a^d$. A diagnostic statistic is some function of $a^m$ and $a^d$.
+
+A simple diagnostic statistic is "error," or the difference between the estimate and the estimand: $error = a^d - a^m$. The bias diagnosand is the expectation of the error statistic $E[error]$ over all possible ways the study could have come out.
+
+Usually, we consider many diagnostic statistics at the same time. Here's a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.   
+
+```{r, echo=FALSE}
+design <-
+  declare_population(N = 100, 
+                     Tau = rnorm(N, mean = 0.1, sd = 0.1),
+                     U = rnorm(N, 0, 0.2)) +
+  declare_potential_outcomes(Y ~  Tau * Z + U) + 
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(prob = 0.5) +
+  declare_estimator(Y ~ Z, estimand = "ATE")
+```
+
+One draw of this simulation returns the following:
+
+```{r, echo=FALSE}
+run_design(design)
+```
+
+One draw from the simulation returns the following:
+
+| estimand| estimate| std.error| conf.low| conf.high| p.value|
+|--------:|--------:|---------:|--------:|---------:|-------:|
+|     0.10|     0.08|      0.04|    0.003|     0.156|    0.04|
 
 
-- Graphic of simulations (of multiple runs)
+Figure XXX shows the information we might obtain from a single run of the simulation. The filled point is the estimate $a^d$. The open triangle is the estimand $a^m$. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We're not sure where $a^d$ is, but if things are going according to plan, confidence intervals constructed this way will bracket $a^d$ 95\% of the time. 
 
 
-- must do a TYPE S error rate histogram with three areas. Sig with wrong sign, not sig, sig with right sign. PLEASE NOTE: some of the "power" of a study comes from the fraction of simulations with Significant estimates with the wrong sign.  That's just crazy!
+```{r, echo=FALSE}
+include_graphics("figures/diagnosis_onedraw.png")
+```
+
+<!-- We're interested in a few diagnosands. Bias (the expectation of the error statistics) is one, but we also want to know about RMSE (the square root of the expectation of the squared errors), power (the probability the $p$-value is below a threshold), and coverage (the probability the 95% confidence interval brackets the estimand).  -->
+
+From this single draw, we can't yet estimate diagnosands, but we can estimate diagnostic statistics. The estimate was higher than the estimand in this draw, so the error is 0.10 - 0.08 = 0.02. Likewise, the squared error is `(0.10 - 0.08)^2 = 0.0004`. The $p$-value is 0.04, which is just barely lower than the threshold of 0.05, so "statistical significance" diagnostic statistic is equal to `TRUE`. The confidence interval stretches from 0.003 to 0.156, and the value of the estimand (0.10) is between those bounds, so the "covers" diagnostic statistic is equal to `TRUE` as well.
+
+Learning the **distribution** of diagnostic statistics is the main barrier to design diagnosis. If we could simply write down the distribution of diagnostic statistics, it would be a straightforward matter to summarize them in order to calculate diagnosands. But the distributions of diagnositic statistics depend on the complex of information in all four parts of a research design: M, I, D, and A. For example, the error statistic depends on both $a^d$ and $a^m$, so the details of each matter greatly. 
+
+To calculate the distributions of the diagnostic statistics, we have to simulate designs not just once, but many many times over. The bias diagnosand is the average error over many runs of the simulation. The statistical power diagnosand is the fraction of runs in which the estimate is significant. The coverage diagnosand is the fraction of runs in which the confidence interval covers the estimand.
+
+This figure visualizes just 10 runs of the simulation (obtained with `r simulate_design(design)`). We can see that in each run, $a^m$ is a little different. This might seem counterintuitive -- isn't the estimand supposed to be a fixed number? Some estimands are fixed, others are stochastic, depending on the specifics of the model. Notice how in the design declaration, we drew the potential outcomes from a distribution rather then having them be fixed numbers. This choice incorportates some of our modeling uncertainty. The treatment effects for each unit are close to 0.1, but we're not sure how close for each particulat unit. We can also see that some of the draws produce statistical significant estimates (the shaded areas are small and the confidence intervals don't overlap zero), but not all. We get a sense of the \textit{true} standard error by seeing how the point estimates bounce around. We get a feel for the difference between the estimates of the standard error and true standard error. Design diagnosis is the process of learning about all the ways the study might come out, not just the one way that it will.
+
+```{r, echo=FALSE}
+knitr::include_graphics("figures/diagnosis.png")
+```
+
+This line of code does it all in one.  We simulate the design 1000 times to calculate the diagnositic satistics, then we summarise them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.
+
+```{r, eval=FALSE}
+diagnosis <- diagnose_design(design, sims = 1000, 
+                             diagnosands = declare_diagnosands(
+                               select = c("bias", "sd_estimate", "rmse", "power", "coverage")))
+```
+
+
+
+```{r, eval = do_diagnosis & !exists("do_bookdown"), echo=FALSE}
+diagnosis <- diagnose_design(design, sims = sims, 
+                             diagnosands = declare_diagnosands(
+                               select = c("bias", "sd_estimate", "rmse", "power", "coverage")))
+```
+
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("diagnosis"), "/diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, path = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+```{r}
+diagnosis
+```
 
 
 
 
+
+## Interactive element
+
+You can have fun building up a design diagnosis run-by-run with this shiny app. Each time you run the design, it adds a new estimate to the sampling distribution so you can learn about the relationship of a single run of the design to the overall diagnosis.
 
 ```{r, echo = FALSE}
 knitr::include_app('https://ushintsho.shinyapps.io/diagnosis/', height = '400px')
 ```
 
+## Bias, Variance, and Mean-squared Error
+
+This section walks through the interrelationship between three important diagnosands: bias, variance, and a combination of the two: mean-squared error. Many research design decisions involve trading off bias and variance. In trade-off settings,we may need to accept higher variance in order to decrease bias. Likewise, we may need to accept a bit of bias in order to achieve lower variance. The tradeoff is captured by mean-squared error -- which is the average squared distance between $a^d$ and $a^m$. Of course we would ideally like to have as low a mean-squared error as possible. We would like to achieve low variance and low bias simultaneously.
+
+To illustrate, consider the following three designs as represeted by three targets. The inquiry is the bullseye of the target. The data and answer strategies combine to generate a process by which arrows are shot towards the target. On the left, we have a very bad archer: even though the estimates are unbiased in the sense that they hit the bullseye "on average", very few of the arrows are on target. In the middle, we have the Katniss Everdeen (the heroine of the Hunger Games novels who is good with a bow) of data and answer strategies: they are both on target and low variance. On the right, we have an archer who is very consisten (low variance) but biased. The mean squared error is highest on the left and lowest in the middle. 
 
 ```{r, echo = FALSE, fig.width = 6.5, fig.height = 3}
 n <- 50
@@ -207,8 +290,10 @@ library(patchwork)
 unbiased_lowprecision + unbiased_highprecision + biased_highprecision
 ```
 
+The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters **which target** your archer is shooting at. Figure XXX shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of $a^d$, we have to be clear about which $a^a$ they are associated with.
 
-```{r}
+
+```{r, echo=FALSE}
 n <- 50
 
 points_df <- tibble(
