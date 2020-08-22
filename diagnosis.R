@@ -8,6 +8,31 @@ lapply(packages, require, character.only = TRUE)
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 library(ggforce)
 
+design <-
+  declare_population(N = 100, 
+                     Tau = rnorm(N, mean = 0.1, sd = 0.1),
+                     U = rnorm(N, 0, 0.2)) +
+  declare_potential_outcomes(Y ~  Tau * Z + U) + 
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(prob = 0.5) +
+  declare_estimator(Y ~ Z, estimand = "ATE")
+
+## run_design(design)
+
+include_graphics("figures/diagnosis_onedraw.png")
+
+knitr::include_graphics("figures/diagnosis.png")
+
+## diagnosis <- diagnose_design(design, sims = 1000,
+##                              diagnosands = declare_diagnosands(
+##                                select = c("bias", "sd_estimate", "rmse", "power", "coverage")))
+
+
+
+
+
+diagnosis
+
 knitr::include_app('https://ushintsho.shinyapps.io/diagnosis/', height = '400px')
 
 n <- 50

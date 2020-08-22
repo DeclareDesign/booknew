@@ -18,4 +18,3 @@ expand.grid(param_1 = seq(0, 1, length.out = 100),
   labs(x = "Design Parameter 1",
        y = "Design Parameter 2",
        title = "Diagnosands change as design parameters change")
-

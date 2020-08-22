@@ -21,7 +21,7 @@ voter_file <- fabricate(
 
 kable(head(voter_file))
 
-simple_random_assignment_step <- declare_assignment(prob = 0.5)
+simple_random_assignment_step <- declare_assignment(prob = 0.6)
 
 ## simple_random_assignment_step(voter_file)
 simple_random_assignment_step(voter_file) %>% head %>% kable
@@ -31,8 +31,8 @@ declare_population(data = voter_file)() %>% head %>% kable
 
 ## declare_population(N = 100, u = rnorm(N))
 
-tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab1 <- declare_population(N = 100, u = rnorm(N))() %>% head
+tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab3 <- declare_population(N = 100, u = rnorm(N))() %>% head
 kable(list(tab1, tab2, tab3), booktabs = TRUE) #%>% kable_styling() # does not work with PDF
 

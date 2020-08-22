@@ -5,25 +5,6 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = TRUE)
 
-tau <- .10
-N <- 8
-N_sampled <- 4
-population <- declare_population(N = N, e = runif(N), covariate = rnorm(N)) 
-potential_outcomes <- declare_potential_outcomes(
-  Y_Z_0 = covariate + .5 < e, Y_Z_1 = covariate + .5 < e + tau)
-estimand <- declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0))
-sampling <- declare_sampling(n = N_sampled)
-assignment <- declare_assignment(prob = .5)
-reveal_outcomes <- declare_reveal(Y, Z)
-estimator <- declare_estimator(Y ~ Z, label = "DiM", estimand = "PATE")
-simple_design <- population + potential_outcomes + estimand + 
-  sampling + assignment + reveal_outcomes + estimator
-simple_design_data <- draw_data(simple_design)
-
-## declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")
-
-declare_estimator(Y ~ Z + covariate, model = lm, term = "Z", estimand = "ATE")(simple_design_data) %>% kable(digits = 3)
-
 report_lower_p_value <- function(data){
   fit_nocov <- lm_robust(Y ~ Z, data)
   fit_cov <- lm_robust(Y ~ Z + X, data)
