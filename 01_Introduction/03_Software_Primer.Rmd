@@ -36,29 +36,31 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-In this section, we introduce you to `DeclareDesign` for R and how each step of the design-diagnose-redesign process can be implemented in it.
+In this section, we introduce you to `DeclareDesign` for R and describe how to use it to implement each step of the design-diagnose-redesign process.
 
 ## Installing R 
 
-This book relies on the statistical computing environment R, which you can download for free from [CRAN](https://cran.r-project.org). We also recommend the free program [RStudio](https://www.rstudio.com/products/rstudio/download), which provides a friendly interface to R.^[Both R and RStudio are available on Windows, Mac, and Linux.]
+You can download the statistical computing environment R for free from [CRAN](https://cran.r-project.org). We also recommend the free program [RStudio](https://www.rstudio.com/products/rstudio/download), which provides a friendly interface to R.^[Both R and RStudio are available on Windows, Mac, and Linux.]
 
-Once you've got RStudio installed, open it up and install `DeclareDesign` and its  related packages. These include three packages that enable specific steps in the research process (`fabricatr` for simulating social science data; `randomizr`, for random sampling and random assignment; and `estimatr` for design-based estimators). You can also install `DesignLibrary`, which gets standard designs up-and-running in one line. To install them, you can type:
+Once you have got RStudio installed, open it up and install `DeclareDesign` and its  related packages. These include three packages that enable specific steps in the research process (`fabricatr` for simulating social science data; `randomizr`, for random sampling and random assignment; and `estimatr` for design-based estimators). You can also install `DesignLibrary`, which gets standard designs up-and-running in one line. To install them, you can type:
 
 ```{r, eval = FALSE}
 install.packages(c("DeclareDesign", "fabricatr", "randomizr", "estimatr", "DesignLibrary"))
 ```
 
-We also recommend you install and get to know the `tidyverse` suite of packages for data analysis, which we will use throughout the book:
+We also recommend that you install and get to know the `tidyverse` suite of packages for data analysis, which we will use throughout the book:
 
 ```{r, eval = FALSE}
 install.packages("tidyverse")
 ```
 
-In this chapter, we will introduce the `DeclareDesign` software and how to implement the MIDA framework within it. We will not provide a general introduction to R or to the `tidyverse`, because there are already many terrific introductions. We especially recommend [`R for Data Science`](https://r4ds.had.co.nz), available for free on the Web.
+For introductions to R and the `tidyverse` we especially recommend the free resource [`R for Data Science`](https://r4ds.had.co.nz).
 
 ## Building a step of a research design 
 
-We begin learning about how to build a research design in `DeclareDesign` by declaring a single step: random assignment. We take as a starting point a fixed set of data, describing a set of voters in Los Angeles. The research project we are planning involves randomly assigning voters to receive a knock on their door from a canvasser (or not to receive a door knock). Our data look like this:
+A research design is a concatenation of steps so the best way to learn how to build a design is learn how to make a step. We will start out by making---or *declaring*---a step that implements random assignment. 
+
+Almost all steps take a dataset as input and return a dataset as output. We will will imagine input data that describes a set of voters in Los Angeles. The research project we are planning involves randomly assigning voters to receive (or not receive) a knock on their door from a canvasser. Our data look like this:
 
 ```{r, echo = FALSE}
 voter_file <- fabricate(
@@ -76,14 +78,17 @@ kable(head(voter_file))
 
 There are `r nrow(voter_file)` voters in the dataset. 
 
-`DeclareDesign` makes writing each design step just a bit easier. Instead of writing a function each time, it writes a function for us. The core of `DeclareDesign` is a set of `declare_*` functions, including `declare_assignment`. Each one is a *function factory*, meaning it takes a set of parameters about your research design like the number of units and the random assignment probability as *inputs*, and returns a *function* as an output. 
-Instead of writing the function `simple_random_assignment_function` as we did above, in `DeclareDesign` we *declare* it:
+We want a function that takes this dataset, implements a random assignment, adds it to the dataset, and then returns the new dataset containing the random assignment.
+
+You could write your own function to do that but you can also use one of the `declare_*` functions in `DeclareDesign` that are designed to write functions.  Each one of these functions is a kind of *function factory*: it takes a set of parameters about your research design like the number of units and the random assignment probability as *inputs*, and returns a *function* as an output. 
+
+For generating assignment functions we can use  `declare_assignment` like this: 
 
 ```{r}
-simple_random_assignment_step <- declare_assignment(prob = 0.5)
+simple_random_assignment_step <- declare_assignment(prob = 0.6)
 ```
 
-`simple_random_assignment_step` is a tidy function. You can run the function on data:
+The big idea to understand here is that the object we created, `simple_random_assignment_step`, is not a particular assignment, it is a *function* that creates an assignment. In particular it is a tidy function that summarizes how your design does assignment. You can run the function on data:
 
 ```{r, eval = FALSE}
 simple_random_assignment_step(voter_file) 
@@ -92,11 +97,20 @@ simple_random_assignment_step(voter_file)
 simple_random_assignment_step(voter_file) %>% head %>% kable
 ```
 
-A few parts of the declaration may seem a little bit odd. First, we did not tell R anything about the number of units in our dataset. Second, we didn't give it the data! This is because a step declaration creates a function that will work on any size dataset. We told `declare_assignment` that we want to assign treatment with probability `0.5` (and implicitly control with probability `1-0.5 = 0.5`), regardless of how large the dataset is. We did not send the declaration the data, because `declare_assignment` automatically creates a tidy function for us, one that takes data and returns data with an assignment step. We will see in a moment how `DeclareDesign` uses these functions to simulate data from a research design. But you can always use the function yourself with your own data. 
+A few parts of the declaration may seem a little bit odd. First, we did not tell R anything about the number of units in our dataset. Second, we didn't give it the data. This is because a step declaration creates functions that are meant to be flexible, function that will work on any size dataset. We told `declare_assignment` that we want to assign treatment with probability `0.6` (and implicitly control with probability `1-0.6 = 0.4`), regardless of how large the dataset is. We did not send the declaration the data, because `declare_assignment` automatically creates a tidy function for us, one that takes data and returns data with an assignment step. We will see in a moment how `DeclareDesign` uses these functions to simulate data from a research design. But you can always use the function yourself with your own data. 
 
-When you implement your research design after you have conducted it, you can use the exact same functions you diagnosed the design with. This is one of the reasons we *declare* the assignment step --- because we'll learn about the properties of your design with the same code you can actually use to randomly assign treatment.
+When you implement your research design after you have conducted it, you can use the exact same functions you generated in this design phase. In the same way when you *diagnose* your design you will use the same function many times. This is one of the reasons we *declare* the assignment step --- because we will learn about the properties of your design with the same code you can actually use to randomly assign treatment.
 
 Every step of a research design in MIDA can be written using one of the `declare_*` functions. In the next section, we walk through each step and how to declare it using `DeclareDesign`. 
+
+### Options and defaults
+
+Most of the `declare_*` functions have many options. In general you do not have to specify these as default values are usually provided (though you should be familiar with what these default values are). For instance you might have noticed above that when you ran the assignment step above, the new variable that was created was called `Z`. This is because `declare_assignment` has an argument  `assignment_variable` that defaults to `Z`. You can change that of course to whatever you want.
+
+More subtly, the `declare_*` functions also default to "handlers" which have their own default arguments. These handlers are generally quite well developed sets of functions that implement the tasks needed by the `declare_` function. For instance `declare_assignment` defaults to `conduct_ra` from the `randomizr` package as a handler and passes  any additional arguments that you give it on to `conduct_ra`, and, by the same token, assumes by default the default values of the handler. In the example above we had `prob = 0.6` as an argument. If you look at the documentation, `prob` is not an argument of `declare_assignment` but it is an argument of `conduct_ra`, with a default value of .5. If we had left this bit out we would have gotten a function that assigned with probability .5. 
+
+### Your own handlers
+
 
 ## Research design steps
 
@@ -104,7 +118,11 @@ In this section, we walk through how to declare each step of a research design u
 
 ### Model
 
-The model defines the structure of the world, both its size and background characteristics as well as how interventions in the world determine outcomes. In `DeclareDesign`, we split the model into two main design steps: the population and potential outcomes. There is always one population in a design, but there can be multiple sets of potential outcomes.
+The model defines the structure of the world, both its size and background characteristics as well as how interventions in the world determine outcomes. In `DeclareDesign`, we split the model into two main design steps: the population and potential outcomes steps. There 
+
+<!-- is always one population in a design, but there can be multiple sets of potential outcomes. -->
+
+<!-- ALWAYS ONE POPULATION -- OR ARE WE DESCRIBING SETS -->
 
 #### Population
 
@@ -119,22 +137,26 @@ declare_population(data = voter_file)
 declare_population(data = voter_file)() %>% head %>% kable
 ```
 
-When we do not have complete data on the population, we simulate it. Relying on the data simulation functions from our `fabricatr` package, `declare_population` asks about the size and variables of the population:
+When we do not have complete data on the population, we simulate it. Relying on the data simulation functions from our `fabricatr` package, `declare_population` asks about the size and variables of the population. For instance if we want a function that generates a dataset with 100 units and a random variable `u` we write:
 
 ```{r, eval = FALSE}
 declare_population(N = 100, u = rnorm(N))
 ```
 
-When we run the declared population function, we will get a different 100-unit dataset each time:
+When we run this population function, we will get a different 100-unit dataset each time:
 
 ```{r, echo = FALSE}
-tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab1 <- declare_population(N = 100, u = rnorm(N))() %>% head
+tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab3 <- declare_population(N = 100, u = rnorm(N))() %>% head
 kable(list(tab1, tab2, tab3), booktabs = TRUE) #%>% kable_styling() # does not work with PDF
 ```
 
-The `fabricatr` package can simulate data for social science research including multilevel data structures like students in classrooms in schools. You can read the `fabricatr` Web site to get started simulating your data structure (link). A simple two-level data structure of individuals within households could be declared as:
+The `fabricatr` package can simulate many different typs of data, including various types of categorical variables or different types of data structures, such as panel or multilevel strucures. 
+
+You can read the `fabricatr` [website](https://declaredesign.org/r/fabricatr/) to get started simulating your data structure. 
+
+As an exmaple of a simple two-level data structure, we imagine a setting with 100 households and random number of individuals within each household. This two level structure could be declared as:
 
 ```{r, eval = FALSE}
 declare_population(
@@ -143,7 +165,7 @@ declare_population(
 )
 ```
 
-In every step of the research design process, you can short-circuit our default way of doing things and bring in your own code. This is useful when you have a complex design, or when you've already written code for your design and you want to use it directly. It works by setting the handler:
+Remember, in every step of the research design process, you can short-circuit our default way of doing things and bring in your own code. This is useful when you have a complex design, or when you have already written code for your design and you want to use it directly. It works by setting the handler:
 
 ```{r, eval = FALSE}
 complex_population_function <- function(data, N_units) {
