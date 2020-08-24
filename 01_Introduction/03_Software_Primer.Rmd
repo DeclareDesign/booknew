@@ -73,7 +73,7 @@ voter_file <- fabricate(
 ```
 
 ```{r, echo = FALSE}
-kable(head(voter_file))
+kable(head(voter_file), digits = 3)
 ```
 
 There are `r nrow(voter_file)` voters in the dataset. 
@@ -94,10 +94,12 @@ The big idea to understand here is that the object we created, `simple_random_as
 simple_random_assignment_step(voter_file) 
 ```
 ```{r, echo = FALSE}
-simple_random_assignment_step(voter_file) %>% head %>% kable
+simple_random_assignment_step(voter_file) %>% head %>% kable(caption = "Data output following implementation of an assignment step.", digits = 3)
 ```
 
-A few parts of the declaration may seem a little bit odd. First, we did not tell R anything about the number of units in our dataset. Second, we didn't give it the data. This is because a step declaration creates functions that are meant to be flexible, function that will work on any size dataset. We told `declare_assignment` that we want to assign treatment with probability `0.6` (and implicitly control with probability `1-0.6 = 0.4`), regardless of how large the dataset is. We did not send the declaration the data, because `declare_assignment` automatically creates a tidy function for us, one that takes data and returns data with an assignment step. We will see in a moment how `DeclareDesign` uses these functions to simulate data from a research design. But you can always use the function yourself with your own data. 
+The output here is an expanded dataset with a new column indicating treatment assignment (`Z`). As a bonus the data also includes the implied assignment propensity for each unit *to the condition in which it is in* (`Z_cond`). The most important thing to understand here is that implementing a step means taking a dataset in and sending a new dataset out.  
+
+A few parts of this step declaration may seem a little bit odd. First, we did not tell R anything about the number of units in our dataset. Second, we did not give it the data. This is because a step declaration creates functions that are meant to be flexible, function that will work on any size dataset. We told `declare_assignment` that we want to assign treatment with probability `0.6` (and implicitly control with probability `1-0.6 = 0.4`), regardless of how large the dataset is. We did not send the declaration the data because, although the assignment is a function of the data, the assignment *function* is not a function of the data. Put differently, the assignment function takes data as an argument, but the function to create the assignment function (`declare_assignment()`) does not. 
 
 When you implement your research design after you have conducted it, you can use the exact same functions you generated in this design phase. In the same way when you *diagnose* your design you will use the same function many times. This is one of the reasons we *declare* the assignment step --- because we will learn about the properties of your design with the same code you can actually use to randomly assign treatment.
 
@@ -107,10 +109,34 @@ Every step of a research design in MIDA can be written using one of the `declare
 
 Most of the `declare_*` functions have many options. In general you do not have to specify these as default values are usually provided (though you should be familiar with what these default values are). For instance you might have noticed above that when you ran the assignment step above, the new variable that was created was called `Z`. This is because `declare_assignment` has an argument  `assignment_variable` that defaults to `Z`. You can change that of course to whatever you want.
 
-More subtly, the `declare_*` functions also default to "handlers" which have their own default arguments. These handlers are generally quite well developed sets of functions that implement the tasks needed by the `declare_` function. For instance `declare_assignment` defaults to `conduct_ra` from the `randomizr` package as a handler and passes  any additional arguments that you give it on to `conduct_ra`, and, by the same token, assumes by default the default values of the handler. In the example above we had `prob = 0.6` as an argument. If you look at the documentation, `prob` is not an argument of `declare_assignment` but it is an argument of `conduct_ra`, with a default value of .5. If we had left this bit out we would have gotten a function that assigned with probability .5. 
+More subtly, the `declare_*` functions also default to "handlers" which have their own default arguments. These handlers are generally quite well developed sets of functions that implement the tasks needed by the `declare_` function. For instance `declare_assignment` defaults to `conduct_ra` from the `randomizr` package as a handler and passes  any additional arguments that you give it on to `conduct_ra`, and, by the same token, assumes by default the default values of the handler. In the example above we had `prob = 0.6` as an argument. If you look at the documentation, `prob` is not an argument of `declare_assignment` but it is an argument of `conduct_ra`, with a default value of .5. If we had left this bit out we would have gotten a function that assigned treatment with probability .5. 
 
 ### Your own handlers
 
+The built in functions we provide in the `DeclareDesign` package are quite flexible and handle many major designs but the framework is built so that you are never constrained by what we provide. At any point rather than using the default handlers (such as `conduct_ra`), you can write a function that implements your own procedures. The only discipline that the framework imposes is that you write your procedure as a function that takes data in and send data back.  
+
+Here is an example of how you turn your own functions into design steps.
+
+
+```{r, eval = FALSE}
+custom_assignment <- function(data)
+  mutate(data, X = rbinom(n = nrow(data), 1, prob = 0.5))
+
+my_assignment_step <- declare_assignment(handler = custom_assignment)
+
+my_assignment_step(voter_file)  
+```
+
+```{r, echo = FALSE}
+custom_assignment <- function(data)
+  mutate(data, X = rbinom(n = nrow(data), 1, prob = 0.5))
+ 
+my_assignment_step <- declare_assignment(handler = custom_assignment)
+
+my_assignment_step(voter_file) %>% head %>% kable(caption = "Data generated using a custom function")  
+```
+
+There is, of course, no great difference in this example between `custom_assignment` and `my_assignment_step` since `my_assignment_step` is just a function that applies  `custom_assignment`. Even still by declaring this step formally as a design step using `declare_assignment` you let `DeclareDesign` know how the step fits into the whole design, how to interpret it and when to call it.   
 
 ## Research design steps
 
