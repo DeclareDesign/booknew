@@ -16,7 +16,6 @@ bookwide_packages <-
     "randomizr",
     "DeclareDesign",
     "DesignLibrary",
-    "dddag",
     # tidyverse packages
     "ggplot2",
     "patchwork",
@@ -33,5 +32,7 @@ bookwide_packages <-
     "ggraph",
     # ggplot packages
     "ggforce",
-    "ggtext"
+    "ggtext",
+    # extras
+    "dddag"
   )
