@@ -30,6 +30,59 @@ three_study_design <-
   declare_population(n = n3, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
   declare_estimator(Y ~ X + M + X:M, term = "X:M", model = lm_robust, label = "Study 3") 
 
+design1 <- 
+  declare_population(N = 50, 
+                     X_latent = rnorm(N),
+                     M = X_latent + rnorm(N)) + 
+  declare_measurement(X = X_latent) + 
+  declare_measurement(handler = mutate, Y = X + M)
+
+design2 <- 
+  declare_population(N = 50, 
+                     X_latent = rnorm(N),
+                     M_latent = X_latent + rnorm(N),
+                     Y = X_latent + M_latent) + 
+  declare_measurement(X = X_latent,
+                      M = M_latent)
+
+design3 <- 
+  declare_population(N = 50, 
+                     X_latent = rnorm(N),
+                     M_latent = X_latent + rnorm(N)) + 
+  declare_measurement(X = X_latent,
+                      M = M_latent,
+                      Y = X + M)
+
+dag <- dagify(M ~ X,
+              Y ~ X + M)
+
+nodes <-
+  tibble(
+    name = c("X", "M", "Y"),
+    label =  name,
+    annotation = c(
+      "**Exogenous variable**",
+      "**Endogenous variable**",
+      "**Outcome**"
+    ),
+    x = c(1, 3, 5),
+    y = c(1.5, 3.5, 1.5), 
+    nudge_direction = c("S", "N", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design1)
+
+base_dag_plot %+% ggdd_df
+
+ggdd_df <- make_dag_df(dag, nodes, design2)
+
+base_dag_plot %+% ggdd_df
+
+ggdd_df <- make_dag_df(dag, nodes, design3)
+
+base_dag_plot %+% ggdd_df
+
 
 
 

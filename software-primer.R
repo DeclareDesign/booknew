@@ -19,12 +19,26 @@ voter_file <- fabricate(
   precinct = sample(2000:10000, N, replace = TRUE)
 )
 
-kable(head(voter_file))
+kable(head(voter_file), digits = 3)
 
 simple_random_assignment_step <- declare_assignment(prob = 0.6)
 
 ## simple_random_assignment_step(voter_file)
-simple_random_assignment_step(voter_file) %>% head %>% kable
+simple_random_assignment_step(voter_file) %>% head %>% kable(caption = "Data output following implementation of an assignment step.", digits = 3)
+
+## custom_assignment <- function(data)
+##   mutate(data, X = rbinom(n = nrow(data), 1, prob = 0.5))
+## 
+## my_assignment_step <- declare_assignment(handler = custom_assignment)
+## 
+## my_assignment_step(voter_file)
+
+custom_assignment <- function(data)
+  mutate(data, X = rbinom(n = nrow(data), 1, prob = 0.5))
+ 
+my_assignment_step <- declare_assignment(handler = custom_assignment)
+
+my_assignment_step(voter_file) %>% head %>% kable(caption = "Data generated using a custom function")  
 
 ## declare_population(data = voter_file)
 declare_population(data = voter_file)() %>% head %>% kable
