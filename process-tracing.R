@@ -12,7 +12,8 @@ types <- c('Z_caused_Y', 'Z_caused_not_Y', 'always_Y', 'always_not_Y')
 design <-
   declare_population(N = 195,
                      Z = draw_binary(prob = .3, N = N),
-                     type = sample(x = types, size = N, replace = TRUE, prob = c(.2, .1, .2, .5)))  +
+                     type = sample(x = types, size = N, 
+                                   replace = TRUE, prob = c(.2, .1, .2, .5)))  +
   declare_potential_outcomes(
     Y ~ Z * (type == "Z_caused_Y") + (1 - Z) * (type == "Z_caused_not_Y") + (type == "always_Y"),
     conditions = list(Z = c(0, 1), type = types)) +
