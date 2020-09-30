@@ -1,5 +1,5 @@
 # ---
-# Process tracing
+# Bayesian Process tracing
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
@@ -36,15 +36,6 @@ design <-
     estimand_label = "did_Z_cause_Y",
     handler = summarize) 
 
-# diagnose_design(process_tracing_design, 
-#                 diagnosands = declare_diagnosands(
-#                   bias = mean(posterior - estimand),
-#                   rmse = sqrt(mean((posterior - estimand) ^ 2)),
-#                   mean_estimand = mean(estimand),
-#                   mean_posterior = mean(posterior),
-#                   keep_defaults = FALSC
-#                 ), sims = 1000)
-
 
 dag <- dagify(C ~ Z + type,
               Y ~ Z + type)
@@ -69,6 +60,15 @@ nodes <-
 ggdd_df <- make_dag_df(dag, nodes, design)
 
 base_dag_plot %+% ggdd_df
+
+## diagnose_design(design,
+##                 diagnosands = declare_diagnosands(
+##                   bias = mean(posterior - estimand),
+##                   rmse = sqrt(mean((posterior - estimand) ^ 2)),
+##                   mean_estimand = mean(estimand),
+##                   mean_posterior = mean(posterior),
+##                   keep_defaults = FALSE),
+##                 sims = 1000)
 
 # Calculate bivariate probabilities given correlation
 joint_prob <- function(p1, p2, rho, which_prob = NULL) {
