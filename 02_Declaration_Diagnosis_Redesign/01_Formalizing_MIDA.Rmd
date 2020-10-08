@@ -162,6 +162,17 @@ Diagnosis is the process of learning the value of a diagnosand for a single desi
 
 For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{A'} - a^m|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{A} - a^{M'}|D)$.
 
+Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have infinite variations. Typically, researchers will want to find the optimal values of a small set of easily controlled design parameters under budget constraints. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
+
+\begin{equation*}
+\begin{aligned}
+& \underset{N, N_t}{\text{argmin}}
+& & P_M(a^{A} - a^{M}|D_{N, N_t}) \\
+& \text{s.t.}
+& & 25 * N + 5 * N_t \leq 5000
+\end{aligned}
+\end{equation*}
+
 In all cases, the full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of a diagnosand, and comparing the diagnoses to what could be achieved under alternative designs.
 
 ## Example: returning to @Gulzar2020
