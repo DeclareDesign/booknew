@@ -156,24 +156,28 @@ A key feature of this bare specification is that if $M$, $D$, and $A$ are suffic
 
 Some diagnosands can be calculated analytically, though most require Monte Carlo computer simulation. A main purpose of the `DeclareDesign` software package is making the simulation step easier.
 
+In practice, it is important to diagnose a design under multiple possible $M$'s, given our fundamental uncertainty about the world $w$. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under *multiple* likely models. A $D$ and $A$ for a given $I$ that provide good diagnosand values under multiple $M$'s can be said to be robust to multiple models. 
+
 ## Redesign
 
-Diagnosis is the process of learning the value of a diagnosand for a single design. Redesign is the process of *changing* parts of MIDA in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) design among the feasible set, as measured by the changing values of the diagnosand.
+Diagnosis is the process of learning the value of a diagnosand for a single design, often under multiple specifications of M to assess robustness to alternative models. Redesign is the process of *changing* parts of D and A in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) D and A among the feasible set, as measured by the changing values of the diagnosand.
 
-For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{A'} - a^m|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{A} - a^{M'}|D)$.
+For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{d'} - a^m|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{d} - a^{m'}|D)$.
 
-Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have infinite variations. Typically, researchers will want to find the optimal values of a small set of easily controlled design parameters under budget constraints. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
+Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have infinite variations, so the search space must be limited. Typically, researchers will want to find the optimal values of a small set of easily-controlled design parameters. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
 
 \begin{equation*}
 \begin{aligned}
 & \underset{N, N_t}{\text{argmin}}
-& & P_M(a^{A} - a^{M}|D_{N, N_t}) \\
+& & E_M(a^{d} - a^{m}|D_{N, N_t}) \\
 & \text{s.t.}
 & & 25 * N + 5 * N_t \leq 5000
 \end{aligned}
 \end{equation*}
 
-In all cases, the full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of a diagnosand, and comparing the diagnoses to what could be achieved under alternative designs.
+However, optimizing a design for a single diagnosand may lead to poor design choices. If we redesign by optimizing for the power diagnosand, we are likely to find a design that is highly powered but highly biased --- it is targeting the wrong estimand. We can solve this by switching to the root mean-squared error as the diagnosand, which is a weighted combination of the bias and efficiency of the design. More generally, the choice of an optimal design requires the researcher to select a weighting of diagnosands. They must balance bias, efficiency, the risk of imprecise null results, the risk of getting the sign of an effect wrong, and other diagnosands given their research goals.
+
+The full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of one or more diagnosands, and comparing the diagnoses to what could be achieved under alternative designs.
 
 ## Example: returning to @Gulzar2020
 
