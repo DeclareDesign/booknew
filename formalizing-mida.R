@@ -23,7 +23,7 @@ nodes_df <-
     name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w"),
     label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w"),
     x = c(1, 2, 4, 5, 1, 2, 3, 4, 5, 3),
-    y = c(3, 3, 3, 3, 2, 2, 2.5, 2, 2, 1)
+    y = c(3, 3, 3, 3, 2, 2, 2.5, 2, 2, 3.25)
   )
 
 endnodes_df <-
@@ -64,15 +64,16 @@ g <-
                 label.color = NA,
                 label.padding = grid::unit(rep(0, 4), "pt"),
                 size = 4) +
+  coord_fixed() + 
   geom_dag_edges() +
   geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.3) +
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
             alpha = 0.25) +
-  annotate("text", x = 1.5, y = 1.75, label = "Theory") +
-  annotate("text", x = 4.5, y = 1.75, label = "Empirics") +
-  annotate("text", x = 3, y = 2.75, label = "Truth") +
+  annotate("text", x = 1.5, y = 3.35, label = "Theory") +
+  annotate("text", x = 4.5, y = 3.35, label = "Empirics") +
+  annotate("text", x = 3, y = 2.1, label = "Truth") +
   theme_dag()
 g
 
