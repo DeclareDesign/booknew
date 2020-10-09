@@ -39,15 +39,15 @@ Our goal here is not formalization for formalization's sake. Describing a resear
 
 ## Declaration
 
-We define a research design as $\Delta$, with four elements $<M,I,D,A>$:
+We define a research design as $\Delta$, with four elements $<M,I,D,A>$. Describing a research design entails "declaring" each of these four elements. 
 
-$M$ is a **model** of how the world works. Following Pearl's definition of a probabilistic causal model, $M$ contains three core elements. The first is a specification of the variables $X$ about which research is being conducted. This includes endogenous and exogenous variables ($V$ and $U$ respectively) and the ranges of these variables. In the formal literature this is sometimes called the *signature* of a model [@halpern2000]. The second element ($F$) a specification of how each endogenous variable depends on other variables. These can be considered functional relations or, as in @Imbens2015, potential outcomes. The third and final element is a probability distribution over exogenous variables, written $P(U)$. We write a draw from this distribution as $M() = m$. 
+$M$ is a theoretical **model** of how the world works. Following Pearl's definition of a probabilistic causal model, $M$ contains three core elements. The first is a specification of the variables $X$ about which research is being conducted. This includes endogenous and exogenous variables ($V$ and $U$ respectively) and the ranges of these variables. In the formal literature this is sometimes called the *signature* of a model [@halpern2000]. The second element ($F$) a specification of how each endogenous variable depends on other variables. These can be considered functional relations or, as in @Imbens2015, potential outcomes. The third and final element is a probability distribution over exogenous variables, written $P(U)$. Since the model is probabalistic, we can think of $m$ as a *draw* from the model $M$. 
 
 The **inquiry** $I$ is a summary of the variables $X$, perhaps given interventions on some variables. An inquiry might be the average value of an outcome $Y$: $\E[Y] = \int{Y*Pr(Y)}$, or the average value of the outcome conditional on the value of a treatment $Z$: $\E[Y|Z=1] = \int{Y*Pr(Y|Z=1)}$. Using Pearl's notation we can distinguish between descriptive inquiries and causal inquiries. Causal inquiries are those that summarise distributions that would arise under interventions, as indicated by the $do()$ operator, e.g., $\Pr(Y | do(Z = 1))$. Descriptive inquiries summarise distributions that arise without intervention, such as $\Pr(Y | Z =1)$.
 
-We let $a^m$ denote the answer to $I$ \textit{under the model}. Conditional on the model, $a^m$ is the value of the estimand, the quantity that the researcher wants to learn about. The connection of $a^m$ to the model can be seen in the following equality: $I(m) = a^m$.
+We let $a^m$ denote the answer to $I$ \textit{under the model}. Conditional on the model, $a^m$ is the value of the estimand, the quantity that the researcher wants to learn about. The connection of $a^m$ to the model can be seen in the following relationship: $a^m = I(m)$. 
 
-The answer under the model ($a^m$) may be close or far from the true value of the inquiry, which is to say it could be wrong. If the model $M$ is far from the truth, then of course $a^m$ need not be correct. We denote the true answer to $I$ as $a^w$: the answer to $I$ that depends on the true state of the world $w$. We note that $a^w$ might be undefined if the model wrong enough.
+As the saying goes, models are wrong but some may perhaps be useful. We denote the *true* causal model of the world as $W$ and the realized world $w$ as a draw from this true causal model. The true answer, then, is $a^w = I(w)$. The answer under the model $a^m$ may be close or far from the true value $a^w$, which is to say it could be wrong. If the model $M$ is far from the $W$, then of course $a^m$ need not be correct. We note that $a^w$ might be undefined, since inquiries can only be stated in terms of theoretical models. If the theoretical model is wrong enough, then the inquiry might be nonsensical when applied to the real world.
 
 A **data** strategy, $D$, generates data $d$. Data $d$ arises, under model $M$ with probability $P_M(d|D)$. The data strategy includes sampling strategies and assignment strategies, which we denote with $P_S$ and $P_Z$ respectively. Measurement techniques are also a part of data strategies and can be thought of as a selection of observable variables that carry information about unobservable variables. The data strategy operates on $w$ to produce the observed data: $D(w) = d$.
 
@@ -145,6 +145,17 @@ g
 ```
 
 Figure XX points out how a research design is a correspondence $I(m) = a^m$ and $A(d) = a^d$. The theoretical half of a research design produces an answer to the inquiry **in theory**. The emprical half of a research design produces an *empirical estimate* of the answer to the inquiry. Neither answer is necessarily close to the truth $a^w$, but inescapable gamble of empirical research is that our theoretical models are close enough to the truth to be useful.
+
+| Relationship  | Description                                                                           |
+| ------------- | ------------------------------------------------------------------------------------  |
+| $m = M()$     | $m$ is a draw from the theoretical causal model $M$                                   |
+| $a^m = I(m)$  | the answer under the model $a^m$ is the inquiry applied to a draw from the model $m$  |
+| $w = M()$     | the real world $w$ is a draw from the true causal model $W$                           |
+| $a^w = I(w)$  | the true answer $a^w$ is the inquiry applied to the real world $w$                    |
+| $d = D(w)$    | the realized dataset $d$ results from the data strategy applied to the real world $w$ |
+| $a^d = A(d)$  | the empirical answer $a^d$ is the answer strategy applied to the dataset $d$          |
+
+
 
 The central crux of good research design is generated by the deep analogy of Models and Inquiries to Data and Answer Strategies. This analogy can guide many design decisions. The guidance that measurement procedures should be theoretically informed is an instance of the general point that data strategies should parallel theoretical models. The general preference for nonparametric estimation approaches over parametric procedures is an instance of the general point that answer strategies should parallel inquiries. 
 
