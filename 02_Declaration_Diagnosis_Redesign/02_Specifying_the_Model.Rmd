@@ -40,25 +40,6 @@ library(ggraph)
 
 intro 
 
-## Two languages for defining causal models
-
-### Directed acyclic graphs (nonparameteric structural causal models)
-
-- a set of functionals that relate causal variables to each other
-- graphical representation of NSCM is a DAG
-
-useful for:
-- defining how variables relate (and do not)
-- clarifying what estimands can (and cannot) be identified using research
-
-### Potential outcomes (parametric structural causal models)
-
-we get a ton from nonparametric causal models, but in order to assess many properties of a research design we need to parameterize them. we need to specify the scales and probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). this will include definining expectations about effect sizes but also correlations between variables, intra-class correlations (ICCs), and interactions.
-
-useful for:
-- simulating data as it will actually be collected
-- diagnosing properties of a research design such as bias and power
-
 ## What variables belong in the causal model?
 
 - infinite variables out there in the world, we don't have time (or need) to specify them all
@@ -66,12 +47,22 @@ useful for:
 - for I, we will need the outcomes or potential outcomes that define average effects or average treatment effects
 - for D, we will need all the variables that we use to stratify, block, cluster, and measure
 - for A, we will need all the variables that we control for, use to calculate clustered standard errors, for poststratification and calculation of weights, and visualize our data
+
+- we can represent these variables and how they relate in DAGs
+- nonparemetric structural causal models are a set of functionals that relate causal variables to each other
+- graphical representation of NSCM is a DAG
+
 - there will be many factors that affect our outcomes and independent variables that we do not specify explicitly, and these will be included as "unknown heterogeneity" -- and we will have to specify the importance of these unknown factors
 - some of these variables will be exogenous and endogenous, in Pearl's terms. by exogenous variables, he means variables without parents, no antecendent causes. by endogenous variables, he means those with parents, that are determined in part by earlier variables. endogenous variables are distinct from the problem of endogeneity, which comes from a single variable being a parent of both the treatment variable of interest and the outcome we wish to measure the causal effect of the treatment on. we will use it in Pearl's sense.
 
+- preview: from this we can learn a ton: what estimands are estimable, what variables we can condition on, etc.
+
 ## What do we need to specify about these variables?
 
-- parameters of the distribution of exogenous variables
+we get a ton from nonparametric causal models, but in order to assess many properties of a research design we need to parameterize them. we need to specify the scales and probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). this will include definining expectations about effect sizes but also correlations between variables, intra-class correlations (ICCs), and interactions. we'll use *parametric* structural causal models for this.
+
+must define:
+- probability distributions for exogenous variables and their parameters 
 - functional forms of the endogenous variables
 
 ## How do we make educated guesses about the set of nodes and edges and their parameters and functional forms?
@@ -89,4 +80,7 @@ The content of models typically comes from two places: reading the past literatu
 - the result of this search through past research will often not yield a single point estimate for a parameter, such as the correlation between age and gender, but rather a range. 
 - we face fundamental uncertainty in all our guesses about features of the model (this is why we are conducting the research in the first place!)
 - this is not a bug but a feature of this process: we can retain our uncertainty and find data strategies and answer strategies that provide unbiased, efficient estimates of our inquiry under *multiple* possible models. when our procedures yield "good" estimates of our inquiry under a range of models, we label the design robust to multiple models. we will typically want our design to be robust to multiple possible large and small effect sizes, but also multiple possible intra-class correlations within clusters and levels of uncertainty from unknown forms of heterogeneity. 
+- robustness to alternative models: we may want to know how good a design is under a hypothesized model of the world and an alternative model posited in the literature. here, we want to know if our design can *distinguish* between these two designs. our inquiry may be which of the two models is correct.
+
+
 
