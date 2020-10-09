@@ -182,12 +182,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.4" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>5.4</b> Example</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="specifying-the-model.html"><a href="specifying-the-model.html"><i class="fa fa-check"></i><b>6</b> Specifying the model</a><ul>
-<li class="chapter" data-level="6.1" data-path="what-variables-belong-in-the-causal-model.html"><a href="what-variables-belong-in-the-causal-model.html"><i class="fa fa-check"></i><b>6.1</b> What variables belong in the causal model?</a></li>
-<li class="chapter" data-level="6.2" data-path="what-do-we-need-to-specify-about-these-variables.html"><a href="what-do-we-need-to-specify-about-these-variables.html"><i class="fa fa-check"></i><b>6.2</b> What do we need to specify about these variables?</a></li>
-<li class="chapter" data-level="6.3" data-path="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><a href="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><i class="fa fa-check"></i><b>6.3</b> How do we make educated guesses to fill in the model?</a></li>
-<li class="chapter" data-level="6.4" data-path="robustness-to-multiple-models.html"><a href="robustness-to-multiple-models.html"><i class="fa fa-check"></i><b>6.4</b> Robustness to multiple models</a></li>
-<li class="chapter" data-level="6.5" data-path="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><a href="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><i class="fa fa-check"></i><b>6.5</b> Null models and design diagnosis under theoretical alternative models</a></li>
-<li class="chapter" data-level="6.6" data-path="fundamental-uncertainty.html"><a href="fundamental-uncertainty.html"><i class="fa fa-check"></i><b>6.6</b> Fundamental uncertainty</a></li>
+<li class="chapter" data-level="6.1" data-path="defining-the-population-of-units-for-our-model.html"><a href="defining-the-population-of-units-for-our-model.html"><i class="fa fa-check"></i><b>6.1</b> Defining the population of units for our model</a></li>
+<li class="chapter" data-level="6.2" data-path="what-variables-belong-in-the-causal-model.html"><a href="what-variables-belong-in-the-causal-model.html"><i class="fa fa-check"></i><b>6.2</b> What variables belong in the causal model?</a></li>
+<li class="chapter" data-level="6.3" data-path="what-do-we-need-to-specify-about-these-variables.html"><a href="what-do-we-need-to-specify-about-these-variables.html"><i class="fa fa-check"></i><b>6.3</b> What do we need to specify about these variables?</a></li>
+<li class="chapter" data-level="6.4" data-path="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><a href="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><i class="fa fa-check"></i><b>6.4</b> How do we make educated guesses to fill in the model?</a></li>
+<li class="chapter" data-level="6.5" data-path="robustness-to-multiple-models.html"><a href="robustness-to-multiple-models.html"><i class="fa fa-check"></i><b>6.5</b> Robustness to multiple models</a></li>
+<li class="chapter" data-level="6.6" data-path="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><a href="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><i class="fa fa-check"></i><b>6.6</b> Null models and design diagnosis under theoretical alternative models</a></li>
+<li class="chapter" data-level="6.7" data-path="fundamental-uncertainty.html"><a href="fundamental-uncertainty.html"><i class="fa fa-check"></i><b>6.7</b> Fundamental uncertainty</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
 <li class="chapter" data-level="7.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Kinds of Inquiries</a><ul>
@@ -479,37 +480,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The right number of <strong>choice tasks</strong> depends on your survey budget. You can always add more pairs of profiles and the only cost is the opportunity cost of asking a different question of the survey that may serve some higher scientific purpose. If you’re worried that respondents will get bored with the task, you can always throw out profile pairs that come later in the survey. <span class="citation">(<span class="citeproc-not-found" data-reference-id="bansak2018number"><strong>???</strong></span>)</span> suggest that you can ask many pairs without much loss of data quality.</p>
 <div id="declaration-8" class="section level3">
 <h3><span class="header-section-number">16.3.1</span> Declaration</h3>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" title="1"><span class="co"># applies the function to each pair</span></a>
-<a class="sourceLine" id="cb75-2" title="2">Y_function &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb75-3" title="3">  data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb75-4" title="4"><span class="st">    </span><span class="kw">group_by</span>(pair) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb75-5" title="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Y =</span> <span class="kw">if_else</span>(E <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(E), <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb75-6" title="6"><span class="st">    </span>ungroup</a>
-<a class="sourceLine" id="cb75-7" title="7">}</a>
-<a class="sourceLine" id="cb75-8" title="8">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb75-9" title="9"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb75-10" title="10">    <span class="dt">subject =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">500</span>),</a>
-<a class="sourceLine" id="cb75-11" title="11">    <span class="dt">pair =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">4</span>),</a>
-<a class="sourceLine" id="cb75-12" title="12">    <span class="dt">candidate =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">2</span>, <span class="dt">U =</span> <span class="kw">runif</span>(N))</a>
-<a class="sourceLine" id="cb75-13" title="13">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb75-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A1&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb75-15" title="15"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A2&quot;</span>, </a>
-<a class="sourceLine" id="cb75-16" title="16">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;young&quot;</span>, <span class="st">&quot;middle&quot;</span>, <span class="st">&quot;old&quot;</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb75-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A3&quot;</span>)  <span class="op">+</span></a>
-<a class="sourceLine" id="cb75-18" title="18"><span class="st">  </span><span class="kw">declare_step</span>(</a>
-<a class="sourceLine" id="cb75-19" title="19">    <span class="dt">E =</span> </a>
-<a class="sourceLine" id="cb75-20" title="20">      <span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb75-21" title="21"><span class="st">      </span><span class="fl">0.04</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;middle&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb75-22" title="22"><span class="st">      </span><span class="fl">0.08</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;old&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb75-23" title="23"><span class="st">      </span><span class="fl">0.02</span> <span class="op">*</span><span class="st"> </span>A3 <span class="op">+</span><span class="st"> </span>U,</a>
-<a class="sourceLine" id="cb75-24" title="24">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
-<a class="sourceLine" id="cb75-25" title="25"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">handler =</span> Y_function) <span class="op">+</span></a>
-<a class="sourceLine" id="cb75-26" title="26"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>A3,</a>
-<a class="sourceLine" id="cb75-27" title="27">                    <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1"><span class="co"># applies the function to each pair</span></a>
+<a class="sourceLine" id="cb74-2" title="2">Y_function &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb74-3" title="3">  data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-4" title="4"><span class="st">    </span><span class="kw">group_by</span>(pair) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-5" title="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Y =</span> <span class="kw">if_else</span>(E <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(E), <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb74-6" title="6"><span class="st">    </span>ungroup</a>
+<a class="sourceLine" id="cb74-7" title="7">}</a>
+<a class="sourceLine" id="cb74-8" title="8">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb74-9" title="9"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb74-10" title="10">    <span class="dt">subject =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">500</span>),</a>
+<a class="sourceLine" id="cb74-11" title="11">    <span class="dt">pair =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">4</span>),</a>
+<a class="sourceLine" id="cb74-12" title="12">    <span class="dt">candidate =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">2</span>, <span class="dt">U =</span> <span class="kw">runif</span>(N))</a>
+<a class="sourceLine" id="cb74-13" title="13">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb74-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A1&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb74-15" title="15"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A2&quot;</span>, </a>
+<a class="sourceLine" id="cb74-16" title="16">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;young&quot;</span>, <span class="st">&quot;middle&quot;</span>, <span class="st">&quot;old&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb74-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;A3&quot;</span>)  <span class="op">+</span></a>
+<a class="sourceLine" id="cb74-18" title="18"><span class="st">  </span><span class="kw">declare_step</span>(</a>
+<a class="sourceLine" id="cb74-19" title="19">    <span class="dt">E =</span> </a>
+<a class="sourceLine" id="cb74-20" title="20">      <span class="fl">0.05</span> <span class="op">*</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-21" title="21"><span class="st">      </span><span class="fl">0.04</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;middle&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-22" title="22"><span class="st">      </span><span class="fl">0.08</span> <span class="op">*</span><span class="st"> </span>(A2 <span class="op">==</span><span class="st"> &quot;old&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-23" title="23"><span class="st">      </span><span class="fl">0.02</span> <span class="op">*</span><span class="st"> </span>A3 <span class="op">+</span><span class="st"> </span>U,</a>
+<a class="sourceLine" id="cb74-24" title="24">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
+<a class="sourceLine" id="cb74-25" title="25"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">handler =</span> Y_function) <span class="op">+</span></a>
+<a class="sourceLine" id="cb74-26" title="26"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>A1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>A3,</a>
+<a class="sourceLine" id="cb74-27" title="27">                    <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 <div id="dag-6" class="section level3">
 <h3><span class="header-section-number">16.3.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-246-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-244-1.png" width="100%" /></p>
 </div>
 <div id="example-9" class="section level3">
 <h3><span class="header-section-number">16.3.3</span> Example</h3>
