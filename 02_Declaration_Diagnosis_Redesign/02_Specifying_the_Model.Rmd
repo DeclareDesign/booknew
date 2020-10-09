@@ -38,7 +38,19 @@ library(ggraph)
 ```
 
 
-intro 
+## Two languages for describing causal models
+
+Any research design -- whether the research question is fundamentally causal or descriptive -- implicitly relies on a causal model of the world. These models include beliefs about what variables are important and how they interrelate. Even if the model is hazy, researchers carry with them a model of the world that could in principle be expressed as a probablistic causal model. As described in the previous chapter, probabalistic causal models are described by a set of exogeneous and endogenous variables, a set of functional relationships between the variables, and a probability distribution over the exogenous variables.
+
+In order to design a strong research study, we need to introspect about our causal beliefs. We need to make the explicit the design-relevant features of the implicit causal models in our heads. This chapter is about how to go about this difficult task.
+
+We make use of two different formal languages for describing causal models: DAGs and potential outcomes. DAGs are "directed acyclic graphs," where each node on a graph is a variable and the edges that connect them represent causal effects. DAGs emphasize a mechanical notion of causality: when the exposure variable changes, the outcome variable changes as a result.
+
+
+
+By contrast, the potential outcomes formalization emphasizes a counterfactual notion of causality. $Y_i(0)$ is the outcome for unit $i$ when the exposure variable is set to zero and $Y_i(1)$ is the outcome when it is set to one. The difference between them is the effect of the treatment on the outcome for unit $i$. Since at most only one potential outcome can ever be revealed, at least one of the two potential outcomes is necessarily counterfactual. Unrevealed potential outcomes are counter-to-facts; they do not exist. Nevertheless, the potential outcomes model is useful for thinking about what would have happened had things been different.
+
+Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. A theorem in one language is a theorem in the other (CITE). We use both languages because they are useful for expressing different facets of research design. We'll take the example of heterogeneous treatment effects to show how the two languages convey different aspects of the research setting.
 
 ## What variables belong in the causal model?
 
@@ -62,7 +74,7 @@ intro
 we get a ton from nonparametric causal models, but in order to assess many properties of a research design we need to parameterize them. we need to specify the scales and probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). this will include definining expectations about effect sizes but also correlations between variables, intra-class correlations (ICCs), and interactions. we'll use *parametric* structural causal models for this.
 
 must define:
-- probability distributions for exogenous variables and their parameters 
+- probability distributions for exogenous variables and their parameters
 - functional forms of the endogenous variables
 
 ## How do we make educated guesses about the set of nodes and edges and their parameters and functional forms?
@@ -77,10 +89,7 @@ The content of models typically comes from two places: reading the past literatu
 
 ## Robustness to multiple models
 
-- the result of this search through past research will often not yield a single point estimate for a parameter, such as the correlation between age and gender, but rather a range. 
+- the result of this search through past research will often not yield a single point estimate for a parameter, such as the correlation between age and gender, but rather a range.
 - we face fundamental uncertainty in all our guesses about features of the model (this is why we are conducting the research in the first place!)
-- this is not a bug but a feature of this process: we can retain our uncertainty and find data strategies and answer strategies that provide unbiased, efficient estimates of our inquiry under *multiple* possible models. when our procedures yield "good" estimates of our inquiry under a range of models, we label the design robust to multiple models. we will typically want our design to be robust to multiple possible large and small effect sizes, but also multiple possible intra-class correlations within clusters and levels of uncertainty from unknown forms of heterogeneity. 
+- this is not a bug but a feature of this process: we can retain our uncertainty and find data strategies and answer strategies that provide unbiased, efficient estimates of our inquiry under *multiple* possible models. when our procedures yield "good" estimates of our inquiry under a range of models, we label the design robust to multiple models. we will typically want our design to be robust to multiple possible large and small effect sizes, but also multiple possible intra-class correlations within clusters and levels of uncertainty from unknown forms of heterogeneity.
 - robustness to alternative models: we may want to know how good a design is under a hypothesized model of the world and an alternative model posited in the literature. here, we want to know if our design can *distinguish* between these two designs. our inquiry may be which of the two models is correct.
-
-
-
