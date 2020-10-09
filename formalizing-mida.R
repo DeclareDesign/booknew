@@ -12,7 +12,8 @@ dag <-
          m ~ M,
          am ~ m + I,
          d ~ D + w,
-         ad ~ A + d)
+         ad ~ A + d,
+         w ~ W)
 
 dag_base <- tidy_dagitty(dag) %>%
   select(name, direction, to, circular) %>%
@@ -20,10 +21,10 @@ dag_base <- tidy_dagitty(dag) %>%
 
 nodes_df <-
   tibble(
-    name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w"),
-    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w"),
-    x = c(1, 2, 4, 5, 1, 2, 3, 4, 5, 3),
-    y = c(3, 3, 3, 3, 2, 2, 2.5, 2, 2, 3.25)
+    name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w", "W"),
+    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
+    x = c(1, 2, 5, 6, 1, 2, 4, 5, 6, 3, 3),
+    y = c(3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3)
   )
 
 endnodes_df <-
@@ -37,20 +38,20 @@ gg_df <-
 
 gg_df <-
   gg_df %>%
-  mutate(arced = (name == "w" & to == "R")) %>%
+  mutate(arced1 = (name == "w" & to == "d"),
+         arced2 = (name == "I" & to == "aw")) %>%
   arrange(name)
 
 rect_df <-
   tibble(
-    xmin = c(.5, 3.5),
-    xmax = c(2.5, 5.5),
+    xmin = c(.5, 4.5),
+    xmax = c(2.5, 6.5),
     ymin = c(1.5, 1.5),
     ymax = c(3.5, 3.5)
   )
 
-
 g <-
-  ggplot(data = filter(gg_df, !arced), aes(
+  ggplot(data = filter(gg_df, !arced1 & !arced2), aes(
     x = x,
     y = y,
     xend = xend,
@@ -66,17 +67,92 @@ g <-
                 size = 4) +
   coord_fixed() + 
   geom_dag_edges() +
-  geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
             alpha = 0.25) +
-  annotate("text", x = 1.5, y = 3.35, label = "Theory") +
-  annotate("text", x = 4.5, y = 3.35, label = "Empirics") +
-  annotate("text", x = 3, y = 2.1, label = "Truth") +
+  annotate("text", x = 1.5, y = 3.7, label = "Theory") +
+  annotate("text", x = 5.5, y = 3.7, label = "Empirics") +
+  annotate("text", x = 3.5, y = 3.7, label = "The World") +
+  # annotate("text", x = 3, y = 1.6, label = "Truth") +
   theme_dag()
 g
 
+dag <-
+  dagify(aw ~ w + I,
+         m ~ M,
+         am ~ m + I,
+         d ~ D + am,
+         ad ~ A + d,
+         w ~ W)
+
+dag_base <- tidy_dagitty(dag) %>%
+  select(name, direction, to, circular) %>%
+  as_tibble
+
+nodes_df <-
+  tibble(
+    name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w", "W"),
+    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
+    x = c(1, 2, 5, 6, 1, 2, 4, 5, 6, 3, 3),
+    y = c(3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3)
+  )
+
+endnodes_df <-
+  nodes_df %>%
+  transmute(to = name, xend = x, yend = y)
+
+gg_df <-
+  dag_base %>%
+  left_join(nodes_df, by = "name") %>%
+  left_join(endnodes_df, by = "to")
+
+gg_df <-
+  gg_df %>%
+  mutate(arced1 = (name == "am" & to == "d"),
+         arced2 = (name == "I" & to == "aw")) %>%
+  arrange(name)
+
+rect_df <-
+  tibble(
+    xmin = c(.5, 4.5),
+    xmax = c(2.5, 6.5),
+    ymin = c(1.5, 1.5),
+    ymax = c(3.5, 3.5)
+  )
+
+g <-
+  ggplot(data = filter(gg_df, !arced1 & !arced2), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_dag_node(data = gg_df, color = "gray") +
+  geom_richtext(data = gg_df, 
+                color = "black",
+                parse = TRUE,
+                aes(label = label),
+                fill = NA,
+                label.color = NA,
+                label.padding = grid::unit(rep(0, 4), "pt"),
+                size = 4) +
+  coord_fixed() + 
+  geom_dag_edges() +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
+  geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
+                                xend = NULL, yend = NULL,
+                                xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            alpha = 0.25) +
+  annotate("text", x = 1.5, y = 3.7, label = "Theory") +
+  annotate("text", x = 5.5, y = 3.7, label = "Empirics") +
+  annotate("text", x = 3.5, y = 3.7, label = "The World") +
+  # annotate("text", x = 3, y = 1.6, label = "Truth") +
+  theme_dag()
+g
 
 gulzar_khan_design <- 
   

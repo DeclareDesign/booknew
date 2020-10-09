@@ -26,11 +26,9 @@ simple_design <-
   #   it is equal to the unobserved shock 'u'
   # Y_Z_1 is the treated potential outcome 
   #   it is equal to the control potential outcome plus a treatment effect of 0.25
-  # declare_potential_outcomes(
-  #   Y_Z_0 = u, 
-  #   Y_Z_1 = Y_Z_0 + 0.25) +
   declare_potential_outcomes(
-    Y ~ 0.25 * Z + u) +
+    Y_Z_0 = u,
+    Y_Z_1 = Y_Z_0 + 0.25) +
   
   # I: inquiry
   

@@ -500,43 +500,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-17" title="17"><span class="st">  </span><span class="co">#   it is equal to the unobserved shock &#39;u&#39;</span></a>
 <a class="sourceLine" id="cb1-18" title="18"><span class="st">  </span><span class="co"># Y_Z_1 is the treated potential outcome </span></a>
 <a class="sourceLine" id="cb1-19" title="19"><span class="st">  </span><span class="co">#   it is equal to the control potential outcome plus a treatment effect of 0.25</span></a>
-<a class="sourceLine" id="cb1-20" title="20"><span class="st">  </span><span class="co"># declare_potential_outcomes(</span></a>
-<a class="sourceLine" id="cb1-21" title="21"><span class="st">  </span><span class="co">#   Y_Z_0 = u, </span></a>
-<a class="sourceLine" id="cb1-22" title="22"><span class="st">  </span><span class="co">#   Y_Z_1 = Y_Z_0 + 0.25) +</span></a>
-<a class="sourceLine" id="cb1-23" title="23"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb1-24" title="24">    Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-20" title="20"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb1-21" title="21">    <span class="dt">Y_Z_0 =</span> u,</a>
+<a class="sourceLine" id="cb1-22" title="22">    <span class="dt">Y_Z_1 =</span> Y_Z_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span><span class="fl">0.25</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-23" title="23"><span class="st">  </span></a>
+<a class="sourceLine" id="cb1-24" title="24"><span class="st">  </span><span class="co"># I: inquiry</span></a>
 <a class="sourceLine" id="cb1-25" title="25"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-26" title="26"><span class="st">  </span><span class="co"># I: inquiry</span></a>
-<a class="sourceLine" id="cb1-27" title="27"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-28" title="28"><span class="st">  </span><span class="co"># we are interested in the average treatment effect in the population</span></a>
-<a class="sourceLine" id="cb1-29" title="29"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-26" title="26"><span class="st">  </span><span class="co"># we are interested in the average treatment effect in the population</span></a>
+<a class="sourceLine" id="cb1-27" title="27"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-28" title="28"><span class="st">  </span></a>
+<a class="sourceLine" id="cb1-29" title="29"><span class="st">  </span><span class="co"># D: data strategy</span></a>
 <a class="sourceLine" id="cb1-30" title="30"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-31" title="31"><span class="st">  </span><span class="co"># D: data strategy</span></a>
-<a class="sourceLine" id="cb1-32" title="32"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-33" title="33"><span class="st">  </span><span class="co"># sampling: we randomly sample 50 of the 100 villages in the population</span></a>
-<a class="sourceLine" id="cb1-34" title="34"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">50</span>, <span class="dt">clusters =</span> villages) <span class="op">+</span></a>
-<a class="sourceLine" id="cb1-35" title="35"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-36" title="36"><span class="st">  </span><span class="co"># assignment: we randomly assign half of the 50 sampled units to treatment (half to control)</span></a>
-<a class="sourceLine" id="cb1-37" title="37"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>, <span class="dt">clusters =</span> villages) <span class="op">+</span></a>
-<a class="sourceLine" id="cb1-38" title="38"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-39" title="39"><span class="st">  </span><span class="co"># measurement: construct outcomes from the potential outcomes named Y depending on </span></a>
-<a class="sourceLine" id="cb1-40" title="40"><span class="st">  </span><span class="co">#   the realized value of their assignment variable named Z</span></a>
-<a class="sourceLine" id="cb1-41" title="41"><span class="st">  </span><span class="co">#   we measure a binary outcome Yobs from the unobserved, latent variable Y</span></a>
-<a class="sourceLine" id="cb1-42" title="42"><span class="st">  </span><span class="kw">declare_measurement</span>(</a>
-<a class="sourceLine" id="cb1-43" title="43">    <span class="dt">Yobs =</span> <span class="kw">case_when</span>(</a>
-<a class="sourceLine" id="cb1-44" title="44">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">1</span> <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb1-45" title="45">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">1</span> <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb1-46" title="46">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">0</span> <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb1-47" title="47">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">0</span> <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb1-48" title="48">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1-49" title="49"><span class="st">                        </span></a>
-<a class="sourceLine" id="cb1-50" title="50"><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="dt">outcome_variables =</span> Y, <span class="dt">assignment_variables =</span> Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-31" title="31"><span class="st">  </span><span class="co"># sampling: we randomly sample 50 of the 100 villages in the population</span></a>
+<a class="sourceLine" id="cb1-32" title="32"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">50</span>, <span class="dt">clusters =</span> villages) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-33" title="33"><span class="st">  </span></a>
+<a class="sourceLine" id="cb1-34" title="34"><span class="st">  </span><span class="co"># assignment: we randomly assign half of the 50 sampled units to treatment (half to control)</span></a>
+<a class="sourceLine" id="cb1-35" title="35"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>, <span class="dt">clusters =</span> villages) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-36" title="36"><span class="st">  </span></a>
+<a class="sourceLine" id="cb1-37" title="37"><span class="st">  </span><span class="co"># measurement: construct outcomes from the potential outcomes named Y depending on </span></a>
+<a class="sourceLine" id="cb1-38" title="38"><span class="st">  </span><span class="co">#   the realized value of their assignment variable named Z</span></a>
+<a class="sourceLine" id="cb1-39" title="39"><span class="st">  </span><span class="co">#   we measure a binary outcome Yobs from the unobserved, latent variable Y</span></a>
+<a class="sourceLine" id="cb1-40" title="40"><span class="st">  </span><span class="kw">declare_measurement</span>(</a>
+<a class="sourceLine" id="cb1-41" title="41">    <span class="dt">Yobs =</span> <span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb1-42" title="42">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">1</span> <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-43" title="43">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">1</span> <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb1-44" title="44">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">0</span> <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb1-45" title="45">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>Y_Z_<span class="dv">0</span> <span class="op">&lt;=</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb1-46" title="46">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-47" title="47"><span class="st">                        </span></a>
+<a class="sourceLine" id="cb1-48" title="48"><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="dt">outcome_variables =</span> Y, <span class="dt">assignment_variables =</span> Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-49" title="49"><span class="st">  </span></a>
+<a class="sourceLine" id="cb1-50" title="50"><span class="st">  </span><span class="co"># A: answer strategy</span></a>
 <a class="sourceLine" id="cb1-51" title="51"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-52" title="52"><span class="st">  </span><span class="co"># A: answer strategy</span></a>
-<a class="sourceLine" id="cb1-53" title="53"><span class="st">  </span></a>
-<a class="sourceLine" id="cb1-54" title="54"><span class="st">  </span><span class="co"># calculate the difference-in-means of Y depending on Z </span></a>
-<a class="sourceLine" id="cb1-55" title="55"><span class="st">  </span><span class="co"># we link this estimator to ATE because this is our estimate of our inquiry</span></a>
-<a class="sourceLine" id="cb1-56" title="56"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-52" title="52"><span class="st">  </span><span class="co"># calculate the difference-in-means of Y depending on Z </span></a>
+<a class="sourceLine" id="cb1-53" title="53"><span class="st">  </span><span class="co"># we link this estimator to ATE because this is our estimate of our inquiry</span></a>
+<a class="sourceLine" id="cb1-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a></code></pre></div>
 <p>For each design that we declare in the book, we will also present a graphical representation of the design. Below, we visualize the simplified form of the Gulzar Khan design:</p>
 <p><img src="book_files/figure-html/unnamed-chunk-15-1.png" width="100%" /></p>
 <p>With the declared design, you can learn about it in a number of ways. You can “diagnose” or simulate its properties via <code>diagnose_design(design)</code>, you can simulate mock data from it to explore possible estimation strategies before analyzing the real data with <code>draw_data(design</code>), you can obtain simulated estimates via <code>draw_estimates(design)</code>, and after the data comes in you can apply the planned design to your data via <code>get_estimates(design, data = study_data)</code>. We introduce the software in more detail in the next section.</p>
