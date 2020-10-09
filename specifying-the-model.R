@@ -36,7 +36,7 @@ gg_df <-
   )
 
 
-g <- 
+g <-
 ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_node(aes(color = color)) +
   scale_color_identity() +
@@ -51,7 +51,7 @@ design <-
   declare_population(N = 100,
                      U = rnorm(N),
                      X = rbinom(N, 1, prob = pnorm(0.5 * U + rnorm(N)))) +
-  declare_potential_outcomes(Y ~ 0.5 * X + 
-                               0.5 * Z + 
-                               diff_in_cates * X * Z + 
+  declare_potential_outcomes(Y ~ 0.5 * X +
+                               0.5 * Z +
+                               diff_in_cates * X * Z +
                                0.5 * U)
