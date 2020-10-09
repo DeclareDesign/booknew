@@ -187,8 +187,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="what-do-we-need-to-specify-about-these-variables.html"><a href="what-do-we-need-to-specify-about-these-variables.html"><i class="fa fa-check"></i><b>6.3</b> What do we need to specify about these variables?</a></li>
 <li class="chapter" data-level="6.4" data-path="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><a href="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><i class="fa fa-check"></i><b>6.4</b> How do we make educated guesses to fill in the model?</a></li>
 <li class="chapter" data-level="6.5" data-path="robustness-to-multiple-models.html"><a href="robustness-to-multiple-models.html"><i class="fa fa-check"></i><b>6.5</b> Robustness to multiple models</a></li>
-<li class="chapter" data-level="6.6" data-path="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><a href="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><i class="fa fa-check"></i><b>6.6</b> Null models and design diagnosis under theoretical alternative models</a></li>
-<li class="chapter" data-level="6.7" data-path="fundamental-uncertainty.html"><a href="fundamental-uncertainty.html"><i class="fa fa-check"></i><b>6.7</b> Fundamental uncertainty</a></li>
+<li class="chapter" data-level="6.6" data-path="fundamental-uncertainty.html"><a href="fundamental-uncertainty.html"><i class="fa fa-check"></i><b>6.6</b> Fundamental uncertainty</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
 <li class="chapter" data-level="7.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Kinds of Inquiries</a><ul>
@@ -470,112 +469,112 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">18.4</span> Encouragement designs</h2>
 <div id="declaration-19" class="section level3">
 <h3><span class="header-section-number">18.4.1</span> Declaration</h3>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb130-1" title="1">direct_effect_of_encouragement &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
-<a class="sourceLine" id="cb130-2" title="2">proportion_defiers &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
-<a class="sourceLine" id="cb130-3" title="3"></a>
-<a class="sourceLine" id="cb130-4" title="4"></a>
-<a class="sourceLine" id="cb130-5" title="5">design &lt;-</a>
-<a class="sourceLine" id="cb130-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb130-7" title="7">    <span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb130-8" title="8">    <span class="dt">type =</span> <span class="kw">sample</span>(</a>
-<a class="sourceLine" id="cb130-9" title="9">      <span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>, <span class="st">&quot;Defier&quot;</span>),</a>
-<a class="sourceLine" id="cb130-10" title="10">      <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.8</span>, <span class="fl">0.0</span>),</a>
-<a class="sourceLine" id="cb130-11" title="11">      <span class="dt">size =</span> N, <span class="dt">replace =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb130-12" title="12">    ),</a>
-<a class="sourceLine" id="cb130-13" title="13">    <span class="dt">U =</span> <span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb130-14" title="14">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-15" title="15"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb130-16" title="16">    D <span class="op">~</span><span class="st"> </span><span class="kw">case_when</span>(</a>
-<a class="sourceLine" id="cb130-17" title="17">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb130-18" title="18">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb130-19" title="19">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb130-20" title="20">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb130-21" title="21">    )</a>
-<a class="sourceLine" id="cb130-22" title="22">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-23" title="23"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb130-24" title="24">    Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-25" title="25"><span class="st">      </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Always-Taker&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-26" title="26"><span class="st">      </span><span class="fl">0.75</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Defier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-27" title="27"><span class="st">      </span><span class="co"># Building in NO excludability violation</span></a>
-<a class="sourceLine" id="cb130-28" title="28"><span class="st">      </span><span class="dv">0</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>U,</a>
-<a class="sourceLine" id="cb130-29" title="29">    <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb130-30" title="30">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-31" title="31"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">CACE =</span> <span class="kw">mean</span>(Y_D_<span class="dv">1</span>_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_D_<span class="dv">0</span>_Z_<span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb130-32" title="32">                   <span class="dt">subset =</span> type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-33" title="33"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-34" title="34"><span class="st">  </span><span class="kw">declare_reveal</span>(D, <span class="dt">assignment_variable =</span> <span class="st">&quot;Z&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb130-36" title="36"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>D <span class="op">|</span><span class="st"> </span>Z, <span class="dt">model =</span> iv_robust, <span class="dt">estimand =</span> <span class="st">&quot;CACE&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" title="1">direct_effect_of_encouragement &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
+<a class="sourceLine" id="cb131-2" title="2">proportion_defiers &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
+<a class="sourceLine" id="cb131-3" title="3"></a>
+<a class="sourceLine" id="cb131-4" title="4"></a>
+<a class="sourceLine" id="cb131-5" title="5">design &lt;-</a>
+<a class="sourceLine" id="cb131-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb131-7" title="7">    <span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb131-8" title="8">    <span class="dt">type =</span> <span class="kw">sample</span>(</a>
+<a class="sourceLine" id="cb131-9" title="9">      <span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>, <span class="st">&quot;Defier&quot;</span>),</a>
+<a class="sourceLine" id="cb131-10" title="10">      <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.8</span>, <span class="fl">0.0</span>),</a>
+<a class="sourceLine" id="cb131-11" title="11">      <span class="dt">size =</span> N, <span class="dt">replace =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb131-12" title="12">    ),</a>
+<a class="sourceLine" id="cb131-13" title="13">    <span class="dt">U =</span> <span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb131-14" title="14">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-15" title="15"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb131-16" title="16">    D <span class="op">~</span><span class="st"> </span><span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb131-17" title="17">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb131-18" title="18">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb131-19" title="19">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb131-20" title="20">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb131-21" title="21">    )</a>
+<a class="sourceLine" id="cb131-22" title="22">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-23" title="23"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb131-24" title="24">    Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-25" title="25"><span class="st">      </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Always-Taker&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-26" title="26"><span class="st">      </span><span class="fl">0.75</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Defier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-27" title="27"><span class="st">      </span><span class="co"># Building in NO excludability violation</span></a>
+<a class="sourceLine" id="cb131-28" title="28"><span class="st">      </span><span class="dv">0</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>U,</a>
+<a class="sourceLine" id="cb131-29" title="29">    <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb131-30" title="30">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-31" title="31"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">CACE =</span> <span class="kw">mean</span>(Y_D_<span class="dv">1</span>_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_D_<span class="dv">0</span>_Z_<span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb131-32" title="32">                   <span class="dt">subset =</span> type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-33" title="33"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-34" title="34"><span class="st">  </span><span class="kw">declare_reveal</span>(D, <span class="dt">assignment_variable =</span> <span class="st">&quot;Z&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb131-36" title="36"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>D <span class="op">|</span><span class="st"> </span>Z, <span class="dt">model =</span> iv_robust, <span class="dt">estimand =</span> <span class="st">&quot;CACE&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-18" class="section level3">
 <h3><span class="header-section-number">18.4.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-374-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-376-1.png" width="100%" /></p>
 </div>
 <div id="example-19" class="section level3">
 <h3><span class="header-section-number">18.4.3</span> Example</h3>
 <p>Idea for this one would be to show how violations of no defiers and excludability lead to bias.</p>
 <!-- make sure to rename the section title below -->
-<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" title="1">types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>, <span class="st">&quot;Defier&quot;</span>)</a>
-<a class="sourceLine" id="cb131-2" title="2">direct_effect_of_encouragement &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
-<a class="sourceLine" id="cb131-3" title="3">proportion_defiers &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
-<a class="sourceLine" id="cb131-4" title="4"></a>
-<a class="sourceLine" id="cb131-5" title="5">design &lt;-</a>
-<a class="sourceLine" id="cb131-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb131-7" title="7">    <span class="dt">N =</span> <span class="dv">500</span>,</a>
-<a class="sourceLine" id="cb131-8" title="8">    <span class="dt">type =</span> <span class="kw">sample</span>(</a>
-<a class="sourceLine" id="cb131-9" title="9">      types,</a>
-<a class="sourceLine" id="cb131-10" title="10">      N,</a>
-<a class="sourceLine" id="cb131-11" title="11">      <span class="dt">replace =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb131-12" title="12">      <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.8</span> <span class="op">-</span><span class="st"> </span>proportion_defiers, proportion_defiers)</a>
-<a class="sourceLine" id="cb131-13" title="13">    ),</a>
-<a class="sourceLine" id="cb131-14" title="14">    <span class="dt">noise =</span> <span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb131-15" title="15">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-16" title="16"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb131-17" title="17">    D <span class="op">~</span><span class="st"> </span><span class="kw">case_when</span>(</a>
-<a class="sourceLine" id="cb131-18" title="18">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb131-19" title="19">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb131-20" title="20">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb131-21" title="21">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb131-22" title="22">    )</a>
-<a class="sourceLine" id="cb131-23" title="23">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-24" title="24"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb131-25" title="25">    Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-26" title="26"><span class="st">      </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Always-Taker&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-27" title="27"><span class="st">      </span><span class="fl">0.75</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Defier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-28" title="28"><span class="st">      </span>direct_effect_of_encouragement <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>noise,</a>
-<a class="sourceLine" id="cb131-29" title="29">    <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb131-30" title="30">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-31" title="31"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">CACE =</span> <span class="kw">mean</span>((Y_D_<span class="dv">1</span>_Z_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>Y_D_<span class="dv">1</span>_Z_<span class="dv">0</span>) <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="op">-</span></a>
-<a class="sourceLine" id="cb131-32" title="32"><span class="st">                                 </span>(Y_D_<span class="dv">0</span>_Z_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>Y_D_<span class="dv">0</span>_Z_<span class="dv">0</span>) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb131-33" title="33">                   <span class="dt">subset =</span> type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-34" title="34"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(D, <span class="dt">assignment_variable =</span> <span class="st">&quot;Z&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-36" title="36"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb131-37" title="37"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>D <span class="op">|</span><span class="st"> </span>Z, <span class="dt">model =</span> iv_robust, <span class="dt">estimand =</span> <span class="st">&quot;CACE&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" title="1">designs &lt;-<span class="st"> </span><span class="kw">redesign</span>(</a>
-<a class="sourceLine" id="cb132-2" title="2">  design,</a>
-<a class="sourceLine" id="cb132-3" title="3">  <span class="dt">proportion_defiers =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="dt">length.out =</span> <span class="dv">5</span>),</a>
-<a class="sourceLine" id="cb132-4" title="4">  <span class="dt">direct_effect_of_encouragement =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="dt">length.out =</span> <span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb132-5" title="5">)</a>
-<a class="sourceLine" id="cb132-6" title="6"></a>
-<a class="sourceLine" id="cb132-7" title="7">simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(designs, <span class="dt">sims =</span> sims)</a></code></pre></div>
-<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" title="1">gg_df &lt;-</a>
-<a class="sourceLine" id="cb133-2" title="2"><span class="st">  </span>simulations <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb133-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(proportion_defiers,</a>
-<a class="sourceLine" id="cb133-4" title="4">           direct_effect_of_encouragement) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb133-5" title="5"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(estimate <span class="op">-</span><span class="st"> </span>estimand))</a>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" title="1">types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>, <span class="st">&quot;Defier&quot;</span>)</a>
+<a class="sourceLine" id="cb132-2" title="2">direct_effect_of_encouragement &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
+<a class="sourceLine" id="cb132-3" title="3">proportion_defiers &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
+<a class="sourceLine" id="cb132-4" title="4"></a>
+<a class="sourceLine" id="cb132-5" title="5">design &lt;-</a>
+<a class="sourceLine" id="cb132-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb132-7" title="7">    <span class="dt">N =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb132-8" title="8">    <span class="dt">type =</span> <span class="kw">sample</span>(</a>
+<a class="sourceLine" id="cb132-9" title="9">      types,</a>
+<a class="sourceLine" id="cb132-10" title="10">      N,</a>
+<a class="sourceLine" id="cb132-11" title="11">      <span class="dt">replace =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb132-12" title="12">      <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.8</span> <span class="op">-</span><span class="st"> </span>proportion_defiers, proportion_defiers)</a>
+<a class="sourceLine" id="cb132-13" title="13">    ),</a>
+<a class="sourceLine" id="cb132-14" title="14">    <span class="dt">noise =</span> <span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb132-15" title="15">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-16" title="16"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb132-17" title="17">    D <span class="op">~</span><span class="st"> </span><span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb132-18" title="18">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb132-19" title="19">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Never-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb132-20" title="20">      Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Defier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb132-21" title="21">      Z <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>type <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Always-Taker&quot;</span>, <span class="st">&quot;Complier&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb132-22" title="22">    )</a>
+<a class="sourceLine" id="cb132-23" title="23">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-24" title="24"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb132-25" title="25">    Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-26" title="26"><span class="st">      </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Always-Taker&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-27" title="27"><span class="st">      </span><span class="fl">0.75</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Defier&quot;</span>) <span class="op">*</span><span class="st"> </span>D <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-28" title="28"><span class="st">      </span>direct_effect_of_encouragement <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>noise,</a>
+<a class="sourceLine" id="cb132-29" title="29">    <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb132-30" title="30">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-31" title="31"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">CACE =</span> <span class="kw">mean</span>((Y_D_<span class="dv">1</span>_Z_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>Y_D_<span class="dv">1</span>_Z_<span class="dv">0</span>) <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="op">-</span></a>
+<a class="sourceLine" id="cb132-32" title="32"><span class="st">                                 </span>(Y_D_<span class="dv">0</span>_Z_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>Y_D_<span class="dv">0</span>_Z_<span class="dv">0</span>) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb132-33" title="33">                   <span class="dt">subset =</span> type <span class="op">==</span><span class="st"> &quot;Complier&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-34" title="34"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(D, <span class="dt">assignment_variable =</span> <span class="st">&quot;Z&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-36" title="36"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, <span class="dt">assignment_variables =</span> <span class="kw">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;Z&quot;</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb132-37" title="37"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>D <span class="op">|</span><span class="st"> </span>Z, <span class="dt">model =</span> iv_robust, <span class="dt">estimand =</span> <span class="st">&quot;CACE&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" title="1">designs &lt;-<span class="st"> </span><span class="kw">redesign</span>(</a>
+<a class="sourceLine" id="cb133-2" title="2">  design,</a>
+<a class="sourceLine" id="cb133-3" title="3">  <span class="dt">proportion_defiers =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="dt">length.out =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb133-4" title="4">  <span class="dt">direct_effect_of_encouragement =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="dt">length.out =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb133-5" title="5">)</a>
 <a class="sourceLine" id="cb133-6" title="6"></a>
-<a class="sourceLine" id="cb133-7" title="7"></a>
-<a class="sourceLine" id="cb133-8" title="8"><span class="kw">ggplot</span>(gg_df,</a>
-<a class="sourceLine" id="cb133-9" title="9">       <span class="kw">aes</span>(</a>
-<a class="sourceLine" id="cb133-10" title="10">         proportion_defiers,</a>
-<a class="sourceLine" id="cb133-11" title="11">         bias,</a>
-<a class="sourceLine" id="cb133-12" title="12">         <span class="dt">group =</span> direct_effect_of_encouragement,</a>
-<a class="sourceLine" id="cb133-13" title="13">         <span class="dt">color =</span> direct_effect_of_encouragement</a>
-<a class="sourceLine" id="cb133-14" title="14">       )) <span class="op">+</span></a>
-<a class="sourceLine" id="cb133-15" title="15"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb133-16" title="16"><span class="st">  </span><span class="kw">geom_line</span>() </a></code></pre></div>
-<p><img src="book_files/figure-html/unnamed-chunk-378-1.png" width="100%" /></p>
+<a class="sourceLine" id="cb133-7" title="7">simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(designs, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb134-1" title="1">gg_df &lt;-</a>
+<a class="sourceLine" id="cb134-2" title="2"><span class="st">  </span>simulations <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb134-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(proportion_defiers,</a>
+<a class="sourceLine" id="cb134-4" title="4">           direct_effect_of_encouragement) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb134-5" title="5"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">bias =</span> <span class="kw">mean</span>(estimate <span class="op">-</span><span class="st"> </span>estimand))</a>
+<a class="sourceLine" id="cb134-6" title="6"></a>
+<a class="sourceLine" id="cb134-7" title="7"></a>
+<a class="sourceLine" id="cb134-8" title="8"><span class="kw">ggplot</span>(gg_df,</a>
+<a class="sourceLine" id="cb134-9" title="9">       <span class="kw">aes</span>(</a>
+<a class="sourceLine" id="cb134-10" title="10">         proportion_defiers,</a>
+<a class="sourceLine" id="cb134-11" title="11">         bias,</a>
+<a class="sourceLine" id="cb134-12" title="12">         <span class="dt">group =</span> direct_effect_of_encouragement,</a>
+<a class="sourceLine" id="cb134-13" title="13">         <span class="dt">color =</span> direct_effect_of_encouragement</a>
+<a class="sourceLine" id="cb134-14" title="14">       )) <span class="op">+</span></a>
+<a class="sourceLine" id="cb134-15" title="15"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb134-16" title="16"><span class="st">  </span><span class="kw">geom_line</span>() </a></code></pre></div>
+<p><img src="book_files/figure-html/unnamed-chunk-380-1.png" width="100%" /></p>
 </div>
 <div id="references-2" class="section level3">
 <h3><span class="header-section-number">18.4.4</span> References</h3>
