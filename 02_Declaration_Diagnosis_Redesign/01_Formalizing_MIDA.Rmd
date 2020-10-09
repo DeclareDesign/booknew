@@ -186,7 +186,7 @@ dag <-
   dagify(aw ~ w + I,
          m ~ M,
          am ~ m + I,
-         d ~ D + am,
+         d ~ D + m,
          ad ~ A + d,
          w ~ W)
 
@@ -213,7 +213,7 @@ gg_df <-
 
 gg_df <-
   gg_df %>%
-  mutate(arced1 = (name == "am" & to == "d"),
+  mutate(arced1 = (name == "m" & to == "d"),
          arced2 = (name == "I" & to == "aw")) %>%
   arrange(name)
 
@@ -243,7 +243,7 @@ g <-
                 size = 4) +
   coord_fixed() + 
   geom_dag_edges() +
-  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.22) +
   geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
