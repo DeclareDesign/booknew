@@ -23,7 +23,9 @@ nodes_df <-
   tibble(
     name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w", "W"),
     label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
-    x = c(1, 2, 5, 6, 1, 2, 4, 5, 6, 3, 3),
+    long_label = c("Theoretical<br>causal model", "Inquiry", "Data<br>strategy", "Answer<br>strategy", "Model<br>draw", "Theoretical<br>answer", "True answer", "Realized<br>data", "Empirical<br>answer", "Real<br>world", "True<br>causal model"),
+    lbl_direction = c("N", "N", "N", "N", "S", "S", "S", "S", "S", "S", "N"),
+    x = c(1, 2, 5.5, 6.5, 1, 2, 4.25, 5.5, 6.5, 3.25, 3.25),
     y = c(3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3)
   )
 
@@ -44,10 +46,10 @@ gg_df <-
 
 rect_df <-
   tibble(
-    xmin = c(.5, 4.5),
-    xmax = c(2.5, 6.5),
-    ymin = c(1.5, 1.5),
-    ymax = c(3.5, 3.5)
+    xmin = c(.4, 4.9),
+    xmax = c(2.6, 7.1),
+    ymin = c(1.15, 1.15),
+    ymax = c(3.85, 3.85)
   )
 
 g <-
@@ -57,7 +59,10 @@ g <-
     xend = xend,
     yend = yend
   )) +
-  geom_dag_node(color = "gray") +
+  geom_point(color = gray(.1), fill = NA, size = 15, stroke = 0.5, pch = 1) +
+  geom_dag_edges(edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.28, edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .7, edge_width = 0.35) +
   geom_richtext(color = "black",
                 parse = TRUE,
                 aes(label = label),
@@ -65,17 +70,24 @@ g <-
                 label.color = NA,
                 label.padding = grid::unit(rep(0, 4), "pt"),
                 size = 4) +
-  coord_fixed() + 
-  geom_dag_edges() +
-  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.3) +
-  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
+  geom_richtext(
+    aes(y = y + if_else(lbl_direction == "N", 0.4, -0.4),
+        vjust = if_else(lbl_direction == "N", "bottom", "top"),
+        label = long_label),
+    color = gray(0.5),
+    parse = TRUE,
+    fill = NA,
+    label.color = NA,
+    label.padding = grid::unit(rep(0, 4), "pt"),
+    size = 4) +
+  coord_fixed(ylim = c(1.15, 4)) + 
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-            alpha = 0.25) +
-  annotate("text", x = 1.5, y = 3.7, label = "Theory") +
-  annotate("text", x = 5.5, y = 3.7, label = "Empirics") +
-  annotate("text", x = 3.5, y = 3.7, label = "The World") +
+            alpha = 0.15) +
+  annotate("text", x = 1.5, y = 4.05, label = "Theory") +
+  annotate("text", x = 6, y = 4.05, label = "Empirics") +
+  annotate("text", x = 3.75, y = 4.05, label = "Reality") +
   # annotate("text", x = 3, y = 1.6, label = "Truth") +
   theme_dag()
 g
@@ -96,7 +108,9 @@ nodes_df <-
   tibble(
     name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w", "W"),
     label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
-    x = c(1, 2, 5, 6, 1, 2, 4, 5, 6, 3, 3),
+    long_label = c("Theoretical<br>causal model", "Inquiry", "Data<br>strategy", "Answer<br>strategy", "Model<br>draw", "Theoretical<br>answer", "True answer", "Simulated<br>data", "Simulated<br>answer", "Real<br>world", "True<br>causal model"),
+    lbl_direction = c("N", "N", "N", "N", "S", "S", "S", "S", "S", "S", "N"),
+    x = c(1, 2, 5.5, 6.5, 1, 2, 4.25, 5.5, 6.5, 3.25, 3.25),
     y = c(3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3)
   )
 
@@ -117,10 +131,10 @@ gg_df <-
 
 rect_df <-
   tibble(
-    xmin = c(.5, 4.5),
-    xmax = c(2.5, 6.5),
-    ymin = c(1.5, 1.5),
-    ymax = c(3.5, 3.5)
+    xmin = c(.4, 4.9),
+    xmax = c(2.6, 7.1),
+    ymin = c(1.15, 1.15),
+    ymax = c(3.85, 3.85)
   )
 
 g <-
@@ -130,26 +144,35 @@ g <-
     xend = xend,
     yend = yend
   )) +
-  geom_dag_node(data = gg_df, color = "gray") +
-  geom_richtext(data = gg_df, 
-                color = "black",
+  geom_point(color = gray(.1), fill = NA, size = 15, stroke = 0.5, pch = 1) +
+  geom_dag_edges(edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.575, edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .7, edge_width = 0.35) +
+  geom_richtext(color = "black",
                 parse = TRUE,
                 aes(label = label),
                 fill = NA,
                 label.color = NA,
                 label.padding = grid::unit(rep(0, 4), "pt"),
                 size = 4) +
-  coord_fixed() + 
-  geom_dag_edges() +
-  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.22) +
-  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
+  geom_richtext(
+    aes(y = y + if_else(lbl_direction == "N", 0.4, -0.4),
+        vjust = if_else(lbl_direction == "N", "bottom", "top"),
+        label = long_label),
+    color = gray(0.5),
+    parse = TRUE,
+    fill = NA,
+    label.color = NA,
+    label.padding = grid::unit(rep(0, 4), "pt"),
+    size = 4) +
+  coord_fixed(ylim = c(0.5, 4)) + 
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
-            alpha = 0.25) +
-  annotate("text", x = 1.5, y = 3.7, label = "Theory") +
-  annotate("text", x = 5.5, y = 3.7, label = "Empirics") +
-  annotate("text", x = 3.5, y = 3.7, label = "The World") +
+            alpha = 0.15) +
+  annotate("text", x = 1.5, y = 4.05, label = "Theory") +
+  annotate("text", x = 6, y = 4.05, label = "Simulation") +
+  annotate("text", x = 3.75, y = 4.05, label = "Reality") +
   # annotate("text", x = 3, y = 1.6, label = "Truth") +
   theme_dag()
 g
