@@ -182,11 +182,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.4" data-path="example-1.html"><a href="example-1.html"><i class="fa fa-check"></i><b>5.4</b> Example</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="specifying-the-model.html"><a href="specifying-the-model.html"><i class="fa fa-check"></i><b>6</b> Specifying the model</a><ul>
-<li class="chapter" data-level="6.1" data-path="defining-the-population-of-units-for-our-model.html"><a href="defining-the-population-of-units-for-our-model.html"><i class="fa fa-check"></i><b>6.1</b> Defining the population of units for our model</a></li>
-<li class="chapter" data-level="6.2" data-path="what-variables-belong-in-the-causal-model.html"><a href="what-variables-belong-in-the-causal-model.html"><i class="fa fa-check"></i><b>6.2</b> What variables belong in the causal model?</a></li>
-<li class="chapter" data-level="6.3" data-path="what-do-we-need-to-specify-about-these-variables.html"><a href="what-do-we-need-to-specify-about-these-variables.html"><i class="fa fa-check"></i><b>6.3</b> What do we need to specify about these variables?</a></li>
-<li class="chapter" data-level="6.4" data-path="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><a href="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><i class="fa fa-check"></i><b>6.4</b> How do we make educated guesses to fill in the model?</a></li>
-<li class="chapter" data-level="6.5" data-path="robustness-to-multiple-models.html"><a href="robustness-to-multiple-models.html"><i class="fa fa-check"></i><b>6.5</b> Robustness to multiple models</a></li>
+<li class="chapter" data-level="6.1" data-path="what-variables-belong-in-the-causal-model.html"><a href="what-variables-belong-in-the-causal-model.html"><i class="fa fa-check"></i><b>6.1</b> What variables belong in the causal model?</a></li>
+<li class="chapter" data-level="6.2" data-path="what-do-we-need-to-specify-about-these-variables.html"><a href="what-do-we-need-to-specify-about-these-variables.html"><i class="fa fa-check"></i><b>6.2</b> What do we need to specify about these variables?</a></li>
+<li class="chapter" data-level="6.3" data-path="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><a href="how-do-we-make-educated-guesses-to-fill-in-the-model.html"><i class="fa fa-check"></i><b>6.3</b> How do we make educated guesses to fill in the model?</a></li>
+<li class="chapter" data-level="6.4" data-path="robustness-to-multiple-models.html"><a href="robustness-to-multiple-models.html"><i class="fa fa-check"></i><b>6.4</b> Robustness to multiple models</a></li>
+<li class="chapter" data-level="6.5" data-path="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><a href="null-models-and-design-diagnosis-under-theoretical-alternative-models.html"><i class="fa fa-check"></i><b>6.5</b> Null models and design diagnosis under theoretical alternative models</a></li>
 <li class="chapter" data-level="6.6" data-path="fundamental-uncertainty.html"><a href="fundamental-uncertainty.html"><i class="fa fa-check"></i><b>6.6</b> Fundamental uncertainty</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
@@ -469,46 +469,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">18.2</span> Blocked trials</h2>
 <div id="declaration-17" class="section level3">
 <h3><span class="header-section-number">18.2.1</span> Declaration</h3>
-<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" title="1">design &lt;-</a>
-<a class="sourceLine" id="cb125-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb125-3" title="3">                     <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.3</span>),</a>
-<a class="sourceLine" id="cb125-4" title="4">                     <span class="dt">U =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb125-5" title="5"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span></a>
-<a class="sourceLine" id="cb125-6" title="6"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb125-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> X, <span class="dt">block_prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb125-8" title="8"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb125-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z,</a>
-<a class="sourceLine" id="cb125-10" title="10">                    <span class="dt">blocks =</span> X,</a>
-<a class="sourceLine" id="cb125-11" title="11">                    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>,</a>
-<a class="sourceLine" id="cb125-12" title="12">                    <span class="dt">label =</span> <span class="st">&quot;Blocked DIM&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb126-1" title="1">design &lt;-</a>
+<a class="sourceLine" id="cb126-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb126-3" title="3">                     <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.3</span>),</a>
+<a class="sourceLine" id="cb126-4" title="4">                     <span class="dt">U =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-5" title="5"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-6" title="6"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> X, <span class="dt">block_prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-8" title="8"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb126-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z,</a>
+<a class="sourceLine" id="cb126-10" title="10">                    <span class="dt">blocks =</span> X,</a>
+<a class="sourceLine" id="cb126-11" title="11">                    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>,</a>
+<a class="sourceLine" id="cb126-12" title="12">                    <span class="dt">label =</span> <span class="st">&quot;Blocked DIM&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-16" class="section level3">
 <h3><span class="header-section-number">18.2.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-358-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-360-1.png" width="100%" /></p>
 </div>
 <div id="example-17" class="section level3">
 <h3><span class="header-section-number">18.2.3</span> Example</h3>
 </div>
 <div id="two-arm-trials-and-designs-with-blocking-and-clustering" class="section level3">
 <h3><span class="header-section-number">18.2.4</span> Two-arm trials and designs with blocking and clustering</h3>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb126-1" title="1">design &lt;-</a>
-<a class="sourceLine" id="cb126-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb126-3" title="3">    <span class="dt">villages =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.3</span>), <span class="dt">Q =</span> <span class="kw">rnorm</span>(N)),</a>
-<a class="sourceLine" id="cb126-4" title="4">    <span class="dt">people =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">5</span>, <span class="dt">U =</span> <span class="kw">rnorm</span>(N))</a>
-<a class="sourceLine" id="cb126-5" title="5">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb126-6" title="6"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U <span class="op">+</span><span class="st"> </span>Q) <span class="op">+</span></a>
-<a class="sourceLine" id="cb126-7" title="7"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb126-8" title="8"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">clusters =</span> villages, <span class="dt">blocks =</span> X, <span class="dt">block_prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb126-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb126-10" title="10">    Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive DIM&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb126-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb126-12" title="12">    Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">blocks =</span> X, <span class="dt">model =</span> difference_in_means, </a>
-<a class="sourceLine" id="cb126-13" title="13">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Blocked DIM&quot;</span></a>
-<a class="sourceLine" id="cb126-14" title="14">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb126-15" title="15"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb126-16" title="16">    Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">fixed_effects =</span> X, <span class="dt">model =</span> lm_robust, </a>
-<a class="sourceLine" id="cb126-17" title="17">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive FE&quot;</span></a>
-<a class="sourceLine" id="cb126-18" title="18">  )</a></code></pre></div>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb127-1" title="1">design &lt;-</a>
+<a class="sourceLine" id="cb127-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb127-3" title="3">    <span class="dt">villages =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.3</span>), <span class="dt">Q =</span> <span class="kw">rnorm</span>(N)),</a>
+<a class="sourceLine" id="cb127-4" title="4">    <span class="dt">people =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">5</span>, <span class="dt">U =</span> <span class="kw">rnorm</span>(N))</a>
+<a class="sourceLine" id="cb127-5" title="5">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb127-6" title="6"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>U <span class="op">+</span><span class="st"> </span>Q) <span class="op">+</span></a>
+<a class="sourceLine" id="cb127-7" title="7"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb127-8" title="8"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">clusters =</span> villages, <span class="dt">blocks =</span> X, <span class="dt">block_prob =</span> <span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb127-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb127-10" title="10">    Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive DIM&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb127-11" title="11"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb127-12" title="12">    Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">blocks =</span> X, <span class="dt">model =</span> difference_in_means, </a>
+<a class="sourceLine" id="cb127-13" title="13">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Blocked DIM&quot;</span></a>
+<a class="sourceLine" id="cb127-14" title="14">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb127-15" title="15"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb127-16" title="16">    Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">fixed_effects =</span> X, <span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb127-17" title="17">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;Naive FE&quot;</span></a>
+<a class="sourceLine" id="cb127-18" title="18">  )</a></code></pre></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
