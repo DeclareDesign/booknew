@@ -38,9 +38,20 @@ library(ggraph)
 ```
 
 
-intro 
+## Two languages for describing causal models
 
-## Two languages for defining causal models
+Any research design -- whether the research question is fundamentally causal or descriptive -- implicitly relies on a causal model of the world. These models include beliefs about what variables are important and how they interrelate. Even if the model is hazy, researchers carry with them a model of the world that could in principle be expressed as a probablistic causal model. As described in the previous chapter, probabalistic causal models are described by a set of exogeneous and endogenous variables, a set of functional relationships between the variables, and a probability distribution over the exogenous variables. 
+
+In order to design a strong research study, we need to introspect about our causal beliefs. We need to make the explicit the design-relevant features of the implicit causal models in our heads. This chapter is about how to go about this difficult task. 
+
+We make use of two different formal languages for describing causal models: DAGs and potential outcomes. DAGs are "directed acyclic graphs," where each node on a graph is a variable and the edges that connect them represent causal effects. DAGs emphasize a mechanical notion of causality: when the exposure variable changes, the outcome variable changes as a result. 
+
+
+
+By contrast, the potential outcomes formalization emphasizes a counterfactual notion of causality. $Y_i(0)$ is the outcome for unit $i$ when the exposure variable is set to zero and $Y_i(1)$ is the outcome when it is set to one. The difference between them is the effect of the treatment on the outcome for unit $i$. Since at most only one potential outcome can ever be revealed, at least one of the two potential outcomes is necessarily counterfactual. Unrevealed potential outcomes are counter-to-facts; they do not exist. Nevertheless, the potential outcomes model is useful for thinking about what would have happened had things been different.
+
+Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. A theorem in one language is a theorem in the other (CITE). We use both languages because they are useful for expressing different facets of research design. We'll take the example of heterogeneous treatment effects to show how the two languages convey different aspects of the research setting.
+
 
 ### Directed acyclic graphs (nonparameteric structural causal models)
 
