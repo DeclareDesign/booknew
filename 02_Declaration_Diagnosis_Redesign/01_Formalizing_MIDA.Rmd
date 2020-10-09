@@ -57,13 +57,14 @@ The **answer** strategy, $A$ generates answer $a^d$ using data $d$. We encode th
 
 The full set of causal relationships between $M$, $I$, $D$, and $A$ with respect to $m$, $a^m$, $d$, $a^d$, $w$, and $a^w$ can be seen in the DAG schematic representation of a research design.
 
-```{r, echo=FALSE, fig.cap="MIDA as a DAG"}
+```{r, echo=FALSE, fig.cap="MIDA as a DAG", fig.width = 6.5, fig.height = 3}
 dag <-
   dagify(aw ~ w + I,
          m ~ M,
          am ~ m + I,
          d ~ D + w,
-         ad ~ A + d)
+         ad ~ A + d,
+         w ~ W)
 
 dag_base <- tidy_dagitty(dag) %>%
   select(name, direction, to, circular) %>%
@@ -71,10 +72,10 @@ dag_base <- tidy_dagitty(dag) %>%
 
 nodes_df <-
   tibble(
-    name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w"),
-    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w"),
-    x = c(1, 2, 4, 5, 1, 2, 3, 4, 5, 3),
-    y = c(3, 3, 3, 3, 2, 2, 2.5, 2, 2, 1)
+    name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w", "W"),
+    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
+    x = c(1, 2, 5, 6, 1, 2, 4, 5, 6, 3, 3),
+    y = c(3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3)
   )
 
 endnodes_df <-
@@ -88,20 +89,20 @@ gg_df <-
 
 gg_df <-
   gg_df %>%
-  mutate(arced = (name == "w" & to == "R")) %>%
+  mutate(arced1 = (name == "w" & to == "d"),
+         arced2 = (name == "I" & to == "aw")) %>%
   arrange(name)
 
 rect_df <-
   tibble(
-    xmin = c(.5, 3.5),
-    xmax = c(2.5, 5.5),
+    xmin = c(.5, 4.5),
+    xmax = c(2.5, 6.5),
     ymin = c(1.5, 1.5),
     ymax = c(3.5, 3.5)
   )
 
-
 g <-
-  ggplot(data = filter(gg_df, !arced), aes(
+  ggplot(data = filter(gg_df, !arced1 & !arced2), aes(
     x = x,
     y = y,
     xend = xend,
@@ -115,18 +116,20 @@ g <-
                 label.color = NA,
                 label.padding = grid::unit(rep(0, 4), "pt"),
                 size = 4) +
+  coord_fixed() + 
   geom_dag_edges() +
-  geom_dag_edges_arc(data = filter(gg_df, arced), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
             alpha = 0.25) +
-  annotate("text", x = 1.5, y = 1.75, label = "Theory") +
-  annotate("text", x = 4.5, y = 1.75, label = "Empirics") +
-  annotate("text", x = 3, y = 2.75, label = "Truth") +
+  annotate("text", x = 1.5, y = 3.7, label = "Theory") +
+  annotate("text", x = 5.5, y = 3.7, label = "Empirics") +
+  annotate("text", x = 3.5, y = 3.7, label = "The World") +
+  # annotate("text", x = 3, y = 1.6, label = "Truth") +
   theme_dag()
 g
-
 ```
 
 Figure XX points out how a research design is a correspondence $I(m) = a^m$ and $A(d) = a^d$. The theoretical half of a research design produces an answer to the inquiry **in theory**. The emprical half of a research design produces an *empirical estimate* of the answer to the inquiry. Neither answer is necessarily close to the truth $a^w$, but inescapable gamble of empirical research is that our theoretical models are close enough to the truth to be useful.
@@ -165,15 +168,106 @@ Statistical power is a common diagnosand. Like bias, it is also an expectation, 
 
 Some diagnosands can be calculated analytically, though most require Monte Carlo computer simulation. A main purpose of the `DeclareDesign` software package is making the simulation step easier.
 
+In practice, it is important to diagnose a design under multiple possible $M$'s, given our fundamental uncertainty about the world $w$. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under *multiple* likely models. A $D$ and $A$ for a given $I$ that provide good diagnosand values under multiple $M$'s can be said to be robust to multiple models. 
+
+```{r, echo=FALSE, fig.cap="MIDA as a DAG", fig.width = 6.5, fig.height = 3}
+dag <-
+  dagify(aw ~ w + I,
+         m ~ M,
+         am ~ m + I,
+         d ~ D + am,
+         ad ~ A + d,
+         w ~ W)
+
+dag_base <- tidy_dagitty(dag) %>%
+  select(name, direction, to, circular) %>%
+  as_tibble
+
+nodes_df <-
+  tibble(
+    name = c("M", "I", "D", "A", "m", "am", "aw", "d", "ad", "w", "W"),
+    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
+    x = c(1, 2, 5, 6, 1, 2, 4, 5, 6, 3, 3),
+    y = c(3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3)
+  )
+
+endnodes_df <-
+  nodes_df %>%
+  transmute(to = name, xend = x, yend = y)
+
+gg_df <-
+  dag_base %>%
+  left_join(nodes_df, by = "name") %>%
+  left_join(endnodes_df, by = "to")
+
+gg_df <-
+  gg_df %>%
+  mutate(arced1 = (name == "am" & to == "d"),
+         arced2 = (name == "I" & to == "aw")) %>%
+  arrange(name)
+
+rect_df <-
+  tibble(
+    xmin = c(.5, 4.5),
+    xmax = c(2.5, 6.5),
+    ymin = c(1.5, 1.5),
+    ymax = c(3.5, 3.5)
+  )
+
+g <-
+  ggplot(data = filter(gg_df, !arced1 & !arced2), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_dag_node(data = gg_df, color = "gray") +
+  geom_richtext(data = gg_df, 
+                color = "black",
+                parse = TRUE,
+                aes(label = label),
+                fill = NA,
+                label.color = NA,
+                label.padding = grid::unit(rep(0, 4), "pt"),
+                size = 4) +
+  coord_fixed() + 
+  geom_dag_edges() +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.3) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 1) +
+  geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
+                                xend = NULL, yend = NULL,
+                                xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            alpha = 0.25) +
+  annotate("text", x = 1.5, y = 3.7, label = "Theory") +
+  annotate("text", x = 5.5, y = 3.7, label = "Empirics") +
+  annotate("text", x = 3.5, y = 3.7, label = "The World") +
+  # annotate("text", x = 3, y = 1.6, label = "Truth") +
+  theme_dag()
+g
+```
+
 ## Redesign
 
-Diagnosis is the process of learning the value of a diagnosand for a single design. Redesign is the process of *changing* parts of MIDA in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) design among the feasible set, as measured by the changing values of the diagnosand.
+Diagnosis is the process of learning the value of a diagnosand for a single design, often under multiple specifications of M to assess robustness to alternative models. Redesign is the process of *changing* parts of D and A in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) D and A among the feasible set, as measured by the changing values of the diagnosand.
 
-For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{A'} - a^m|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{A} - a^{M'}|D)$.
+For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{d'} - a^m|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{d} - a^{m'}|D)$.
 
-In all cases, the full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of a diagnosand, and comparing the diagnoses to what could be achieved under alternative designs.
+Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have infinite variations, so the search space must be limited. Typically, researchers will want to find the optimal values of a small set of easily-controlled design parameters. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
 
-## Example: returning to @Gulzar2020
+\begin{equation*}
+\begin{aligned}
+& \underset{N, N_t}{\text{argmin}}
+& & E_M(a^{d} - a^{m}|D_{N, N_t}) \\
+& \text{s.t.}
+& & 25 * N + 5 * N_t \leq 5000
+\end{aligned}
+\end{equation*}
+
+However, optimizing a design for a single diagnosand may lead to poor design choices. If we redesign by optimizing for the power diagnosand, we are likely to find a design that is highly powered but highly biased --- it is targeting the wrong estimand. We can solve this by switching to the root mean-squared error as the diagnosand, which is a weighted combination of the bias and efficiency of the design. More generally, the choice of an optimal design requires the researcher to select a weighting of diagnosands. They must balance bias, efficiency, the risk of imprecise null results, the risk of getting the sign of an effect wrong, and other diagnosands given their research goals.
+
+The full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of one or more diagnosands, and comparing the diagnoses to what could be achieved under alternative designs.
+
+## Example
 
 In this section, we declare the @Gulzar2020 example in finer detail. The aim is to capture all of the analytically-relevant features of the design. In Chapter 2, we declared in words and in code a simplified version of the design, in order to communicate its key features. We will make this move again throughout the book: we will present simplified versions of canonical designs in the text, and also provide worked examples with the details of specific studies. Moving back and forth between the two will, we hope, enable you to both learn about the general principles and how to declare your own designs which always involve the fine details of research implementation.
 
@@ -244,6 +338,48 @@ gulzar_khan_design <-
     model = lh_robust
   )
 ```
+
+```{r,echo=FALSE}
+design <-
+  declare_population(N = 100,
+                     X = rbinom(N, 1, 0.3),
+                     U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ Z + X + U) +
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_sampling(strata = X, prob = 1) + 
+  declare_assignment(blocks = X, block_prob = c(0.1, 0.5)) +
+  declare_estimator(Y ~ Z, estimand = "ATE", label = "Naive DIM") +
+  declare_estimator(Y ~ Z,
+                    blocks = X,
+                    estimand = "ATE",
+                    label = "Blocked DIM")
+
+dag <- dagify(
+  Y ~ Z + X + U,
+  Z ~ X + S,
+  S ~ X
+)
+
+nodes <-
+  tibble(
+    name = c("Y", "S", "Z", "U", "X"),
+    label = c("Y", "S", "Z", "U", "X"),
+    annotation = c(
+      "**Outcome**<br>",
+      "**Sampling**",
+      "**Random assignment**<br>",
+      "**Unknown heterogeneity**",
+      "**villages**<br>Stratification, cluster assignment"),
+    x = c(5, 1, 3, 5, 1),
+    y = c(2.5, 2.5, 2.5, 4, 4), 
+    nudge_direction = c("S", "S", "S", "N", "N"),
+    answer_strategy = "uncontrolled"
+  )
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
+
 
 <!-- ## Brief illustration -->
 
