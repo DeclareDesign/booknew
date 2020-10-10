@@ -1,10 +1,13 @@
 ---
 title: "Choosing an answer strategy"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
   html_document:
-    toc: true
+    toc: yes
     toc_depth: 2
-bibliography: ../bib/book.bib 
+bibliography: ../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -55,7 +58,7 @@ $$
 The difference-in-means estimator just replaces the expectations with sums, where the first 1 through $m$ subjects are assigned to treatment and the remainder to control. As it happens, this estimator is unbiased for the ATE estimand when the data strategy samples from $Y_i(1)$ and $Y_i(0)$ at random.
 
 $$
-DIM = \frac{\sum_1^mY_i(1)}{m} - \frac{\sum_{m + 1^NY_i(0)}{N-m}
+\mathrm{DIM} = \frac{\sum_1^m Y_i(1)}{m} - \frac{\sum_{m + 1}^N Y_i(0)}{N-m}
 $$
 
 The symmetry between the definition of the ATE and the definition of the difference-in-means operator is not an accident -- it's an instance of the plug in princple at work. The plug-in-principle points the way to how we should choose answer strategies. In order to keep $a^d$ close to $a^m$, we should keep $A(d)$ as close to $I(m)$ as is possible. 
