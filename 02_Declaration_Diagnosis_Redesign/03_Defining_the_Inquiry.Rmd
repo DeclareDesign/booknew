@@ -46,6 +46,39 @@ In this book when we talk about inquiries, we will usually be referring to singl
 
 While most inquiries are "atomic" in this way, some inquiries are more complex than a single-number summary. For example, the best linear predictor of Y given X is a two-number summary: it is the pair of numbers (the slope and intercept) that minimizes the total squared distance between the line and each value of Y. Why stop at two-number summaries? We could imagine the best quadratic predictor of Y given X (three-number summary) or the best cubic predictor (four), and so on. We could have an inquiry that is the full conditional expectation function of Y given X, no matter how wiggly, nonlinear, and nuanced the shape of that function -- it could in principle be a 1,000 number summary of the model, or much more.
 
+```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE, caption = "Inquiries based on different numbers of parameters"}
+dat <- fabricate(N = 500, X = rnorm(N), Y = 0.5 *X + -0.5 * X^2 + -0.5* X^3 + 0.05 * X^4 + rnorm(N))
+
+fit_1 <- lm(Y ~ 1, data = dat)
+fit_2 <- lm(Y ~ X, data = dat)
+fit_3 <- lm(Y ~ X + I(X^2), data = dat)
+fit_4 <- lm(Y ~ X + I(X^2) + I(X^3), data = dat)
+
+newdata = tibble(X = seq(-3, 3, length.out = 1000))
+dat1 <- newdata %>% mutate(pred = predict(fit_1, newdata))
+dat2 <- newdata %>% mutate(pred = predict(fit_2, newdata))
+dat3 <- newdata %>% mutate(pred = predict(fit_3, newdata))
+dat4 <- newdata %>% mutate(pred = predict(fit_4, newdata))
+
+gg_df <- bind_rows( `1` = dat1, `2` = dat2, `3` = dat3, `4` = dat4,.id = "complexity") %>%
+  mutate(complexity = factor(
+    complexity,
+    levels = 1:4,
+    labels = c(
+      'One number summary',
+      'Two number summary',
+      'Three number summary',
+      'Four number summary'
+    )
+  ))
+
+ggplot(gg_df, aes(X, pred)) +
+  geom_line(color = "blue") +
+  facet_wrap(~complexity, nrow = 1) +
+  geom_point(data = dat, aes(X, Y), stroke = 0, alpha = 0.1) +
+  theme_void()
+```
+
 Complex inquiries can also be something along the lines of "should I reject $M$" as a causal model of the world? A researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries -- we're interested in the sub-inquiries only insofar as they help us understand the real inquiry -- is this model of the world a good one or not.
 
 
@@ -75,9 +108,9 @@ Table ZZZ enumerates some common descriptive estimands.
 | $E_{i\in N}(Y)$   | The average value of the variable Y           | 
 | $E[Y | X = 1]$    | A conditional expectation of Y given X = 1.   |
 | $V[Y]$            | The variance of Y                             |
-| $Cov(X, Y)$       | The covariance of X and Y                     |
-| $BLP(Y | X)$      | The best linear predictor of Y given X        |
-| $CEF(Y | X)$      | Conditional expectation function of Y given X |
+| $\mathrm{Cov}(X, Y)$       | The covariance of X and Y                     |
+| $\mathrm{BLP}(Y | X)$      | The best linear predictor of Y given X        |
+| $\mathrm{CEF}(Y | X)$      | Conditional expectation function of Y given X |
 | Truth status of X | Is X True or False                            |
 
 ### Causal inquiries
@@ -106,7 +139,7 @@ You can think of causal inference as repeated descriptive inference: we have to 
 
 Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
 
-### $D$- and $A$-dependent inquiries
+### Data-dependent inquiries
 
 The inquiries we have introduced thus far depend on variables in the model, but not on features of the data and answer strategies. Many common inquiries do depend on realizations of the research design.
 
@@ -134,9 +167,12 @@ The final criteria is that among important, probative research designs there mus
 
 Clearly research designs will vary how important, feasible, and probative they are, and so researchers so these criteria do not provide an immediate answer to how to select a design. Instead, the researcher must choose a weighting of the three, and norms in a research community may guide those weightings. In some disciplines, providing a minimally probative answer to a highly important question may be preferable to a highly probative answer to a less important question. 
 
-```{r}
-# picture of feasible important questions
-ggplot()
+```{r, fig.width = 4, fig.height = 4}
+ggplot() + 
+  geom_abline(intercept = 5, slope = -1) + 
+  geom_abline(intercept = 6, slope = -1, lty = "dashed") + 
+  geom_function(fun = function(x) (x-2)^2, geom = "curve") + 
+  coord_fixed(ylim = c(0, 6), xlim = c(0, 6))
 ```
 
 Here's our best advice for how to get started picking a research question: Write down the $M$ and $I$ of any causal model that you think is important to get started thinking about selecting strong $D$s and $A$s. The goal is to learn how to map $I(M)$ to $A(D)$. Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on $M$, that is, we bring $M$ closer to $W$, thereby making $M$ truer. In each iteration, consider how informative the answers you can provide: how much will they update what we know about the world?
@@ -153,21 +189,12 @@ The main trouble here is that the average treatment effect averages over all fou
 
 We might want switch our inquiry to be about the average effect among D types only. However this inquiry has a different problem -- it's unanswerable. Even though this inquiry is not undefined, it's unanswerable because we won't be able to learn who the D types are. In the treatment group, we can't tell the Bs from the Ds and in the control group, we can't tell the As from the Ds. The reason we can't tell these types apart using realized data is the fundamental problem of causal inference.
 
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{cccccl}
- \hline
-Type & Alive (Z = 0) & Alive (Z = 1) & Weight (Z = 0) & Weight (Z = 1) & Estimand            \\ 
- \hline
-A    & 1          & 0          & exists      & NA          & undefined                        \\
-B    & 0          & 1          & NA          & exists      & undefined                        \\
-C    & 0          & 0          & NA          & NA          & undefined                        \\
-D    & 1          & 1          & exists      & exists      & E{[}Weight(Z=1) - Weight(Z=0){]} \\
- \hline
-\end{tabular}
-\label{tab:bs_types}
-\end{table}
+| Type | Alive($Z = 0$) | Alive($Z = 1$) | Weight($Z = 0$) | Weight($Z = 1$) | Estimand                                    |
+|------|-----------------|-----------------|------------------|------------------|---------------------------------------------|
+| A    | 1               | 0               | exists           | NA               | undefined                                   |
+| B    | 0               | 1               | NA               | exists           | undefined                                   |
+| C    | 0               | 0               | NA               | NA               | undefined                                   |
+| D    | 1               | 1               | exists           | exists           | $E[\mathrm{Weight}(Z=1) - \mathrm{Weight}(Z=0)]$ |
 
 What can be done in this situation? We might try to find a covariate $X$ that is correlated with being a D type and condition our analysis of the effect on weight on that covariate. Note that among this subgroup, the effect on mortality should be equal to zero. Finding such a covariate would be hard, though perhaps not impossible.
 
