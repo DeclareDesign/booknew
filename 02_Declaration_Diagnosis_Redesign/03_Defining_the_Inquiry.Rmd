@@ -1,8 +1,8 @@
 ---
 title: "Defining the inquiry"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 bibliography: ../bib/book.bib
 ---
 
@@ -108,8 +108,11 @@ You can think of causal inference as repeated descriptive inference: we have to 
 
 Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
 
+### $D$- and $A$-dependent inquiries
 
+The inquiries we have introduced thus far depend on variables in the model, but not on features of the data and answer strategies. Many common inquiries do depend on realizations of the research design.
 
+The first type depend on realizations of the data $d$: inquiries about units within a sample depend on which units enter the sample; inquiries about treated units depend on which are treated. The sample average treatment effect is a common inquiry used by experimental researchers who wish to not worry about how their effects generalize to a population but only about identifying the causal effect within the units in front of them. There is a true sample average treatment effect $a^w$ for every possible sample that we could draw. But which of those fixed values is selected as our inquiry if we define $I$ as the sample average effect depends on which sample is actually selected by our sampling procedure. The same is true when we condition inquiries on the set of treated units. 
 
 ## How should you select Inquiries?
 
@@ -157,61 +160,39 @@ Alternateive, we might define our inquiry to be the average treatment on the ave
 
 ## Grab bag of ideas we don't know where to put
 
-- Study dependent estimands like Expected ATT vs realized ATT.  Yes, your I depends on D, but in a weird way. Since you can write down all possible ATTs in the model, you actually *can* write the estimand without realizing D, you just don't know which of the multiverse of estimands you've written down will actually eventuate. Since beliefs about the data strategy (it will create a class of subjects who will be treated) can sort of be hacked into the model, I wonder about how fundamental this wrinkle is.
-
-- Complex counterfactuals
-- QCA estimand.
-- Unknown estimands: Inquiries for discovery
-
-- Auxilliary Inquiries: these inquiries are not the main substantive focus of the design, but they are features of the model that have observable implications and can be checked. For models that include mediating roles for a variable, need to demonstrate that Z affects M at a minimum. Balance tables demonstrate a required assumption that Z is orthogonal to pre-treatment characteristics. A full DAG specification can enumerate the full set of conditional independencies that are implied by the model; these can be checked and verified.
+The second design-dependent inquiry class depends not on $d$ but $A(d) = a^d$, the answer given the data. In an $a^d$-dependent inquiry, we only know the inquiry after seeing the results of our study. When we collect data on ten variables and calculate the correlation between all ten on a separate outcome variable, and then report on the magnitude of the correlation of the seventh variable - the only one that was statistically distinguishable from zero. If our inquiry is "which of these seven variables is significant" then there will be no problem, as long as we include a multiple comparisons correction to adjust for the probability of finding one significant under null effects due to random chance. If we started with the question of what is the correlation of variable seven and the outcome, we would also have no problem. However, if with our procedure we think of our inquiry as what is the correlation between variable seven and the outcome, then we have a problem: we are not accounting for the multi-step procedure in our answer strategy and we will not be able to provide good answers to that inquiry. In short, we typically should not be guided by the realization of our answer in *selecting* an inquiry, but there is no problem with procedure-based answer strategies -- we just must be honest about our original inquiry. This problem comes up in descriptive inference in looking at multiple correlations as in this example, but also in many other places such as searching for heterogeneity in treatment effects in experiments and nested research designs that iterative between levels of data [@lieberman2005nested].
 
 
+### Undefined and unanswerable inquiries
 
-A good inquiry is informative about the model. 
-- Existence of a node (descriptive mean)
-- Model suggests two variables should be correlated (descriptive correlation)
-- Arrow between a node (experiment)
-- CDF / PDF of a variable
+Declaring your design in terms of $MIDA$ may lead you to two awkward conclusions: your inquiry $I$ returns $I(m) = a^m = \mathrm{NA}$, i.e., the answer to your inquiry is undefined; or your answer may be (currently) unanswerable, that is, there is no feasible $D$ and $A$ that yield an answer to $I$. In both cases, one option is to change your inquiry. But often we selected $I$ because of its importance, so we may want to try to find an answer. In the case of undefined inquiries, we have no option but to select a new one. In the case of unanswerable inquiries, we can work to identify a novel $D$ and $A$ that change the set of feasible designs and provide an answer. In some cases, however, the fact that the inquiry is unanswerable may be due to unchangeable limitations of research such as the fundamental problems of causal inference or descriptive inference. 
 
-A bad inquiry:
-- does not exist
-- does not address a "central" part of the model
-- does not summarize the theory
+## How should you select inquiries?
 
+It's hard to know where to start when picking a research question. We want to pick one that is interesting in its own right or one that would a facilitate real-world decision. We want to pick research questions that we can learn the answer to someday, with a lot of effort. Infeasible research questions should be abandoned as soon as possible, but of course that's hard to do. The trouble is that it's hard to know what research questions are feasible before you start looking into it, and it's really hard to quit research projects once you learn they are infeasible because of the sunk cost fallacy. Among feasible research questions, we want to select ones that we are likely to obtain the most informative answers, in terms of moving our priors the most. This last criteria will often help us select among related, feasible inquiries that are about the same DAG but for which we know we can learn more and less through research.
 
-You are responsible for your inquiry.
+Sometimes, people give advice to students to follow a "theory-first" route to picking a research question. Read the literature, find an unsolved puzzle, then start choosing among the methodological approaches that might answer the problem. Others eschew the theory-first approach: "How on earth are you going to happen to land upon an unsolved -- and yet somehow solvable -- puzzle just by reading!?" These advice-givers emphasize a method-first route. Master the technical data-gathering and analysis procedures first, then set off to find opportunities to apply them. The theory-first people then say: "how would you know an interesting theoretical question if it smacked you in the face!?"
 
-Choice of inquiry is not valueless.
+Iteration between the two is typically necessary. In order to select research questions, empiricists have to be concerned about the entire research design. We have to develop empirical strategies to provide answers to our inquiries. We have to learn a lot about how to select data and answer strategies in ways that map on to inquiries about models. So empiricists have to learn both about about models and inquiries (theory) as well as about data strategies and answer strategies (empirics).
 
+The first criteria is subjective importance of a question. The object of the importance may be a scientist, considering the value to building a theoretical understanding of the world; to a policymaker, deciding how to collect and allocate resources in a government; a private firm, who is making decisions about how to invest their own resources to maximize profit; or another individual or organization. The scientific enterprise is designed around the idea that importance is in the eye of the scientist and is not some objective quantity. This is for two reasons. First, the scientific or practical importance of a discovery may not be understood until decades later, when other pieces of the causal model are put together or the world faces new problems. Moreover, "importance" differs for different segments of society, and scientists must be able to study questions not judged important by groups in power in order to discover new ways to solve problems faced by left-out groups. 
 
-How do you choose an inquiry? You figure out what inquiries people are fighting about. You "enter the debate."
+Among important questions, researchers can select the $I$ they think they are likely to be able to learn the most about. We start with a prior distribution over $a^w$, the true answer about the inquiry, from past research, and a good research design will substantially update that prior distribution, either by moving the mean of the distribution or reducing our uncertainty about it. 
 
-- stuff from MODEL
+The final criteria is that among important, probative research designs there must be a feasible $M$, $D$, and $A$ that could answer $I$. That means picking a good question $I$ does not just involve theory. You should study $M$ to understand which $I$s are worth knowing. But you should also study $D$ and $A$ in order to learn how to demonstrate $I$. A central goal of research methodologists is to expand the feasible set of $D$ and $A$ that can provide informative answers to important questions.
 
-Potential outcomes notation is especially useful for defining *inquiries*. The most common causal inquiry is the Average Treatment Effect (ATE), which is written like this^[The expectation operator $E[]$ is a way of describing the average of a random variable. In general, $E[X] = \sum_{x \in X} x * pr(X = x)$ for discrete outcomes. Here we are slightly abusing the notation, since in a fixed population, $Y_i(1)$ and $Y_i(0)$ are not random variables. We could write the ATE as $\frac{1}{N}\sum_1^N Y_i(1) - Y_i(0)$, or we could just imagine that we drawing one unit at random from the fixed population; the expectation operator can be defined with respect to this imaginary random variable in order to save ourselves notational headaches.]:
+Clearly research designs will vary how important, feasible, and probative they are, and so researchers so these criteria do not provide an immediate answer to how to select a design. Instead, the researcher must choose a weighting of the three, and norms in a research community may guide those weightings. In some disciplines, providing a minimally probative answer to a highly important question may be preferable to a highly probative answer to a less important question. 
 
-$$
-ATE \equiv E[Y_i(1) - Y_i(0)]
-$$
+```{r}
+# picture of feasible important questions
+ggplot()
+```
 
-We want to emphasize that the ATE is an *average*. The difference between $Y_i(1)$ and $Y_i(0)$ for unit $i$ is an individual-level treatment effect (sometimes we'll refer to $Y_i(1) - Y_i(0)$ as $\tau_i$). The ATE averages over all of the individual-level treatment effects in the relevant population. Some units will have a $tau_i$ that is higher than the ATE, some will have a $\tau_i$ that is lower. We emphasize this because sometimes people mistakenly think that by focusing on an ATE, researchers "assume" that everyone experiences the same treatment effect. This is not true. The ATE is just a single-number summary of a possibly very heterogeneous set of responses to treatment.
+Here's our best advice for how to get started picking a research question: Write down the $M$ and $I$ of any causal model that you think is important to get started thinking about selecting strong $D$s and $A$s. The goal is to learn how to map $I(M)$ to $A(D)$. Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on $M$, that is, we bring $M$ closer to $W$, thereby making $M$ truer. In each iteration, consider how informative the answers you can provide: how much will they update what we know about the world?
 
-We can also use potential outcomes notation to define other, more complicated inquiries. Throughout the book, we'll describe a series of them: local average treatment effects, average treatment effects on the treated, average direct effects, average indirect effects, and spillover effects, to name a few. For now, we'll write down three new inquiries: the conditional average treatment effect (CATE) of $Z$ on $Y$ for units with $X = 1$, the CATE among units with $X = 0$, and the difference-in-CATEs:
+People who are looking in the forest for mushrooms often don't see a mushroom for a long period of time. After a while, they acclimate. They get their "eyes on," and successful finds seem to be around every bend. In this analogy, the theory building process is going for a walk in the forest and methods training is learning to spot mushrooms -- you need get your eyes on answerable research questions worth answering.
 
-$$
-\begin{aligned}
-CATE_{(X = 1)} &\equiv E[Y_i(1) - Y_i(0) | X = 1] \\
-CATE_{(X = 0)} &\equiv E[Y_i(1) - Y_i(0) | X = 0] \\
-Diff-in-CATEs &\equiv E[Y_i(1) - Y_i(0) | X = 1] - E[Y_i(1) - Y_i(0) | X = 0]
-\end{aligned}
-$$
+## Example: Bjorkman and Svennson
 
-
-
-<!-- [Introductory Material about the Inquiry] -->
-
-
-<!-- It's October in an election year. Your inquiry is: "how many voters will vote Democrat in November?" The true answer is 66,221,143. This true answer is your estimand ($a^M$), you seek to estimate this number now, even though the election has not happened yet. On the basis of a survey your best guess is 65, 112, 114. This is your estimate for this estimand -- your $a^D$ for your $a^M$. -->
-
-<!-- In this case the estimand is a number and one that will eventually be revealed, letting you assess how well your estimate measures up against your estimand. But in social science inequiry estimands can take many different forms.  -->
+[ example based on BS appendix from APSR paper ]
 
