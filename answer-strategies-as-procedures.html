@@ -194,10 +194,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
 <li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquiries"><i class="fa fa-check"></i><b>7.1.2</b> Causal inquiries</a></li>
 <li class="chapter" data-level="7.1.3" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#relationship-between-causal-and-descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.3</b> Relationship between causal and descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.4" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#d--and-a-dependent-inquiries"><i class="fa fa-check"></i><b>7.1.4</b> <span class="math inline">\(D\)</span>- and <span class="math inline">\(A\)</span>-dependent inquiries</a></li>
 </ul></li>
-<li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select Inquiries?</a></li>
+<li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select inquiries?</a></li>
 <li class="chapter" data-level="7.3" data-path="example-bjorkman-and-svennson.html"><a href="example-bjorkman-and-svennson.html"><i class="fa fa-check"></i><b>7.3</b> Example: Bjorkman and Svennson</a></li>
-<li class="chapter" data-level="7.4" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.4</b> Grab bag of ideas we don’t know where to put</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
 <li class="chapter" data-level="8.1" data-path="elements-of-a-data-strategy.html"><a href="elements-of-a-data-strategy.html"><i class="fa fa-check"></i><b>8.1</b> Elements of a data strategy</a><ul>
@@ -472,35 +472,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- need cites --></p>
 <p><strong>When things do not go according to plan.</strong> To compare answer strategies, you can imagine the estimators that are possible <em>if things go well</em> as well as <em>if things go wrong</em>, when there is missing data or there are outliers in variables. A good answer strategy, which might be a single estimator, or a procedure if-this-then-that, can handle both states of the world. Procedures for addressing deviations from expected analyses are part of the answer strategy. Even in the absence of a preanalysis plan, we often have a way we expect to analyze the data if things go well. When they do not — because data are missing, there is noncompliance with an intervention, or the study is suspended for example — the answers will change. These procedures determine the answer the study provides (or in some cases does not), so are part of the answer strategy. <em>Standard operating procedures</em> (lin and green) are documents that systematize these procedures in advance.</p>
 <p>We demonstrate the fact that the properties of procedures differ from the properties of a design with the final estimator in a simple example. We compare two possible estimation specifications, with and without covariates, to a procedure in which we run both models and report the model in our paper that has the lower p-value. The models are exactly the same, but the properties of the <em>procedure</em> differ from the properties of either of the two possible models. In particular, the procedure has higher power than either of the two models, but it exhibits poor coverage, which means we have a bias in our measure of uncertainty.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">report_lower_p_value &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
-<a class="sourceLine" id="cb45-2" title="2">  fit_nocov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, data)</a>
-<a class="sourceLine" id="cb45-3" title="3">  fit_cov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, data)</a>
-<a class="sourceLine" id="cb45-4" title="4">  </a>
-<a class="sourceLine" id="cb45-5" title="5">  <span class="co"># select fit with lower p.value on Z</span></a>
-<a class="sourceLine" id="cb45-6" title="6">  <span class="cf">if</span>(fit_cov<span class="op">$</span>p.value[<span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>fit_nocov<span class="op">$</span>p.value[<span class="dv">2</span>]){</a>
-<a class="sourceLine" id="cb45-7" title="7">    fit_selected &lt;-<span class="st"> </span>fit_cov</a>
-<a class="sourceLine" id="cb45-8" title="8">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb45-9" title="9">    fit_selected &lt;-<span class="st"> </span>fit_nocov</a>
-<a class="sourceLine" id="cb45-10" title="10">  }</a>
-<a class="sourceLine" id="cb45-11" title="11">  fit_selected <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
-<a class="sourceLine" id="cb45-12" title="12">}</a>
-<a class="sourceLine" id="cb45-13" title="13"></a>
-<a class="sourceLine" id="cb45-14" title="14">design &lt;-</a>
-<a class="sourceLine" id="cb45-15" title="15"><span class="st">  </span><span class="kw">declare_population</span>(    </a>
-<a class="sourceLine" id="cb45-16" title="16">    <span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="dt">u =</span> <span class="kw">rnorm</span>(N)</a>
-<a class="sourceLine" id="cb45-17" title="17">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-18" title="18"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-19" title="19"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-20" title="20"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-21" title="21"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-22" title="22"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;nocov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-23" title="23"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;cov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-24" title="24"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb45-25" title="25">    <span class="dt">handler =</span> <span class="kw">label_estimator</span>(report_lower_p_value),</a>
-<a class="sourceLine" id="cb45-26" title="26">    <span class="dt">label =</span> <span class="st">&quot;select-lower-p-value&quot;</span>,</a>
-<a class="sourceLine" id="cb45-27" title="27">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) </a>
-<a class="sourceLine" id="cb45-28" title="28"></a>
-<a class="sourceLine" id="cb45-29" title="29">diags &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1">report_lower_p_value &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
+<a class="sourceLine" id="cb46-2" title="2">  fit_nocov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, data)</a>
+<a class="sourceLine" id="cb46-3" title="3">  fit_cov &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X, data)</a>
+<a class="sourceLine" id="cb46-4" title="4">  </a>
+<a class="sourceLine" id="cb46-5" title="5">  <span class="co"># select fit with lower p.value on Z</span></a>
+<a class="sourceLine" id="cb46-6" title="6">  <span class="cf">if</span>(fit_cov<span class="op">$</span>p.value[<span class="dv">2</span>] <span class="op">&lt;</span><span class="st"> </span>fit_nocov<span class="op">$</span>p.value[<span class="dv">2</span>]){</a>
+<a class="sourceLine" id="cb46-7" title="7">    fit_selected &lt;-<span class="st"> </span>fit_cov</a>
+<a class="sourceLine" id="cb46-8" title="8">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb46-9" title="9">    fit_selected &lt;-<span class="st"> </span>fit_nocov</a>
+<a class="sourceLine" id="cb46-10" title="10">  }</a>
+<a class="sourceLine" id="cb46-11" title="11">  fit_selected <span class="op">%&gt;%</span><span class="st"> </span>tidy <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>)</a>
+<a class="sourceLine" id="cb46-12" title="12">}</a>
+<a class="sourceLine" id="cb46-13" title="13"></a>
+<a class="sourceLine" id="cb46-14" title="14">design &lt;-</a>
+<a class="sourceLine" id="cb46-15" title="15"><span class="st">  </span><span class="kw">declare_population</span>(    </a>
+<a class="sourceLine" id="cb46-16" title="16">    <span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="dt">u =</span> <span class="kw">rnorm</span>(N)</a>
+<a class="sourceLine" id="cb46-17" title="17">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-18" title="18"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-19" title="19"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-20" title="20"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-21" title="21"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-22" title="22"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;nocov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-23" title="23"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;cov&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-24" title="24"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb46-25" title="25">    <span class="dt">handler =</span> <span class="kw">label_estimator</span>(report_lower_p_value),</a>
+<a class="sourceLine" id="cb46-26" title="26">    <span class="dt">label =</span> <span class="st">&quot;select-lower-p-value&quot;</span>,</a>
+<a class="sourceLine" id="cb46-27" title="27">    <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>) </a>
+<a class="sourceLine" id="cb46-28" title="28"></a>
+<a class="sourceLine" id="cb46-29" title="29">diags &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <table>
 <thead>
 <tr>

@@ -194,10 +194,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
 <li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquiries"><i class="fa fa-check"></i><b>7.1.2</b> Causal inquiries</a></li>
 <li class="chapter" data-level="7.1.3" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#relationship-between-causal-and-descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.3</b> Relationship between causal and descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.4" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#d--and-a-dependent-inquiries"><i class="fa fa-check"></i><b>7.1.4</b> <span class="math inline">\(D\)</span>- and <span class="math inline">\(A\)</span>-dependent inquiries</a></li>
 </ul></li>
-<li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select Inquiries?</a></li>
+<li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select inquiries?</a></li>
 <li class="chapter" data-level="7.3" data-path="example-bjorkman-and-svennson.html"><a href="example-bjorkman-and-svennson.html"><i class="fa fa-check"></i><b>7.3</b> Example: Bjorkman and Svennson</a></li>
-<li class="chapter" data-level="7.4" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.4</b> Grab bag of ideas we don’t know where to put</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
 <li class="chapter" data-level="8.1" data-path="elements-of-a-data-strategy.html"><a href="elements-of-a-data-strategy.html"><i class="fa fa-check"></i><b>8.1</b> Elements of a data strategy</a><ul>
@@ -465,17 +465,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">14.1</span> Random sampling</h2>
 <div id="declaration-1" class="section level3">
 <h3><span class="header-section-number">14.1.1</span> Declaration</h3>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">fixed_population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">500</span>, <span class="dt">Y =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>))()</a>
-<a class="sourceLine" id="cb50-2" title="2"></a>
-<a class="sourceLine" id="cb50-3" title="3">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb50-4" title="4"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_population) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb50-5" title="5"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Y_bar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb50-6" title="6"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">100</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb50-7" title="7"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;Y_bar&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">fixed_population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">500</span>, <span class="dt">Y =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>))()</a>
+<a class="sourceLine" id="cb51-2" title="2"></a>
+<a class="sourceLine" id="cb51-3" title="3">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb51-4" title="4"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_population) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb51-5" title="5"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Y_bar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb51-6" title="6"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">100</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb51-7" title="7"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;Y_bar&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag" class="section level3">
 <h3><span class="header-section-number">14.1.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-167-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-168-1.png" width="100%" /></p>
 </div>
 <div id="example-2" class="section level3">
 <h3><span class="header-section-number">14.1.3</span> Example</h3>
@@ -496,20 +496,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><strong>A</strong>nswer strategy:</p>
 <p>We estimate the population mean with the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>. Even though our inquiry implies our answer should be a single number, an answer strategy typically also provides statistics that help us assess the uncertainty around that single number. To construct a 95% confidence interval around our estimate, we calculate the standard error of the sample mean, then approximate the sampling distribution of the sample mean estimator using a formula that includes a finite population correction. In particular, we approximate the estimated sampling distribution by a <span class="math inline">\(t\)</span> distribution with <span class="math inline">\(n - 1\)</span> degrees of freedom. In the code for our answer strategy, we spell out each step in turn.</p></li>
 </ul>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">fixed_population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">500</span>, <span class="dt">Y =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>))()</a>
-<a class="sourceLine" id="cb51-2" title="2"></a>
-<a class="sourceLine" id="cb51-3" title="3">random_sampling_design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb51-4" title="4"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_population) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb51-5" title="5"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Ybar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb51-6" title="6"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">100</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb51-7" title="7"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="kw">plot</span>(random_sampling_design)</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">fixed_population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">500</span>, <span class="dt">Y =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>))()</a>
+<a class="sourceLine" id="cb52-2" title="2"></a>
+<a class="sourceLine" id="cb52-3" title="3">random_sampling_design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb52-4" title="4"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_population) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb52-5" title="5"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Ybar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb52-6" title="6"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">100</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb52-7" title="7"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">plot</span>(random_sampling_design)</a></code></pre></div>
 </div>
 <div id="takeaways" class="section level4">
 <h4><span class="header-section-number">14.1.4.2</span> Takeaways</h4>
 <p>With the design declared we can run a diagnosis and plot results from Monte Carlo simulations of the design:</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(</a>
-<a class="sourceLine" id="cb53-2" title="2">  design, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims, <span class="dt">diagnosands =</span> diagnosands) </a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(</a>
+<a class="sourceLine" id="cb54-2" title="2">  design, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims, <span class="dt">diagnosands =</span> diagnosands) </a></code></pre></div>
 <p>The diagnosis indicates that under simple random sampling, the sample mean estimator of the population mean is unbiased. The graph on the left shows the sampling distribution of the estimator: it’s centered directly on the true value of the inquiry. Confidence intervals <strong>also</strong> have a sampling distribution – they change depending on the idiosyncrasies of each sample we happen to draw. The figure on the right shows that the 95% of the time the confidence intervals cover the true value of the estimand, as they should. As sample size grows, the sampling distribution of the estimator gets tighter, but the coverage of the confidence intervals stays at 95% – just the properties we would want out of our answer strategy.</p>
 <p>Things work well here it seems. In the exercises we suggest some small modifications of the design that point to conditions under which things might break down.</p>
 </div>
@@ -518,7 +518,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">14.1.5</span> Stratified and clustered random sampling</h3>
 <p>Researchers often cannot randomly sample at the individual level because it may, among other reasons, be too costly or logistically impractical. Instead, they may choose to randomly sample households, political precincts, or any group of individuals in order to draw inferences about the population. This strategy may be cheaper and simpler but may also introduce risks of less precise estimates.</p>
 <p>Say we are interested in the average party ideology in the entire state of California. Using cluster sampling, we randomly sample counties within the state, and within each selected county, randomly sample individuals to survey.</p>
-<p>Assuming enough variation in the outcome of interest, the random assignment of equal-sized clusters yields unbiased but imprecise estimates. By sampling clusters, we select groups of individuals who may share common attributes. Unlike simple random sampling, we need to take account of this intra-cluster correlation in our estimation of the standard error.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> The higher the degree of within-cluster similarity, the more variance we observe in cluster-level averages and the more imprecise are our estimates.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> We address this by considering cluster-robust standard errors in our answer strategy below.</p>
+<p>Assuming enough variation in the outcome of interest, the random assignment of equal-sized clusters yields unbiased but imprecise estimates. By sampling clusters, we select groups of individuals who may share common attributes. Unlike simple random sampling, we need to take account of this intra-cluster correlation in our estimation of the standard error.<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> The higher the degree of within-cluster similarity, the more variance we observe in cluster-level averages and the more imprecise are our estimates.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> We address this by considering cluster-robust standard errors in our answer strategy below.</p>
 <div id="design-declaration-1" class="section level4">
 <h4><span class="header-section-number">14.1.5.1</span> Design Declaration</h4>
 <ul>
@@ -537,47 +537,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>A</strong>nswer strategy:</li>
 </ul>
 <p>We estimate the population mean with the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>, and estimate standard errors under the assumption of independent and heteroskedastic errors as well as cluster-robust standard errors to take into account correlation of errors within clusters. Below we demonstrate the the imprecision of our estimated <span class="math inline">\(\widehat{\overline{Y}}\)</span> when we cluster standard errors and when we do not in the presence of an intracluster correlation coefficient (ICC) of 0.402.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1">N_blocks &lt;-<span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb54-2" title="2">N_clusters_in_block &lt;-<span class="st"> </span><span class="dv">1000</span></a>
-<a class="sourceLine" id="cb54-3" title="3">N_i_in_cluster &lt;-<span class="st"> </span><span class="dv">50</span></a>
-<a class="sourceLine" id="cb54-4" title="4">n_clusters_in_block &lt;-<span class="st"> </span><span class="dv">30</span></a>
-<a class="sourceLine" id="cb54-5" title="5">n_i_in_cluster &lt;-<span class="st"> </span><span class="dv">20</span></a>
-<a class="sourceLine" id="cb54-6" title="6">icc &lt;-<span class="st"> </span><span class="fl">0.402</span></a>
-<a class="sourceLine" id="cb54-7" title="7"></a>
-<a class="sourceLine" id="cb54-8" title="8"><span class="co"># M: Model</span></a>
-<a class="sourceLine" id="cb54-9" title="9">fixed_pop &lt;-</a>
-<a class="sourceLine" id="cb54-10" title="10"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb54-11" title="11">    <span class="dt">block =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_blocks),</a>
-<a class="sourceLine" id="cb54-12" title="12">    <span class="dt">cluster =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_clusters_in_block),</a>
-<a class="sourceLine" id="cb54-13" title="13">    <span class="dt">subject =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_i_in_cluster,</a>
-<a class="sourceLine" id="cb54-14" title="14">                        <span class="dt">latent =</span> <span class="kw">draw_normal_icc</span>(<span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">N =</span> N, <span class="dt">clusters =</span> cluster, <span class="dt">ICC =</span> icc),</a>
-<a class="sourceLine" id="cb54-15" title="15">                        <span class="dt">Y =</span> <span class="kw">draw_ordered</span>(<span class="dt">x =</span> latent, <span class="dt">breaks =</span> <span class="kw">qnorm</span>(<span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out =</span> <span class="dv">8</span>)))</a>
-<a class="sourceLine" id="cb54-16" title="16">    )</a>
-<a class="sourceLine" id="cb54-17" title="17">  )()</a>
-<a class="sourceLine" id="cb54-18" title="18"></a>
-<a class="sourceLine" id="cb54-19" title="19">cluster_sampling_design &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_pop) <span class="op">+</span></a>
-<a class="sourceLine" id="cb54-20" title="20"><span class="st">  </span></a>
-<a class="sourceLine" id="cb54-21" title="21"><span class="st">  </span><span class="co"># I: Inquiry</span></a>
-<a class="sourceLine" id="cb54-22" title="22"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Ybar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb54-23" title="23"><span class="st">  </span></a>
-<a class="sourceLine" id="cb54-24" title="24"><span class="st">  </span><span class="co"># D: Data Strategy</span></a>
-<a class="sourceLine" id="cb54-25" title="25"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">strata =</span> block, </a>
-<a class="sourceLine" id="cb54-26" title="26">                   <span class="dt">clusters =</span> cluster, <span class="dt">n =</span> n_clusters_in_block, </a>
-<a class="sourceLine" id="cb54-27" title="27">                   <span class="dt">sampling_variable =</span> <span class="st">&quot;Cluster_Sampling_Prob&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb54-28" title="28"><span class="st">  </span></a>
-<a class="sourceLine" id="cb54-29" title="29"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">strata =</span> cluster,   <span class="dt">n =</span> n_i_in_cluster, </a>
-<a class="sourceLine" id="cb54-30" title="30">                   <span class="dt">sampling_variable =</span> <span class="st">&quot;Within_Cluster_Sampling_Prob&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb54-31" title="31"><span class="st">  </span></a>
-<a class="sourceLine" id="cb54-32" title="32"><span class="st">  </span><span class="co"># A: Answer Strategy</span></a>
-<a class="sourceLine" id="cb54-33" title="33"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb54-34" title="34">                    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb54-35" title="35">                    <span class="dt">clusters =</span> cluster,</a>
-<a class="sourceLine" id="cb54-36" title="36">                    <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>,</a>
-<a class="sourceLine" id="cb54-37" title="37">                    <span class="dt">label =</span> <span class="st">&quot;Clustered Standard Errors&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">N_blocks &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb55-2" title="2">N_clusters_in_block &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb55-3" title="3">N_i_in_cluster &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb55-4" title="4">n_clusters_in_block &lt;-<span class="st"> </span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb55-5" title="5">n_i_in_cluster &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb55-6" title="6">icc &lt;-<span class="st"> </span><span class="fl">0.402</span></a>
+<a class="sourceLine" id="cb55-7" title="7"></a>
+<a class="sourceLine" id="cb55-8" title="8"><span class="co"># M: Model</span></a>
+<a class="sourceLine" id="cb55-9" title="9">fixed_pop &lt;-</a>
+<a class="sourceLine" id="cb55-10" title="10"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb55-11" title="11">    <span class="dt">block =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_blocks),</a>
+<a class="sourceLine" id="cb55-12" title="12">    <span class="dt">cluster =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_clusters_in_block),</a>
+<a class="sourceLine" id="cb55-13" title="13">    <span class="dt">subject =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_i_in_cluster,</a>
+<a class="sourceLine" id="cb55-14" title="14">                        <span class="dt">latent =</span> <span class="kw">draw_normal_icc</span>(<span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">N =</span> N, <span class="dt">clusters =</span> cluster, <span class="dt">ICC =</span> icc),</a>
+<a class="sourceLine" id="cb55-15" title="15">                        <span class="dt">Y =</span> <span class="kw">draw_ordered</span>(<span class="dt">x =</span> latent, <span class="dt">breaks =</span> <span class="kw">qnorm</span>(<span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out =</span> <span class="dv">8</span>)))</a>
+<a class="sourceLine" id="cb55-16" title="16">    )</a>
+<a class="sourceLine" id="cb55-17" title="17">  )()</a>
+<a class="sourceLine" id="cb55-18" title="18"></a>
+<a class="sourceLine" id="cb55-19" title="19">cluster_sampling_design &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_pop) <span class="op">+</span></a>
+<a class="sourceLine" id="cb55-20" title="20"><span class="st">  </span></a>
+<a class="sourceLine" id="cb55-21" title="21"><span class="st">  </span><span class="co"># I: Inquiry</span></a>
+<a class="sourceLine" id="cb55-22" title="22"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Ybar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb55-23" title="23"><span class="st">  </span></a>
+<a class="sourceLine" id="cb55-24" title="24"><span class="st">  </span><span class="co"># D: Data Strategy</span></a>
+<a class="sourceLine" id="cb55-25" title="25"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">strata =</span> block, </a>
+<a class="sourceLine" id="cb55-26" title="26">                   <span class="dt">clusters =</span> cluster, <span class="dt">n =</span> n_clusters_in_block, </a>
+<a class="sourceLine" id="cb55-27" title="27">                   <span class="dt">sampling_variable =</span> <span class="st">&quot;Cluster_Sampling_Prob&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb55-28" title="28"><span class="st">  </span></a>
+<a class="sourceLine" id="cb55-29" title="29"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">strata =</span> cluster,   <span class="dt">n =</span> n_i_in_cluster, </a>
+<a class="sourceLine" id="cb55-30" title="30">                   <span class="dt">sampling_variable =</span> <span class="st">&quot;Within_Cluster_Sampling_Prob&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb55-31" title="31"><span class="st">  </span></a>
+<a class="sourceLine" id="cb55-32" title="32"><span class="st">  </span><span class="co"># A: Answer Strategy</span></a>
+<a class="sourceLine" id="cb55-33" title="33"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb55-34" title="34">                    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb55-35" title="35">                    <span class="dt">clusters =</span> cluster,</a>
+<a class="sourceLine" id="cb55-36" title="36">                    <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>,</a>
+<a class="sourceLine" id="cb55-37" title="37">                    <span class="dt">label =</span> <span class="st">&quot;Clustered Standard Errors&quot;</span>)</a></code></pre></div>
 </div>
 <div id="takeaways-1" class="section level4">
 <h4><span class="header-section-number">14.1.5.2</span> Takeaways</h4>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(cluster_sampling_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(cluster_sampling_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -712,11 +712,11 @@ Clustered Standard Errors
 </tbody>
 </table>
 <p>To appreciate the role of clustering better we also plot simulated values of our estimand with standard errors not clustered and with clustered standard errors. To do this we first add an additional estimator to the design that does not take account of clusters.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1">new_design &lt;-<span class="st"> </span>cluster_sampling_design <span class="op">+</span><span class="st"> </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb56-2" title="2">                                                          <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb56-3" title="3">                                                          <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>,</a>
-<a class="sourceLine" id="cb56-4" title="4">                                                          <span class="dt">label =</span> <span class="st">&quot;Naive Standard Errors&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(new_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1">new_design &lt;-<span class="st"> </span>cluster_sampling_design <span class="op">+</span><span class="st"> </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb57-2" title="2">                                                          <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb57-3" title="3">                                                          <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>,</a>
+<a class="sourceLine" id="cb57-4" title="4">                                                          <span class="dt">label =</span> <span class="st">&quot;Naive Standard Errors&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(new_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p><img src="book_files/figure-html/plot-1.png" width="100%" /></p>
 <p>The figure above may give us the impression that our estimate with clustered standard errors is less precise, when in fact, it correctly accounts for the uncertainty surrounding our estimates. The blue lines in the graph demonstrate the estimates from simulations which contain our estimand. As our table and graphs show, the share of these simulations over the total number of simulations, also known as coverage, is (correctly) close to 95% in estimations with clustered standard errors and 54% in estimations without clustered standard errors. As expected, the mean estimate itself and the bias is the same in both specifications.</p>
 </div>
@@ -735,9 +735,9 @@ Clustered Standard Errors
 </div>
 <div class="footnotes">
 <hr />
-<ol start="10">
-<li id="fn10"><p>The intra-cluster correlation coefficient (ICC) can be calculated directly and is a feature of this design.<a href="random-sampling.html#fnref10" class="footnote-back">↩</a></p></li>
-<li id="fn11"><p>In ordinary least square (OLS) models, we assume errors are independent (error terms between individual observations are uncorrelated with each other) and homoskedastic (the size of errors is homogeneous across individuals). In reality, this is often not the case with cluster sampling.<a href="random-sampling.html#fnref11" class="footnote-back">↩</a></p></li>
+<ol start="9">
+<li id="fn9"><p>The intra-cluster correlation coefficient (ICC) can be calculated directly and is a feature of this design.<a href="random-sampling.html#fnref9" class="footnote-back">↩</a></p></li>
+<li id="fn10"><p>In ordinary least square (OLS) models, we assume errors are independent (error terms between individual observations are uncorrelated with each other) and homoskedastic (the size of errors is homogeneous across individuals). In reality, this is often not the case with cluster sampling.<a href="random-sampling.html#fnref10" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>

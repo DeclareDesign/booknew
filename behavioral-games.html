@@ -194,10 +194,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.1.1" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
 <li class="chapter" data-level="7.1.2" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#causal-inquiries"><i class="fa fa-check"></i><b>7.1.2</b> Causal inquiries</a></li>
 <li class="chapter" data-level="7.1.3" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#relationship-between-causal-and-descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.3</b> Relationship between causal and descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.4" data-path="kinds-of-inquiries.html"><a href="kinds-of-inquiries.html#d--and-a-dependent-inquiries"><i class="fa fa-check"></i><b>7.1.4</b> <span class="math inline">\(D\)</span>- and <span class="math inline">\(A\)</span>-dependent inquiries</a></li>
 </ul></li>
-<li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select Inquiries?</a></li>
+<li class="chapter" data-level="7.2" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.2</b> How should you select inquiries?</a></li>
 <li class="chapter" data-level="7.3" data-path="example-bjorkman-and-svennson.html"><a href="example-bjorkman-and-svennson.html"><i class="fa fa-check"></i><b>7.3</b> Example: Bjorkman and Svennson</a></li>
-<li class="chapter" data-level="7.4" data-path="grab-bag-of-ideas-we-dont-know-where-to-put.html"><a href="grab-bag-of-ideas-we-dont-know-where-to-put.html"><i class="fa fa-check"></i><b>7.4</b> Grab bag of ideas we don’t know where to put</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
 <li class="chapter" data-level="8.1" data-path="elements-of-a-data-strategy.html"><a href="elements-of-a-data-strategy.html"><i class="fa fa-check"></i><b>8.1</b> Elements of a data strategy</a><ul>
@@ -465,34 +465,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">15.4</span> Behavioral games</h2>
 <div id="declaration-9" class="section level3">
 <h3><span class="header-section-number">15.4.1</span> Declaration</h3>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1">design &lt;-</a>
-<a class="sourceLine" id="cb76-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb76-3" title="3">    <span class="dt">games =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">100</span>),</a>
-<a class="sourceLine" id="cb76-4" title="4">    <span class="dt">players =</span> <span class="kw">add_level</span>(</a>
-<a class="sourceLine" id="cb76-5" title="5">      <span class="dt">N =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb76-6" title="6">      <span class="dt">prosociality =</span> <span class="kw">runif</span>(N),</a>
-<a class="sourceLine" id="cb76-7" title="7">      <span class="dt">fairness =</span> prosociality,</a>
-<a class="sourceLine" id="cb76-8" title="8">      <span class="dt">cutoff =</span> <span class="kw">pmax</span>(prosociality <span class="op">-</span><span class="st"> </span><span class="fl">0.25</span>, <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb76-9" title="9">    )</a>
-<a class="sourceLine" id="cb76-10" title="10">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb76-11" title="11"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">mean_fairness =</span> <span class="kw">mean</span>(fairness),</a>
-<a class="sourceLine" id="cb76-12" title="12">                   <span class="dt">mean_cutoff =</span> <span class="kw">mean</span>(cutoff)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb76-13" title="13"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> games, <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;proposer&quot;</span>, <span class="st">&quot;responder&quot;</span>), <span class="dt">assignment_variable =</span> <span class="st">&quot;role&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb76-14" title="14"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">id_cols =</span> games, <span class="dt">names_from =</span> role, <span class="dt">values_from =</span> <span class="kw">c</span>(prosociality, fairness, cutoff), <span class="dt">handler =</span> pivot_wider) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb76-15" title="15"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">proposal =</span> fairness_proposer <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span>, </a>
-<a class="sourceLine" id="cb76-16" title="16">                      <span class="dt">response =</span> <span class="kw">if_else</span>(proposal <span class="op">&gt;=</span><span class="st"> </span>cutoff_responder, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb76-17" title="17"><span class="st">  </span><span class="kw">declare_estimator</span>(proposal <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb76-18" title="18">                    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb76-19" title="19">                    <span class="dt">estimand =</span> <span class="st">&quot;mean_fairness&quot;</span>,</a>
-<a class="sourceLine" id="cb76-20" title="20">                    <span class="dt">label =</span> <span class="st">&quot;mean_fairness&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb76-21" title="21"><span class="st">  </span><span class="kw">declare_estimator</span>(response <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb76-22" title="22">                    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb76-23" title="23">                    <span class="dt">estimand =</span> <span class="st">&quot;mean_cutoff&quot;</span>,</a>
-<a class="sourceLine" id="cb76-24" title="24">                    <span class="dt">label =</span> <span class="st">&quot;mean_cutoff&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" title="1">design &lt;-</a>
+<a class="sourceLine" id="cb77-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb77-3" title="3">    <span class="dt">games =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">100</span>),</a>
+<a class="sourceLine" id="cb77-4" title="4">    <span class="dt">players =</span> <span class="kw">add_level</span>(</a>
+<a class="sourceLine" id="cb77-5" title="5">      <span class="dt">N =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb77-6" title="6">      <span class="dt">prosociality =</span> <span class="kw">runif</span>(N),</a>
+<a class="sourceLine" id="cb77-7" title="7">      <span class="dt">fairness =</span> prosociality,</a>
+<a class="sourceLine" id="cb77-8" title="8">      <span class="dt">cutoff =</span> <span class="kw">pmax</span>(prosociality <span class="op">-</span><span class="st"> </span><span class="fl">0.25</span>, <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb77-9" title="9">    )</a>
+<a class="sourceLine" id="cb77-10" title="10">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb77-11" title="11"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">mean_fairness =</span> <span class="kw">mean</span>(fairness),</a>
+<a class="sourceLine" id="cb77-12" title="12">                   <span class="dt">mean_cutoff =</span> <span class="kw">mean</span>(cutoff)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb77-13" title="13"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> games, <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;proposer&quot;</span>, <span class="st">&quot;responder&quot;</span>), <span class="dt">assignment_variable =</span> <span class="st">&quot;role&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb77-14" title="14"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">id_cols =</span> games, <span class="dt">names_from =</span> role, <span class="dt">values_from =</span> <span class="kw">c</span>(prosociality, fairness, cutoff), <span class="dt">handler =</span> pivot_wider) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb77-15" title="15"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">proposal =</span> fairness_proposer <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span>, </a>
+<a class="sourceLine" id="cb77-16" title="16">                      <span class="dt">response =</span> <span class="kw">if_else</span>(proposal <span class="op">&gt;=</span><span class="st"> </span>cutoff_responder, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb77-17" title="17"><span class="st">  </span><span class="kw">declare_estimator</span>(proposal <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb77-18" title="18">                    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb77-19" title="19">                    <span class="dt">estimand =</span> <span class="st">&quot;mean_fairness&quot;</span>,</a>
+<a class="sourceLine" id="cb77-20" title="20">                    <span class="dt">label =</span> <span class="st">&quot;mean_fairness&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb77-21" title="21"><span class="st">  </span><span class="kw">declare_estimator</span>(response <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb77-22" title="22">                    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb77-23" title="23">                    <span class="dt">estimand =</span> <span class="st">&quot;mean_cutoff&quot;</span>,</a>
+<a class="sourceLine" id="cb77-24" title="24">                    <span class="dt">label =</span> <span class="st">&quot;mean_cutoff&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-7" class="section level3">
 <h3><span class="header-section-number">15.4.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-248-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-249-1.png" width="100%" /></p>
 </div>
 <div id="example-10" class="section level3">
 <h3><span class="header-section-number">15.4.3</span> Example</h3>
