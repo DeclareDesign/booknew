@@ -125,9 +125,35 @@ Here's our best advice for how to get started picking a research question: Write
 
 People who are looking in the forest for mushrooms often don't see a mushroom for a long period of time. After a while, they acclimate. They get their ``eyes on,'' and successful finds seem to be around every bend. In this analogy, the theory building process is going for a walk in the forest and methods training is learning to spot mushrooms -- you need get your eyes on answerable research questions worth answering.
 
-## Example: Bjorkman and Svennson
+## Example: Bjorkman and Svennson (2009)
 
-[ example based on BS appendix from APSR paper ]
+@Bjorkman:2009 reports the results of a cluster-randomized trial of the effects of community-based monitoring of health clinics in Uganda to improve childrens health. The main inquiry was the average treatment effect on the child mortaility rate. The study showed that the program was a success: in the control group, the child mortality rate was 144 per 1000 live births, compared with 97 in the treatment group, for a 33\% reduction in child mortality. 
+
+The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table XXX, which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for "Adverse") is alive if in control, but dies if in treatment. Type B ("Beneficial") is just the reverse: the child dies if untreated, but survives if treated. Type C ("Chronic") would die under either condition and Type D ("Destined") would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.
+
+The main trouble here is that the average treatment effect averages over all four types so the ATE itself is also undefined. Since this inquiry is undefined, we'll need to select a different one.
+
+We might want switch our inquiry to be about the average effect among D types only. However this inquiry has a different problem -- it's unanswerable. Even though this inquiry is not undefined, it's unanswerable because we won't be able to learn who the D types are. In the treatment group, we can't tell the Bs from the Ds and in the control group, we can't tell the As from the Ds. The reason we can't tell these types apart using realized data is the fundamental problem of causal inference.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{cccccl}
+ \hline
+Type & Alive (Z = 0) & Alive (Z = 1) & Weight (Z = 0) & Weight (Z = 1) & Estimand            \\ 
+ \hline
+A    & 1          & 0          & exists      & NA          & undefined                        \\
+B    & 0          & 1          & NA          & exists      & undefined                        \\
+C    & 0          & 0          & NA          & NA          & undefined                        \\
+D    & 1          & 1          & exists      & exists      & E{[}Weight(Z=1) - Weight(Z=0){]} \\
+ \hline
+\end{tabular}
+\label{tab:bs_types}
+\end{table}
+
+What can be done in this situation? We might try to find a covariate $X$ that is correlated with being a D type and condition our analysis of the effect on weight on that covariate. Note that among this subgroup, the effect on mortality should be equal to zero. Finding such a covariate would be hard, though perhaps not impossible.
+
+Alternateive, we might define our inquiry to be the average treatment on the average weight of living children within a cluster, but this inquiry requires careful interpretation. If the treatment saves the lives of children whose health is *marginal* in particular, then the effect on average weight could easily be negative, even though the treatment improves health. We specifically cannot interpret the answer to this inquiry to refer to the effect of treatment on health. That said, it might nevertheless be a useful number to know if we are in the position of admistering healthcare resourses -- we'd want to send additional help to those treatment areas where the lives of unhealthy children (who otherwise would have perished) are being saved.
 
 ## Grab bag of ideas we don't know where to put
 
