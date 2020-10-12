@@ -19,7 +19,18 @@ source("scripts/before_chapter_script.R")
 
 ## Randomized Saturation Design
 
+Randomized saturation designs can be used to measure the diffusion treatment effects throughout a pre-defined area or network (@bairdetal2018). The design works in two phases. First, groups of units are cluster-assigned to treatment *saturations*, e.g. 0%, 25%, and 75% saturation. Then, in each group, units are individually assigned in proportions determined by the saturations: e.g., in the groups randomly assigned to 0%, none of the units are assigned to treatment, while in the groups assigned to 25% and 75%, one-quarter and three-quarters of the units are assigned to treatment, respectively. By comparing untreated units in the 0% groups to their *untreated* counterparts in the higher-saturation groups, researchers can estimate the indirect treatment effects that result from being in higher-saturation groups.
+
 ### Declaration
+
+- **M**odel: There are ten groups each with one hundred units. Units' potential outcomes are defined in terms of `S`---the unit's group's saturation---and `Z`---whether or not a unit is treated. 
+
+- **I**nquiry: 
+We want to know the effect of having high and medium levels of saturation versus low saturation in the control: $E[Y_i(Z_i = 0, S_i = \text{high})-Y_i(Z_i = 0, S_i = \text{low})]$ and $E[Y_i(Z_i = 0, S_i = \text{medium})-Y_i(Z_i = 0, S_i = \text{low})]$. We also want to know the "direct effect"--e.g. what happens to those directly treated if we disregard spillovers. Here it is defined over potential outcomes that the experiment does not reveal, since no one is treated in low-saturation constituencies: $E[Y_i(Z_i = 1, S_i = \text{low})-Y_i(Z_i = 0, S_i = \text{low})]$.  
+
+- **D**ata strategy: We assign entire groups of individual ballot stations to one of three saturations: low (0%), medium (50%), and high (75%). We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.
+
+- **A**nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they're in. To estimate spillovers, we run one regression comparing high and one regression comparing medium to low saturation control units. To estimate the direct effect, we run a regression of the outcome on the treatment indicatior on the full sample, controlling for saturation.
 
 
 ```{r}
@@ -70,9 +81,13 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 base_dag_plot %+% ggdd_df
 ```
 
+# Exercises
 
+- Increase saturation in low group to .25
 
-### Example
+- add an interaction between 
+
+### Online Appendix Applied Example
 
 
 <!-- make sure to rename the section title below -->
@@ -90,7 +105,7 @@ library(blockTools)
 ```
 
 
-Randomized saturation designs (@bairdetal2018) offer researchers a way to estimate the diffusion of intervention effects within some geographic or social network. Most approaches work by first cluster-assigning non-overlapping groups of individuals to treatment saturations, then block-assigning individuals to treatment in the proportions determined by the saturations. 
+
 
 @asunka2019, for example, wanted to know if the presence of election monitors at ballot stations would displace violence and fraud to other ballot stations. They randomized constituencies to low, medium, and high levels of saturation, and then randomized ballot stations to have election monitoring or not in low, medium, or high concentrations, depending on the randomized saturation. In the original study, the authors did not include a zero-saturation condition. Here, we declare a simplified version of their design in which a zero-saturation condition is included. 
 
