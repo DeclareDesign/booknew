@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>1.3 What this book will not do | Research Design: Declare, Diagnose, Redesign</title>
+  <title>Chapter 18 Exercises | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="1.3 What this book will not do | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="Chapter 18 Exercises | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="1.3 What this book will not do | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="Chapter 18 Exercises | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="how-to-work-this-book.html"/>
-<link rel="next" href="improving-research-designs.html"/>
+<link rel="prev" href="randomized-saturation-design.html"/>
+<link rel="next" href="multi-study-designs.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -468,23 +468,738 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="what-this-book-will-not-do" class="section level2">
-<h2><span class="header-section-number">1.3</span> What this book will not do</h2>
-<p>This is a research design textbook, not a statistics textbook. We will not derive estimators, we will provide no guarantees of the general optimality of designs, and we will present no mathematical proofs.</p>
-<p>By the same token – this is a research design textbook, not a handbook of best practices for all research designs. We can’t tell you the best thing to do in your particular research scenarios because we know far far less about your research than you do – you have to learn for yourself what the most important design considerations will be.</p>
-<p>What we do have is language to express research designs. We can help you to learn that language so you can describe your own design in it. When you can declare your design in this language, then you can diagnose it, then improve it through redesign.</p>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<div id="exercises-5" class="section level1">
+<h1><span class="header-section-number">Chapter 18</span> Exercises</h1>
+<ul>
+<li><p>Increase saturation in low group to .25</p></li>
+<li><p>add an interaction between</p></li>
+</ul>
+<div id="online-appendix-applied-example-2" class="section level3">
+<h3><span class="header-section-number">18.0.1</span> Online Appendix Applied Example</h3>
+<!-- make sure to rename the section title below -->
+<p><span class="citation">Asunka et al. (<a href="#ref-asunka2019">2019</a>)</span>, for example, wanted to know if the presence of election monitors at ballot stations would displace violence and fraud to other ballot stations. They randomized constituencies to low, medium, and high levels of saturation, and then randomized ballot stations to have election monitoring or not in low, medium, or high concentrations, depending on the randomized saturation. In the original study, the authors did not include a zero-saturation condition. Here, we declare a simplified version of their design in which a zero-saturation condition is included.</p>
+<p>Main points to develop:</p>
+<ul>
+<li>Randomized saturation is great when you get the model right. Though, show how IPW reduces the power to detect main effect, especially if there’s no spillover.</li>
+<li>Randomized saturation assumes a model that may be wrong. In particular, spillovers are restricted to containers. But this might not be correct.</li>
+</ul>
 </div>
-<!-- </div> -->
+<div id="design-declaration-4" class="section level3">
+<h3><span class="header-section-number">18.0.2</span> Design Declaration</h3>
+<ul>
+<li><p><strong>M</strong>odel:
+Potential outcomes are defined in terms of <code>S</code>—the saturation—and <code>Z</code>—whether or not a ballot station is treated. We model spillovers in two ways. In the first, the amount of spillover that affects a unit is determined by how many other units in its network are treated. In the second, the amount of spillover a unit receives is determined by whether that unit’s geographic neighbor is treated, irrespective of whether they share a network.</p></li>
+<li><p><strong>I</strong>nquiry:
+We want to know the effect of having high and medium levels of saturation versus low saturation in the control: <span class="math inline">\(E[Y_i(Z_i = 0, S_i = \text{high})-Y_i(Z_i = 0, S_i = \text{low})]\)</span> and <span class="math inline">\(E[Y_i(Z_i = 0, S_i = \text{medium})-Y_i(Z_i = 0, S_i = \text{low})]\)</span>. We also want to know the “direct effect”–e.g. what happens to those directly treated if we disregard spillovers. Here it is defined over potential outcomes that the experiment does not reveal, since no one is treated in low-saturation constituencies: <span class="math inline">\(E[Y_i(Z_i = 1, S_i = \text{low})-Y_i(Z_i = 0, S_i = \text{low})]\)</span>.</p></li>
+<li><p><strong>D</strong>ata strategy: We assign entire groups of individual ballot stations to one of three saturations: low (0%), medium (50%), and high (75%). We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
+<li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. To estimate spillovers, we run one regression comparing high and one regression comparing medium to low saturation control units. To estimate the direct effect, we run a regression of the outcome on the treatment indicatior on the full sample, controlling for saturation.</p></li>
+</ul>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb137-1" title="1">N_individuals &lt;-<span class="st"> </span><span class="dv">60</span></a>
+<a class="sourceLine" id="cb137-2" title="2">N_groups &lt;-<span class="st"> </span><span class="dv">15</span></a>
+<a class="sourceLine" id="cb137-3" title="3">G_per_saturation &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb137-4" title="4"></a>
+<a class="sourceLine" id="cb137-5" title="5">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb137-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> N_individuals, <span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">U =</span> <span class="kw">rnorm</span>(N), <span class="dt">G =</span> <span class="kw">ntile</span>(X, N_groups)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb137-7" title="7"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">assignment_variable =</span> <span class="st">&quot;S&quot;</span>, </a>
+<a class="sourceLine" id="cb137-8" title="8">                     <span class="dt">clusters =</span> G, </a>
+<a class="sourceLine" id="cb137-9" title="9">                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>,<span class="st">&quot;med&quot;</span>,<span class="st">&quot;high&quot;</span>),</a>
+<a class="sourceLine" id="cb137-10" title="10">                     <span class="dt">m_each =</span> G_per_saturation) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-11" title="11"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="dv">0</span>,</a>
+<a class="sourceLine" id="cb137-12" title="12">                     <span class="dt">blocks =</span> G,</a>
+<a class="sourceLine" id="cb137-13" title="13">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_low&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-14" title="14"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.5</span>,</a>
+<a class="sourceLine" id="cb137-15" title="15">                     <span class="dt">blocks =</span> G,</a>
+<a class="sourceLine" id="cb137-16" title="16">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_med&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-17" title="17"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.75</span>,</a>
+<a class="sourceLine" id="cb137-18" title="18">                     <span class="dt">blocks =</span> G,</a>
+<a class="sourceLine" id="cb137-19" title="19">                     <span class="dt">assignment_variable =</span> <span class="st">&quot;Z_S_high&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-20" title="20"><span class="st">  </span><span class="kw">declare_step</span>(</a>
+<a class="sourceLine" id="cb137-21" title="21">    <span class="dt">spillover_low =</span> <span class="kw">ave</span>(Z_S_low, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb137-22" title="22">    <span class="dt">spillover_med =</span> <span class="kw">ave</span>(Z_S_med, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb137-23" title="23">    <span class="dt">spillover_high =</span> <span class="kw">ave</span>(Z_S_high, G, <span class="dt">FUN =</span> sum) <span class="op">*</span><span class="st"> </span><span class="fl">.1</span>,</a>
+<a class="sourceLine" id="cb137-24" title="24">    <span class="dt">handler =</span> fabricate,</a>
+<a class="sourceLine" id="cb137-25" title="25">    <span class="dt">label =</span> <span class="st">&quot;spillover&quot;</span>)  <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-26" title="26"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb137-27" title="27">    Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span><span class="fl">-.20</span> <span class="op">+</span><span class="st"> </span>U <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb137-28" title="28"><span class="st">      </span>spillover_low <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;low&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb137-29" title="29"><span class="st">      </span>spillover_med <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;med&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb137-30" title="30"><span class="st">      </span>spillover_high <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;high&quot;</span>),</a>
+<a class="sourceLine" id="cb137-31" title="31">    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">S =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>,<span class="st">&quot;med&quot;</span>,<span class="st">&quot;high&quot;</span>))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-32" title="32"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">high =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">0</span>_S_high <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low),</a>
+<a class="sourceLine" id="cb137-33" title="33">                   <span class="dt">med =</span>  <span class="kw">mean</span>(Y_Z_<span class="dv">0</span>_S_med <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low), </a>
+<a class="sourceLine" id="cb137-34" title="34">                   <span class="dt">ate_no_spill =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span>_S_low <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>_S_low)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-35" title="35"><span class="st">  </span><span class="kw">declare_reveal</span>(Z,S) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-36" title="36"><span class="st">  </span><span class="kw">declare_step</span>(</a>
+<a class="sourceLine" id="cb137-37" title="37">    <span class="dt">w =</span> <span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(S_cond_prob <span class="op">*</span><span class="st"> </span>(Z_S_low_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;low&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb137-38" title="38"><span class="st">                   </span>Z_S_med_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;med&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb137-39" title="39"><span class="st">                   </span>Z_S_high_cond_prob <span class="op">*</span><span class="st"> </span>(S <span class="op">==</span><span class="st"> &quot;high&quot;</span>))),</a>
+<a class="sourceLine" id="cb137-40" title="40">    <span class="dt">handler =</span> fabricate) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-41" title="41"><span class="st">  </span><span class="kw">declare_reveal</span>(Y,<span class="kw">c</span>(Z, S)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-42" title="42"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb137-43" title="43">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>S,</a>
+<a class="sourceLine" id="cb137-44" title="44">                    <span class="dt">subset =</span> Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>S <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;high&quot;</span>,<span class="st">&quot;low&quot;</span>), </a>
+<a class="sourceLine" id="cb137-45" title="45">                    <span class="dt">estimand =</span> <span class="st">&quot;high&quot;</span>,</a>
+<a class="sourceLine" id="cb137-46" title="46">                    <span class="dt">weights =</span> w,</a>
+<a class="sourceLine" id="cb137-47" title="47">                    <span class="dt">label =</span> <span class="st">&quot;high vs low&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-48" title="48"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb137-49" title="49">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>S,</a>
+<a class="sourceLine" id="cb137-50" title="50">                    <span class="dt">subset =</span> Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>S <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;med&quot;</span>,<span class="st">&quot;low&quot;</span>), </a>
+<a class="sourceLine" id="cb137-51" title="51">                    <span class="dt">weights =</span> w,</a>
+<a class="sourceLine" id="cb137-52" title="52">                    <span class="dt">estimand =</span> <span class="st">&quot;med&quot;</span>,</a>
+<a class="sourceLine" id="cb137-53" title="53">                    <span class="dt">label =</span> <span class="st">&quot;med vs low&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb137-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">model =</span> lm_robust, </a>
+<a class="sourceLine" id="cb137-55" title="55">                    <span class="dt">formula =</span> Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>S,</a>
+<a class="sourceLine" id="cb137-56" title="56">                    <span class="dt">term =</span> <span class="st">&quot;Z&quot;</span>, </a>
+<a class="sourceLine" id="cb137-57" title="57">                    <span class="dt">weights =</span> w,</a>
+<a class="sourceLine" id="cb137-58" title="58">                    <span class="dt">estimand =</span> <span class="st">&quot;ate_no_spill&quot;</span>,</a>
+<a class="sourceLine" id="cb137-59" title="59">                    <span class="dt">label =</span> <span class="st">&quot;main effect&quot;</span>)</a></code></pre></div>
+<p>Here’s what our hypothetical country looks like:</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" title="1"><span class="kw">draw_data</span>(design) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb138-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> X, <span class="dt">color =</span> <span class="kw">as.factor</span>(G))) <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-4" title="4"><span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="st">&quot;Ballot station&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-5" title="5"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-6" title="6"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb138-7" title="7"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">seq</span>(<span class="dv">1</span>,N_individuals,<span class="dt">by =</span> N_individuals <span class="op">/</span><span class="st"> </span>N_groups) <span class="op">-</span><span class="st"> </span><span class="fl">.5</span>)</a></code></pre></div>
+<p><img src="book_files/figure-html/unnamed-chunk-392-1.png" width="100%" /></p>
+<p>Let’s diagnose</p>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<p>Our diagnosis shows this design does a pretty great job, under this model of spillovers:</p>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" title="1">diagnosis <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reshape_diagnosis</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Design Label
+</th>
+<th style="text-align:left;">
+Estimand Label
+</th>
+<th style="text-align:left;">
+Estimator Label
+</th>
+<th style="text-align:left;">
+Term
+</th>
+<th style="text-align:left;">
+N Sims
+</th>
+<th style="text-align:left;">
+Bias
+</th>
+<th style="text-align:left;">
+RMSE
+</th>
+<th style="text-align:left;">
+Power
+</th>
+<th style="text-align:left;">
+Coverage
+</th>
+<th style="text-align:left;">
+Mean Estimate
+</th>
+<th style="text-align:left;">
+SD Estimate
+</th>
+<th style="text-align:left;">
+Mean Se
+</th>
+<th style="text-align:left;">
+Type S Rate
+</th>
+<th style="text-align:left;">
+Mean Estimand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+design
+</td>
+<td style="text-align:left;">
+ate_no_spill
+</td>
+<td style="text-align:left;">
+main effect
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+0.01
+</td>
+<td style="text-align:left;">
+0.35
+</td>
+<td style="text-align:left;">
+0.10
+</td>
+<td style="text-align:left;">
+0.93
+</td>
+<td style="text-align:left;">
+-0.19
+</td>
+<td style="text-align:left;">
+0.35
+</td>
+<td style="text-align:left;">
+0.33
+</td>
+<td style="text-align:left;">
+0.08
+</td>
+<td style="text-align:left;">
+-0.20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.04)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design
+</td>
+<td style="text-align:left;">
+high
+</td>
+<td style="text-align:left;">
+high vs low
+</td>
+<td style="text-align:left;">
+Shigh
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+-0.05
+</td>
+<td style="text-align:left;">
+0.51
+</td>
+<td style="text-align:left;">
+0.12
+</td>
+<td style="text-align:left;">
+0.90
+</td>
+<td style="text-align:left;">
+0.25
+</td>
+<td style="text-align:left;">
+0.50
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+<td style="text-align:left;">
+0.13
+</td>
+<td style="text-align:left;">
+0.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.05)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+design
+</td>
+<td style="text-align:left;">
+med
+</td>
+<td style="text-align:left;">
+med vs low
+</td>
+<td style="text-align:left;">
+Smed
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+0.00
+</td>
+<td style="text-align:left;">
+0.39
+</td>
+<td style="text-align:left;">
+0.09
+</td>
+<td style="text-align:left;">
+0.93
+</td>
+<td style="text-align:left;">
+0.20
+</td>
+<td style="text-align:left;">
+0.39
+</td>
+<td style="text-align:left;">
+0.38
+</td>
+<td style="text-align:left;">
+0.04
+</td>
+<td style="text-align:left;">
+0.20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.03)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>It’s particularly nice, since we’re able to estimate the direct effect (whose constitutive POs we never observe) by partialling out spillovers.</p></li>
+<li><p>Show here: power tradeoffs for main effects versus spillovers, in terms of
+proportion of sample allocated to the “low” versus other conditions</p></li>
+<li><p>and also in terms of IPW (equivalent sample size with everyone in the .5 condition)</p></li>
+</ul>
+<p>Now, we consider a model of spillovers in which fraud is displaced latitudinally,
+from one neighbor to the next. Say, because there are roads traveling north and
+fraudsters disregard boundaries (in reality, they are unlikely to do so).</p>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb141-1" title="1">distal_design &lt;-<span class="st"> </span><span class="kw">replace_step</span>(<span class="dt">design =</span> design, <span class="dt">step =</span> <span class="st">&quot;spillover&quot;</span>,</a>
+<a class="sourceLine" id="cb141-2" title="2">                              <span class="dt">new_step =</span> <span class="kw">declare_step</span>(<span class="dt">next_neighbor =</span> <span class="kw">c</span>(N,<span class="dv">1</span><span class="op">:</span>(N<span class="dv">-1</span>)),</a>
+<a class="sourceLine" id="cb141-3" title="3">                                                      <span class="dt">spillover_low =</span> Z_S_low[next_neighbor],</a>
+<a class="sourceLine" id="cb141-4" title="4">                                                      <span class="dt">spillover_med =</span> Z_S_med[next_neighbor],</a>
+<a class="sourceLine" id="cb141-5" title="5">                                                      <span class="dt">spillover_high =</span> Z_S_high[next_neighbor],</a>
+<a class="sourceLine" id="cb141-6" title="6">                                                      <span class="dt">handler =</span> fabricate) )</a></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb142-1" title="1">distal_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(distal_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<ul>
+<li>When there are next-neighbor spillovers that ignore boundaries, the estimator is biased again</li>
+</ul>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb143-1" title="1">distal_diagnosis <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reshape_diagnosis</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</a></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Design Label
+</th>
+<th style="text-align:left;">
+Estimand Label
+</th>
+<th style="text-align:left;">
+Estimator Label
+</th>
+<th style="text-align:left;">
+Term
+</th>
+<th style="text-align:left;">
+N Sims
+</th>
+<th style="text-align:left;">
+Bias
+</th>
+<th style="text-align:left;">
+RMSE
+</th>
+<th style="text-align:left;">
+Power
+</th>
+<th style="text-align:left;">
+Coverage
+</th>
+<th style="text-align:left;">
+Mean Estimate
+</th>
+<th style="text-align:left;">
+SD Estimate
+</th>
+<th style="text-align:left;">
+Mean Se
+</th>
+<th style="text-align:left;">
+Type S Rate
+</th>
+<th style="text-align:left;">
+Mean Estimand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+distal_design
+</td>
+<td style="text-align:left;">
+ate_no_spill
+</td>
+<td style="text-align:left;">
+main effect
+</td>
+<td style="text-align:left;">
+Z
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+-0.25
+</td>
+<td style="text-align:left;">
+0.43
+</td>
+<td style="text-align:left;">
+0.23
+</td>
+<td style="text-align:left;">
+0.88
+</td>
+<td style="text-align:left;">
+-0.45
+</td>
+<td style="text-align:left;">
+0.36
+</td>
+<td style="text-align:left;">
+0.36
+</td>
+<td style="text-align:left;">
+0.00
+</td>
+<td style="text-align:left;">
+-0.20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+distal_design
+</td>
+<td style="text-align:left;">
+high
+</td>
+<td style="text-align:left;">
+high vs low
+</td>
+<td style="text-align:left;">
+Shigh
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+0.20
+</td>
+<td style="text-align:left;">
+0.54
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+<td style="text-align:left;">
+0.91
+</td>
+<td style="text-align:left;">
+0.95
+</td>
+<td style="text-align:left;">
+0.50
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+<td style="text-align:left;">
+0.00
+</td>
+<td style="text-align:left;">
+0.75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+distal_design
+</td>
+<td style="text-align:left;">
+med
+</td>
+<td style="text-align:left;">
+med vs low
+</td>
+<td style="text-align:left;">
+Smed
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+0.15
+</td>
+<td style="text-align:left;">
+0.42
+</td>
+<td style="text-align:left;">
+0.33
+</td>
+<td style="text-align:left;">
+0.92
+</td>
+<td style="text-align:left;">
+0.65
+</td>
+<td style="text-align:left;">
+0.40
+</td>
+<td style="text-align:left;">
+0.41
+</td>
+<td style="text-align:left;">
+0.00
+</td>
+<td style="text-align:left;">
+0.50
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-asunka2019">
+<p>Asunka, Joseph, Sarah Brierley, Miriam Golden, Eric Kramon, and George Ofosu. 2019. “Electoral Fraud or Violence: The Effect of Observers on Party Manipulation Strategies.” <em>British Journal of Political Science</em> 49 (1): 129–51. <a href="https://doi.org/10.1017/S0007123416000491">https://doi.org/10.1017/S0007123416000491</a>.</p>
+</div>
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="how-to-work-this-book.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="improving-research-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="randomized-saturation-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multi-study-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
