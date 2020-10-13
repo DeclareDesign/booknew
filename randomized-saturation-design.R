@@ -1,45 +1,59 @@
 # ---
-# Partial Population Design
+# Randomized Saturation Design
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = TRUE)
 
 design <- 
-  declare_population(
-    group = add_level(N = 10, X = rnorm(N)),
-    unit = add_level(N = 100, U = rnorm(N))
-  ) +
-  declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
-  declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
-  declare_assignment(blocks = group, prob_unit = S_prob) + 
-  declare_potential_outcomes(
-    Y ~ Z + (S == "high") + Z*(S == "high") + X + U,
-    conditions = list(Z = c(0, 1), S = c("low", "high"))) +
-  declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
+  declare_population(network = add_level(N = 4), unit = add_level(N = 4, U = rnorm(N))) +
+  declare_assignment(assignment_variable = "S", clusters = network, conditions = c("low","high")) +
+  declare_assignment(prob = .25, blocks = network, assignment_variable = "Z_S_low") +
+  declare_assignment(prob = .75, blocks = network, assignment_variable = "Z_S_high") +
+  declare_step(spillover_low = ave(Z_S_low, network, FUN = mean), 
+               spillover_high = ave(Z_S_high, network, FUN = mean),handler = fabricate)  +
+  declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") + Z * spillover_high * (S == "high") + U,
+                             conditions = list(Z = c(0,1), S = c("low","high"))) +
+  declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-  declare_reveal(Y, c(Z, S)) +
-  declare_estimator(Y ~ Z + S, model = lm_robust, term = c("Z", "Shigh"), estimand = c("ATE_saturation", "ate_no_spill"), label = "main effect")
+  declare_reveal(Z,S) +
+  declare_step(ipw = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") + Z_S_high_cond_prob * (S == "high"))),
+    handler = fabricate) +
+  declare_reveal(Y,c(Z, S)) +
+declare_estimator(Y ~ Z * S, clusters = network, model = lm_robust, term = c("Z", "Shigh"), 
+                  estimand = c("ate_no_spill", "ate_saturation"),weight = ipw)
+
+draw_data(design) %>% 
+  mutate(
+    label = paste0("Network ", network, "\nSaturation = ", S), 
+    Z = as.factor(Z)
+  ) %>% 
+  ggplot() +
+  geom_point(aes(y = 1, x = unit, shape = Z, color = Z))  +
+  facet_wrap(~ label, scales = "free", nrow = 1) +
+  theme(axis.title.y =element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y=element_blank(),
+    axis.line = element_blank()) 
 
 
-dag <- dagify(Y ~ Z + S + U + X,
+dag <- dagify(Y ~ Z + S + U,
               Z ~ S)
 
 nodes <-
   tibble(
-    name = c("X", "U", "S", "Z", "Y"),
-    label = c("X", "U", "S", "Z", "Y"),
+    name = c("U", "S", "Z", "Y"),
+    label = c("U", "S", "Z", "Y"),
     annotation = c(
-      "**Unknown heterogeneity**<br>Unit effects",
       "**Unknown heterogeneity**",
       "**Treatment assignment 1**<br>Saturation level",
       "**Treatment assignment 2**<br>Individual assignment",
       "**Outcome variable**"
     ),
-    x = c(2, 5, 1, 1, 5),
-    y = c(2.5, 4, 4, 1, 2.5), 
-    nudge_direction = c("N", "N", "N", "S", "S"),
-    answer_strategy = "uncontrolled",
+    x = c(5, 1, 1, 5),
+    y = c(4, 4, 1, 2.5), 
+    nudge_direction = c( "N", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
   )
 
 ggdd_df <- make_dag_df(dag, nodes, design)
