@@ -474,16 +474,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="sampling-1" class="section level2">
 <h2><span class="header-section-number">8.1</span> Sampling</h2>
-<p>Sampling is the process by which units are selected from the population to be studied. Some sampling procedures involve randomization while others do not. Sometimes – even oftentimes – randomized sampling procedures break in ways that turn them into non randomized designs. Whether a sampling procedure is randomized or not has large implications for the answer stratey. Randomized designs support “design-based inference,” which refers to the that we rely on known features of the sampling process when producing population-level estimates. When randomization breaks down (e.g., if the design encounters attrition) or if a nonrandomized design is used, then we have to fall back on model-based inference. Model-based inference relies on beliefs about the process by which units came to be in the sample in order to make inferences about the population. When possible, design-based inference is preferable, because it’s easier to be correct about about the features of the sampling process directly under researcher control than about the uncontrolled processes.</p>
-<p>The model defines the target population and the sampling strategy defines which units from that population will be sampled. Why would we ever be content to study a sample and not the full population? The first and best explanation is cost: it’s expensive and time-consuming to conduct a full census of the population. The second reason is diminishing marginal returns of additional data collection. Increasing the number of sampled units from 1,000 to 2,000 will greatly increase the precision of our estimates. Moving from 100,000 to 101,000 will improve things too, but the scale of the improvement is much smaller.</p>
+<p>Sampling is the process by which units are selected from the population to be studied. Some sampling procedures involve randomization while others do not. Sometimes – perhaps even usually – randomized sampling procedures break in ways that turn them into nonrandomized designs. Whether a sampling procedure is randomized or not has large implications for the answer stratey. Randomized designs support “design-based inference,” which refers to the idea that we rely on known features of the sampling process when producing population-level estimates – much more about this in the next chapter on Answer strategies. When randomization breaks down (e.g., if the design encounters attrition) or if a nonrandomized design is used, then we have to fall back on model-based inference to generalize from the sample to the population. Model-based inference relies on researcher beliefs about the nature of the uncontrolled sampling process in order to make inferences about the population. When possible, design-based inference is preferable, because it’s easier to be correct about about the features of controlled processes than uncontrolled ones.</p>
+<p>Why would we ever be content to study a sample and not the full population? The first and best explanation is cost: it’s expensive and time-consuming to conduct a full census of the population. Even well-funded research projects face this problem, since money and effort spent answering one question could also be spent answering a second question. We tend to sample rather than measure every unit in the population because we face opportunity costs as well. A second reason reason to sample is the diminishing marginal returns of additional data collection. Increasing the number of sampled units from 1,000 to 2,000 will greatly increase the precision of our estimates. Moving from 100,000 to 101,000 will improve things too, but the scale of the improvement is much smaller.</p>
 <div id="randomized-sampling-designs" class="section level3">
 <h3><span class="header-section-number">8.1.1</span> Randomized sampling designs</h3>
 <p>Owing to the natural appeal of design-based inference, we start off with randomized designs. Randomized sampling designs typically begin with a list of all units in a population, then choose a subset to sample using a random process. These random processes can be simple (every unit has an equal probability of inclusion) or complex (first we select regions at random, then villages at random within selected regions, then households within selected villages, then individuals within selected households).</p>
+<p>This table</p>
 <table>
 <colgroup>
-<col width="10%" />
-<col width="76%" />
-<col width="13%" />
+<col width="6%" />
+<col width="74%" />
+<col width="19%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -516,22 +517,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tr class="odd">
 <td>Stratifed cluster sampling</td>
 <td>Cluster random sampling within strata</td>
-<td></td>
+<td>strata_and_cluster_rs(strata = regions,clusters = villages)</td>
 </tr>
 <tr class="even">
 <td>Multi-stage random sampling</td>
 <td>First clusters, then units within clusters</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td></td>
+<td>cluster_ra(clusters = villages); strata_ra(strata = villages</td>
 </tr>
 </tbody>
 </table>
