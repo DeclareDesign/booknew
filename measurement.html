@@ -205,13 +205,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.1.1" data-path="sampling-1.html"><a href="sampling-1.html#randomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.1</b> Randomized sampling designs</a></li>
 <li class="chapter" data-level="8.1.2" data-path="sampling-1.html"><a href="sampling-1.html#nonrandomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.2</b> Nonrandomized sampling designs</a></li>
 <li class="chapter" data-level="8.1.3" data-path="sampling-1.html"><a href="sampling-1.html#choosing-among-sampling-designs"><i class="fa fa-check"></i><b>8.1.3</b> Choosing among sampling designs</a></li>
-<li class="chapter" data-level="8.1.4" data-path="sampling-1.html"><a href="sampling-1.html#example-wang2015forecasting"><i class="fa fa-check"></i><b>8.1.4</b> Example: <span class="citation">Wang et al. (<span>2015</span>)</span></a></li>
+<li class="chapter" data-level="8.1.4" data-path="sampling-1.html"><a href="sampling-1.html#pitfalls"><i class="fa fa-check"></i><b>8.1.4</b> Pitfalls</a></li>
+<li class="chapter" data-level="8.1.5" data-path="sampling-1.html"><a href="sampling-1.html#example-wang2015forecasting"><i class="fa fa-check"></i><b>8.1.5</b> Example: <span class="citation">Wang et al. (<span>2015</span>)</span></a></li>
 </ul></li>
 <li class="chapter" data-level="8.2" data-path="treatment-assignment.html"><a href="treatment-assignment.html"><i class="fa fa-check"></i><b>8.2</b> Treatment assignment</a><ul>
 <li class="chapter" data-level="8.2.1" data-path="treatment-assignment.html"><a href="treatment-assignment.html#example-sociology-natural-experiment-from-government-or-official-cutoff"><i class="fa fa-check"></i><b>8.2.1</b> Example: sociology natural experiment from government or official cutoff</a></li>
 </ul></li>
 <li class="chapter" data-level="8.3" data-path="measurement.html"><a href="measurement.html"><i class="fa fa-check"></i><b>8.3</b> Measurement</a><ul>
-<li class="chapter" data-level="8.3.1" data-path="measurement.html"><a href="measurement.html#pitfalls"><i class="fa fa-check"></i><b>8.3.1</b> Pitfalls</a></li>
+<li class="chapter" data-level="8.3.1" data-path="measurement.html"><a href="measurement.html#pitfalls-1"><i class="fa fa-check"></i><b>8.3.1</b> Pitfalls</a></li>
 <li class="chapter" data-level="8.3.2" data-path="measurement.html"><a href="measurement.html#example-weaver2019too"><i class="fa fa-check"></i><b>8.3.2</b> Example: <span class="citation">Weaver, Prowse, and Piston (<span>2019</span>)</span></a></li>
 </ul></li>
 </ul></li>
@@ -476,21 +477,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Measurement is the part of the data strategy in which all variables used in sampling and treatment assignment as well as the answer strategy are collected. Researchers should measure all the variables needed to conduct other parts of <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span>. (This is similar to how we identified the variables that should be declared in <span class="math inline">\(M\)</span>, but in that case we need to define all the variables needed for <span class="math inline">\(I\)</span> and the measurement strategy some of which are not measured. The latent outcomes are defined in the model but not measured directly.)</p>
 <p>The fundamental problem of description is that we can never measure the latent variables we are interested in, <span class="math inline">\(Y^*\)</span>, such as fear, support for a political candidate, and economic wellbeing. Instead, we use a measurement technology to imperfectly observe them, which we represent as the function <span class="math inline">\(Q\)</span> that yield the observed outcome <span class="math inline">\(Y^{\mathrm obs}\)</span>: <span class="math inline">\(Q(Y^*) = Y^{\mathrm obs}\)</span>. Our measurement strategy is a set of functions <span class="math inline">\(Q\)</span> for each variable we measure.</p>
 <p>There are two basic ways to assess the quality of each function <span class="math inline">\(Q\)</span>: bias, or the difference between the observed and latent outcome, <span class="math inline">\(Y^{\mathrm obs} - Y^*\)</span>, which is given the special label <em>measurement validity</em>; and <em>measurement reliability</em>, which is the variance across multiple outcomes for a given individual, <span class="math inline">\(\Var(Y_1^{\mathrm obs}, Y_2^{\mathrm obs}, Y_3^{\mathrm obs})\)</span>.</p>
-<p>Researchers select several characteristics of <span class="math inline">\(Q\)</span>: who collects the measures; the mode of measurement; how often and when measures are taken; how many different observed measures of <span class="math inline">\(Y^*\)</span> are collected and how they are summarized into a single measure; and what information is provided to participants about how they are being measured (if any).</p>
-<p>WHO
-- the researcher, the participant, or a third party (e.g., administrative data collected by government)</p>
-<p>MODE
-- what mode they use to collect it: human coding of observations by sight, hearing, touch, smell, and taste; the special human coding through asking other humans in surveys; recordings of waves of light (e.g., photos), sound (e.g., audio and seismic recordings), electromagnetic waves (e.g., EKGs and x-rays), and combinations (e.g., video); thermometers and barometers; medical and biometric devices (e.g., blood tests)</p>
+<p>Researchers select several characteristics of <span class="math inline">\(Q\)</span>: the mode of measurement; who collects the measures; how often and when measures are taken; how many different observed measures of <span class="math inline">\(Y^*\)</span> are collected and how they are summarized into a single measure; and what (if any) information is provided to participants about how they are being measured.</p>
+<p>A wide variety of measurement tools are in use in the social sciences, but an even wider are possible. Measures can be collected through human observation: from the five senses, sight, hearing, touch, smell, and taste (the latter three are less frequently used!) as well as self-reports of emotions, attitudes, and perceptions. Recordings can be taken of waves of light (e.g., photos), sound (e.g., audio and seismic recordings), electromagnetic waves (e.g., EKGs and x-rays), and combinations of more than one (e.g., video). Instruments such as thermometers and barometers can provide measures of temperature and atmospheric pressures and medical devices can measure the presence of disease in blood and other fluids.</p>
+<ul>
+<li>measurement tools may have higher and lower validity and reliability. instruments can be calibrated and tested through multiple measurements.</li>
+<li>fundamental problem of validation studies: we never know the truth, so can only compare different observations with different tools</li>
+</ul>
+<p>These measures may be taken by the research participant themselves, by researchers, or by a third party (e.g., administrative data collected by government).
+- problem of self-reports and sensitivity bias
+- hawthorne effects
+- demand effects</p>
 <p>HOW OFTEN AND WHEN</p>
 <p>MULTIPLE MEASURES
 - multiple measurements - convex hull of several <span class="math inline">\(Y_j^{\mathrm obs}\)</span> around <span class="math inline">\(Y^*\)</span></p>
 <p>WHAT INFORMATION IS PROVIDED TO PARTICIPANTS ABOUT MEASUREMENT (IF ANY)</p>
-<div id="pitfalls" class="section level3">
+<div id="pitfalls-1" class="section level3">
 <h3><span class="header-section-number">8.3.1</span> Pitfalls</h3>
 <!-- interference, exludability, noncompliance -->
 <ul>
 <li>interference: measurement is affected by whether you measure in other units</li>
-<li></li>
+<li>excludability:</li>
+<li>noncompliance:</li>
 </ul>
 <!-- - survey experiments to measure latent characteristics -->
 <!-- - more T (david McKenzie).  How frequently to measure.  Andy - arguing against intermediate measurement? -->
