@@ -56,25 +56,25 @@ gg_df <- fabricate(
   unit = factor(unit, levels = c("Individual", "Cluster", "Multistage")),
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Stratified"))
   )
-  
-cluster_df <- gg_df %>% 
-  group_by(households, unit, sampling_type) %>% 
-  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>% 
+
+cluster_df <- gg_df %>%
+  group_by(households, unit, sampling_type) %>%
+  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>%
   filter(hh_sampled == TRUE, unit != "Individual")
 
-ggplot(gg_df, aes(X, Y)) + 
+ggplot(gg_df, aes(X, Y)) +
   geom_tile(aes(fill = sampled), color = NA, width = 0.46, height = 0.46) +
-  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) + 
+  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) +
   coord_fixed() +
   facet_grid(unit  ~ sampling_type, switch = "y") +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(gray(0.95), dd_light_blue)) +
-  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) + 
+  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank())
 
 
 # convenience
@@ -82,33 +82,33 @@ ggplot(gg_df, aes(X, Y)) +
 # RDS
 
 
-convenience <- 
-c(1, 1, 1, 1, 1, 1, 1, 1, 
-  1, 1, 1, 1, 1, 0, 0, 0, 
-  1, 1, 1, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+convenience <-
+c(1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 0, 0, 0,
+  1, 1, 1, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0)
 
-quota <- 
-c(1, 1, 1, 1, 1, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 1, 1, 1, 1, 1, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  1, 1, 1, 0, 1, 1, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 1, 1, 0, 0, 0, 
+quota <-
+c(1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 1, 1, 1, 1, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  1, 1, 1, 0, 1, 1, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 0, 0, 0,
   0, 0, 0, 0, 1, 1, 1, 0)
 
-rds <- 
-c(0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 
-  0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 
-  1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
-  1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
+rds <-
+c(0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
+  0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+  1, 0, 0, 0, 0, 1, 1, 0, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+  1, 1, 1, 0, 0, 1, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
   1, 1, 1, 0)
 
 
@@ -138,19 +138,19 @@ gg_df <- fabricate(
   )
 
 
-ggplot(gg_df, aes(X, Y)) + 
+ggplot(gg_df, aes(X, Y)) +
   geom_tile(aes(fill = sampled), color = NA, width = 0.46, height = 0.46) +
   # geom_text(aes(label = individuals)) +
   coord_fixed() +
   facet_wrap(~procedure) +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(gray(0.95), dd_light_blue)) +
-  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) + 
+  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank())
 
 set.seed(343)
 gg_df <- fabricate(
@@ -200,12 +200,12 @@ gg_df <- fabricate(
   unit = factor(unit, levels = c("Individual", "Cluster", "Saturation")),
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Blocked"))
   )
-  
+
 
 
 gg_df <-
   gg_df %>%
-  group_by(households, unit, sampling_type) %>% 
+  group_by(households, unit, sampling_type) %>%
   mutate(treated_cluster = any(sampled == 1),
          condition = case_when(
            sampled == 1 & unit == "Individual" ~ "T",
@@ -217,28 +217,28 @@ gg_df <-
            sampled == 0 & unit == "Saturation" & !treated_cluster  ~ "C"
          ))
 
-cluster_df <- gg_df %>% 
-  group_by(households, unit, sampling_type) %>% 
-  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>% 
+cluster_df <- gg_df %>%
+  group_by(households, unit, sampling_type) %>%
+  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>%
   filter(hh_sampled == TRUE, unit != "Individual")
 
-ggplot(gg_df, aes(X, Y)) + 
+ggplot(gg_df, aes(X, Y)) +
   geom_tile(aes(fill = condition), color = NA, width = 0.46, height = 0.46) +
-  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) + 
-  geom_text(aes(label = condition), size = 2, color = "white") + 
+  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) +
+  geom_text(aes(label = condition), size = 2, color = "white") +
   coord_fixed() +
   facet_grid(unit  ~ sampling_type, switch = "y") +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(dd_light_gray, "#72B4F366", dd_light_blue)) +
-  scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) + 
+  scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank())
 
 set.seed(343)
-gg_df <- 
+gg_df <-
   fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
   households = add_level(N = 4, household_num = 1:4 + 1:4 * 0.1),
@@ -260,24 +260,24 @@ gg_df <-
     levels = letters[1:3],
     labels = c("Three-arm", "Factorial", "Four-arm")
   ))
-  
+
 sort(unique(gg_df$assignment))
 
-gg_df %>% 
-  ggplot(aes(X, Y)) + 
+gg_df %>%
+  ggplot(aes(X, Y)) +
   geom_tile(aes(fill = assignment), width = 0.46, height = 0.46) +
-  geom_text(aes(label = assignment), size = 2, color = "white") + 
+  geom_text(aes(label = assignment), size = 2, color = "white") +
   coord_fixed() +
   facet_grid(~ procedure, switch = "y") +
-  dd_theme() + 
-  scale_fill_manual(values = c(dd_light_gray, dd_pink, dd_purple , dd_light_blue, dd_orange)) + 
+  dd_theme() +
+  scale_fill_manual(values = c(dd_light_gray, dd_pink, dd_purple , dd_light_blue, dd_orange)) +
   # scale_fill_manual(values = c("#72B4F333", dd_orange, dd_light_blue)) +
   # scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title = element_blank(),
-        axis.text = element_blank()) 
+        axis.text = element_blank())
 
 set.seed(343)
 gg_df <- fabricate(
@@ -293,18 +293,18 @@ gg_df <- fabricate(
     assignment2 = assignment %in% c("P1", "P2"),
     assignment3 = 1
   )) %>%
-  select(-assignment) %>% 
-  pivot_longer(cols = contains("assignment"), names_to = "procedure", values_to = "assignment") %>% 
+  select(-assignment) %>%
+  pivot_longer(cols = contains("assignment"), names_to = "procedure", values_to = "assignment") %>%
   mutate(procedure = factor(procedure, levels = paste0("assignment", 1:3), labels = c("Period 1", "Period 2", "Period 3")),
          assignment = as.factor(assignment))
 
-gg_df %>% 
-  ggplot(aes(X, Y)) + 
+gg_df %>%
+  ggplot(aes(X, Y)) +
   geom_tile(aes(fill = assignment), color = NA, width = 0.46, height = 0.46) +
-  # geom_text(aes(label = assignment), size = 2.5) + 
+  # geom_text(aes(label = assignment), size = 2.5) +
   coord_fixed() +
   facet_grid(~ procedure, switch = "y") +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(dd_light_gray, dd_light_blue)) +
   # scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
