@@ -1,7 +1,7 @@
 ---
 title: "Crafting a data strategy"
 output: html_document
-bibliography: ../bib/book.bib 
+bibliography: ../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -34,11 +34,11 @@ b_sims <- 20
 
 The data strategy is what researchers do in the world in order to collect information about it. Depending on the design, it could include decisions about any or or all of the following: how to sample or select cases, how to assign treatments, or how to measure outcomes.   
 
-These choices apply to all kinds of research. In experimental research, a large focus is given to the assignment of treatments. How many treatment conditions should there be? Should we use a simple coin flip to decide who receives treatment, or should we use a more complicated strategy like blocking? Experimenters are of course also very concerned with sampling and measurement procedures, but it is the random assignment to treatments that make experiments distinctive among research designs. 
+These choices apply to all kinds of research. In experimental research, a large focus is given to the assignment of treatments. How many treatment conditions should there be? Should we use a simple coin flip to decide who receives treatment, or should we use a more complicated strategy like blocking? Experimenters are of course also very concerned with sampling and measurement procedures, but it is the random assignment to treatments that make experiments distinctive among research designs.
 
 Quantitative descriptive research, on the other hand, often has an inquiry like the population average of some outcome variable. Since the goal here is to draw inferences about a population on the basis of a sample, we need to pay special attention to the procedure by which units are selected into the sample. We might use a random sampling procedure in order to generate a design-based justification for generalizing from samples to population. Nonrandom sampling procedures are also possible: convenience sampling, respondent-driven sampling, and snowball sampling are all data strategies that do not include an explicitly randomized component.
 
-Once we have selected units into the sample, we need to measure them in some way. The tools we use to measure are a critical part of the data strategy. For many social scientific studies, a main way we collect information is through surveys. A huge methodological literature on survey administration has developed to help guide researchers who have to design questionnaires. Bad survey questions yield distorted or noisy responses. A biased question systematically misses the true latent target it is designed to measure, in which case the question has low *validity*. A question is high variance if (hypothetically) you would obtain different answers each time you asked, in which case the question has low *reliability*. 
+Once we have selected units into the sample, we need to measure them in some way. The tools we use to measure are a critical part of the data strategy. For many social scientific studies, a main way we collect information is through surveys. A huge methodological literature on survey administration has developed to help guide researchers who have to design questionnaires. Bad survey questions yield distorted or noisy responses. A biased question systematically misses the true latent target it is designed to measure, in which case the question has low *validity*. A question is high variance if (hypothetically) you would obtain different answers each time you asked, in which case the question has low *reliability*.
 
 The concerns about validity and reliability do not disappear once we move out of the survey environment. For example, the information that shows up in an administrative database is itself the result of many human decisions, each of which has the possibility of increasing or decreasing the distance between the measurement and the latent measurement target.
 
@@ -48,7 +48,7 @@ The data strategy is a *set of procedures* that result in a dataset. It is impor
 
 The data strategy has three elements: sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data. All empirical studies have a data strategy and every data strategy involves sampling, assignment, and measurement. Even studies in which researchers measure the full universe of cases involve sampling, since *future* units are not included. Even studies in which researchers do not apply treatments themselves involve assignment, since other forces end up assigning units to conditions. Even studies in which researchers take no new measurements involve measurement, since a choice about which measurements made by others to use must nevertheless be made.
 
-Sampling choices confront the fundamental problem of generalization: we want to make inferences about units *not* sampled. Assignment choices confront the fundamental problem of causal inference: we want to make inferences about the conditions to which units were *not* assigned. Measurement choices confront the fundamental problem of descriptive inference: we want to make inferences about latent values on the basis of measured values. These problems are all fundamental in the sense that they cannot be surmounted and researchers should be humble in face of them. Strong research design can help, but we can never be *sure* that our sample generalizes, or that we know what would have happened in a counterfactual state of the world, or what true latent value of the outcome is (or if it even exists). 
+Sampling choices confront the fundamental problem of generalization: we want to make inferences about units *not* sampled. Assignment choices confront the fundamental problem of causal inference: we want to make inferences about the conditions to which units were *not* assigned. Measurement choices confront the fundamental problem of descriptive inference: we want to make inferences about latent values on the basis of measured values. These problems are all fundamental in the sense that they cannot be surmounted and researchers should be humble in face of them. Strong research design can help, but we can never be *sure* that our sample generalizes, or that we know what would have happened in a counterfactual state of the world, or what true latent value of the outcome is (or if it even exists).
 
 
 <!-- All studies will have a measurement strategy (otherwise nothing is measured and no data results from the data strategy), but only some will have sampling and treatment assignment procedures. A survey to measure satisfaction in a class might not sample units and instead measure all students in the class and no treatment would be assigned (we could, of course, define the sampling strategy as sampling all units). An experiment conducted in a class might have measurement and a treatment assignment strategy but no sampling. A survey of voters in a city might have a measurement strategy and a sampling strategy (random digit dialing, for example), but no treatment assignment (of course, here, we could define the treatment assignment procedure as assigning all units to a no-intervention condition). -->
@@ -138,25 +138,25 @@ gg_df <- fabricate(
   unit = factor(unit, levels = c("Individual", "Cluster", "Multistage")),
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Stratified"))
   )
-  
-cluster_df <- gg_df %>% 
-  group_by(households, unit, sampling_type) %>% 
-  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>% 
+
+cluster_df <- gg_df %>%
+  group_by(households, unit, sampling_type) %>%
+  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>%
   filter(hh_sampled == TRUE, unit != "Individual")
 
-ggplot(gg_df, aes(X, Y)) + 
+ggplot(gg_df, aes(X, Y)) +
   geom_tile(aes(fill = sampled), color = NA, width = 0.46, height = 0.46) +
-  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) + 
+  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) +
   coord_fixed() +
   facet_grid(unit  ~ sampling_type, switch = "y") +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(gray(0.95), dd_light_blue)) +
-  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) + 
+  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank())
 ```
 
 
@@ -167,7 +167,7 @@ ggplot(gg_df, aes(X, Y)) +
 
 There are many ways to draw a random sample, but two are particularly common in the social sciences: simple and stratified. Simple random sampling is sampling without replacement with a fixed sample size. Stratified random sampling takes a simple random sample of a fixed size from two or more subgroups, or strata, in the data. There are two different reasons you might select stratified random sampling over simple: your inquiry might involve comparisons between two subgroups, and you want to ensure you have a sufficient size in each subgroup; and there may be very different amounts of variability in two groups, and you want the most efficient estimate of a summary of that data so you oversample from the group with the higher variance to get a similar amount of precision from each group. Stratified sampling is a simple case of a larger class of sampling strategies, in which the probability of inclusion in the sample varies across units. In stratified sampling with two strata, the probability of inclusion is set for the two groups and is fixed within them. However, the probability can vary within strata as well. If you wish to have you sample include all age groups but upweight older people, you could make the probability of inclusion a function of age: the probability of sampling an 18 year old could be 0.01 ranging up to a probability of 0.1 for 80 year olds.
 
-When it is impossible to get a list of all units in the target population either because it does not exist or is too costly to obtain, clustered sampling is often a substitute. In cluster sampling, you obtain a list of clusters of units, randomly sample from the list of clusters, and either collect data from all units within selected clusters, or conduct a simple random sample of units within sampled cluster (this would represent a simple form of multistage sampling). The advantage is you can still obtain a random sample of units, but it is feasible to do so because you have a list of clusters (but not of all units). The disadvantage is that units within clusters often have similar outcomes, so you don't get as much benefit from sampling more clusters as you do from sampling units from other clusters that are more different. This efficiency tradeoff -- how many clusters to choose vs. how many units within clusters -- can be explored in design diagnosis by comparing the RMSE of various choices. There are many other forms of multistage sampling -- sample provinces then sample districts within provinces, then villages within districts, and people within villages -- that fit particular aims and budgets. 
+When it is impossible to get a list of all units in the target population either because it does not exist or is too costly to obtain, clustered sampling is often a substitute. In cluster sampling, you obtain a list of clusters of units, randomly sample from the list of clusters, and either collect data from all units within selected clusters, or conduct a simple random sample of units within sampled cluster (this would represent a simple form of multistage sampling). The advantage is you can still obtain a random sample of units, but it is feasible to do so because you have a list of clusters (but not of all units). The disadvantage is that units within clusters often have similar outcomes, so you don't get as much benefit from sampling more clusters as you do from sampling units from other clusters that are more different. This efficiency tradeoff -- how many clusters to choose vs. how many units within clusters -- can be explored in design diagnosis by comparing the RMSE of various choices. There are many other forms of multistage sampling -- sample provinces then sample districts within provinces, then villages within districts, and people within villages -- that fit particular aims and budgets.
 
 
 ### Nonrandomized sampling designs
@@ -178,7 +178,7 @@ Purposive sampling is a catch-all term for rule-based sampling strategies that d
 
 Case selection is another term for a sampling strategy. In case study research, whether qualitative or quantitative, the way you select the (typically small) set of cases is of great importance, and considerable attention has been paid to developing purposive case selection methods. Mills (cite) method of difference is a common case selection procedure, in which cases are selected that have different outcomes and the cases are inspected to identify characteristics that differ that may have led to the divergence. Lieberman (2005) proposes a method for selecting cases for indepth study from an initial regression study: cases on the regression line, well-predicted by it, are selected to determine whether the hypothesized causal relationship took place in those cases. Off-the-line cases, that are not well-predicted, are also selected to determine what factors may be left out of the regression model that provide alternative mechanisms. In each method, the inferential goal determines how cases are selected. Research design diagnosis can also help compare the efficiency and bias of these methods to select cases.
 
-Selection on the dependent variable is purposive sampling method that has recieved substantial attention. The procedure is to select positive outcomes --- units in which an event such as a revolution took place, for example --- and study what led to that outcome. Geddes (XXXX) lays out the problem in this method for case study research: we cannot know whether the factors identified from investigating these cases led to the event, because we do not know whether those factors are also present in units where the outcome did not happen. If the factor is present in both, it is unlikely to have caused the positive outcome. The same problem plagues observational quantitative research. Ramsay et al. (XXXX) discuss the bias that results from studying the factors predicting suicide terrorism by only looking at observations where suicide terrorism occurred. In order to avoid these problems accidentally creeping into our research, it is important to diagnose the bias of our designs and not just the efficiency. 
+Selection on the dependent variable is purposive sampling method that has recieved substantial attention. The procedure is to select positive outcomes --- units in which an event such as a revolution took place, for example --- and study what led to that outcome. Geddes (XXXX) lays out the problem in this method for case study research: we cannot know whether the factors identified from investigating these cases led to the event, because we do not know whether those factors are also present in units where the outcome did not happen. If the factor is present in both, it is unlikely to have caused the positive outcome. The same problem plagues observational quantitative research. Ramsay et al. (XXXX) discuss the bias that results from studying the factors predicting suicide terrorism by only looking at observations where suicide terrorism occurred. In order to avoid these problems accidentally creeping into our research, it is important to diagnose the bias of our designs and not just the efficiency.
 
 ```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 
@@ -187,33 +187,33 @@ Selection on the dependent variable is purposive sampling method that has reciev
 # RDS
 
 
-convenience <- 
-c(1, 1, 1, 1, 1, 1, 1, 1, 
-  1, 1, 1, 1, 1, 0, 0, 0, 
-  1, 1, 1, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
+convenience <-
+c(1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 0, 0, 0,
+  1, 1, 1, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0)
 
-quota <- 
-c(1, 1, 1, 1, 1, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 1, 1, 1, 1, 1, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  1, 1, 1, 0, 1, 1, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 
-  0, 0, 0, 1, 1, 0, 0, 0, 
+quota <-
+c(1, 1, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 1, 1, 1, 1, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  1, 1, 1, 0, 1, 1, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 0, 0, 0,
   0, 0, 0, 0, 1, 1, 1, 0)
 
-rds <- 
-c(0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 
-  0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 
-  1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 
-  1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
-  1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 
-  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
+rds <-
+c(0, 0, 0, 1, 1, 1, 0, 1, 0, 0,
+  0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+  1, 0, 0, 0, 0, 1, 1, 0, 1, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+  1, 1, 1, 0, 0, 1, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
   1, 1, 1, 0)
 
 
@@ -243,19 +243,19 @@ gg_df <- fabricate(
   )
 
 
-ggplot(gg_df, aes(X, Y)) + 
+ggplot(gg_df, aes(X, Y)) +
   geom_tile(aes(fill = sampled), color = NA, width = 0.46, height = 0.46) +
   # geom_text(aes(label = individuals)) +
   coord_fixed() +
   facet_wrap(~procedure) +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(gray(0.95), dd_light_blue)) +
-  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) + 
+  scale_x_continuous(name = "Stratum (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank())
 ```
 
 
@@ -269,7 +269,7 @@ Sampling, like all data strategies, is an intervention in the world by researche
 <!-- interference, exludability, noncompliance -->
 
 - interference: whether you are sampled depends on whether other people are sampled
-- excludability: 
+- excludability:
 - noncompliance: failure to participate when sampled == survey nonresponse
 
 <!-- you create strata and clusters from real things in the world -->
@@ -356,12 +356,12 @@ gg_df <- fabricate(
   unit = factor(unit, levels = c("Individual", "Cluster", "Saturation")),
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Blocked"))
   )
-  
+
 
 
 gg_df <-
   gg_df %>%
-  group_by(households, unit, sampling_type) %>% 
+  group_by(households, unit, sampling_type) %>%
   mutate(treated_cluster = any(sampled == 1),
          condition = case_when(
            sampled == 1 & unit == "Individual" ~ "T",
@@ -373,31 +373,31 @@ gg_df <-
            sampled == 0 & unit == "Saturation" & !treated_cluster  ~ "C"
          ))
 
-cluster_df <- gg_df %>% 
-  group_by(households, unit, sampling_type) %>% 
-  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>% 
+cluster_df <- gg_df %>%
+  group_by(households, unit, sampling_type) %>%
+  summarize(hh_sampled = any(sampled == 1), X = mean(X), Y = mean(Y)) %>%
   filter(hh_sampled == TRUE, unit != "Individual")
 
-ggplot(gg_df, aes(X, Y)) + 
+ggplot(gg_df, aes(X, Y)) +
   geom_tile(aes(fill = condition), color = NA, width = 0.46, height = 0.46) +
-  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) + 
-  geom_text(aes(label = condition), size = 2, color = "white") + 
+  geom_tile(data = cluster_df, fill = NA, color = gray(0.6), size = 0.25, width = 1.03, height = 1.03) +
+  geom_text(aes(label = condition), size = 2, color = "white") +
   coord_fixed() +
   facet_grid(unit  ~ sampling_type, switch = "y") +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(dd_light_gray, "#72B4F366", dd_light_blue)) +
-  scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) + 
+  scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
-        axis.text.y = element_blank()) 
+        axis.text.y = element_blank())
 ```
 
 
 ```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
-gg_df <- 
+gg_df <-
   fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
   households = add_level(N = 4, household_num = 1:4 + 1:4 * 0.1),
@@ -419,24 +419,24 @@ gg_df <-
     levels = letters[1:3],
     labels = c("Three-arm", "Factorial", "Four-arm")
   ))
-  
+
 sort(unique(gg_df$assignment))
 
-gg_df %>% 
-  ggplot(aes(X, Y)) + 
+gg_df %>%
+  ggplot(aes(X, Y)) +
   geom_tile(aes(fill = assignment), width = 0.46, height = 0.46) +
-  geom_text(aes(label = assignment), size = 2, color = "white") + 
+  geom_text(aes(label = assignment), size = 2, color = "white") +
   coord_fixed() +
   facet_grid(~ procedure, switch = "y") +
-  dd_theme() + 
-  scale_fill_manual(values = c(dd_light_gray, dd_pink, dd_purple , dd_light_blue, dd_orange)) + 
+  dd_theme() +
+  scale_fill_manual(values = c(dd_light_gray, dd_pink, dd_purple , dd_light_blue, dd_orange)) +
   # scale_fill_manual(values = c("#72B4F333", dd_orange, dd_light_blue)) +
   # scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title = element_blank(),
-        axis.text = element_blank()) 
+        axis.text = element_blank())
 ```
 
 ```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
@@ -454,18 +454,18 @@ gg_df <- fabricate(
     assignment2 = assignment %in% c("P1", "P2"),
     assignment3 = 1
   )) %>%
-  select(-assignment) %>% 
-  pivot_longer(cols = contains("assignment"), names_to = "procedure", values_to = "assignment") %>% 
+  select(-assignment) %>%
+  pivot_longer(cols = contains("assignment"), names_to = "procedure", values_to = "assignment") %>%
   mutate(procedure = factor(procedure, levels = paste0("assignment", 1:3), labels = c("Period 1", "Period 2", "Period 3")),
          assignment = as.factor(assignment))
 
-gg_df %>% 
-  ggplot(aes(X, Y)) + 
+gg_df %>%
+  ggplot(aes(X, Y)) +
   geom_tile(aes(fill = assignment), color = NA, width = 0.46, height = 0.46) +
-  # geom_text(aes(label = assignment), size = 2.5) + 
+  # geom_text(aes(label = assignment), size = 2.5) +
   coord_fixed() +
   facet_grid(~ procedure, switch = "y") +
-  dd_theme() + 
+  dd_theme() +
   scale_fill_manual(values = c(dd_light_gray, dd_light_blue)) +
   # scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
@@ -481,11 +481,11 @@ gg_df %>%
 
 ## Measurement
 
-Measurement is the part of the data strategy in which variables are collected about the population of units to enable sampling, variables are collected about the sample before treatment assignment including those used in treatment assignment, and outcomes are collected after treatment assignment. All variables used in the answer strategy are collected in measurement, aside from the treatment assignment variable and assignment and sample inclusion probabilities. 
+Measurement is the part of the data strategy in which variables are collected about the population of units to enable sampling, variables are collected about the sample before treatment assignment including those used in treatment assignment, and outcomes are collected after treatment assignment. All variables used in the answer strategy are collected in measurement, aside from the treatment assignment variable and assignment and sample inclusion probabilities.
 
 The fundamental problem of description is that we can never measure the latent variables we are interested in, $Y^*$, such as fear, support for a political candidate, and economic wellbeing. Instead, we use a measurement technology to imperfectly observe them, which we represent as the function $Q$ that yield the observed outcome $Y^{\mathrm obs}$: $Q(Y^*) = Y^{\mathrm obs}$. Our measurement strategy is a set of functions $Q$ for each variable we measure.
 
-There are two basic ways to assess the quality of each function $Q$: bias, or the difference between the observed and latent outcome, $Y^{\mathrm obs} - Y^*$, which is given the special label *measurement validity*; and *measurement reliability*, which is the variance across multiple outcomes for a given individual, $\V(Y_1^{\mathrm obs}, Y_2^{\mathrm obs}, Y_3^{\mathrm obs})$. 
+There are two basic ways to assess the quality of each function $Q$: bias, or the difference between the observed and latent outcome, $Y^{\mathrm obs} - Y^*$, which is given the special label *measurement validity*; and *measurement reliability*, which is the variance across multiple outcomes for a given individual, $\V(Y_1^{\mathrm obs}, Y_2^{\mathrm obs}, Y_3^{\mathrm obs})$.
 
 Researchers select several characteristics of $Q$: who collects the measures; the mode of measurement; how often and when measures are taken; how many different observed measures of $Y^*$ are collected and how they are summarized into a single measure; and what information is provided to participants about how they are being measured (if any). These design characteristics may affect validity, reliability, or both.
 
@@ -493,30 +493,17 @@ Data may be collected by the researcher themselves, by the participant, or by a 
 
 Most of the variety in measurement strategies is how those data collectors obtain their data. Humans can code data by observation through the five senses of sight, hearing, touch, smell, and taste, and by asking other humans for self-reports about themselves in surveys. Measurement instruments can also be used to record waves of light (e.g., photos), sound (e.g., audio and seismic recordings), electromagnetism (e.g., EKGs and x-rays), and combinations of more than one (e.g., video); characteristics of the atmosphere (e.g., temperature and pressure), the water (e.g., salinity and pollution), and the soil (i.e., mercury pollution); and human and animal health (e.g., blood tests). Considerable recent progress has been made in taking advantage of all of these measurement modes due to increasing computing power and machine learning techniques that can code streams of raw data from photos, videos, and these other sources and translate them into usable data. The translation of raw data into coded data that can be used for analysis is part of $Q$ in the measurement strategy.
 
-Beyond what and by whom, two important features of any data collection strategy are when and how often. In experiments, data is often collected after treatment is delivered, and sometimes before at baseline to enable block randomization and before-after comparisons. In difference-in-difference studies, data is always collected before and after, and to buttress claims of parallel trends between treated and control often for multiple periods before treatment. In process tracing studies, data is typically collected at many periods in between a change in the independent variable and a change in the dependent variable to demonstrate the connection between the two. How often data are collected after the treatment (or change in the independent variable) influences reliability: measuring highly variable outcomes multiple times and averaging can increase measurement reliability. The flip side of this is when variables are fast to change, taking measurements at baseline to compare to endline measurements is not likely to increase reliability. When outcomes change slowly, however, baseline measurements are likely to substantially improve the efficiency of estimates of treatment effects (for further discussion, see cite more T). 
+When data are collected, and how often, can also affect validity and reliability. The inquiry should guide when data is collected in relation to other events such as an election or the holiday period or the time after a treatment is delivered to research participants. The inquiry defines whether the effect of interest is a month after treatment or in the case of longterm effects a year or more. However, data need not be collected at a single time period. The model encodes beliefs about the autocorrelation (correlation over time) of data that varies over time, and this can help guide whether to collect multiple measurements or just one and whether to measure data at baseline as well as endline. If data are expected to be highly variable (low autocorrelation), then taking multiple measurements and averaging them may provide efficiency gains. When they exhibit high autocorrelation, then multiple measures will waste resources --- approximately the same measure will be returned each time. However, under high autocorrelation there will be large gains from collecting a baseline measure before a treatment in an experiment, because controlling for baseline outcomes the only major change will be the response to treatment. Thus, the estimates of treatment effects will be much more efficient (more T cite). Beliefs about autocorrelation can guide decisions about the tradeoff between including more participants or more measures of a smaller set of participants.
 
-Collecting multiple measures need not take place at different points in time. We always measure $Y^*$ with error, and in many cases have access to multiple imperfect measurement techniques. When possible, taking multiple, different measures and averaging will typically yield efficiency improvements. (In some cases, there may be a tradeoff with a budget constraint in terms of survey length or the number of subjects.) You then combine then with a weighting. 
+Parallel considerations apply to the choice to measure the same latent $Y_i^*$ with multiple measurement tools in the same time period. When possible, taking multiple, different measures and averaging will typically yield efficiency improvements. (In some cases, there may be a tradeoff with a budget constraint in terms of survey length or the number of subjects.) The multiple measures can then be combined to construct a single measure of $Y_i^*$. When the tools produce answers that are highly correlated, taking multiple measures is unlikely to be worth the cost but when the correlation is low it will be worth taking multiple measurements and averaging to improve efficiency.
 
-- Y_i^* - scaling
+Beyond what and by whom, two important features of any data collection strategy are when and how often. In experiments, data is often collected after treatment is delivered, and sometimes before at baseline to enable block randomization and before-after comparisons. In difference-in-difference studies, data is always collected before and after, and to buttress claims of parallel trends between treated and control often for multiple periods before treatment. In process tracing studies, data is typically collected at many periods in between a change in the independent variable and a change in the dependent variable to demonstrate the connection between the two. How often data are collected after the treatment (or change in the independent variable) influences reliability: measuring highly variable outcomes multiple times and averaging can increase measurement reliability. The flip side of this is when variables are fast to change, taking measurements at baseline to compare to endline measurements is not likely to increase reliability. When outcomes change slowly, however, baseline measurements are likely to substantially improve the efficiency of estimates of treatment effects (for further discussion, see cite more T).
 
+Selecting among measurement modes, data collectors, time periods, frequency, and the number of measurements reduces to tradeoffs between their validity and reliability. We want the largest set of valid, measures to combine into a measurement of $Y_i^*$ that meet our budget and logistical constraints. However, some measurement techniques will vary in both validity and reliability, so often we must decide on a weighting of the two concerns given our research goals. In some cases, validity will be important even if the measures are unreliable, but in others we may want to weight them approximately equally.
 
-
-MULTIPLE MEASURES
-- multiple measurements - convex hull of several $Y_j^{\mathrm obs}$ around $Y^*$
+Learning which measurement tools are valid and reliable is ultimately guesswork, though it can be informed guesswork. We cannot measure the true $Y_i^*$, so we cannot truly "validate" any measurement technique. Often studies present themselves as validation studies by comparing a proposed measure to a "ground truth," measured from administrative data or a second technique to reduce measurement error. However, neither measurement is known to be exactly  $Y_i^*$, so ultimately these studies are comparisons of multiple techniques each with their own advantages and disadvantages. This does not make them useless, but rather should be used to understand the how measurements differ on average and in variability. They may also be useful for informing how to combine multiple measures.
 
 ### Pitfalls
-
-- random assignment: 
-- interference: measurement is affected by whether you measure in other units
-- excludability: no hawthorne effects
-
-
-==
-
-Data are not always collected directly by the researcher, and the identity of the data collector may impact the quality of research. The data collector should, when possible, by blind to the hypotheses of 
-
-
-When the researcher collects data, the main concerns are blinding to treatment status and 
 
 Perhaps the most common pitfall of measurement is the sensitivity bias that affects measures self-reported by participants in the presence of social pressure or the risk of sanction from authorities who prefer to hide or wish to detect sensitive characteristics in the population (BCM2020). Sensitivity bias represents an excludability violation: the latent outcome $Y_i^*$ depends on which measurement tool is used. More generally, excludability violations of measurement imply that the very act of measurement affects the latent outcome, often known as a Hawthorne effect. Typically, we want to avoid these excludability violations, because we are trying to measure a latent quantity that exists independent of how it is measured.
 
@@ -528,5 +515,3 @@ The final pitfall of measurement is attrition, or nonresponse. There are two typ
 <!-- - issues with rates - y^* / x^*, then rates are messed up -->
 
 ### Example: @weaver2019too
-
-
