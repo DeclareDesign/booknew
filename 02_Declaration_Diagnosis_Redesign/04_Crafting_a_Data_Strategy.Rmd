@@ -125,21 +125,25 @@ Treatment assignment is closely related to sampling. A sampling strategy assigns
 
 ## Measurement
 
-Measurement is the part of the data strategy in which all variables used in sampling and treatment assignment as well as the answer strategy are collected. Researchers should measure all the variables needed to conduct other parts of $D$ and $A$. (This is similar to how we identified the variables that should be declared in $M$, but in that case we need to define all the variables needed for $I$ and the measurement strategy some of which are not measured. The latent outcomes are defined in the model but not measured directly.)
+Measurement is the part of the data strategy in which variables are collected about the population of units to enable sampling, variables are collected about the sample before treatment assignment including those used in treatment assignment, and outcomes are collected after treatment assignment. All variables used in the answer strategy are collected in measurement, aside from the treatment assignment variable and assignment and sample inclusion probabilities. 
 
 The fundamental problem of description is that we can never measure the latent variables we are interested in, $Y^*$, such as fear, support for a political candidate, and economic wellbeing. Instead, we use a measurement technology to imperfectly observe them, which we represent as the function $Q$ that yield the observed outcome $Y^{\mathrm obs}$: $Q(Y^*) = Y^{\mathrm obs}$. Our measurement strategy is a set of functions $Q$ for each variable we measure.
 
-There are two basic ways to assess the quality of each function $Q$: bias, or the difference between the observed and latent outcome, $Y^{\mathrm obs} - Y^*$, which is given the special label *measurement validity*; and *measurement reliability*, which is the variance across multiple outcomes for a given individual, $\Var(Y_1^{\mathrm obs}, Y_2^{\mathrm obs}, Y_3^{\mathrm obs})$. 
+There are two basic ways to assess the quality of each function $Q$: bias, or the difference between the observed and latent outcome, $Y^{\mathrm obs} - Y^*$, which is given the special label *measurement validity*; and *measurement reliability*, which is the variance across multiple outcomes for a given individual, $\V(Y_1^{\mathrm obs}, Y_2^{\mathrm obs}, Y_3^{\mathrm obs})$. 
 
-Researchers select several characteristics of $Q$: who collects the measures; the mode of measurement; how often and when measures are taken; how many different observed measures of $Y^*$ are collected and how they are summarized into a single measure; and what information is provided to participants about how they are being measured (if any). 
+Researchers select several characteristics of $Q$: who collects the measures; the mode of measurement; how often and when measures are taken; how many different observed measures of $Y^*$ are collected and how they are summarized into a single measure; and what information is provided to participants about how they are being measured (if any). These design characteristics may affect validity, reliability, or both.
 
-WHO
-- the researcher, the participant, or a third party (e.g., administrative data collected by government)
+Data may be collected by the researcher themselves, by the participant, or by a third party. In some forms of qualitative research such as participant-observation and interview-based research, the researcher may be the primary data collector. In survey research, the interviewer is typically a hired agent of the researcher, and in many cases multiple inteviewers are hired. These interviewers may ask questions differently, leading to less reliable (more variable) answers and in some cases validity problems when they ask questions in a way that leads to biased measures of $Y^*$. Participants themselves are often asked to collect data on themselves, either through self-administered surveys, journaling, or taking measurements of themselves using thermometers or scales. A primary concern with self-reports is validity: do respondents report their measurements truthfully. A parallel concern is raised when participants do not collect their own data but are made aware of the fact that they are being measured by others. Finally, data may be collected by agents of government or other organizations, yielding so-called administrative data. The difference between administrative data and other forms of data is only in the identity of the data collector.
 
-MODE
-- what mode they use to collect it: human coding of observations by sight, hearing, touch, smell, and taste; the special human coding through asking other humans in surveys; recordings of waves of light (e.g., photos), sound (e.g., audio and seismic recordings), electromagnetic waves (e.g., EKGs and x-rays), and combinations (e.g., video); thermometers and barometers; medical and biometric devices (e.g., blood tests)
+Most of the variety in measurement strategies is how those data collectors obtain their data. Humans can code data by observation through the five senses of sight, hearing, touch, smell, and taste, and by asking other humans for self-reports about themselves in surveys. Measurement instruments can also be used to record waves of light (e.g., photos), sound (e.g., audio and seismic recordings), electromagnetism (e.g., EKGs and x-rays), and combinations of more than one (e.g., video); characteristics of the atmosphere (e.g., temperature and pressure), the water (e.g., salinity and pollution), and the soil (i.e., mercury pollution); and human and animal health (e.g., blood tests). Considerable recent progress has been made in taking advantage of all of these measurement modes due to increasing computing power and machine learning techniques that can code streams of raw data from photos, videos, and these other sources and translate them into usable data. The translation of raw data into coded data that can be used for analysis is part of $Q$ in the measurement strategy.
 
-HOW OFTEN AND WHEN
+Beyond what and by whom, two important features of any data collection strategy are when and how often. In experiments, data is often collected after treatment is delivered, and sometimes before at baseline to enable block randomization and before-after comparisons. In difference-in-difference studies, data is always collected before and after, and to buttress claims of parallel trends between treated and control often for multiple periods before treatment. In process tracing studies, data is typically collected at many periods in between a change in the independent variable and a change in the dependent variable to demonstrate the connection between the two. How often data are collected after the treatment (or change in the independent variable) influences reliability: measuring highly variable outcomes multiple times and averaging can increase measurement reliability. The flip side of this is when variables are fast to change, taking measurements at baseline to compare to endline measurements is not likely to increase reliability. When outcomes change slowly, however, baseline measurements are likely to substantially improve the efficiency of estimates of treatment effects (for further discussion, see cite more T). 
+
+Collecting multiple measures need not take place at different points in time. We always measure $Y^*$ with error, and in many cases have access to multiple imperfect measurement techniques. When possible, taking multiple, different measures and averaging will typically yield efficiency improvements. (In some cases, there may be a tradeoff with a budget constraint in terms of survey length or the number of subjects.) You then combine then with a weighting. 
+
+- Y_i^* - scaling
+
+
 
 MULTIPLE MEASURES
 - multiple measurements - convex hull of several $Y_j^{\mathrm obs}$ around $Y^*$
@@ -149,8 +153,17 @@ WHAT INFORMATION IS PROVIDED TO PARTICIPANTS ABOUT MEASUREMENT (IF ANY)
 ### Pitfalls
 <!-- interference, exludability, noncompliance -->
 
+- random assignment: 
 - interference: measurement is affected by whether you measure in other units
-- 
+- excludability: no hawthorne effects
+
+
+==
+
+Data are not always collected directly by the researcher, and the identity of the data collector may impact the quality of research. The data collector should, when possible, by blind to the hypotheses of 
+
+
+When the researcher collects data, the main concerns are blinding to treatment status and 
 
 
 
