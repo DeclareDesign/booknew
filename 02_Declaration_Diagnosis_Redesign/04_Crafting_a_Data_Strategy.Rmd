@@ -67,6 +67,14 @@ This table describes XX common forms of sampling. The most basic form is simple 
 
 Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$. To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, p = 0.5))` a few times and compare the results wiht `table(complete_rs(N = 100, n = 50))`. Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or less than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
 
+Complete random sampling solves the problem of fixing the total number of sampled units, but it doesn't address the problem that the total number of units with particular characteristics will not be fixed.  Imagine a population with $N_{y}$ young people and $N_{o}$ old people. If we sample exactly $n$ from the population $N_{y} + N_{o}$, the number of sampled young people ($n_y$) and sampled old people ($n_{o}$) will bounce around from sample to sample. We can solve this problem by conducting complete random sampling *within* each group of units. This procedure goes by the name stratified random sampling, since the sampling is conducted separately within the strata of units. In our example, our strata were formed by a dichotomoous grouping of people into "young" and "old" categories, but in general, the sampling strata can be formed by any information we have about units before they are sampled. Stratification offers at least three major benefits. First, we defend against sampling surprisingly too few units in some stratum by "bad luck." Second (as discussed in the chapter on answer strategies) stratification tends to produce lower variance estimates of most inquiries. Finally, stratification allows researchers to "oversample"  subgroups of particular interest.
+
+Stratified sampling should not be confused with cluster sampling. Stratified sampling means that a fixed number of units from a particular group are drawn into the sample. Cluster sampling means that units from a particular group are brought into the sample *together*. For example, if we cluster sample households, we interview all individuals living in a sampled household. Clustering introduces dependence in the sampling procedure -- if one member of the household is sampled, the other members are also always sampled. Relative to a complete random sample of the same size, cluster samples tend to produce higher variance estimates. Just as the individual sampling designs, cluster sampling comes in simple, complete, and stratified varieties with exactly parallel logics and motivations.
+
+Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. 
+
+Table XXX collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling.
+
 | Design | Description | Randomizr function |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
 | Simple random sampling      | "Coin flip" or Bernoulli random sampling. All units have the same inclusion probability p | simple_rs(N = 100, p = 0.25)      |
@@ -75,6 +83,10 @@ Complete random sampling addresses this problem. Under complete random sampling,
 | Cluster random sampling     | Whole groups of units are brought into the sample together. | cluster_ra(clusters = households) |
 | Stratifed cluster sampling  | Cluster random sampling within strata| strata_and_cluster_rs(strata = regions,clusters = villages)|
 | Multi-stage random sampling | First clusters, then units within clusters| cluster_ra(clusters = villages); strata_ra(strata = villages|
+
+
+Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each. 
+
 
 ```{r, fig.width = 6.5, fig.height = 7, echo = FALSE}
 set.seed(343)
