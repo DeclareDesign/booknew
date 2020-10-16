@@ -1,5 +1,5 @@
 # ---
-# Multilevel regression and poststratification
+# Poststratification
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
@@ -16,6 +16,20 @@ design <-
   declare_step(B_demeaned = (X == "B") - mean(X == "B"),
                C_demeaned = (X == "C") - mean(X == "C"), mutate) + 
   declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, estimand = "Ybar")
+
+fixed_population <- declare_population(
+  group = add_level(N = 2, X = c(0,1), population_n = c(100,50)),
+  individual = add_level(N = population_n, Y = X + sample(0:1, N, replace = TRUE)))()
+
+design <- 
+  declare_population(data = fixed_population) + 
+  declare_estimand(Ybar = mean(Y)) + 
+  declare_sampling(strata_n = c(4,25), strata = X) + 
+  declare_step(handler = group_by, groups = X) +
+  declare_step(handler = mutate, 
+               sample_n = n(), 
+               weight = population_n / sample_n) +
+  declare_estimator(Y ~ 1, term = "(Intercept)", model = lm_robust, weights = weight, estimand = "Ybar")
 
 dag <- dagify(Y ~ S + X,
               S ~ X)
