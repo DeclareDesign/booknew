@@ -1,10 +1,4 @@
 
-
-
-dd_dark_blue <- "#3564ED"
-dd_light_blue <- "#72B4F3"
-dd_gray <- gray(0.2)
-
 aes_df <-
   tibble(
     data_strategy = rep(c(
