@@ -19,62 +19,19 @@ source("scripts/before_chapter_script.R")
 
 ## Stepped wedge designs
 
-In a stepped wedge design, individuals are randomly assigned to enter into treatment in
-different stages and at each stage their outcomes are remeasured. Figure
-\@ref(fig:stepped-wedge) illustrates where the study gets its name: as two units are
-randomly added to the treatment group in each of the three waves, the treatment group
-increases in "steps" while the control group diminishes.
+In a stepped wedge design, individuals are randomly assigned to enter into treatment in different stages and at each stage their outcomes are remeasured. Figure \@ref(fig:stepped-wedge) illustrates where the study gets its name: as two units are randomly added to the treatment group in each of the three waves, the treatment group increases in "steps" while the control group diminishes.
 
-Often, stepped wedge designs are vaunted for their policy appeal because they allow for
-everyone to be (eventually) treated in the context of an experiment. However, you could
-achieve the same goal in a regular two-armed trial by treating everyone after the final
-wave of measurement, and not all stepped wedge designs involve treating everyone. The real
-advantage of the stepped wedge is not in its ethical appeal: it's the ability to squeeze
-more power out of a small sample by treating each wave as though it were its own study.
+Often, stepped wedge designs are vaunted for their policy appeal because they allow for everyone to be (eventually) treated in the context of an experiment. However, you could achieve the same goal in a regular two-armed trial by treating everyone after the final wave of measurement, and not all stepped wedge designs involve treating everyone. The real advantage of the stepped wedge is not in its ethical appeal: it's the ability to squeeze more power out of a small sample by treating each wave as though it were its own study.
 
 ### Declaration
 
-- **M**odel: Eight units are randomized and remeasured at three time points. Importantly,
-any unit at any given point in time reveals one of only two potential outcomes---treated or
-untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific
-shock. Treated potential outcomes increase relative to control potential outcome by a rate
-of 1 each period---in other words, there are bigger treatment effects in later periods.
+- **M**odel: Eight units are randomized and remeasured at three time points. Importantly, any unit at any given point in time reveals one of only two potential outcomes---treated or untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific shock. Treated potential outcomes increase relative to control potential outcome by a rate of 1 each period---in other words, there are bigger treatment effects in later periods.
 
-- **I**nquiry: Our estimand is the average treatment effect over all units and periods in
-the sample. Averaged over the three periods, the ATE is (1 + 2 + 3) / 3 = 2.
+- **I**nquiry: Our estimand is the average treatment effect over all units and periods in the sample. Averaged over the three periods, the ATE is (1 + 2 + 3) / 3 = 2.
 
-- **D**ata strategy: Our assignment strategy adds two units (one-quarter of the total
-sample) to the treatment at random in each wave, leaving two units who are not treated in
-any wave at all---see the remaining two orange squares at the top-right corner of  Figure
-\@ref(fig:stepped-wedge). Notice that, while every *unit* is assigned to a treatment wave
-with equal probability, each wave reveals treated and untreated potential outcomes of
-*unit-periods* with different probabilities. In the first wave, one-quarter of the units
-reveal their treated potential outcomes; in the second wave, one-half of the units reveal
-their treated potential outcomes, and in the final wave, three-quarters of the units reveal
-treated potential outcomes. In essence, our experiment is like a block-randomized trial,
-with unit-periods grouped into period-specific blocks that have differential probabilities
-of assignment.
+- **D**ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all---see the remaining two orange squares at the top-right corner of  Figure \@ref(fig:stepped-wedge). Notice that, while every *unit* is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of *unit-periods* with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.
 
-- **A**nswer strategy: Just as in a block-randomized trial with differential probabilities,
-we need to take account of the fact that our assignment strategy "under-represents" treated
-potential outcomes in the first wave and "over-represents" them in the last wave.
-Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit's
-IPW is represented on Figure \@ref(fig:stepped-wedge). But what do the numbers mean, and
-why do they change from one wave to another? In a sampling context, the IPW tells us how
-many units in the population each sampled unit represents. In the experimental context, the
-treatment assignment randomly samples units' *potential outcomes*. So, in the first wave,
-the two treated units each have to stand in for four units' treated potential outcomes (4 +
-4 = 8 units). The potential outcomes revealed by the six units assigned to the control each
-stand in for 1.33 other units' potential outcomes (1.33 + 1.33 + 1.33 + 1.33 + 1.33 + 1.33
-= 8 units). Since the second wave is comprised of one-half treated potential outcomes and
-one-half control potential outcomes, each unit represents two other units' potential
-outcomes. Using these weights, we get a "representative" estimate of the average control
-and treatment potential outcomes in each wave. If we didn't apply the weights, we wouldn't
-get a representative view of the unobserved potential outcomes we're sampling, and our
-estimates would be biased. So what does all this buy us? We also declare a "two-arm"
-estimator that focuses on wave 2 only, where half of the units are in control and half in
-treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) /
-.41 = 27% higher power.
+- **A**nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy "under-represents" treated potential outcomes in the first wave and "over-represents" them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit's IPW is represented on Figure \@ref(fig:stepped-wedge). But what do the numbers mean, and why do they change from one wave to another? In a sampling context, the IPW tells us how many units in the population each sampled unit represents. In the experimental context, the treatment assignment randomly samples units' *potential outcomes*. So, in the first wave, the two treated units each have to stand in for four units' treated potential outcomes (4 + 4 = 8 units). The potential outcomes revealed by the six units assigned to the control each stand in for 1.33 other units' potential outcomes (1.33 + 1.33 + 1.33 + 1.33 + 1.33 + 1.33 = 8 units). Since the second wave is comprised of one-half treated potential outcomes and one-half control potential outcomes, each unit represents two other units' potential outcomes. Using these weights, we get a "representative" estimate of the average control and treatment potential outcomes in each wave. If we didn't apply the weights, we wouldn't get a representative view of the unobserved potential outcomes we're sampling, and our estimates would be biased. So what does all this buy us? We also declare a "two-arm" estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.
 
 
 ```{r}
