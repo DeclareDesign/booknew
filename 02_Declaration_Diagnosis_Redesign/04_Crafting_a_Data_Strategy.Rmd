@@ -499,19 +499,101 @@ Parallel considerations apply to the choice to measure the same latent $Y_i^*$ w
 
 Beyond what and by whom, two important features of any data collection strategy are when and how often. In experiments, data is often collected after treatment is delivered, and sometimes before at baseline to enable block randomization and before-after comparisons. In difference-in-difference studies, data is always collected before and after, and to buttress claims of parallel trends between treated and control often for multiple periods before treatment. In process tracing studies, data is typically collected at many periods in between a change in the independent variable and a change in the dependent variable to demonstrate the connection between the two. How often data are collected after the treatment (or change in the independent variable) influences reliability: measuring highly variable outcomes multiple times and averaging can increase measurement reliability. The flip side of this is when variables are fast to change, taking measurements at baseline to compare to endline measurements is not likely to increase reliability. When outcomes change slowly, however, baseline measurements are likely to substantially improve the efficiency of estimates of treatment effects (for further discussion, see cite more T).
 
+Perhaps the most common pitfall of measurement is the sensitivity bias that affects measures self-reported by participants in the presence of social pressure or the risk of sanction from authorities who prefer to hide or wish to detect sensitive characteristics in the population (BCM2020). Sensitivity bias represents an excludability violation: the latent outcome $Y_i^*$ depends on which measurement tool is used. More generally, excludability violations of measurement imply that the very act of measurement affects the latent outcome, often known as a Hawthorne effect. Typically, we want to avoid these excludability violations, because we are trying to measure a latent quantity that exists independent of how it is measured.
+
 Selecting among measurement modes, data collectors, time periods, frequency, and the number of measurements reduces to tradeoffs between their validity and reliability. We want the largest set of valid, measures to combine into a measurement of $Y_i^*$ that meet our budget and logistical constraints. However, some measurement techniques will vary in both validity and reliability, so often we must decide on a weighting of the two concerns given our research goals. In some cases, validity will be important even if the measures are unreliable, but in others we may want to weight them approximately equally.
 
 Learning which measurement tools are valid and reliable is ultimately guesswork, though it can be informed guesswork. We cannot measure the true $Y_i^*$, so we cannot truly "validate" any measurement technique. Often studies present themselves as validation studies by comparing a proposed measure to a "ground truth," measured from administrative data or a second technique to reduce measurement error. However, neither measurement is known to be exactly  $Y_i^*$, so ultimately these studies are comparisons of multiple techniques each with their own advantages and disadvantages. This does not make them useless, but rather should be used to understand the how measurements differ on average and in variability. They may also be useful for informing how to combine multiple measures.
 
-### Pitfalls
-
-Perhaps the most common pitfall of measurement is the sensitivity bias that affects measures self-reported by participants in the presence of social pressure or the risk of sanction from authorities who prefer to hide or wish to detect sensitive characteristics in the population (BCM2020). Sensitivity bias represents an excludability violation: the latent outcome $Y_i^*$ depends on which measurement tool is used. More generally, excludability violations of measurement imply that the very act of measurement affects the latent outcome, often known as a Hawthorne effect. Typically, we want to avoid these excludability violations, because we are trying to measure a latent quantity that exists independent of how it is measured.
-
-
-Interference can affect measurement, just as it affects sampling and treatment assignment. Measurement interference occurs when $Y_i^*$ depends on whether and how *other* units are measured. If participants in an experiment discuss the measurement technique itself and what researchers are asking about with other participants, this may lead to a violation. Psychology researchers on academic campuses worry about this possibility and encourage subjects not to discuss what they do in the lab with potential participants. They are worried about intereference in treatment assignment but also of measurement, because often implicit measurement techniques can be defeated (and measure something other than $Y^i^*$) when the concept is known before the session. Other researchers worry that when measuring sensitive questions that the sensitive topic will be revealed to participants either by earlier participants or local leaders who discover its purpose (Lyall Blair Imai).  
-
-The final pitfall of measurement is attrition, or nonresponse. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant. Attrition causes problems because we can no longer make inferences about the average value of $Y_i^*$ in the sample let alone a population, because we do not observe outcomes for some units without further assumptions. Under the assumption that $Y_i^{\rm obs}$ is missing completely at random, we can treat $Y_i^{\rm obs}$ for nonmissing participants as a random sample from all participants. When nonresponse is not completely random, then respondents who respond may be different than those who do not respond in terms of $Y_i^*$ --- and we don't learn anything about $Y_i^*$ for nonresponders from the missing data. However, there are design-based techniques for addressing this problem. One is to take a random sample of nonresponders and undertake additional data collection. If you are able to reach all nonresponders, then you can use the random sample as a standin for $Y_i^{\rm obs}$ from all nonresponders and, with some efficiency loss, still obtain summaries of $Y_i^*$ for the whole sample. There are also model-based strategies, in which the probability of nonresponse is estimated from a model, and estimates are weighted by the inverse of the (estimated) probability of responding (cite cite).
-
 <!-- - issues with rates - y^* / x^*, then rates are messed up -->
 
 ### Example: @weaver2019too
+
+## Threats to implementation
+
+```{r}
+# design <- 
+#   declare_population(N = 100) +
+#   declare_potential_outcomes(D ~ Z) + 
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) + 
+#   declare_sampling(n = 99) + 
+#   declare_assignment() + 
+#   declare_measurement(Y = Ystar)
+
+dag <- dagify(Y ~ Ystar + Q + R,
+              R ~ S + U + Z,
+              Ystar ~ D + U + S + Z + Q,
+              D ~ Z + U,
+              Z ~ S)
+nodes <-
+  tibble(
+    name = c("S", "R", "Z", "Q", "D", "Ystar", "Y", "U"),
+    label = c("S", "R", "Z", "Q", "D", "Y<sup>*</sup>", "Y", "U"),
+    annotation = c(
+      "**Sampling**",
+      "**Response**",
+      "**Treatment assignment**",
+      "**Measurement tool**",
+      "**Treatment received**",
+      "**Latent outcome**",
+      "**Observed outcome**",
+      "**Unobserved heterogeneity**"
+    ),
+    x = c(1, 3, 1, 5, 3, 4, 5, 2.5),
+    y = c(4, 4, 1, 4, 1, 2.5, 2.5, 2.5),
+    nudge_direction = c("N", "N", "S", "N", "S", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+endnodes <-
+  nodes %>%
+  transmute(to = name, xend = x, yend = y)
+
+ggdd_df <- 
+  dag %>%
+  tidy_dagitty() %>%
+  select(name, direction, to, circular) %>%
+  as_tibble %>%
+  mutate(
+    data_strategy = case_when(
+      name == "D" ~ "unmanipulated",
+      name == "Q" ~ "measurement",
+      name == "S" ~ "sampling",
+      name == "Ystar" ~ "unmanipulated",
+      name == "Z" ~ "assignment",
+      name == "Y" ~ "unmanipulated",
+      name == "U" ~ "unmanipulated",
+      name == "R" ~ "unmanipulated"
+    ),
+    exclusion_restriction = case_when(
+      name %in% c("S", "Z", "Q") & to == "Ystar" ~ "yes",
+      name %in% c("Z") & to == "R" ~ "yes",
+      TRUE ~ "no"
+    )
+  ) %>% 
+  # left_join(design_nodes, by = "name") %>%
+  left_join(nodes, by = "name") %>%
+  left_join(endnodes, by = "to") %>%
+  left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
+  left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
+  mutate(shape_y = y + shape_nudge_y)
+
+base_dag_plot %+% ggdd_df 
+```
+
+### Attrition
+
+The final pitfall of measurement is attrition, or nonresponse. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant. Attrition causes problems because we can no longer make inferences about the average value of $Y_i^*$ in the sample let alone a population, because we do not observe outcomes for some units without further assumptions. Under the assumption that $Y_i^{\rm obs}$ is missing completely at random, we can treat $Y_i^{\rm obs}$ for nonmissing participants as a random sample from all participants. When nonresponse is not completely random, then respondents who respond may be different than those who do not respond in terms of $Y_i^*$ --- and we don't learn anything about $Y_i^*$ for nonresponders from the missing data. However, there are design-based techniques for addressing this problem. One is to take a random sample of nonresponders and undertake additional data collection. If you are able to reach all nonresponders, then you can use the random sample as a standin for $Y_i^{\rm obs}$ from all nonresponders and, with some efficiency loss, still obtain summaries of $Y_i^*$ for the whole sample. There are also model-based strategies, in which the probability of nonresponse is estimated from a model, and estimates are weighted by the inverse of the (estimated) probability of responding (cite cite).
+
+### Noncompliance
+
+### Interference
+
+Interference can affect measurement, just as it affects sampling and treatment assignment. Measurement interference occurs when $Y_i^*$ depends on whether and how *other* units are measured. If participants in an experiment discuss the measurement technique itself and what researchers are asking about with other participants, this may lead to a violation. Psychology researchers on academic campuses worry about this possibility and encourage subjects not to discuss what they do in the lab with potential participants. They are worried about intereference in treatment assignment but also of measurement, because often implicit measurement techniques can be defeated (and measure something other than $Y^i^*$) when the concept is known before the session. Other researchers worry that when measuring sensitive questions that the sensitive topic will be revealed to participants either by earlier participants or local leaders who discover its purpose (Lyall Blair Imai).  
+
+### Excludability 
+
+
+
+
+

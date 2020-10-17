@@ -80,7 +80,8 @@ make_dag_df <-
       left_join(endnodes, by = "to") %>%
       left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
       left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
-      mutate(shape_y = y + shape_nudge_y)
+      mutate(shape_y = y + shape_nudge_y,
+             exclusion_restriction = "no")
     
   }
 
@@ -96,10 +97,12 @@ base_dag_plot <-
   )) +
   # edges
   geom_dag_edges(
-    edge_colour = dd_gray,
+    aes(edge_colour = exclusion_restriction, edge_linetype = exclusion_restriction),
     edge_width = 0.7,
     arrow_directed = grid::arrow(length = grid::unit(3, "pt"), type = "closed"),
   ) +
+  scale_edge_color_manual(values = c(dd_gray, dd_light_gray)) + 
+  scale_edge_linetype_manual(values = c("solid", "dotted")) + 
   # fill
   geom_regon(
     aes(
