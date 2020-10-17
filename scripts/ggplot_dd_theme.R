@@ -18,3 +18,5 @@ dd_purple <- "#7E43B6"
 dd_gray <- gray(0.2)
 dd_pink <- "#C6227F"
 dd_light_gray <- gray(0.8)
+dd_dark_blue_alpha <- "#3564EDA0"
+dd_light_blue_alpha <- "#72B4F3A0"

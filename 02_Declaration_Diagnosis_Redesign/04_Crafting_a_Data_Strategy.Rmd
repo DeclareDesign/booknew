@@ -265,12 +265,7 @@ In short, the choice of sampling strategy depends on features of the model and t
 
 Sampling, like all data strategies, is an intervention in the world by researchers. As a result, it may have independent causal effects on outcomes. As we will see in the next section, there is no deep difference between sampling and treatment assignment, because in each case we are randomly sampling from two potential outcomes. In treatment assignment, we are assigning units to a treatment group and a control group, and obtaining a sample of the treated potential outcome and a second random sample of the control potential outcome. In random sampling, we are assigning units to be sampled or to not be sampled. We obtain one sample of the sampled potential outcome. However, the non-sampled potential outcome exists conceptually, and may differ from the sampled potential outcome. The act of including units in the sample may change outcomes, for example if you are selected to participate in a medical trial you believe you are going to receive better care and a placebo effect changes your health condition. A research design in which you conduct an experiment on sampled units, but also unobtrusively measure outcomes in nonsampled units could be used to estimate the effect of inclusion in the sample. This design would provide a random sample of the nonsampled potential outcome.
 
-### Pitfalls
-<!-- interference, exludability, noncompliance -->
-
-- interference: whether you are sampled depends on whether other people are sampled
-- excludability:
-- noncompliance: failure to participate when sampled == survey nonresponse
+we're often interested in extrapolating from our sample to the population the sample was drawn from, or to new populations. there are design-based inference solutions for making inferences about the population you directly sampled from, but model-based inference will be required to extrapolate to new populations and the same population in another time period.
 
 <!-- you create strata and clusters from real things in the world -->
 
@@ -505,6 +500,8 @@ Selecting among measurement modes, data collectors, time periods, frequency, and
 
 Learning which measurement tools are valid and reliable is ultimately guesswork, though it can be informed guesswork. We cannot measure the true $Y_i^*$, so we cannot truly "validate" any measurement technique. Often studies present themselves as validation studies by comparing a proposed measure to a "ground truth," measured from administrative data or a second technique to reduce measurement error. However, neither measurement is known to be exactly  $Y_i^*$, so ultimately these studies are comparisons of multiple techniques each with their own advantages and disadvantages. This does not make them useless, but rather should be used to understand the how measurements differ on average and in variability. They may also be useful for informing how to combine multiple measures.
 
+inattention
+
 <!-- - issues with rates - y^* / x^*, then rates are messed up -->
 
 ### Example: @weaver2019too
@@ -583,9 +580,28 @@ base_dag_plot %+% ggdd_df
 
 ### Attrition
 
+Effect of S on R != 100%. Some people who are sampled do not give their response. 
+
+four cases:
+
+1. No effect of Z or U on R: loss of sample size, but estimates are not distorted.
+2. If only Z affects R, but not U, loss of sample size, but estimates are not distorted.
+3. No effect of Z on R, but yes effect of U on R. This is much more common -- different kinds of units are more or less likely to respond when sampled, which means that summaries of Y make be distorted. Usually requires model-based inference -- we try to observe some of the unobserved heterogeneity. We call those variables X, then say, within the strata defined by X, missingness is random. Then it's a matter of reweighting those strata back up to the population. This is model-based inference because we need a model of the variables in $U$ that cause survey response. If we miss one or more of the causal forces, we get it wrong.
+4. If both Z and U affect R, then we have to either do model based inference for both Z = 1 and Z = 0, or we have to do bounds
+
+
+
 The final pitfall of measurement is attrition, or nonresponse. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant. Attrition causes problems because we can no longer make inferences about the average value of $Y_i^*$ in the sample let alone a population, because we do not observe outcomes for some units without further assumptions. Under the assumption that $Y_i^{\rm obs}$ is missing completely at random, we can treat $Y_i^{\rm obs}$ for nonmissing participants as a random sample from all participants. When nonresponse is not completely random, then respondents who respond may be different than those who do not respond in terms of $Y_i^*$ --- and we don't learn anything about $Y_i^*$ for nonresponders from the missing data. However, there are design-based techniques for addressing this problem. One is to take a random sample of nonresponders and undertake additional data collection. If you are able to reach all nonresponders, then you can use the random sample as a standin for $Y_i^{\rm obs}$ from all nonresponders and, with some efficiency loss, still obtain summaries of $Y_i^*$ for the whole sample. There are also model-based strategies, in which the probability of nonresponse is estimated from a model, and estimates are weighted by the inverse of the (estimated) probability of responding (cite cite).
 
 ### Noncompliance
+
+random assignment imperfectly manipulates the treatment: some units assigned to control are treated, and/or some units assigned to treatment fail to receive treatment
+
+table of types
+
+treatment may induce different amounts of compliance not just binary, so could have continuous noncompliance space
+
+with multiple treatment arms, there are complex compliance types. treatment1 compliers may be different than treatment2 compliers. apparently differences in CATEs could simply reflect differences in the types of compliers across the two treatments.
 
 ### Interference
 
@@ -593,7 +609,26 @@ Interference can affect measurement, just as it affects sampling and treatment a
 
 ### Excludability 
 
+-- no effect of S on $Y^*$
 
+act of being included in the sample changes your attitudes, e.g., you reflect more deeply on them
+demand effects (guess the hypothesis of the researcher, want to be a good subject)
 
+-- no effect of Z on $Y^*$
 
+act of being included in the treatment group changes your attitudes
+demands effects (being in the treatment group makes you think you should have one attitudes, being in control group makes you think you should have another)
+
+"exclusion restriction violations" in observational studies
+- alternative channels through which rainfall effects outcomes besides the hypothesized channel
+- effect of being induced to vote in habit studies has effects besides being put onto voter rolls
+
+-- no effect of Q on $Y^*$
+
+question includes a component that changes latent attitudes, i.e., has a persuasive component
+Hawthorne effects
+
+-- no effect of Z on Q
+
+blinding, different tools to measure treatment and control group
 
