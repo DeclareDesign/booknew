@@ -5,7 +5,7 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = TRUE)
 
-design <- 
+design <-
   declare_population(N = 100, Y_star = rnorm(N)) +
   declare_estimand(Y_bar = mean(Y_star)) + 
   declare_measurement(Y_1 = 0.1 * Y_star + rnorm(N, sd = 0.25),
@@ -13,6 +13,17 @@ design <-
                       Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.25),
                       Y_idx = (Y_1 + Y_2 + Y_3) / 3) + 
   declare_estimator(Y_idx ~ 1, model = lm_robust, estimand = "Y_bar")
+
+design <-
+  declare_population(N = 10, Y_star = rnorm(N), true_rank = rank(Y_star)) +
+  declare_measurement(Y_1 = 0.1 * Y_star + rnorm(N, sd = 0.25),
+                      Y_2 = Y_star + rnorm(N, sd = 0.25),
+                      Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.25),
+                      Y_idx = (Y_1 + Y_2 + Y_3) / 3, 
+                      ranking = rank(Y_idx)) 
+
+# simulate_design(design) %>% 
+#   summarize(ranking_correct = mean(true_rank == ranking))
 
 
 

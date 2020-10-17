@@ -7,7 +7,71 @@ lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
-set.seed(343)
+# design <-
+#   declare_population(N = 100) +
+#   declare_potential_outcomes(D ~ Z) +
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) +
+#   declare_sampling(n = 99) +
+#   declare_assignment() +
+#   declare_measurement(Y = Ystar)
+
+dag <- dagify(Y ~ Ystar + Q + R,
+              R ~ S + U,
+              Ystar ~ D + U,
+              D ~ Z + U,
+              Z ~ S)
+nodes <-
+  tibble(
+    name = c("S", "R", "Z", "Q", "D", "Ystar", "Y", "U"),
+    label = c("S", "R", "Z", "Q", "D", "Y<sup>*</sup>", "Y", "U"),
+    annotation = c(
+      "**Sampling**",
+      "**Response**",
+      "**Treatment assignment**",
+      "**Measurement tool**",
+      "**Treatment received**",
+      "**Latent outcome**",
+      "**Observed outcome**",
+      "**Unobserved heterogeneity**"
+    ),
+    x = c(1, 3, 1, 5, 3, 4, 5, 2.5),
+    y = c(4, 4, 1, 4, 1, 2.5, 2.5, 2.5),
+    nudge_direction = c("N", "N", "S", "N", "S", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+endnodes <-
+  nodes %>%
+  transmute(to = name, xend = x, yend = y)
+
+ggdd_df <-
+  dag %>%
+  tidy_dagitty() %>%
+  select(name, direction, to, circular) %>%
+  as_tibble %>%
+  mutate(
+    data_strategy = case_when(
+      name == "D" ~ "unmanipulated",
+      name == "Q" ~ "measurement",
+      name == "S" ~ "sampling",
+      name == "Ystar" ~ "unmanipulated",
+      name == "Z" ~ "assignment",
+      name == "Y" ~ "unmanipulated",
+      name == "U" ~ "unmanipulated",
+      name == "R" ~ "unmanipulated"
+    ),
+    exclusion_restriction = "no"
+  ) %>%
+  # left_join(design_nodes, by = "name") %>%
+  left_join(nodes, by = "name") %>%
+  left_join(endnodes, by = "to") %>%
+  left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
+  left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
+  mutate(shape_y = y + shape_nudge_y)
+
+base_dag_plot %+% ggdd_df
+
+set.seed(348)
 gg_df <- fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
   households = add_level(N = 4,
@@ -75,6 +139,8 @@ ggplot(gg_df, aes(X, Y)) +
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
+
+#gg_df %>% group_by(unit, sampling_type) %>% summarise(n = n(), sampled = sum(sampled == 1))
 
 
 # convenience
@@ -201,8 +267,6 @@ gg_df <- fabricate(
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Blocked"))
   )
 
-
-
 gg_df <-
   gg_df %>%
   group_by(households, unit, sampling_type) %>%
@@ -312,3 +376,71 @@ gg_df %>%
         panel.grid.minor = element_blank(),
         axis.title = element_blank(),
         axis.text = element_blank())
+
+# design <-
+#   declare_population(N = 100) +
+#   declare_potential_outcomes(D ~ Z) +
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) +
+#   declare_sampling(n = 99) +
+#   declare_assignment() +
+#   declare_measurement(Y = Ystar)
+
+dag <- dagify(Y ~ Ystar + Q + R,
+              R ~ S + U + Z,
+              Ystar ~ D + U + S + Z + Q,
+              D ~ Z + U,
+              Z ~ S)
+nodes <-
+  tibble(
+    name = c("S", "R", "Z", "Q", "D", "Ystar", "Y", "U"),
+    label = c("S", "R", "Z", "Q", "D", "Y<sup>*</sup>", "Y", "U"),
+    annotation = c(
+      "**Sampling**",
+      "**Response**",
+      "**Treatment assignment**",
+      "**Measurement tool**",
+      "**Treatment received**",
+      "**Latent outcome**",
+      "**Observed outcome**",
+      "**Unobserved heterogeneity**"
+    ),
+    x = c(1, 3, 1, 5, 3, 4, 5, 2.5),
+    y = c(4, 4, 1, 4, 1, 2.5, 2.5, 2.5),
+    nudge_direction = c("N", "N", "S", "N", "S", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+endnodes <-
+  nodes %>%
+  transmute(to = name, xend = x, yend = y)
+
+ggdd_df <-
+  dag %>%
+  tidy_dagitty() %>%
+  select(name, direction, to, circular) %>%
+  as_tibble %>%
+  mutate(
+    data_strategy = case_when(
+      name == "D" ~ "unmanipulated",
+      name == "Q" ~ "measurement",
+      name == "S" ~ "sampling",
+      name == "Ystar" ~ "unmanipulated",
+      name == "Z" ~ "assignment",
+      name == "Y" ~ "unmanipulated",
+      name == "U" ~ "unmanipulated",
+      name == "R" ~ "unmanipulated"
+    ),
+    exclusion_restriction = case_when(
+      name %in% c("S", "Z", "Q") & to == "Ystar" ~ "yes",
+      name %in% c("Z") & to == "R" ~ "yes",
+      TRUE ~ "no"
+    )
+  ) %>%
+  # left_join(design_nodes, by = "name") %>%
+  left_join(nodes, by = "name") %>%
+  left_join(endnodes, by = "to") %>%
+  left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
+  left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
+  mutate(shape_y = y + shape_nudge_y)
+
+base_dag_plot %+% ggdd_df
