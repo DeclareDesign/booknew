@@ -32,8 +32,8 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-In order to collect information about the world, researchers must deploy a data strategy. Depending on the design, the data strategy could include decisions about any or or all of the following:  sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data. 
-   
+In order to collect information about the world, researchers must deploy a data strategy. Depending on the design, the data strategy could include decisions about any or or all of the following:  sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data.
+
 Sampling choices confront the fundamental problem of generalization: we want to make inferences about units *not* sampled. For this reason, we need to pay special attention to the procedure by which units are selected into the sample. We might use a random sampling procedure in order to generate a design-based justification for generalizing from samples to the specific population from which units were drawn. Nonrandom sampling procedures are also possible: convenience sampling, respondent-driven sampling, and snowball sampling are all data strategies that do not include an explicitly randomized component. Nonrandomized designs usually require model-based inference in order to generalize from the sample to a population.
 
 Assignment choices confront the fundamental problem of causal inference: we want to make inferences about the conditions to which units were *not* assigned. For this reason, experimental design is focused on the assignment of treatments. How many treatment conditions should there be? Should we use a simple coin flip to decide who receives treatment, or should we use a more complicated strategy like blocking? Experimenters are of course also very concerned with sampling and measurement procedures, but it is the random assignment to treatments that make randomized experiments distinctive among research designs.
@@ -43,6 +43,77 @@ Measurement choices confront the fundamental problem of descriptive inference: w
 These three problems are all fundamental in the sense that they cannot be surmounted and researchers should be humble in face of them. Strong research design can help, but we can never be *sure* that our sample generalizes, or that we know what would have happened in a counterfactual state of the world, or what true latent value of the outcome is (or if it even exists). Researchers have to choose good sampling, assignment, and measurement techniques that, when combined and applied to the world, will produce analysis-ready information. We will discuss answer strategies -- the set of analysis choices about what to do with the data once they are collected -- in the next chapter. The data and answer strategies are of course intimately interconnected. How you analyze data depends deeply on how they were collected *and* how you collect data depends just as deeply on how you plan to analyze them. For the moment, we are thinking through the many choices we might make as part of the data strategy, but in any applied research design setting, they will have to be considered in concert with the answer strategy.
 
 The data strategy $D$ is a *set of procedures* that result in a dataset $d$. It is important to keep these two concepts straight. If you apply data strategy $D$ to the world $w$, it produces dataset $d$. We say $d$ is "the" result of $D$, since when we apply the data strategy to the world, we only do so once and we obtain the data we obtain. But when we are crafting a data strategy, we have to think about the many datasets that the data strategy *could have* produced. Some of the datasets might be really excellent. For example, in good datasets, we achieve good covariate balance across the treatment and control groups. Or we might draw a sample whose distribution of observable characteristics looks really similar to the population. But some of the datasets might be worse: because of the vagaries of randomization, the particular realizations of the random assignment or random sampling might be more or less balanced. We do not have to settle for data strategies that might produce weak datasets -- we are in control of the procedures we choose. We want to choose a data strategy $D$ that is likely to result in a high-quality dataset $d$.
+
+```{r}
+# design <-
+#   declare_population(N = 100) +
+#   declare_potential_outcomes(D ~ Z) +
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) +
+#   declare_sampling(n = 99) +
+#   declare_assignment() +
+#   declare_measurement(Y = Ystar)
+
+dag <- dagify(Y ~ Ystar + Q + R,
+              R ~ S + U,
+              Ystar ~ D + U,
+              D ~ Z + U,
+              Z ~ S)
+nodes <-
+  tibble(
+    name = c("S", "R", "Z", "Q", "D", "Ystar", "Y", "U"),
+    label = c("S", "R", "Z", "Q", "D", "Y<sup>*</sup>", "Y", "U"),
+    annotation = c(
+      "**Sampling**",
+      "**Response**",
+      "**Treatment assignment**",
+      "**Measurement tool**",
+      "**Treatment received**",
+      "**Latent outcome**",
+      "**Observed outcome**",
+      "**Unobserved heterogeneity**"
+    ),
+    x = c(1, 3, 1, 5, 3, 4, 5, 2.5),
+    y = c(4, 4, 1, 4, 1, 2.5, 2.5, 2.5),
+    nudge_direction = c("N", "N", "S", "N", "S", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+endnodes <-
+  nodes %>%
+  transmute(to = name, xend = x, yend = y)
+
+ggdd_df <-
+  dag %>%
+  tidy_dagitty() %>%
+  select(name, direction, to, circular) %>%
+  as_tibble %>%
+  mutate(
+    data_strategy = case_when(
+      name == "D" ~ "unmanipulated",
+      name == "Q" ~ "measurement",
+      name == "S" ~ "sampling",
+      name == "Ystar" ~ "unmanipulated",
+      name == "Z" ~ "assignment",
+      name == "Y" ~ "unmanipulated",
+      name == "U" ~ "unmanipulated",
+      name == "R" ~ "unmanipulated"
+    ),
+    exclusion_restriction = "no"
+  ) %>%
+  # left_join(design_nodes, by = "name") %>%
+  left_join(nodes, by = "name") %>%
+  left_join(endnodes, by = "to") %>%
+  left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
+  left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
+  mutate(shape_y = y + shape_nudge_y)
+
+base_dag_plot %+% ggdd_df
+```
+
+We illustrate above the data strategy and its three elements: sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data. All empirical studies have a data strategy and every data strategy involves sampling, assignment, and measurement. Even studies in which researchers measure the full universe of cases involve sampling, since *future* units are not included. Even studies in which researchers do not apply treatments themselves involve assignment, since other forces end up assigning units to conditions. Even studies in which researchers take no new measurements involve measurement, since a choice about which measurements made by others to use must nevertheless be made.
+
+In the figure, we rule out threats to inference that come from implementation: failure to treat (noncompliance), failure of inclusion in the sample (attrition), and causal relationships between random sampling and assignment as well as measurement on the latent outcome (excludability). In the last section of the chapter, we discuss when these threats are realized and how we can mitigate these risks they present by design.
+
 
 ## Sampling
 
@@ -62,7 +133,9 @@ Complete random sampling solves the problem of fixing the total number of sample
 
 Stratified sampling should not be confused with cluster sampling. Stratified sampling means that a fixed number of units from a particular group are drawn into the sample. Cluster sampling means that units from a particular group are brought into the sample *together*. For example, if we cluster sample households, we interview all individuals living in a sampled household. Clustering introduces dependence in the sampling procedure -- if one member of the household is sampled, the other members are also always sampled. Relative to a complete random sample of the same size, cluster samples tend to produce higher variance estimates. Just as the individual sampling designs, cluster sampling comes in simple, complete, and stratified varieties with exactly parallel logics and motivations.
 
+
 Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically-structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. The purpose of a multi-stage approach is typically to balance the logistical difficulties of visiting many geographic areas with the relative ease of collecting additional data once you have arrived.
+
 
 Table XXX collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling.
 
@@ -76,7 +149,7 @@ Table XXX collects all of these kinds of random sampling together and offers an 
 | Multi-stage random sampling | First clusters, then units within clusters| cluster_ra(clusters = villages); strata_ra(strata = villages|
 
 
-Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each. 
+Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each.
 
 
 ```{r, fig.width = 6.5, fig.height = 7, echo = FALSE}
@@ -343,8 +416,6 @@ gg_df <- fabricate(
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Blocked"))
   )
 
-
-
 gg_df <-
   gg_df %>%
   group_by(households, unit, sampling_type) %>%
@@ -500,12 +571,12 @@ inattention
 ## Threats to implementation
 
 ```{r}
-# design <- 
+# design <-
 #   declare_population(N = 100) +
-#   declare_potential_outcomes(D ~ Z) + 
-#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) + 
-#   declare_sampling(n = 99) + 
-#   declare_assignment() + 
+#   declare_potential_outcomes(D ~ Z) +
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) +
+#   declare_sampling(n = 99) +
+#   declare_assignment() +
 #   declare_measurement(Y = Ystar)
 
 dag <- dagify(Y ~ Ystar + Q + R,
@@ -537,7 +608,7 @@ endnodes <-
   nodes %>%
   transmute(to = name, xend = x, yend = y)
 
-ggdd_df <- 
+ggdd_df <-
   dag %>%
   tidy_dagitty() %>%
   select(name, direction, to, circular) %>%
@@ -558,7 +629,7 @@ ggdd_df <-
       name %in% c("Z") & to == "R" ~ "yes",
       TRUE ~ "no"
     )
-  ) %>% 
+  ) %>%
   # left_join(design_nodes, by = "name") %>%
   left_join(nodes, by = "name") %>%
   left_join(endnodes, by = "to") %>%
@@ -566,23 +637,12 @@ ggdd_df <-
   left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
   mutate(shape_y = y + shape_nudge_y)
 
-base_dag_plot %+% ggdd_df 
+base_dag_plot %+% ggdd_df
 ```
 
-### Attrition
+Data strategies are plans for how we will sample units, assign treatments, and measure outcomes. But our studies do not always go according to plan. In this section, we explore the threats to our inferences that emerge while implementing data strategies. Anticipating and planning for these threats presents two benefits: we can assess the properties of the designs we will actually run, obtaining more realistic guesses of the power and bias of our study given problems like attrition and noncompliance; and we can incorporate procedures to mitigate the risk of these threats as part of our designs.
 
-Effect of S on R != 100%. Some people who are sampled do not give their response. 
-
-four cases:
-
-1. No effect of Z or U on R: loss of sample size, but estimates are not distorted.
-2. If only Z affects R, but not U, loss of sample size, but estimates are not distorted.
-3. No effect of Z on R, but yes effect of U on R. This is much more common -- different kinds of units are more or less likely to respond when sampled, which means that summaries of Y make be distorted. Usually requires model-based inference -- we try to observe some of the unobserved heterogeneity. We call those variables X, then say, within the strata defined by X, missingness is random. Then it's a matter of reweighting those strata back up to the population. This is model-based inference because we need a model of the variables in $U$ that cause survey response. If we miss one or more of the causal forces, we get it wrong.
-4. If both Z and U affect R, then we have to either do model based inference for both Z = 1 and Z = 0, or we have to do bounds
-
-
-
-The final pitfall of measurement is attrition, or nonresponse. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant. Attrition causes problems because we can no longer make inferences about the average value of $Y_i^*$ in the sample let alone a population, because we do not observe outcomes for some units without further assumptions. Under the assumption that $Y_i^{\rm obs}$ is missing completely at random, we can treat $Y_i^{\rm obs}$ for nonmissing participants as a random sample from all participants. When nonresponse is not completely random, then respondents who respond may be different than those who do not respond in terms of $Y_i^*$ --- and we don't learn anything about $Y_i^*$ for nonresponders from the missing data. However, there are design-based techniques for addressing this problem. One is to take a random sample of nonresponders and undertake additional data collection. If you are able to reach all nonresponders, then you can use the random sample as a standin for $Y_i^{\rm obs}$ from all nonresponders and, with some efficiency loss, still obtain summaries of $Y_i^*$ for the whole sample. There are also model-based strategies, in which the probability of nonresponse is estimated from a model, and estimates are weighted by the inverse of the (estimated) probability of responding (cite cite).
+Above, we adapt the figure first present in the chapter's introduction to introduce threats that come from noncompliance (failure to treat), attrition (failure to be included in the sample or provide measures), and excludability violations (causal effects of random sampling, random assignment, or measurement on the latent outcome).
 
 ### Noncompliance
 
@@ -594,11 +654,23 @@ treatment may induce different amounts of compliance not just binary, so could h
 
 with multiple treatment arms, there are complex compliance types. treatment1 compliers may be different than treatment2 compliers. apparently differences in CATEs could simply reflect differences in the types of compliers across the two treatments.
 
+### Attrition
+
+Attrition is the special form of noncompliance to sampling and measurement, when all those who are sampled do not provide all of the measures requested of them. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant.
+
+Attrition occurs when at least one unit does not respond to at least one measurement item. Whether attrition is a problem depends on whether a participant response $R$ is causally affected by variables other than sampling or is completely random. Though missingness completely at random is rare, it is possible, often due to administrative or computer error. If attrition is completely at random, there is no effect of any variable on $R$, and there is a loss of sample size but no distortion to estimates.
+
+For descriptive inquiries, if attrition is not completely at random, then the types of units who respond are different in some way from those that do not respond. Model-based inference is required to adjust estimates to match the characteristics of the original sample, upweighting types of respondents who were less likely to respond and downweighting those that were more likely to respond. However, if we guess the wrong set of variables to reweight in our model $M$, then we will miss the target.
+
+For causal inquiries, we also need to know whether random assignment $Z$ affects $R$, as well as $U$. If $Z$ affects $R$ (there is a lower/higher rate of attrition in one treatment group than the other), but $U$ does not affect $R$, then there is just a loss of sample size but no distortion to estimates. We simply have a more (less) precise estimate of the potential outcomes from one group than we do from the other. However, when $Z$ and $U$ affect $R$, then we do not have a random sample of either the treated potential outcome or the control potential outcome from the treatment or control group. Therefore, we have to resort to model-based inference for both groups, reweighting each group based on our assumptions (in $M$) about how $U$ and $Z$ affect $R$. Alternatively, we can construct bounds of our estimates of the causal effect, which incorporate our uncertainty due to the non-random attrition.
+
+In the case of descriptive and of causal inquiries, there is also a design-based way to estimate effects in the presence of uncertainty that does not rely on assumptions in $M$: double sampling. When there are missing outcomes, we can take a second sample of those who do not respond and conduct additional measurement to try to obtain those units' outcomes. If we spend more resources on making sure we can obtain measures for all of these randomly-sampled units, then we can use this random sample of non-responders in combination with the original sample to construct a full sample. There will still be a loss of sample size, because we take a subsample in the second round, and do not attempt to interview all nonresponders. We can also use double sampling for causal inquiries, conducting a random sample of nonresponders in the treatment group to stand in for those missing observations and a second in the control group.
+
 ### Interference
 
 Interference can affect measurement, just as it affects sampling and treatment assignment. Measurement interference occurs when $Y_i^*$ depends on whether and how *other* units are measured. If participants in an experiment discuss the measurement technique itself and what researchers are asking about with other participants, this may lead to a violation. Psychology researchers on academic campuses worry about this possibility and encourage subjects not to discuss what they do in the lab with potential participants. They are worried about intereference in treatment assignment but also of measurement, because often implicit measurement techniques can be defeated (and measure something other than $Y^i^*$) when the concept is known before the session. Other researchers worry that when measuring sensitive questions that the sensitive topic will be revealed to participants either by earlier participants or local leaders who discover its purpose (Lyall Blair Imai).  
 
-### Excludability 
+### Excludability
 
 -- no effect of S on $Y^*$
 
@@ -622,4 +694,3 @@ Hawthorne effects
 -- no effect of Z on Q
 
 blinding, different tools to measure treatment and control group
-
