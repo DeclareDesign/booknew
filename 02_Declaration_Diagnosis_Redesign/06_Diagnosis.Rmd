@@ -519,19 +519,46 @@ dual_estimands
 
 
 
-## Four large classes of diagnosands:
+## Diagnosands
 
-- Type $M$ error rate
-- Type $I$ error rate
-- Type $D$ error rate
-- Type $A$ error rate
+| Diagnostic-statistic                                    | Definition                                                                   |
+|---------------------------------------------------------|------------------------------------------------------------------------------|
+| Estimate                                                | $a^d$                                                                        |
+| Estimand under the model                                | $a^m$                                                                        |
+| True estimand                                           | $a^w$                                                                        |
+| $p$-value                                               | $p \equiv \Pr_{M_0} \{\mid A - a^{m_0}\mid~\geq~\mid a^d - a^{m_0}\mid \}$   |
+| Confidence interval                                     | $\mathrm{CI}_{1-\alpha}$                                                     |
+| Confidence interval covers the estimand under the model | $\mathrm{Covers} \equiv \mathbb{I}\{ a^m \in \mathrm{CI}_{1-\alpha} \}$      |
+| Estimated standard error                                | $\widehat\sigma(A)$                                                          |
+| Cost                                                    | $\mathrm{cost}$                                                              |
 
-You can get things wrong if anything in your research design is wrong!
+| Diagnosand                         | Description                                                                                                                          | Definition                                                            |
+|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|------------------------------                                         |
+| Power                              | Probability of rejecting null hypothesis of no effect                                                                                | $\Pr(p \leq \alpha)$                                                  |
+| Bias                               | Expected difference between estimate and estimand                                                                                    | $\E(a^d - a^m)$                                                       |
+| Variance                           |                                                                                                                                      | $\Var(a^d)$                                                           |
+| True standard error                |                                                                                                                                      | $\sqrt{\Var(a^d)}$                                                    |
+| RMSE                               | Root mean-squared-error                                                                                                              | $\sqrt{\E(a^d - a^m)}$                                                |
+| Coverage                           |                                                                                                                                      | $\Pr(\mathrm{covers})$                                                |
+| Type S error rate                  | Probability estimate has incorrect sign, if statistically significant (Gelman and Carlin 2014)                                       | $\Pr(\mathrm{sgn}(a^d) \neq \mathrm{sgn}(a^m) \mid p \leq \alpha)$    |
+| Exaggeration ratio                 | Expected ratio of absolute value of estimate to estimand, if statistically significant (Gelman and Carlin 2014)                      | $\E( a^d / a_m \mid p \leq \alpha)$                                   |
+| Type I error                       |                                                                                                                                      | $\Pr(p \leq \alpha \mid a^m = a^0)$                                   |
+| Type II error                      |                                                                                                                                      | $\Pr(p \geq \alpha \mid a^m \neq a^0)$                                |
+| Sampling bias                      | Expected difference between population average treatment effect and sample average treatment effect \(Imai, King, and Stuart 2008\)  | $\E(a^m_{\mathrm sample} - a^m_{\mathrm population})$                 |
+| Maximum possible cost              |                                                                                                                                      | $\max{cost}$                                                          |
+| Bayesian learning                  |                                                                                                                                      | $a^m_{\mathrm post} - a^m_{\mathrm pre}$                              |
+| Value for money                    | Probability that a decision based on estimated effect yields net benefits                                                            |                                                                       |
+| Success                            |                                                                                                                                      |                                                                       |
+| Minimum detectable effect (MDE)    |                                                                                                                                      | $\argmin_{a^m_*} \Pr(p \leq \alpha) = 0.8$                            |
+| Robustness                         | Joint probability of rejecting the null hypothesis across multiple tests                                                             |                                                                       |
+| Proportion of subjects harmed      |                                                                                                                                      |                                                                       |
+| Proportion of subjects who consent |                                                                                                                                      |                                                                       |
 
 
-## Ethics
-- There are ethical diagnosands, e.g., what is the distribution of ethical costs such as loss of autonomy.
 
-- Cite Tara's paper. Cite Lauren's paper. 
+<!-- ## Ethics -->
+<!-- - There are ethical diagnosands, e.g., what is the distribution of ethical costs such as loss of autonomy. -->
 
-- Do a diagnosis of how many minutes of subject time are wasted by audit experiments, weigh that against the cost of demonstrating outright racial bias. (cite an audit study that does this calculation)
+<!-- - Cite Tara's paper. Cite Lauren's paper.  -->
+
+<!-- - Do a diagnosis of how many minutes of subject time are wasted by audit experiments, weigh that against the cost of demonstrating outright racial bias. (cite an audit study that does this calculation) -->
