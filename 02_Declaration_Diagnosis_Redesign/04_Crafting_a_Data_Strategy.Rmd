@@ -32,30 +32,92 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-The data strategy is what researchers do in the world in order to collect information about it. Depending on the design, it could include decisions about any or or all of the following: how to sample or select cases, how to assign treatments, or how to measure outcomes.   
+In order to collect information about the world, researchers must deploy a data strategy. Depending on the design, the data strategy could include decisions about any or or all of the following:  sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data.
 
-These choices apply to all kinds of research. In experimental research, a large focus is given to the assignment of treatments. How many treatment conditions should there be? Should we use a simple coin flip to decide who receives treatment, or should we use a more complicated strategy like blocking? Experimenters are of course also very concerned with sampling and measurement procedures, but it is the random assignment to treatments that make experiments distinctive among research designs.
+Sampling choices confront the fundamental problem of generalization: we want to make inferences about units *not* sampled. For this reason, we need to pay special attention to the procedure by which units are selected into the sample. We might use a random sampling procedure in order to generate a design-based justification for generalizing from samples to the specific population from which units were drawn. Nonrandom sampling procedures are also possible: convenience sampling, respondent-driven sampling, and snowball sampling are all data strategies that do not include an explicitly randomized component. Nonrandomized designs usually require model-based inference in order to generalize from the sample to a population.
 
-Quantitative descriptive research, on the other hand, often has an inquiry like the population average of some outcome variable. Since the goal here is to draw inferences about a population on the basis of a sample, we need to pay special attention to the procedure by which units are selected into the sample. We might use a random sampling procedure in order to generate a design-based justification for generalizing from samples to population. Nonrandom sampling procedures are also possible: convenience sampling, respondent-driven sampling, and snowball sampling are all data strategies that do not include an explicitly randomized component.
+Assignment choices confront the fundamental problem of causal inference: we want to make inferences about the conditions to which units were *not* assigned. For this reason, experimental design is focused on the assignment of treatments. How many treatment conditions should there be? Should we use a simple coin flip to decide who receives treatment, or should we use a more complicated strategy like blocking? Experimenters are of course also very concerned with sampling and measurement procedures, but it is the random assignment to treatments that make randomized experiments distinctive among research designs.
 
-Once we have selected units into the sample, we need to measure them in some way. The tools we use to measure are a critical part of the data strategy. For many social scientific studies, a main way we collect information is through surveys. A huge methodological literature on survey administration has developed to help guide researchers who have to design questionnaires. Bad survey questions yield distorted or noisy responses. A biased question systematically misses the true latent target it is designed to measure, in which case the question has low *validity*. A question is high variance if (hypothetically) you would obtain different answers each time you asked, in which case the question has low *reliability*.
+Measurement choices confront the fundamental problem of descriptive inference: we want to make inferences about latent values on the basis of measured values. The tools we use to measure are a critical part of the data strategy. For many social scientific studies, a main way we collect information is through surveys. A huge methodological literature on survey administration has developed to help guide questionnaire development. Bad survey questions yield distorted or noisy responses. A biased question systematically misses the true latent target it is designed to measure, in which case the question has low *validity*. A question is high variance if (hypothetically) you would obtain different answers each time you asked, in which case the question has low *reliability*. The concerns about validity and reliability do not disappear once we move out of the survey environment. For example, the information that shows up in an administrative database is itself the result of many human decisions, each of which has the possibility of increasing or decreasing the distance between the measurement and the latent measurement target.
 
-The concerns about validity and reliability do not disappear once we move out of the survey environment. For example, the information that shows up in an administrative database is itself the result of many human decisions, each of which has the possibility of increasing or decreasing the distance between the measurement and the latent measurement target.
+These three problems are all fundamental in the sense that they cannot be surmounted and researchers should be humble in face of them. Strong research design can help, but we can never be *sure* that our sample generalizes, or that we know what would have happened in a counterfactual state of the world, or what true latent value of the outcome is (or if it even exists). Researchers have to choose good sampling, assignment, and measurement techniques that, when combined and applied to the world, will produce analysis-ready information. We will discuss answer strategies -- the set of analysis choices about what to do with the data once they are collected -- in the next chapter. The data and answer strategies are of course intimately interconnected. How you analyze data depends deeply on how they were collected *and* how you collect data depends just as deeply on how you plan to analyze them. For the moment, we are thinking through the many choices we might make as part of the data strategy, but in any applied research design setting, they will have to be considered in concert with the answer strategy.
 
-Researchers have to choose good sampling, assignment, and measurement techniques that, when combined and applied to the world, will produce information that is ready for analysis. We will discuss answer strategies -- the set of analysis choices about what to do with the data once they are collected -- in the next chapter. The data and answer strategies are of course intimately interconnected. How you analyze data depends deeply on how they were collected *and* how you collect data depends just as deeply on how you plan to analyze them. For the moment, we are thinking through the many choices we might make as part of the data strategy, but in any applied research design setting, they will have to be considered in concert with the answer strategy .
+The data strategy $D$ is a *set of procedures* that result in a dataset $d$. It is important to keep these two concepts straight. If you apply data strategy $D$ to the world $w$, it produces dataset $d$. We say $d$ is "the" result of $D$, since when we apply the data strategy to the world, we only do so once and we obtain the data we obtain. But when we are crafting a data strategy, we have to think about the many datasets that the data strategy *could have* produced. Some of the datasets might be really excellent. For example, in good datasets, we achieve good covariate balance across the treatment and control groups. Or we might draw a sample whose distribution of observable characteristics looks really similar to the population. But some of the datasets might be worse: because of the vagaries of randomization, the particular realizations of the random assignment or random sampling might be more or less balanced. We do not have to settle for data strategies that might produce weak datasets -- we are in control of the procedures we choose. We want to choose a data strategy $D$ that is likely to result in a high-quality dataset $d$.
 
-The data strategy is a *set of procedures* that result in a dataset. It is important to keep these two concepts straight. If you apply data strategy $D$ to the world $w$, it produces dataset $d$. We say $d$ is "the" result of $D$, since when we apply the data strategy to the world, we only do so once and we obtain the data we obtain. But when we are crafting a data strategy, we have to think about the many datasets that the data strategy *could have* produced. Some of the datasets might be really excellent. For example, in good datasets, we achieve good covariate balance across the treatment and control groups. Or we might draw a sample whose distribution of observable characteristics looks really similar to the population. But some of the datasets might be worse: because of the vagaries of randomization, the particular realizations of the random assignment or random sampling might be more or less balanced. We do not have to settle for data strategies that might produce weak datasets -- we are in control of the procedures we choose. We want to choose a data strategy $D$ that is likely to result in a high-quality dataset $d$.
+```{r, echo = FALSE}
+# design <-
+#   declare_population(N = 100) +
+#   declare_potential_outcomes(D ~ Z) +
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) +
+#   declare_sampling(n = 99) +
+#   declare_assignment() +
+#   declare_measurement(Y = Ystar)
 
-The data strategy has three elements: sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data. All empirical studies have a data strategy and every data strategy involves sampling, assignment, and measurement. Even studies in which researchers measure the full universe of cases involve sampling, since *future* units are not included. Even studies in which researchers do not apply treatments themselves involve assignment, since other forces end up assigning units to conditions. Even studies in which researchers take no new measurements involve measurement, since a choice about which measurements made by others to use must nevertheless be made.
+dag <- dagify(Y ~ Ystar + Q + R,
+              R ~ S + U,
+              Ystar ~ D + U,
+              D ~ Z + U,
+              Z ~ S)
+nodes <-
+  tibble(
+    name = c("S", "R", "Z", "Q", "D", "Ystar", "Y", "U"),
+    label = c("S", "R", "Z", "Q", "D", "Y<sup>*</sup>", "Y", "U"),
+    annotation = c(
+      "**Sampling**",
+      "**Response**",
+      "**Treatment assignment**",
+      "**Measurement tool**",
+      "**Treatment received**",
+      "**Latent outcome**",
+      "**Observed outcome**",
+      "**Unobserved heterogeneity**"
+    ),
+    x = c(1, 3, 1, 5, 3, 4, 5, 2.5),
+    y = c(4, 4, 1, 4, 1, 2.5, 2.5, 2.5),
+    nudge_direction = c("N", "N", "S", "N", "S", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
+  )
 
-Sampling choices confront the fundamental problem of generalization: we want to make inferences about units *not* sampled. Assignment choices confront the fundamental problem of causal inference: we want to make inferences about the conditions to which units were *not* assigned. Measurement choices confront the fundamental problem of descriptive inference: we want to make inferences about latent values on the basis of measured values. These problems are all fundamental in the sense that they cannot be surmounted and researchers should be humble in face of them. Strong research design can help, but we can never be *sure* that our sample generalizes, or that we know what would have happened in a counterfactual state of the world, or what true latent value of the outcome is (or if it even exists).
+endnodes <-
+  nodes %>%
+  transmute(to = name, xend = x, yend = y)
 
+ggdd_df <-
+  dag %>%
+  tidy_dagitty() %>%
+  select(name, direction, to, circular) %>%
+  as_tibble %>%
+  mutate(
+    data_strategy = case_when(
+      name == "D" ~ "unmanipulated",
+      name == "Q" ~ "measurement",
+      name == "S" ~ "sampling",
+      name == "Ystar" ~ "unmanipulated",
+      name == "Z" ~ "assignment",
+      name == "Y" ~ "unmanipulated",
+      name == "U" ~ "unmanipulated",
+      name == "R" ~ "unmanipulated"
+    ),
+    exclusion_restriction = "no"
+  ) %>%
+  # left_join(design_nodes, by = "name") %>%
+  left_join(nodes, by = "name") %>%
+  left_join(endnodes, by = "to") %>%
+  left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
+  left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
+  mutate(shape_y = y + shape_nudge_y)
 
-<!-- All studies will have a measurement strategy (otherwise nothing is measured and no data results from the data strategy), but only some will have sampling and treatment assignment procedures. A survey to measure satisfaction in a class might not sample units and instead measure all students in the class and no treatment would be assigned (we could, of course, define the sampling strategy as sampling all units). An experiment conducted in a class might have measurement and a treatment assignment strategy but no sampling. A survey of voters in a city might have a measurement strategy and a sampling strategy (random digit dialing, for example), but no treatment assignment (of course, here, we could define the treatment assignment procedure as assigning all units to a no-intervention condition). -->
+base_dag_plot %+% ggdd_df
+```
+
+We illustrate above the data strategy and its three elements: sampling, assignment, and measurement. Sampling is the procedure for selecting which units will be measured; assignment is the procedure for allocating treatments to sampled units; and measurement is the procedure for turning information about the sampled units into data. All empirical studies have a data strategy and every data strategy involves sampling, assignment, and measurement. Even studies in which researchers measure the full universe of cases involve sampling, since *future* units are not included. Even studies in which researchers do not apply treatments themselves involve assignment, since other forces end up assigning units to conditions. Even studies in which researchers take no new measurements involve measurement, since a choice about which measurements made by others to use must nevertheless be made.
+
+In the figure, we rule out threats to inference that come from implementation: failure to treat (noncompliance), failure of inclusion in the sample (attrition), and causal relationships between random sampling and assignment as well as measurement on the latent outcome (excludability). In the last section of the chapter, we discuss when these threats are realized and how we can mitigate these risks they present by design.
+
 
 ## Sampling
 
-Sampling is the process by which units are selected from the population to be studied. Some sampling procedures involve randomization while others do not. Sometimes -- perhaps even usually -- randomized sampling procedures break in ways that turn them into nonrandomized designs. Whether a sampling procedure is randomized or not has large implications for the answer stratey. Randomized designs support "design-based inference," which refers to the idea that we rely on known features of the sampling process when producing population-level estimates -- much more about this in the next chapter on Answer strategies. When randomization breaks down (e.g., if the design encounters attrition) or if a nonrandomized design is used, then we have to fall back on model-based inference to generalize from the sample to the population. Model-based inference relies on researcher beliefs about the nature of the uncontrolled sampling process in order to make inferences about the population. When possible, design-based inference is preferable, because it's easier to be correct about about the features of controlled processes than uncontrolled ones.
+Sampling is the process by which units are selected from the population to be studied. Some sampling procedures involve randomization while others do not. Sometimes -- perhaps even usually -- randomized sampling procedures break in ways that turn them into nonrandomized designs. Whether a sampling procedure is randomized or not has large implications for the answer stratey. Randomized designs support "design-based inference," which refers to the idea that we rely on known features of the sampling process when producing population-level estimates -- much more about this in the next chapter on Answer strategies. When randomization breaks down (e.g., if the design encounters attrition) or if a nonrandomized design is used, then we have to fall back on model-based inference to generalize from the sample to the population. Model-based inference relies on researcher beliefs about the nature of the uncontrolled sampling process in order to make inferences about the population. When possible, design-based inference is preferable, because it's easier to be correct about about the features of controlled processes than uncontrolled ones. That said, when randomly sampled individuals fail to respond or when we seek to make inferences about *new* populations, we must apply model-based inference even if the data are the result of a random process.
 
 Why would we ever be content to study a sample and not the full population? The first and best explanation is cost: it's expensive and time-consuming to conduct a full census of the population. Even well-funded research projects face this problem, since money and effort spent answering one question could also be spent answering a second question. We tend to sample rather than measure every unit in the population because we face opportunity costs as well. A second reason reason to sample is the diminishing marginal returns of additional data collection. Increasing the number of sampled units from 1,000 to 2,000 will greatly increase the precision of our estimates. Moving from 100,000 to 101,000 will improve things too, but the scale of the improvement is much smaller.
 
@@ -65,13 +127,13 @@ Owing to the natural appeal of design-based inference, we start off with randomi
 
 This table describes XX common forms of sampling. The most basic form is simple random sample, also called "coin flip" or Bernoulli random sampling. Under simple random assignment, all units in the population have the same probability $p$ of being included in the sample. It is sometimes called coin flip random sampling because it is as though for each unit, we flip a weighted coin that has probability $p$ of landing heads-up. While quite straightforward, a drawback of simple random sampling is that we can't be sure of the number of sampled units in advance. On average, we'll sample $N*p$ units, sometimes slightly more units will be sampled and sometimes fewer.
 
-Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$. To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, p = 0.5))` a few times and compare the results wiht `table(complete_rs(N = 100, n = 50))`. Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or less than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
+Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$.^[To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, prob = 0.5))` a few times and compare the results with `table(complete_rs(N = 100, n = 50))`]. Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or fewer than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
 
-Complete random sampling solves the problem of fixing the total number of sampled units, but it doesn't address the problem that the total number of units with particular characteristics will not be fixed.  Imagine a population with $N_{y}$ young people and $N_{o}$ old people. If we sample exactly $n$ from the population $N_{y} + N_{o}$, the number of sampled young people ($n_y$) and sampled old people ($n_{o}$) will bounce around from sample to sample. We can solve this problem by conducting complete random sampling *within* each group of units. This procedure goes by the name stratified random sampling, since the sampling is conducted separately within the strata of units. In our example, our strata were formed by a dichotomoous grouping of people into "young" and "old" categories, but in general, the sampling strata can be formed by any information we have about units before they are sampled. Stratification offers at least three major benefits. First, we defend against sampling surprisingly too few units in some stratum by "bad luck." Second (as discussed in the chapter on answer strategies) stratification tends to produce lower variance estimates of most inquiries. Finally, stratification allows researchers to "oversample"  subgroups of particular interest.
+Complete random sampling solves the problem of fixing the total number of sampled units, but it doesn't address the problem that the total number of units with particular characteristics will not be fixed.  Imagine a population with $N_{y}$ young people and $N_{o}$ old people. If we sample exactly $n$ from the population $N_{y} + N_{o}$, the number of sampled young people ($n_y$) and sampled old people ($n_{o}$) will bounce around from sample to sample. We can solve this problem by conducting complete random sampling *within* each group of units. This procedure goes by the name stratified random sampling, since the sampling is conducted separately within the strata of units.^[To convince yourself of the difference between complete and stratified sampling, run `age <- rep(c("Y", "O"), 50); table(age, complete_rs(N = 100, n = 50))` a few times and compare the results with `table(age, strata_rs(strata = age))`] In our example, our strata were formed by a dichotomoous grouping of people into "young" and "old" categories, but in general, the sampling strata can be formed by any information we have about units before they are sampled. Stratification offers at least three major benefits. First, we defend against sampling surprisingly too few units in some stratum by "bad luck." Second (as discussed in the chapter on answer strategies) stratification tends to produce lower variance estimates of most inquiries. Finally, stratification allows researchers to "oversample"  subgroups of particular interest.
 
 Stratified sampling should not be confused with cluster sampling. Stratified sampling means that a fixed number of units from a particular group are drawn into the sample. Cluster sampling means that units from a particular group are brought into the sample *together*. For example, if we cluster sample households, we interview all individuals living in a sampled household. Clustering introduces dependence in the sampling procedure -- if one member of the household is sampled, the other members are also always sampled. Relative to a complete random sample of the same size, cluster samples tend to produce higher variance estimates. Just as the individual sampling designs, cluster sampling comes in simple, complete, and stratified varieties with exactly parallel logics and motivations.
 
-Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. 
+Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically-structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. The purpose of a multi-stage approach is typically to balance the logistical difficulties of visiting many geographic areas with the relative ease of collecting additional data once you have arrived.
 
 Table XXX collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling.
 
@@ -85,11 +147,15 @@ Table XXX collects all of these kinds of random sampling together and offers an 
 | Multi-stage random sampling | First clusters, then units within clusters| cluster_ra(clusters = villages); strata_ra(strata = villages|
 
 
-Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each. 
+Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each. Starting at the top left, we have simple random samping at the individual level. The inclusion probability was set to 0.5, so on average, we ought to sample 32 people, but in this particular draw, we actually sampled only 29. Complete random sampling (top center), fixes this problem, so exactly 32 people are sampled -- but these 32 are unevenly spread across the four villages. This is addressed with stratified sampling -- here we sample exactly 8 people at random from each village of 16 total people.
+
+Moving down to the middle row of the figure, we have three approaches to clustered random sampling. Under simple sampling at the cluster, each cluster has the same probability $p$ of inclusion in the sample, so on average we will sample eight clusters. This time, we only sampled seven, this problem can again be fixed with complete random sampling (center facet), but again we have an uneven distribution across villages. Stratified cluster sampling ensures that exactly two households from each village are sampled.
+
+The bottom row of the figure illustrates some approaches to multistage sampling. In the bottom left panel, we conduct a simple random sample of individuals in each sampled cluster. In the bottom center, we draw a complete random sample of indiviudals in each sampled household. And in the bottom left, we stratify on an individual level characteristic -- we always draw one individual from each row of the household. "Row" could refer to the age of the household members. This doubly-stratified multistage random sampling procedure ensures that we sample two households from each village and within those households, one older member and one younger member.  
 
 
 ```{r, fig.width = 6.5, fig.height = 7, echo = FALSE}
-set.seed(343)
+set.seed(348)
 gg_df <- fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
   households = add_level(N = 4,
@@ -157,28 +223,31 @@ ggplot(gg_df, aes(X, Y)) +
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
+
+#gg_df %>% group_by(unit, sampling_type) %>% summarise(n = n(), sampled = sum(sampled == 1))
 ```
 
 
 
+<!-- There are many ways to draw a random sample, but two are particularly common in the social sciences: simple and stratified. Simple random sampling is sampling without replacement with a fixed sample size. Stratified random sampling takes a simple random sample of a fixed size from two or more subgroups, or strata, in the data. There are two different reasons you might select stratified random sampling over simple: your inquiry might involve comparisons between two subgroups, and you want to ensure you have a sufficient size in each subgroup; and there may be very different amounts of variability in two groups, and you want the most efficient estimate of a summary of that data so you oversample from the group with the higher variance to get a similar amount of precision from each group. Stratified sampling is a simple case of a larger class of sampling strategies, in which the probability of inclusion in the sample varies across units. In stratified sampling with two strata, the probability of inclusion is set for the two groups and is fixed within them. However, the probability can vary within strata as well. If you wish to have you sample include all age groups but upweight older people, you could make the probability of inclusion a function of age: the probability of sampling an 18 year old could be 0.01 ranging up to a probability of 0.1 for 80 year olds. -->
 
-
-
-
-There are many ways to draw a random sample, but two are particularly common in the social sciences: simple and stratified. Simple random sampling is sampling without replacement with a fixed sample size. Stratified random sampling takes a simple random sample of a fixed size from two or more subgroups, or strata, in the data. There are two different reasons you might select stratified random sampling over simple: your inquiry might involve comparisons between two subgroups, and you want to ensure you have a sufficient size in each subgroup; and there may be very different amounts of variability in two groups, and you want the most efficient estimate of a summary of that data so you oversample from the group with the higher variance to get a similar amount of precision from each group. Stratified sampling is a simple case of a larger class of sampling strategies, in which the probability of inclusion in the sample varies across units. In stratified sampling with two strata, the probability of inclusion is set for the two groups and is fixed within them. However, the probability can vary within strata as well. If you wish to have you sample include all age groups but upweight older people, you could make the probability of inclusion a function of age: the probability of sampling an 18 year old could be 0.01 ranging up to a probability of 0.1 for 80 year olds.
-
-When it is impossible to get a list of all units in the target population either because it does not exist or is too costly to obtain, clustered sampling is often a substitute. In cluster sampling, you obtain a list of clusters of units, randomly sample from the list of clusters, and either collect data from all units within selected clusters, or conduct a simple random sample of units within sampled cluster (this would represent a simple form of multistage sampling). The advantage is you can still obtain a random sample of units, but it is feasible to do so because you have a list of clusters (but not of all units). The disadvantage is that units within clusters often have similar outcomes, so you don't get as much benefit from sampling more clusters as you do from sampling units from other clusters that are more different. This efficiency tradeoff -- how many clusters to choose vs. how many units within clusters -- can be explored in design diagnosis by comparing the RMSE of various choices. There are many other forms of multistage sampling -- sample provinces then sample districts within provinces, then villages within districts, and people within villages -- that fit particular aims and budgets.
+<!-- When it is impossible to get a list of all units in the target population either because it does not exist or is too costly to obtain, clustered sampling is often a substitute. In cluster sampling, you obtain a list of clusters of units, randomly sample from the list of clusters, and either collect data from all units within selected clusters, or conduct a simple random sample of units within sampled cluster (this would represent a simple form of multistage sampling). The advantage is you can still obtain a random sample of units, but it is feasible to do so because you have a list of clusters (but not of all units). The disadvantage is that units within clusters often have similar outcomes, so you don't get as much benefit from sampling more clusters as you do from sampling units from other clusters that are more different. This efficiency tradeoff -- how many clusters to choose vs. how many units within clusters -- can be explored in design diagnosis by comparing the RMSE of various choices. There are many other forms of multistage sampling -- sample provinces then sample districts within provinces, then villages within districts, and people within villages -- that fit particular aims and budgets. -->
 
 
 ### Nonrandomized sampling designs
 
-Convenience sampling means you obtain a set of units from the population, but how you do so is not governed by any rule. Instead, you find units in the cheapest way possible. Convenience sampling is a good choice in two circumstances: it is the only strategy that is affordable, or when sampling is ignorable. Ignorability refers to the independence of missingness and characteristics of units. For many purposes, convenience sampling is sufficient, such as conducting experiments where treatment effects are not expected to vary by characteristics of the units in the sample. In other circumstances, such as measuring a sample mean like the proportion of people who are unmarried, convenience sampling is likely to lead to badly biased estimates due to a lack of ignorability. The bias comes from the fact that the types of people you are able to sample may have different outcomes than the types of people you are unable to sample. Many types of qualitative and quantitative research involve convenience sampling. Archival research often involves a convenience sample of documents on a certain topic that exist in an archive. The question of how these documents differ from those that would be in a different archive, or how the documents available in archives differ from those that do not ever make it into the archive importantly shapes what we can learn from them (Aliza Luft paper cite). With the decline of telephone survey response rates (cite), researchers can no longer rely on random digit dialing to obtain a representative sample of people in many countries, and instead must rely on convenience samples from the internet or panels who agree to have their phone numbers in a list. Reweighting techniques in the answer strategy can, in some cases, help recover estimates for the population as a whole if sampling is ignorable conditional on variables you can measure and weight on.
+Because nonrandomized sampling procedures are defined by what they don't do -- they don't use randomization -- a hugely varied set of procedures could be described this way. We'll consider a just a few common ones, since the idiosyncracies of each approach are hard to systemetize.
 
-Purposive sampling is a catch-all term for rule-based sampling strategies that do not involve random draws but also are not purely based on convenience and cost. A common example is quota sampling. In studies where there is treatment effect heterogeneity, getting samples highly imbalanced in the characteristics by which effects vary will lead to bias for the population average treatment effect. If effects vary by gender and the study is conducted on Mechanical Turk, which skews male, there may be a problem. Quota sampling addresses the problem by ensuring through a convenience sample that fixed proportions of types of people are selected. In Mechanical Turk, we might set a quota of 50% men and 50% women. We would continue to select people in the convenience sample until we reached this threshold, by rejecting men from the sample after we reached 50%. Another common form of purposive sampling is respondent-driven sampling, which is used to sample from hard-to-reach populations such as HIV-positive needle users. RDS methods often begin with a convenience sample and then systematically obtain contacts for other units who share the same characteristic in order the build a large sample.
+Convenience sampling refers to the practice of gathering units from the population in the least expensive way available to you. Convenience sampling is a good choice when generalizing to an explicit population is not a main goal of the design, for example when a sample average treatment effect is a theoretically-important inquiry. For many decades, social science undergraduates were the most abundant data source available to academics and many important theoretical claims have been established on the basis of experiments conducted with such samples. In recent years, however, online convenience samples like Mechanical Turk, Prolific, or Lucid have mostly supplanted undergraduates as the convenience sample of choice. In other (mostly nonexperimental) circumstances, however, convenience sampling is likely to lead to badly biased estimates. For example, cable news shows often conduct viewer polls that should not be taken at all seriously. While such polls might promote viewer loyalty (and so might be worth doing from the cable executives' perspective) they do not provide credible evidence about what the population at large thinks or believes.
 
-Case selection is another term for a sampling strategy. In case study research, whether qualitative or quantitative, the way you select the (typically small) set of cases is of great importance, and considerable attention has been paid to developing purposive case selection methods. Mills (cite) method of difference is a common case selection procedure, in which cases are selected that have different outcomes and the cases are inspected to identify characteristics that differ that may have led to the divergence. Lieberman (2005) proposes a method for selecting cases for indepth study from an initial regression study: cases on the regression line, well-predicted by it, are selected to determine whether the hypothesized causal relationship took place in those cases. Off-the-line cases, that are not well-predicted, are also selected to determine what factors may be left out of the regression model that provide alternative mechanisms. In each method, the inferential goal determines how cases are selected. Research design diagnosis can also help compare the efficiency and bias of these methods to select cases.
+Many types of qualitative and quantitative research involve convenience sampling. Archival research often involves a convenience sample of documents on a certain topic that exist in an archive. The question of how these documents differ from those that would be in a different archive, or how the documents available in archives differ from those that do not ever make it into the archive importantly shapes what we can learn from them (Aliza Luft paper cite). With the decline of telephone survey response rates (cite), researchers can no longer rely on random digit dialing to obtain a representative sample of people in many countries, and instead must rely on convenience samples from the internet or panels who agree to have their phone numbers in a list. Sometimes, reweighting techniques in the answer strategy can, in some cases, help recover estimates for the population as a whole if sampling if a credible model of the unknown sampling process can be agreed upon.
 
-Selection on the dependent variable is purposive sampling method that has recieved substantial attention. The procedure is to select positive outcomes --- units in which an event such as a revolution took place, for example --- and study what led to that outcome. Geddes (XXXX) lays out the problem in this method for case study research: we cannot know whether the factors identified from investigating these cases led to the event, because we do not know whether those factors are also present in units where the outcome did not happen. If the factor is present in both, it is unlikely to have caused the positive outcome. The same problem plagues observational quantitative research. Ramsay et al. (XXXX) discuss the bias that results from studying the factors predicting suicide terrorism by only looking at observations where suicide terrorism occurred. In order to avoid these problems accidentally creeping into our research, it is important to diagnose the bias of our designs and not just the efficiency.
+Next, we consider purposive sampling. Purposive is a catch-all term for rule-based sampling strategies that do not involve random draws but also are not purely based on convenience and cost. A common example is quota sampling. Sampling purely based on convenience often means we will end up with many units of one type but very few of another type. Quota sampling addresses the problem by continuing to search for subjects until target counts (quotas) of each find of subject are found. Loosely speaking, quota sampling is to convenience sampling as stratified random sampling is to complete random sampling: it fixes the problem that not enough (or too many) subjects of particular types are sampled by employing specific quotas. Importantly, however, we have no guarantee that the sampled units *within* type are representative of that type over all: quota samples are within-stratum convenience sampes.
+
+A second common form of purposive sampling is respondent-driven sampling, which is used to sample from hard-to-reach populations such as HIV-positive needle users. RDS methods often begin with a convenience sample and then systematically obtain contacts for other units who share the same characteristic in order the build a large sample.
+
+Each of these three nonrandom sampling procedures -- convenience, quota, and respondent-driven -- are illustrated in Figure XXX. Imagining that village A is easier to reach, we could obtain a convenience sample by contacting everyone we can reach in village A before moving on to village B. This process doesn't yield good coverage across villages and for that we can turn to quota sampling. Under this quota sampling scheme, we talk to the five people who are easiest to reach in each of the four villages. Finally, if we conduct a respondent-driven sample, we select one seed unit in each village, and that person recruits their four closest friends (who may or may not reside in the same village).
+
 
 ```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 
@@ -257,6 +326,14 @@ ggplot(gg_df, aes(X, Y)) +
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
 ```
+
+
+
+### Sampling designs for qualitative research
+
+Case selection is another term for a sampling strategy. In case study research, whether qualitative or quantitative, the way you select the (typically small) set of cases is of great importance, and considerable attention has been paid to developing purposive case selection methods. Mills (cite) method of difference is a common case selection procedure, in which cases are selected that have different outcomes and the cases are inspected to identify characteristics that differ that may have led to the divergence. Lieberman (2005) proposes a method for selecting cases for indepth study from an initial regression study: cases on the regression line, well-predicted by it, are selected to determine whether the hypothesized causal relationship took place in those cases. Off-the-line cases, that are not well-predicted, are also selected to determine what factors may be left out of the regression model that provide alternative mechanisms. In each method, the inferential goal determines how cases are selected. Research design diagnosis can also help compare the efficiency and bias of these methods to select cases.
+
+Selection on the dependent variable is purposive sampling method that has recieved substantial attention. The procedure is to select positive outcomes --- units in which an event such as a revolution took place, for example --- and study what led to that outcome. Geddes (XXXX) lays out the problem in this method for case study research: we cannot know whether the factors identified from investigating these cases led to the event, because we do not know whether those factors are also present in units where the outcome did not happen. If the factor is present in both, it is unlikely to have caused the positive outcome. The same problem plagues observational quantitative research. Ramsay et al. (XXXX) discuss the bias that results from studying the factors predicting suicide terrorism by only looking at observations where suicide terrorism occurred. In order to avoid these problems accidentally creeping into our research, it is important to diagnose the bias of our designs and not just the efficiency.
 
 
 ### Choosing among sampling designs
@@ -351,8 +428,6 @@ gg_df <- fabricate(
   unit = factor(unit, levels = c("Individual", "Cluster", "Saturation")),
   sampling_type = factor(sampling_type, levels = c("Simple", "Complete", "Blocked"))
   )
-
-
 
 gg_df <-
   gg_df %>%
@@ -508,13 +583,13 @@ inattention
 
 ## Threats to implementation
 
-```{r}
-# design <- 
+```{r, echo = FALSE}
+# design <-
 #   declare_population(N = 100) +
-#   declare_potential_outcomes(D ~ Z) + 
-#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) + 
-#   declare_sampling(n = 99) + 
-#   declare_assignment() + 
+#   declare_potential_outcomes(D ~ Z) +
+#   declare_potential_outcomes(Ystar ~ D, assignment_variables = D) +
+#   declare_sampling(n = 99) +
+#   declare_assignment() +
 #   declare_measurement(Y = Ystar)
 
 dag <- dagify(Y ~ Ystar + Q + R,
@@ -546,7 +621,7 @@ endnodes <-
   nodes %>%
   transmute(to = name, xend = x, yend = y)
 
-ggdd_df <- 
+ggdd_df <-
   dag %>%
   tidy_dagitty() %>%
   select(name, direction, to, circular) %>%
@@ -567,7 +642,7 @@ ggdd_df <-
       name %in% c("Z") & to == "R" ~ "yes",
       TRUE ~ "no"
     )
-  ) %>% 
+  ) %>%
   # left_join(design_nodes, by = "name") %>%
   left_join(nodes, by = "name") %>%
   left_join(endnodes, by = "to") %>%
@@ -575,39 +650,73 @@ ggdd_df <-
   left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
   mutate(shape_y = y + shape_nudge_y)
 
-base_dag_plot %+% ggdd_df 
+base_dag_plot %+% ggdd_df
 ```
 
-### Attrition
+Data strategies are plans for how we will sample units, assign treatments, and measure outcomes. But our studies do not always go according to plan. In this section, we explore the threats to our inferences that emerge while implementing data strategies. Anticipating and planning for these threats presents two benefits: we can assess the properties of the designs we will actually run, obtaining more realistic guesses of the power and bias of our study given problems like attrition and noncompliance; and we can incorporate procedures to mitigate the risk of these threats as part of our designs.
 
-Effect of S on R != 100%. Some people who are sampled do not give their response. 
-
-four cases:
-
-1. No effect of Z or U on R: loss of sample size, but estimates are not distorted.
-2. If only Z affects R, but not U, loss of sample size, but estimates are not distorted.
-3. No effect of Z on R, but yes effect of U on R. This is much more common -- different kinds of units are more or less likely to respond when sampled, which means that summaries of Y make be distorted. Usually requires model-based inference -- we try to observe some of the unobserved heterogeneity. We call those variables X, then say, within the strata defined by X, missingness is random. Then it's a matter of reweighting those strata back up to the population. This is model-based inference because we need a model of the variables in $U$ that cause survey response. If we miss one or more of the causal forces, we get it wrong.
-4. If both Z and U affect R, then we have to either do model based inference for both Z = 1 and Z = 0, or we have to do bounds
-
-
-
-The final pitfall of measurement is attrition, or nonresponse. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant. Attrition causes problems because we can no longer make inferences about the average value of $Y_i^*$ in the sample let alone a population, because we do not observe outcomes for some units without further assumptions. Under the assumption that $Y_i^{\rm obs}$ is missing completely at random, we can treat $Y_i^{\rm obs}$ for nonmissing participants as a random sample from all participants. When nonresponse is not completely random, then respondents who respond may be different than those who do not respond in terms of $Y_i^*$ --- and we don't learn anything about $Y_i^*$ for nonresponders from the missing data. However, there are design-based techniques for addressing this problem. One is to take a random sample of nonresponders and undertake additional data collection. If you are able to reach all nonresponders, then you can use the random sample as a standin for $Y_i^{\rm obs}$ from all nonresponders and, with some efficiency loss, still obtain summaries of $Y_i^*$ for the whole sample. There are also model-based strategies, in which the probability of nonresponse is estimated from a model, and estimates are weighted by the inverse of the (estimated) probability of responding (cite cite).
+Above, we adapt the figure first present in the chapter's introduction to introduce threats that come from noncompliance (failure to treat), attrition (failure to be included in the sample or provide measures), and excludability violations (causal effects of random sampling, random assignment, or measurement on the latent outcome).
 
 ### Noncompliance
 
-random assignment imperfectly manipulates the treatment: some units assigned to control are treated, and/or some units assigned to treatment fail to receive treatment
+The first type of threat during implementation is noncompliance: when random assignment $Z$ imperfectly manipulates the treatment variable $D$. In the absence of noncompliance, $D_i = Z_i$. One-sided noncompliance is the setting in which some treated units fail to be treated (and receive the control condition instead). Two-sided noncompliance is when some units fail to be treated, but in addition some units assigned to the control group receive the treatment. 
 
-table of types
+In randomized experiments, noncompliance may happen due to administrative error, miscommunications between researcher and partners, shortages of materials or staff, transportation problems, participants refusing treatment, and the inability of researchers to find the participant to treat, among other problems. 
 
-treatment may induce different amounts of compliance not just binary, so could have continuous noncompliance space
+Noncompliance also affects observational designs for causal inference in which nature or a non-random administrative process affects treatment such as a threshold cut-off. In instrumental variables designs, noncompliance is at the core: the instrument $Z$ causally affects treatment $D$, but other factors also affect $D$. In a regression discontinuity design, a threshold determines treatment status such that above a certain value of a scale the unit is treated and below it is not. But noncompliance can also occur, leading to fuzzy regression discontinuity designs, in which the threshold is imperfect and some units below receive treatment and some units above do not.
 
-with multiple treatment arms, there are complex compliance types. treatment1 compliers may be different than treatment2 compliers. apparently differences in CATEs could simply reflect differences in the types of compliers across the two treatments.
+Under two-sided noncompliance, there are four types of participants, determined by the potential outcomes $D$ as a function of which condition the unit is randomly assigned two. For a two-arm trial, there are two treatment potential outcomes: whether you would receive the treatment if you are assigned to control ($D_i(Z_i = 0)$) and whether you would receive the treatment if assigned to treatment ($D_i(Z_i = 1)$). The four types are enumerated and labeled in the table below.
+
+| Type          | $D_i(Z_i = 0)$   | $D_i(Z_i = 1)$   |
+|---------------|------------------|------------------|
+| Never-taker   | 0                | 0                |
+| Complier      | 0                | 1                |
+| Defier        | 1                | 0                |
+| Always-taker  | 1                | 1                |
+
+Never-takers are those who never take the treatment, no matter what treatment they are assigned; compliers take exactly the treatment they are assigned; defiers take exactly the opposite condition they are assigned; and always-takers receive the treatment regardless of whether the are assigned to. In one-sided noncompliance, there are only two types of participants: never-takers and compliers. 
+
+In the presence of noncompliance, a change in inquiry is inevitable. The average treatment effect cannot be estimated by comparing those assigned to treatment and those assigned to control, because the assignment differs from whether treatment was received. The average difference between those assigned to the two conditions can be relabeled the intent-to-treat effect. Comparing those who *received* treatment to those that did not is also not an option, without additional herculean assumptions, because unobserved heterogeneity now jointly affects $D$ with $Z$. The randomized experiment is broken: the treatment group is no longer comparable to the control group in expectation. Instead, a complier average treatment may be obtained using instrumental variables estimation, which implies switching to a local inquiry among complier types. This effect may differ from the average treatment effect if compliers differ systematically from other types. Estimating the complier average treatment effect requires the addition of assumptions on top of those for randomized experiments, including the ignorability of treatment assignment and, in the case of two-sided noncompliance, a monotonicity assumption that rules out defiers. 
+
+In the case of randomized experiments, spending budget and time to carefully design the treatment delivery protocols to avoid noncompliance will help avoid or minimize the threat from noncompliance.
+
+A parallel set of decisions faces the designer of an observational study with noncompliance in treatments. Instrumental variables designs imply there is noncompliance and the inquiry is the complier average treatment effect (in some cases, the intent-to-treat effect or reduced form effect is also of interest). Researchers who adopt regression discontinuity designs also focus on a local effect among units near the threshold, and in the case of the fuzzy regression discontinuity design with noncompliance must switch to a complier local average treatment effect. 
+
+Compliance need not be binary: if you are assigned to treatment, you may receive partial treatment not all or none of it. However, it is typically difficult to measure partial compliance, and more difficult still to account for this possibility in analysis (we cannot separate the effects of partial compliance from full compliance without further treatments that attempt to manipulate treatment more and less strongly).
+
+In multi-arm trials or with continuous rather than binary instruments, noncompliance becomes a more complex problem to define and address through the data strategy and answer strategy. We must define complier types according to all of the (potentially-infinite) possible treatment conditions. For multiarm trials, the complier types for the first treatment may not be the same for the second treatment; in other words, units will comply at different rates to different treatments. Apparent differences in complier average treatment effects and intent-to-treat effects, as a result, may reflect not differences in treatment effects but different rates of compliance.
+
+### Attrition
+
+Attrition is the special form of noncompliance to sampling and measurement, when we do not have measures for all units who are sampled. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant.
+
+Attrition occurs when at least one unit does not respond to at least one measurement item. Whether attrition is a problem depends on whether a participant response $R$ is causally affected by variables other than sampling or is completely random. Though missingness completely at random is rare, it is possible, often due to administrative or computer error. If attrition is completely at random, there is no effect of any variable on $R$, and there is a loss of sample size but no distortion to estimates.
+
+For descriptive inquiries, if attrition is not completely at random, then the types of units who respond are different in some way from those that do not respond. Model-based inference is required to adjust estimates to match the characteristics of the original sample, upweighting types of respondents who were less likely to respond and downweighting those that were more likely to respond. However, if we guess the wrong set of variables to reweight in our model $M$, then we will miss the target.
+
+For causal inquiries, we also need to know whether random assignment $Z$ affects $R$, as well as $U$. If $Z$ affects $R$ (there is a lower/higher rate of attrition in one treatment group than the other), but $U$ does not affect $R$, then there is just a loss of sample size but no distortion to estimates. We simply have a more (less) precise estimate of the potential outcomes from one group than we do from the other. However, when $Z$ and $U$ affect $R$, then we do not have a random sample of either the treated potential outcome or the control potential outcome from the treatment or control group. Therefore, we have to resort to model-based inference for both groups, reweighting each group based on our assumptions (in $M$) about how $U$ and $Z$ affect $R$. Alternatively, we can construct bounds of our estimates of the causal effect, which incorporate our uncertainty due to the non-random attrition.
+
+In the case of descriptive and of causal inquiries, there is also a design-based way to estimate effects in the presence of uncertainty that does not rely on assumptions in $M$: double sampling. When there are missing outcomes, we can take a second sample of those who do not respond and conduct additional measurement to try to obtain those units' outcomes. If we spend more resources on making sure we can obtain measures for all of these randomly-sampled units, then we can use this random sample of non-responders in combination with the original sample to construct a full sample. There will still be a loss of sample size, because we take a subsample in the second round, and do not attempt to interview all nonresponders. We can also use double sampling for causal inquiries, conducting a random sample of nonresponders in the treatment group to stand in for those missing observations and a second in the control group.
 
 ### Interference
 
+We have four endogenous outcomes in our DAG of a research design above: $R$, whether a participant responds to data collection; $D$, whether a respondent receives treatment; $Y^*$, the latent outcome; and $Y$, the observed outcome. Setting aside attrition and noncompliance for the moment, $R$ is a function only of sampling; $D$ of treatment assignment; $Y^*$ of $D$; and $Y$ of measurement strategy $Q$. Interference is the problem in which these endogneous variables depend not only on whether and how *they* are sampled, assigned to treatment, and measured, but whether and how *other units* are sampled, assigned to treatment, and measured. In other to define descriptive quantities like the sample average effect and causal quantities like the average treatment effect, we need to assume away interference.
+
+Interference is common, perhaps even ubiquitous, and is often referred to as spillovers. Though we focus on spillovers of treatments, interference in sampling and measurement is also common.
+
+Interference may be due to contagion, communication between participants, social comparison, deterrance, displacement, persistance and memory (in the case of over-time designs), and resource allocation decisions when there is a fixed budget. 
+
+- Contagion
+- Communication
+- Socialcomparison
+- Deterrence
+- Persistanceandmemory
+- Resourceallocationdecisions
+
+
 Interference can affect measurement, just as it affects sampling and treatment assignment. Measurement interference occurs when $Y_i^*$ depends on whether and how *other* units are measured. If participants in an experiment discuss the measurement technique itself and what researchers are asking about with other participants, this may lead to a violation. Psychology researchers on academic campuses worry about this possibility and encourage subjects not to discuss what they do in the lab with potential participants. They are worried about intereference in treatment assignment but also of measurement, because often implicit measurement techniques can be defeated (and measure something other than $Y^i^*$) when the concept is known before the session. Other researchers worry that when measuring sensitive questions that the sensitive topic will be revealed to participants either by earlier participants or local leaders who discover its purpose (Lyall Blair Imai).  
 
-### Excludability 
+### Excludability
 
 -- no effect of S on $Y^*$
 
@@ -631,4 +740,3 @@ Hawthorne effects
 -- no effect of Z on Q
 
 blinding, different tools to measure treatment and control group
-
