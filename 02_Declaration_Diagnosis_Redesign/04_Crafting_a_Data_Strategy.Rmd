@@ -44,7 +44,7 @@ These three problems are all fundamental in the sense that they cannot be surmou
 
 The data strategy $D$ is a *set of procedures* that result in a dataset $d$. It is important to keep these two concepts straight. If you apply data strategy $D$ to the world $w$, it produces dataset $d$. We say $d$ is "the" result of $D$, since when we apply the data strategy to the world, we only do so once and we obtain the data we obtain. But when we are crafting a data strategy, we have to think about the many datasets that the data strategy *could have* produced. Some of the datasets might be really excellent. For example, in good datasets, we achieve good covariate balance across the treatment and control groups. Or we might draw a sample whose distribution of observable characteristics looks really similar to the population. But some of the datasets might be worse: because of the vagaries of randomization, the particular realizations of the random assignment or random sampling might be more or less balanced. We do not have to settle for data strategies that might produce weak datasets -- we are in control of the procedures we choose. We want to choose a data strategy $D$ that is likely to result in a high-quality dataset $d$.
 
-```{r}
+```{r, echo = FALSE}
 # design <-
 #   declare_population(N = 100) +
 #   declare_potential_outcomes(D ~ Z) +
@@ -583,7 +583,7 @@ inattention
 
 ## Threats to implementation
 
-```{r}
+```{r, echo = FALSE}
 # design <-
 #   declare_population(N = 100) +
 #   declare_potential_outcomes(D ~ Z) +
@@ -659,17 +659,36 @@ Above, we adapt the figure first present in the chapter's introduction to introd
 
 ### Noncompliance
 
-random assignment imperfectly manipulates the treatment: some units assigned to control are treated, and/or some units assigned to treatment fail to receive treatment
+The first type of threat during implementation is noncompliance: when random assignment $Z$ imperfectly manipulates the treatment variable $D$. In the absence of noncompliance, $D_i = Z_i$. One-sided noncompliance is the setting in which some treated units fail to be treated (and receive the control condition instead). Two-sided noncompliance is when some units fail to be treated, but in addition some units assigned to the control group receive the treatment. 
 
-table of types
+In randomized experiments, noncompliance may happen due to administrative error, miscommunications between researcher and partners, shortages of materials or staff, transportation problems, participants refusing treatment, and the inability of researchers to find the participant to treat, among other problems. 
 
-treatment may induce different amounts of compliance not just binary, so could have continuous noncompliance space
+Noncompliance also affects observational designs for causal inference in which nature or a non-random administrative process affects treatment such as a threshold cut-off. In instrumental variables designs, noncompliance is at the core: the instrument $Z$ causally affects treatment $D$, but other factors also affect $D$. In a regression discontinuity design, a threshold determines treatment status such that above a certain value of a scale the unit is treated and below it is not. But noncompliance can also occur, leading to fuzzy regression discontinuity designs, in which the threshold is imperfect and some units below receive treatment and some units above do not.
 
-with multiple treatment arms, there are complex compliance types. treatment1 compliers may be different than treatment2 compliers. apparently differences in CATEs could simply reflect differences in the types of compliers across the two treatments.
+Under two-sided noncompliance, there are four types of participants, determined by the potential outcomes $D$ as a function of which condition the unit is randomly assigned two. For a two-arm trial, there are two treatment potential outcomes: whether you would receive the treatment if you are assigned to control ($D_i(Z_i = 0)$) and whether you would receive the treatment if assigned to treatment ($D_i(Z_i = 1)$). The four types are enumerated and labeled in the table below.
+
+| Type          | $D_i(Z_i = 0)$   | $D_i(Z_i = 1)$   |
+|---------------|------------------|------------------|
+| Never-taker   | 0                | 0                |
+| Complier      | 0                | 1                |
+| Defier        | 1                | 0                |
+| Always-taker  | 1                | 1                |
+
+Never-takers are those who never take the treatment, no matter what treatment they are assigned; compliers take exactly the treatment they are assigned; defiers take exactly the opposite condition they are assigned; and always-takers receive the treatment regardless of whether the are assigned to. In one-sided noncompliance, there are only two types of participants: never-takers and compliers. 
+
+In the presence of noncompliance, a change in inquiry is inevitable. The average treatment effect cannot be estimated by comparing those assigned to treatment and those assigned to control, because the assignment differs from whether treatment was received. The average difference between those assigned to the two conditions can be relabeled the intent-to-treat effect. Comparing those who *received* treatment to those that did not is also not an option, without additional herculean assumptions, because unobserved heterogeneity now jointly affects $D$ with $Z$. The randomized experiment is broken: the treatment group is no longer comparable to the control group in expectation. Instead, a complier average treatment may be obtained using instrumental variables estimation, which implies switching to a local inquiry among complier types. This effect may differ from the average treatment effect if compliers differ systematically from other types. Estimating the complier average treatment effect requires the addition of assumptions on top of those for randomized experiments, including the ignorability of treatment assignment and, in the case of two-sided noncompliance, a monotonicity assumption that rules out defiers. 
+
+In the case of randomized experiments, spending budget and time to carefully design the treatment delivery protocols to avoid noncompliance will help avoid or minimize the threat from noncompliance.
+
+A parallel set of decisions faces the designer of an observational study with noncompliance in treatments. Instrumental variables designs imply there is noncompliance and the inquiry is the complier average treatment effect (in some cases, the intent-to-treat effect or reduced form effect is also of interest). Researchers who adopt regression discontinuity designs also focus on a local effect among units near the threshold, and in the case of the fuzzy regression discontinuity design with noncompliance must switch to a complier local average treatment effect. 
+
+Compliance need not be binary: if you are assigned to treatment, you may receive partial treatment not all or none of it. However, it is typically difficult to measure partial compliance, and more difficult still to account for this possibility in analysis (we cannot separate the effects of partial compliance from full compliance without further treatments that attempt to manipulate treatment more and less strongly).
+
+In multi-arm trials or with continuous rather than binary instruments, noncompliance becomes a more complex problem to define and address through the data strategy and answer strategy. We must define complier types according to all of the (potentially-infinite) possible treatment conditions. For multiarm trials, the complier types for the first treatment may not be the same for the second treatment; in other words, units will comply at different rates to different treatments. Apparent differences in complier average treatment effects and intent-to-treat effects, as a result, may reflect not differences in treatment effects but different rates of compliance.
 
 ### Attrition
 
-Attrition is the special form of noncompliance to sampling and measurement, when all those who are sampled do not provide all of the measures requested of them. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant.
+Attrition is the special form of noncompliance to sampling and measurement, when we do not have measures for all units who are sampled. There are two types of missing data that may result: when a single measure is missing, commonly known as item nonresponse; and when all measures are missing for a participant, known as survey nonresponse. Though these terms were coined by survey researchers, the problems are identical when not collected by surveys but by passive measurement or by instrumentation. Item nonresponse may result from many causes, but often because respondents do not wish to answer a specific questions because they are sensitive or intrusive. Survey nonresponse in which no questions are answered may be instead due to lack of interest in the measurement as presented, inability to contact to a subject, or an inability of the data collector to build rapport and gain the trust of the participant.
 
 Attrition occurs when at least one unit does not respond to at least one measurement item. Whether attrition is a problem depends on whether a participant response $R$ is causally affected by variables other than sampling or is completely random. Though missingness completely at random is rare, it is possible, often due to administrative or computer error. If attrition is completely at random, there is no effect of any variable on $R$, and there is a loss of sample size but no distortion to estimates.
 
@@ -680,6 +699,20 @@ For causal inquiries, we also need to know whether random assignment $Z$ affects
 In the case of descriptive and of causal inquiries, there is also a design-based way to estimate effects in the presence of uncertainty that does not rely on assumptions in $M$: double sampling. When there are missing outcomes, we can take a second sample of those who do not respond and conduct additional measurement to try to obtain those units' outcomes. If we spend more resources on making sure we can obtain measures for all of these randomly-sampled units, then we can use this random sample of non-responders in combination with the original sample to construct a full sample. There will still be a loss of sample size, because we take a subsample in the second round, and do not attempt to interview all nonresponders. We can also use double sampling for causal inquiries, conducting a random sample of nonresponders in the treatment group to stand in for those missing observations and a second in the control group.
 
 ### Interference
+
+We have four endogenous outcomes in our DAG of a research design above: $R$, whether a participant responds to data collection; $D$, whether a respondent receives treatment; $Y^*$, the latent outcome; and $Y$, the observed outcome. Setting aside attrition and noncompliance for the moment, $R$ is a function only of sampling; $D$ of treatment assignment; $Y^*$ of $D$; and $Y$ of measurement strategy $Q$. Interference is the problem in which these endogneous variables depend not only on whether and how *they* are sampled, assigned to treatment, and measured, but whether and how *other units* are sampled, assigned to treatment, and measured. In other to define descriptive quantities like the sample average effect and causal quantities like the average treatment effect, we need to assume away interference.
+
+Interference is common, perhaps even ubiquitous, and is often referred to as spillovers. Though we focus on spillovers of treatments, interference in sampling and measurement is also common.
+
+Interference may be due to contagion, communication between participants, social comparison, deterrance, displacement, persistance and memory (in the case of over-time designs), and resource allocation decisions when there is a fixed budget. 
+
+- Contagion
+- Communication
+- Socialcomparison
+- Deterrence
+- Persistanceandmemory
+- Resourceallocationdecisions
+
 
 Interference can affect measurement, just as it affects sampling and treatment assignment. Measurement interference occurs when $Y_i^*$ depends on whether and how *other* units are measured. If participants in an experiment discuss the measurement technique itself and what researchers are asking about with other participants, this may lead to a violation. Psychology researchers on academic campuses worry about this possibility and encourage subjects not to discuss what they do in the lab with potential participants. They are worried about intereference in treatment assignment but also of measurement, because often implicit measurement techniques can be defeated (and measure something other than $Y^i^*$) when the concept is known before the session. Other researchers worry that when measuring sensitive questions that the sensitive topic will be revealed to participants either by earlier participants or local leaders who discover its purpose (Lyall Blair Imai).  
 
