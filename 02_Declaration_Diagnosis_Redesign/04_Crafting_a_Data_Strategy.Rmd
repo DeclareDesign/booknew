@@ -133,9 +133,7 @@ Complete random sampling solves the problem of fixing the total number of sample
 
 Stratified sampling should not be confused with cluster sampling. Stratified sampling means that a fixed number of units from a particular group are drawn into the sample. Cluster sampling means that units from a particular group are brought into the sample *together*. For example, if we cluster sample households, we interview all individuals living in a sampled household. Clustering introduces dependence in the sampling procedure -- if one member of the household is sampled, the other members are also always sampled. Relative to a complete random sample of the same size, cluster samples tend to produce higher variance estimates. Just as the individual sampling designs, cluster sampling comes in simple, complete, and stratified varieties with exactly parallel logics and motivations.
 
-
 Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically-structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. The purpose of a multi-stage approach is typically to balance the logistical difficulties of visiting many geographic areas with the relative ease of collecting additional data once you have arrived.
-
 
 Table XXX collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling.
 
@@ -149,11 +147,15 @@ Table XXX collects all of these kinds of random sampling together and offers an 
 | Multi-stage random sampling | First clusters, then units within clusters| cluster_ra(clusters = villages); strata_ra(strata = villages|
 
 
-Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each.
+Figure XXX gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each. Starting at the top left, we have simple random samping at the individual level. The inclusion probability was set to 0.5, so on average, we ought to sample 32 people, but in this particular draw, we actually sampled only 29. Complete random sampling (top center), fixes this problem, so exactly 32 people are sampled -- but these 32 are unevenly spread across the four villages. This is addressed with stratified sampling -- here we sample exactly 8 people at random from each village of 16 total people.
+
+Moving down to the middle row of the figure, we have three approaches to clustered random sampling. Under simple sampling at the cluster, each cluster has the same probability $p$ of inclusion in the sample, so on average we will sample eight clusters. This time, we only sampled seven, this problem can again be fixed with complete random sampling (center facet), but again we have an uneven distribution across villages. Stratified cluster sampling ensures that exactly two households from each village are sampled.
+
+The bottom row of the figure illustrates some approaches to multistage sampling. In the bottom left panel, we conduct a simple random sample of individuals in each sampled cluster. In the bottom center, we draw a complete random sample of indiviudals in each sampled household. And in the bottom left, we stratify on an individual level characteristic -- we always draw one individual from each row of the household. "Row" could refer to the age of the household members. This doubly-stratified multistage random sampling procedure ensures that we sample two households from each village and within those households, one older member and one younger member.  
 
 
 ```{r, fig.width = 6.5, fig.height = 7, echo = FALSE}
-set.seed(343)
+set.seed(348)
 gg_df <- fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
   households = add_level(N = 4,
@@ -221,6 +223,8 @@ ggplot(gg_df, aes(X, Y)) +
         panel.grid.minor = element_blank(),
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
+
+#gg_df %>% group_by(unit, sampling_type) %>% summarise(n = n(), sampled = sum(sampled == 1))
 ```
 
 
