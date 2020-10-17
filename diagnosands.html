@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>11.2 Redesign to assess the robustness of designs to models [GB] | Research Design: Declare, Diagnose, Redesign</title>
+  <title>10.5 Diagnosands | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="11.2 Redesign to assess the robustness of designs to models [GB] | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="10.5 Diagnosands | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="11.2 Redesign to assess the robustness of designs to models [GB] | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="10.5 Diagnosands | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="redesign-mountain.html"/>
-<link rel="next" href="part-ii-exercises.html"/>
+<link rel="prev" href="bias-variance-and-mean-squared-error.html"/>
+<link rel="next" href="four-large-classes-of-diagnosands.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -480,41 +480,177 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="redesign-to-assess-the-robustness-of-designs-to-models-gb" class="section level2">
-<h2><span class="header-section-number">11.2</span> Redesign to assess the robustness of designs to models [GB]</h2>
-<ul>
-<li>Hold inquiry constant! (read Richard Crump “Moving the Goalposts”)</li>
-<li>Hold three constant, vary one of MIDA at a time</li>
-<li>M: ICC, null model, alternative DAGs, heterogeneity</li>
-<li>I:</li>
-</ul>
-<!-- Diagnosis is like this: -->
-<!-- (we need a math glyph for left relation composition notation) -->
-<!-- $$ -->
-<!-- MIDA |> \\ -->
-<!--   simulate |> \\ -->
-<!--   summarize -->
-<!-- $$ -->
-<!-- Redesign is like this -->
-<!-- $$ -->
-<!-- map(parameters) |> \\ -->
-<!--   MIDA |>  \\ -->
-<!--   simulate |> \\  -->
-<!--   group\_by(parameters) |> \\ -->
-<!--   summarize -->
-<!-- $$ -->
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<div id="diagnosands" class="section level2">
+<h2><span class="header-section-number">10.5</span> Diagnosands</h2>
+<table>
+<colgroup>
+<col width="42%" />
+<col width="57%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Diagnostic-statistic</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Estimate</td>
+<td><span class="math inline">\(a^d\)</span></td>
+</tr>
+<tr class="even">
+<td>Estimand under the model</td>
+<td><span class="math inline">\(a^m\)</span></td>
+</tr>
+<tr class="odd">
+<td>True estimand</td>
+<td><span class="math inline">\(a^w\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(p\)</span>-value</td>
+<td><span class="math inline">\(p \equiv \Pr_{M_0} \{\mid A - a^{m_0}\mid~\geq~\mid a^d - a^{m_0}\mid \}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Confidence interval</td>
+<td><span class="math inline">\(\mathrm{CI}_{1-\alpha}\)</span></td>
+</tr>
+<tr class="even">
+<td>Confidence interval covers the estimand under the model</td>
+<td><span class="math inline">\(\mathrm{Covers} \equiv \mathbb{I}\{ a^m \in \mathrm{CI}_{1-\alpha} \}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Estimated standard error</td>
+<td><span class="math inline">\(\widehat\sigma(A)\)</span></td>
+</tr>
+<tr class="even">
+<td>Cost</td>
+<td><span class="math inline">\(\mathrm{cost}\)</span></td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="67%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Diagnosand</th>
+<th>Description</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Power</td>
+<td>Probability of rejecting null hypothesis of no effect</td>
+<td><span class="math inline">\(\Pr(p \leq \alpha)\)</span></td>
+</tr>
+<tr class="even">
+<td>Bias</td>
+<td>Expected difference between estimate and estimand</td>
+<td><span class="math inline">\(\mathbb{E}(a^d - a^m)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Variance</td>
+<td></td>
+<td><span class="math inline">\(\Var(a^d)\)</span></td>
+</tr>
+<tr class="even">
+<td>True standard error</td>
+<td></td>
+<td><span class="math inline">\(\sqrt{\Var(a^d)}\)</span></td>
+</tr>
+<tr class="odd">
+<td>RMSE</td>
+<td>Root mean-squared-error</td>
+<td><span class="math inline">\(\sqrt{\mathbb{E}(a^d - a^m)}\)</span></td>
+</tr>
+<tr class="even">
+<td>Coverage</td>
+<td></td>
+<td><span class="math inline">\(\Pr(\mathrm{covers})\)</span></td>
+</tr>
+<tr class="odd">
+<td>Type S error rate</td>
+<td>Probability estimate has incorrect sign, if statistically significant (Gelman and Carlin 2014)</td>
+<td><span class="math inline">\(\Pr(\mathrm{sgn}(a^d) \neq \mathrm{sgn}(a^m) \mid p \leq \alpha)\)</span></td>
+</tr>
+<tr class="even">
+<td>Exaggeration ratio</td>
+<td>Expected ratio of absolute value of estimate to estimand, if statistically significant (Gelman and Carlin 2014)</td>
+<td><span class="math inline">\(\mathbb{E}( a^d / a_m \mid p \leq \alpha)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Type I error</td>
+<td></td>
+<td><span class="math inline">\(\Pr(p \leq \alpha \mid a^m = a^0)\)</span></td>
+</tr>
+<tr class="even">
+<td>Type II error</td>
+<td></td>
+<td><span class="math inline">\(\Pr(p \geq \alpha \mid a^m \neq a^0)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Sampling bias</td>
+<td>Expected difference between population average treatment effect and sample average treatment effect <span class="math inline">\(Imai, King, and Stuart 2008\)</span></td>
+<td><span class="math inline">\(\mathbb{E}(a^m_{\mathrm sample} - a^m_{\mathrm population})\)</span></td>
+</tr>
+<tr class="even">
+<td>Maximum possible cost</td>
+<td></td>
+<td><span class="math inline">\(\max{cost}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Bayesian learning</td>
+<td></td>
+<td><span class="math inline">\(a^m_{\mathrm post} - a^m_{\mathrm pre}\)</span></td>
+</tr>
+<tr class="even">
+<td>Value for money</td>
+<td>Probability that a decision based on estimated effect yields net benefits</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Success</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Minimum detectable effect (MDE)</td>
+<td></td>
+<td><span class="math inline">\(\argmin_{a^m_*} \Pr(p \leq \alpha) = 0.8\)</span></td>
+</tr>
+<tr class="odd">
+<td>Robustness</td>
+<td>Joint probability of rejecting the null hypothesis across multiple tests</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Proportion of subjects harmed</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Proportion of subjects who consent</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<!-- ## Ethics -->
+<!-- - There are ethical diagnosands, e.g., what is the distribution of ethical costs such as loss of autonomy. -->
+<!-- - Cite Tara's paper. Cite Lauren's paper.  -->
+<!-- - Do a diagnosis of how many minutes of subject time are wasted by audit experiments, weigh that against the cost of demonstrating outright racial bias. (cite an audit study that does this calculation) -->
 </div>
-<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
-<a href="redesign-mountain.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="part-ii-exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bias-variance-and-mean-squared-error.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="four-large-classes-of-diagnosands.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
