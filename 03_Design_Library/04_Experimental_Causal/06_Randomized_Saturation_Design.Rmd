@@ -1,5 +1,5 @@
 ---
-title: "Partial Population Design"
+title: "Randomized Saturation Design"
 output: html_document
 bibliography: ../../bib/book.bib 
 ---
@@ -19,50 +19,105 @@ source("scripts/before_chapter_script.R")
 
 ## Randomized Saturation Design
 
+Randomized saturation designs are used to measure the diffusion of treatment effects throughout a pre-defined area or network (@bairdetal2018). The design works in two phases. First, entire areas or networks are randomly assigned to *saturations*, e.g. 0%, 25%, and 75% saturation. Then, in each network, units are individually assigned in proportions determined by the saturations: e.g., in the groups randomly assigned to 0%, none of the units are assigned to treatment, while in the groups assigned to 25% and 75%, one-quarter and three-quarters of the units are assigned to treatment, respectively. By comparing untreated units in the 0% groups to their *untreated* counterparts in the higher-saturation networks, researchers can estimate the indirect treatment effects that result from saturation-induced spillovers.
+
 ### Declaration
+
+- **M**odel: There are four networks each comprised of four units. Units' treatment assignment is a function of their network's saturation assignment, which in turn defines the amount of spillover they receive. The spillover is equal to the proportion of units treated in the network. Potential outcomes are thus defined in terms of `S`---the unit's group's saturation---and `Z`---whether or not a unit is treated. 
+
+- **I**nquiry: There are two inquiries. First, we want to know the spillover, defined here as the average difference in outcomes when an untreated unit is in a high versus a low saturation network: $E[Y_i(Z_i = 0, S_i = \text{high})-Y_i(Z_i = 0, S_i = \text{low})]$. We also want to know the "direct effect"--e.g. what happens to those directly treated if we disregard spillovers. Here it is defined over potential outcomes that the experiment does not reveal, since no one is treated in low-saturation constituencies: $E[Y_i(Z_i = 1, S_i = \text{low})-Y_i(Z_i = 0, S_i = \text{low})]$.  
+
+- **D**ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.
+
+- **A**nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they're in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.
+
 
 
 ```{r}
 design <- 
-  declare_population(
-    group = add_level(N = 10, X = rnorm(N)),
-    unit = add_level(N = 100, U = rnorm(N))
-  ) +
-  declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
-  declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
-  declare_assignment(blocks = group, prob_unit = S_prob) + 
-  declare_potential_outcomes(
-    Y ~ Z + (S == "high") + Z*(S == "high") + X + U,
-    conditions = list(Z = c(0, 1), S = c("low", "high"))) +
-  declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
+  declare_population(network = add_level(N = 4), unit = add_level(N = 4, U = rnorm(N))) +
+  declare_assignment(assignment_variable = "S", clusters = network, conditions = c("low","high")) +
+  declare_assignment(prob = .25, blocks = network, assignment_variable = "Z_S_low") +
+  declare_assignment(prob = .75, blocks = network, assignment_variable = "Z_S_high") +
+  declare_step(spillover_low = ave(Z_S_low, network, FUN = mean), 
+               spillover_high = ave(Z_S_high, network, FUN = mean),handler = fabricate)  +
+  declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") + Z * spillover_high * (S == "high") + U,
+                             conditions = list(Z = c(0,1), S = c("low","high"))) +
+  declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-  declare_reveal(Y, c(Z, S)) +
-  declare_estimator(Y ~ Z + S, model = lm_robust, term = c("Z", "Shigh"), estimand = c("ATE_saturation", "ate_no_spill"), label = "main effect")
+  declare_reveal(Z,S) +
+  declare_step(ipw = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") + Z_S_high_cond_prob * (S == "high"))),
+    handler = fabricate) +
+  declare_reveal(Y,c(Z, S)) +
+declare_estimator(Y ~ Z * S, clusters = network, model = lm_robust, term = c("Z", "Shigh"), 
+                  estimand = c("ate_no_spill", "ate_saturation"),weight = ipw)
 ```
 
+```{r saturation, echo = FALSE}
+draw_data(design) %>% 
+  mutate(
+    label = paste0("Network ", network, "\nSaturation = ", S), 
+    Z = as.factor(Z)
+  ) %>% 
+  ggplot() +
+  geom_point(aes(y = 1, x = unit, shape = Z, color = Z))  +
+  facet_wrap(~ label, scales = "free", nrow = 1) +
+  theme(axis.title.y =element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y=element_blank(),
+    axis.line = element_blank()) 
+```
+
+
+<!-- 
+JC Comment: I see that the previous version was far too complex but the updated version was 
+misleadingly simple. The POs need to be a function of the proportion of units treated, not 
+simply a fixed trait of the saturation category you're assigned to. As it was setup before, 
+I could set the saturations at all sorts of crazy values and it makes no difference, it was 
+basically a het-fx by blocks design. Also, the point and variance estimators were biased 
+because this design requires IPWing. To me, the minimally sufficient declaration has to 
+illustrate the design works in terms of bias and coverage in a DGP it was specifically
+setup to handle. 
+# ```{r}
+# design <- 
+#   declare_population(
+#     group = add_level(N = 10, X = rnorm(N)),
+#     unit = add_level(N = 100, U = rnorm(N))
+#   ) +
+#   declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
+#   declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
+#   declare_assignment(blocks = group, prob_unit = S_prob) + 
+#   declare_potential_outcomes(
+#     Y ~ Z + (S == "high") + Z*(S == "high") + X + U,
+#     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
+#   declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
+#                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
+#   declare_reveal(Y, c(Z, S)) +
+#   declare_estimator(Y ~ Z + S, model = lm_robust, term = c("Z", "Shigh"), estimand = c("ATE_saturation", "ate_no_spill"), label = "main effect")
+# ```
+-->
 ### Dag
 
 
 ```{r, echo=FALSE}
 
-dag <- dagify(Y ~ Z + S + U + X,
+dag <- dagify(Y ~ Z + S + U,
               Z ~ S)
 
 nodes <-
   tibble(
-    name = c("X", "U", "S", "Z", "Y"),
-    label = c("X", "U", "S", "Z", "Y"),
+    name = c("U", "S", "Z", "Y"),
+    label = c("U", "S", "Z", "Y"),
     annotation = c(
-      "**Unknown heterogeneity**<br>Unit effects",
       "**Unknown heterogeneity**",
       "**Treatment assignment 1**<br>Saturation level",
       "**Treatment assignment 2**<br>Individual assignment",
       "**Outcome variable**"
     ),
-    x = c(2, 5, 1, 1, 5),
-    y = c(2.5, 4, 4, 1, 2.5), 
-    nudge_direction = c("N", "N", "N", "S", "S"),
-    answer_strategy = "uncontrolled",
+    x = c(5, 1, 1, 5),
+    y = c(4, 4, 1, 2.5), 
+    nudge_direction = c( "N", "N", "S", "S"),
+    answer_strategy = "uncontrolled"
   )
 
 ggdd_df <- make_dag_df(dag, nodes, design)
@@ -70,9 +125,19 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 base_dag_plot %+% ggdd_df
 ```
 
+# Exercises
 
 
-### Example
+- Increase the saturation of the "low" condition from 0% to 25% and diagnose the design. Notice how this changes the mean saturation and direct effect estimands. Now set the saturations both equal to 25%. Explain why the two estimands do or do not change.
+
+- Setting the saturations back to their original values, remove the `ipw` from the estimator. What happens to the bias? Explain your answer.
+
+- In the potential outcomes declaration for `Y`, add an interaction between the high saturation condition and `Z`, and diagnose the design with the saturations set to their original values of 0 and .75. 
+  1. Why is the estimate of the ATE of the treatment biased whereas the estimate of the saturation effect is not? 
+  2. Why can the researcher not simply estimate the interaction in this design?
+  3. Now increase the low saturation to 25% and add an interaction between `Z` and `S` to the estimator. Why does this make the design unbiased again?
+
+### Online Appendix Applied Example
 
 
 <!-- make sure to rename the section title below -->
@@ -90,7 +155,7 @@ library(blockTools)
 ```
 
 
-Randomized saturation designs (@bairdetal2018) offer researchers a way to estimate the diffusion of intervention effects within some geographic or social network. Most approaches work by first cluster-assigning non-overlapping groups of individuals to treatment saturations, then block-assigning individuals to treatment in the proportions determined by the saturations. 
+
 
 @asunka2019, for example, wanted to know if the presence of election monitors at ballot stations would displace violence and fraud to other ballot stations. They randomized constituencies to low, medium, and high levels of saturation, and then randomized ballot stations to have election monitoring or not in low, medium, or high concentrations, depending on the randomized saturation. In the original study, the authors did not include a zero-saturation condition. Here, we declare a simplified version of their design in which a zero-saturation condition is included. 
 

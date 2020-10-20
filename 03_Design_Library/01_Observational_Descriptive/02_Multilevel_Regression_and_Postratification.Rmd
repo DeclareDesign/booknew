@@ -1,5 +1,5 @@
 ---
-title: "Multilevel regression and poststratification"
+title: "Poststratification"
 output: html_document
 bibliography: ../../bib/book.bib 
 ---
@@ -17,11 +17,14 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-## Multilevel regression and poststratification
+## Poststratification
 
-
+Poststratification is a tool for learning about a population when you have a sample whose units were drawn with unequal (and usually unknown) probabilities. In essence, if you know features of the population that you can measure in your own sample, you can reweight your sample to look like the population---at least along the dimensions you can measure. In its simplest form, poststratification just involves counting and dividing. Say you want to poststratify your sample so that, in terms of gender and age, it looks like all people in their twenties in the United States population in 2010. That gives twenty groups---one for each age and each gender---whose size you need to count in the 2010 Decennial census and in your sample. Then, simply weight each person in the sample by the size of their group in the population divided by the size of their group in the sample. As we illustrate with the declaration below, it turns out that these weights are equivalent to the inverse sampling probabilities one would obtain were one to construct the sample using groups as strata. That's where the "stratification" in poststratification comes from---it's "post" because the weights are constructed after the sampling has already taken place. In the online example, we illustrate how Bayesian multi-level regression poststratification (MRP) can help to deal with the fact that, as the number of group-defining features increases, the sample may contain no information at all about some of the groups defined by the combination of those features.
 
 ### Declaration
+
+<!-- 
+JC comment: Original declaration doesn't have correlation between X and Y so this design works even if the estimator is just an intercept. Once I added the correlation, the design was biased. Don't quite understand the demeaning approach (doesn't appear to be using any population-level info?) so have just opted for a more conventional approach to poststratification that reweights to the population proportions. Have also called this poststratification since we are now only using MRP in the extended example. 
 
 ```{r}
 fixed_population <- declare_population(N = 500, 
@@ -36,6 +39,34 @@ design <-
                C_demeaned = (X == "C") - mean(X == "C"), mutate) + 
   declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, estimand = "Ybar")
 ```
+
+-->
+
+- **M**odel: We have a fixed, finite population comprised of two groups defined by a binary variable, $X$. There are 100 people who have $X = 0$ and 50 who have $X = 1$. The outcome, $Y$, takes one of three values, 0, 1, and 2, and is a function of $X$. 
+
+- **I**nquiry: The researcher wants to know the true average of $Y$ in the population.
+
+- **D**ata strategy: Ten individuals from each group are included in the sample. Thus, whereas 2/3 of the population belong to the $X = 0$ group, only 1/2 of the sample does. Conversely, while only 1/3 of the population belongs to the $X = 1$ group, 1/2 of the sample does.
+
+- **A**nswer strategy: The answer strategy involves taking a weighted average of $Y$ in the sample, where each unit's weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, $X = 0$, get a weight of 100/10 = 10, while the overrepresented group, $X = 1$, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents. 
+
+```{r}
+fixed_population <- declare_population(
+  group = add_level(N = 2, X = c(0,1), population_n = c(100,50)),
+  individual = add_level(N = population_n, Y = X + sample(0:1, N, replace = TRUE)))()
+
+design <- 
+  declare_population(data = fixed_population) + 
+  declare_estimand(Ybar = mean(Y)) + 
+  declare_sampling(strata_n = c(10,10), strata = X) + 
+  declare_step(handler = group_by, groups = X) +
+  declare_step(handler = mutate, 
+               sample_n = n(), 
+               weight = population_n / sample_n) +
+  declare_estimator(Y ~ 1, term = "(Intercept)", model = lm_robust, weights = weight, estimand = "Ybar")
+```
+
+
 
 ### Dag
 
@@ -62,7 +93,14 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 base_dag_plot %+% ggdd_df
 ```
 
+### Exercises
 
+- Add an unweighted estimator to the design and diagnose it. Explain why the unweighted estimator is biased, as well as the direction of the bias.
+- Remove `X` from the definition of `Y`. Explain why the bias is now equivalent in the two approaches.
+- Change the `strata_n` so that 4 people are sampled from the first group and 25 are sampled from the second group. 
+  i. Calculate the poststratification weight for each group by hand (hint: you can check your answer using `draw_data(design)$weight`).
+  ii. Calculate the sample inclusion probability for each group by hand (hint: you can check your answer using `draw_data(design)$S_inclusion_prob`). 
+  iii. Calculate the inverse of the sampling probability for each group. These should be equal to the poststratification weights.
 
 ### Example
 

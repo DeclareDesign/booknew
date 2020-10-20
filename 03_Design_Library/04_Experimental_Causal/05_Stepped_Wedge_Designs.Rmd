@@ -19,27 +19,56 @@ source("scripts/before_chapter_script.R")
 
 ## Stepped wedge designs
 
+In a stepped wedge design, individuals are randomly assigned to enter into treatment in different stages and at each stage their outcomes are remeasured. Figure \@ref(fig:stepped-wedge) illustrates where the study gets its name: as two units are randomly added to the treatment group in each of the three waves, the treatment group increases in "steps" while the control group diminishes.
+
+Often, stepped wedge designs are vaunted for their policy appeal because they allow for everyone to be (eventually) treated in the context of an experiment. However, you could achieve the same goal in a regular two-armed trial by treating everyone after the final wave of measurement, and not all stepped wedge designs involve treating everyone. The real advantage of the stepped wedge is not in its ethical appeal: it's the ability to squeeze more power out of a small sample by treating each wave as though it were its own study.
+
 ### Declaration
+
+- **M**odel: Eight units are randomized and remeasured at three time points. Importantly, any unit at any given point in time reveals one of only two potential outcomes---treated or untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific shock. Treated potential outcomes increase relative to control potential outcome by a rate of 1 each period---in other words, there are bigger treatment effects in later periods.
+
+- **I**nquiry: Our estimand is the average treatment effect over all units and periods in the sample. Averaged over the three periods, the ATE is (1 + 2 + 3) / 3 = 2.
+
+- **D**ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all---see the remaining two orange squares at the top-right corner of  Figure \@ref(fig:stepped-wedge). Notice that, while every *unit* is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of *unit-periods* with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.
+
+- **A**nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy "under-represents" treated potential outcomes in the first wave and "over-represents" them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit's IPW is represented on Figure \@ref(fig:stepped-wedge). But what do the numbers mean, and why do they change from one wave to another? In a sampling context, the IPW tells us how many units in the population each sampled unit represents. In the experimental context, the treatment assignment randomly samples units' *potential outcomes*. So, in the first wave, the two treated units each have to stand in for four units' treated potential outcomes (4 + 4 = 8 units). The potential outcomes revealed by the six units assigned to the control each stand in for 1.33 other units' potential outcomes (1.33 + 1.33 + 1.33 + 1.33 + 1.33 + 1.33 = 8 units). Since the second wave is comprised of one-half treated potential outcomes and one-half control potential outcomes, each unit represents two other units' potential outcomes. Using these weights, we get a "representative" estimate of the average control and treatment potential outcomes in each wave. If we didn't apply the weights, we wouldn't get a representative view of the unobserved potential outcomes we're sampling, and our estimates would be biased. So what does all this buy us? We also declare a "two-arm" estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.
 
 
 ```{r}
-
 design <- 
   declare_population(
     unit = add_level(N = 8, X = rnorm(N)),
-    period = add_level(N = 3, time = as.numeric(period), nest = FALSE),
-    obs = cross_levels(by = join(unit, period), U = rnorm(N))
-  ) + 
+    period = add_level(N = 3, time = as.numeric(period), 
+                       p = c(1/4, 1/4 + 1/4, 1/4 + 1/4 + 1/4), 
+                       nest = FALSE),
+    obs = cross_levels(by = join(unit, period), U = rnorm(N))) + 
   declare_potential_outcomes(Y ~ X + U + Z * time) +
   declare_assignment(clusters = unit, conditions = 1:4, assignment_variable = "wave") + 
-  declare_assignment(Z = as.numeric(time >= wave), ipw = 1 / (Z * 2/8 + (1 - Z) * (1 - 2/8)), handler = fabricate) + 
+  declare_assignment(Z = as.numeric(time >= wave), ipw = 1 / (Z * p + (1 - Z) * (1 - p)), handler = fabricate) + 
   declare_reveal(Y, Z) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "1: Wave 2 only", subset = period == 2) +
-  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "2: Weighted, clustered SW", weights = ipw, clusters = unit) +
-  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "3: Unweighted, unclustered SW") 
+  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "1: Stepped Wedge", weights = ipw, clusters = unit) +
+  declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "2: Wave 2 Only", subset = period == 2) 
 ```
 
+```{r stepped-wedge, echo=FALSE}
+dat <- draw_data(design)
+
+treatment_color <- "royalblue2"
+control_color <- "darkorange3"
+
+dat %>% 
+  arrange(wave,unit) %>% 
+  group_by(period) %>%
+  mutate(unit = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control")) %>% 
+  ggplot(aes(x = period, y = unit, fill = Assignment)) +
+  geom_tile(color = "white") + 
+  scale_fill_manual(values = c(control_color, treatment_color)) +
+  # scale_fill_grey(start = .9,end = .5) +
+  geom_text(aes(label = round(ipw,2))) +
+  dd_theme() +
+  theme(legend.position = "right")
+```
 
 ### Dag
 
@@ -62,7 +91,7 @@ nodes <-
     x = c(1, 5, 1, 3, 5),
     y = c(4, 4, 1, 2.5, 2.5), 
     nudge_direction = c("N", "N", "S", "N", "S"),
-    answer_strategy = "uncontrolled",
+    answer_strategy = "uncontrolled"
   )
 
 ggdd_df <- make_dag_df(dag, nodes, design)
@@ -71,267 +100,116 @@ base_dag_plot %+% ggdd_df
 ```
 
 
-### Example
+### Exercises
+
+1. Add an answer strategy to the design that doesn't include IPWs and diagnose the design. 
+  
+  i. How does this affect the bias in the estimates? Explain your answer.
+  ii. Now change the potential outcomes function so that the treatment effect is constant across periods. How does this affect the bias? Explain your answer.
+  iii. How does the relative power of the stepped-wedge over the single-period, two-arm trial change when the treatment effect is restricted to be constant across periods? Explain your answer.
+
+2. Our design makes a subtle but crucial assumption about the potential outcomes: namely, that the treated potential outcome revealed in one period is the same irrespective of whether the unit was treated in the previous (or subsequent) periods. What would a violation of this assumption look like? 
 
 
-```{r stepped_wedge, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
-```
+### Online Appendix Applied Example
 
-In a stepped wedge design, individuals are randomly assigned to enter into
-treatment in different stages, and at each stage their outcomes are remeasured.
-The first panel of Figure X illustrates where the study gets its name: here, two
-randomly selected individuals (or clusters) enter the treatment at before each
-of the three waves of measurement, while two individuals are randomly selected
-to remain in control.
+FIND AND ADD EXAMPLE.
 
-Such designs have a remarkable feature: because who enters the treatment group
-at any given stage is random, the data collected in each measurement wave can
-(almost) be treated like a fresh experiment. Often, stepped wedge designs are
-vaunted for their policy appeal: stepped wedges are a good option for rigorous
-causal inference when it's not fair or feasible to prevent some people from
-getting a treatment. Yet, that same goal can be achieved in the context of any
-experiment with one wave of measurement: just treat the control once you've
-conducted the final measurement.  The real advantage of the stepped wedge is not
-its ethical appeal: it's the ability to squeeze more power out of a small
-sample.
+<!-- - Comparing 1 and 2, stepped wedge gives a big improvement in power, is -->
+<!-- unbiased, and gets the coverage correct. Clearly better than just doing a -->
+<!-- cross-section at wave 2.  -->
 
-Stepped-wedge designs are more complicated than they at first appear. Below, we
-explain why: this design can be thought of as a block-randomized experiment with
-heterogeneous probabilities and a high risk of spillovers.
+<!-- - Estimator 3 shows two pitfalls, however, that can lead us to overestimate -->
+<!-- benefits of SW. -->
 
-- Show SW is better-powered but both coefficient and SE will be biased if not
-analyzed correctly.
-- Show how allocating more sample in earlier waves better here due to high
-variance in treatment POs.
-- Show how spillovers are very plausible and can be overcome.
-- Show extreme case in which no power gain from SW (when u_it = 0, ICC = 1):
-this is the intuition behind SW -- power gains derive from inter-temporal
-variation
+<!-- 1. First, it is biased: [explain how treated POs are more commonly observed in -->
+<!-- periods when they're higher, we need to weight for this. How weights come about: -->
+<!-- There is one way that a unit can be observed in a treated state in wave 1: they -->
+<!-- are assigned to W1 with probability `p_W1`. There are two ways in which a unit -->
+<!-- can be treated in wave 2: they are assigned in W1 with `p_W1` or in W2 with -->
+<!-- `p_W2`. Because being assigned in W1 or in W2 are exclusive and independent -->
+<!-- events, we can get the prob of being treated in any period by wave 2 by summing -->
+<!-- the probs.] -->
 
-### Design Declaration
+<!-- 2. Second, standard errors are wrong. Units should be treated as clusters (draw -->
+<!-- analogue to two-stage random assignment in saturation design?) -->
 
+<!-- A natural question is how power changes as more or fewer units are assigned.  -->
+<!-- Here, we consider variations on the stepped wedge design declared above, in  -->
+<!-- which we hold constant at 3 the number of units assigned to the pure control,  -->
+<!-- and shift an increasing proportion of the assignment to later waves. -->
 
-- **M**odel: our design has eight units randomized and remeasured at three time
-points. Units' untreated potential outcomes consist of an unit- and a
-unit-period-specific shock. Their treated potential increases relative to their
-control potential outcome by a rate of 1 each period (see second panel of Figure
-X).
+<!-- ```{r} -->
+<!-- designs <- list( -->
+<!--   a = redesign(design, p_00 = 3/8, p_W1 =  3/8, p_W2 = 1/8, p_W3 = 1/8), -->
+<!--   b = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 2/8, p_W3 = 1/8), -->
+<!--   c = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 1/8, p_W3 = 2/8), -->
+<!--   d = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 3/8, p_W3 = 1/8), -->
+<!--   e = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 2/8, p_W3 = 2/8), -->
+<!--   f = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 1/8, p_W3 = 3/8) -->
+<!--   ) -->
+<!-- ``` -->
 
-- **I**nquiry: Since any unit at any given point in time reveals one of only two
-potential outcomes, we can define our estimand simply as the average treatment
-effect. As panel 2 shows, the ATE averaged over the three periods is (1 + 2 + 3)
-/ 3 = 2. An important assumption that enables us to define the estimand in this
-way is that units reveal the same treated or untreated potential outcome,
-irrespective of what happened in the previous period. This amounts to a no
-spillovers assumption, which may be implausible in practice. We return to this
-below.
+<!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} -->
+<!-- # Diagnose design -->
+<!-- diagnoses <- diagnose_designs(designs) -->
+<!-- ``` -->
 
-- **D**ata strategy: our assignment strategy works in two stages. We first
-cluster-assign unit-periods to a `wave` in which they will be treated.
-One-quarter of the units are not treated in any wave (pure control): `p_00 =
-2/8`. The remaining three quarters are distributed evenly among the three waves
-of treatment: `p_W1 <- p_W2 <- p_W3 <- 2/8`. In a second phase, the wave
-assignment is converted into a simple indicator, `Z`, for whether the unit is
-treated in a given period or not. There is an important but subtle difference
-between the `wave` and `Z` variables [explain Z is joint prob]
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("05_Stepped_Wedge_Designs.Rmd"), "/diagnoses.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(diagnoses, path = rds_file_path) -->
+<!-- } -->
+<!-- diagnoses <- read_rds(rds_file_path) -->
+<!-- ``` -->
 
 
-- **A**nswer strategy: [describe: we look at an approach that treats it like
-blocks. What are inverse propensities weights? Simply put, they correspond to
-the number of observations that a sampled observation "represents." We also
-compare to the power of a design  that only involves one wave of measurement,
-e.g. at wave 2 where units are treated 5050.]
-
-```{r}
-p_00 <- p_W1 <- p_W2 <- p_W3 <- 2/8
-
-design <- declare_population(
-  t = add_level(N = 3, trend = as.numeric(t), 
-                # u_t = rnorm(N), 
-                p = c(p_W1, p_W1 + p_W2, p_W1 + p_W2 + p_W3)),
-  i = add_level(N = 8, u_i = rnorm(N), nest = FALSE),
-  obs = cross_levels(by = join(t, i), u_it = rnorm(N))) + 
-  declare_potential_outcomes(Y_Z_0 = u_i + u_it, Y_Z_1 = u_i + u_it + trend) +
-  declare_assignment(clusters = i, conditions = 1:4, 
-                     prob_each = c(p_W1, p_W2, p_W3, p_00),
-                     assignment_variable = "wave") + 
-  declare_step(Z = as.numeric(t >= wave), 
-               ip = 1 / (Z * p + (1 - Z) * (1 - p)),
-               handler = fabricate) + 
-  declare_reveal(Y, Z) + 
-  declare_estimand(ate = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "1: Wave 2 only", subset = t == 2) +
-  declare_estimator(Y ~ Z, model = lm_robust, label = "2: Weighted, clustered SW", weights = ip, clusters = i) +
-  declare_estimator(Y ~ Z, model = lm_robust, label = "3: Unweighted, unclustered SW") 
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- designs_data <- names(designs) %>%  -->
+<!--   lapply(function(name) designs[[name]] %>%  -->
+<!--            draw_data %>%  -->
+<!--            mutate(design_id = name)) %>%  -->
+<!--   do.call(what = rbind,args = .) %>%  -->
+<!--   arrange(design_id,wave,i) %>%  -->
+<!--   group_by(t,design_id) %>% -->
+<!--   mutate(i = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control"))  -->
 
 
-```{r, echo=FALSE}
-dat <- draw_data(design)
+<!-- diags <- diagnoses %>%  -->
+<!--   get_diagnosands() %>%  -->
+<!--   filter(estimator_label == "2: Weighted, clustered SW") %>%  -->
+<!--   mutate( -->
+<!--     design_name = paste0("Design ", design_label, ": W1 = ",8*p_W1, -->
+<!--                          "; W2 = ", 8*p_W2,  -->
+<!--                          "; W3 = ", 8*p_W3,",\nPower = ",round(power,2) -->
 
-treatment_color <- "royalblue2"
-control_color <- "darkorange3"
+<!--                          ) -->
+<!--   ) -->
 
-sw_plot <- dat %>% 
-  arrange(wave,i) %>% 
-  group_by(t) %>%
-  mutate(i = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control")) %>% 
-  ggplot(aes(x = t, y = i, fill = Assignment)) +
-  geom_tile(color = "white") + 
-  scale_fill_manual(values = c(control_color, treatment_color)) +
-  # scale_fill_grey(start = .9,end = .5) +
-  geom_text(aes(label = round(ip,2))) +
-  dd_theme() +
-  theme(legend.position = "right")
+<!-- designs_data <- left_join(designs_data, diags %>% select(design_name, design_label), by = c("design_id" = "design_label")) -->
 
-
-
-ate_by_wave_plot <- dat %>% 
-  group_by(t) %>%
-  summarize(Y_Z_1 = mean(Y_Z_1), Y_Z_0 = mean(Y_Z_0)) %>% 
-  mutate(t = as.numeric(t),
-    ate = Y_Z_1 - Y_Z_0, 
-         label_y_position = Y_Z_0 + ate/2, 
-         label_x_position = t + .15,
-         label = paste0("ATE at wave ",t,":\n",ate)) %>% 
-  ggplot(aes(x = t)) +
-  geom_segment(aes(x = t, xend = t, y = Y_Z_0, yend = Y_Z_1), linetype = "dashed", alpha = .5) +
-  geom_line(aes(y = Y_Z_1), color = treatment_color) +
-  geom_point(aes(y = Y_Z_1), color = treatment_color) +
-  geom_line(aes(y = Y_Z_0), color = control_color) +
-  geom_point(aes(y = Y_Z_0), color = control_color) +
-  geom_text(aes(x = label_x_position, y = label_y_position, label = label)) +
-  geom_text(aes(x = label_x_position[3], y = Y_Z_1[3]), label = "E[Y(Z = 1)]", color = treatment_color) +
-  geom_text(aes(x = label_x_position[3], y = Y_Z_0[3]), label = "E[Y(Z = 0)]", color = control_color) +
-  scale_y_continuous("Average potential outcomes") +
-  scale_x_continuous("Wave", breaks = 1:3) +
-  dd_theme()
+<!-- designs_data %>%  -->
+<!--   ggplot(aes(x = t, y = i, fill = Assignment)) + -->
+<!--   geom_tile(color = "white") +  -->
+<!--   scale_fill_manual(values = c(control_color, treatment_color)) + -->
+<!--   dd_theme() + facet_wrap(~ design_name, nrow = 1) +  -->
+<!--   scale_y_continuous("",labels = NULL) -->
 
 
-grid.arrange(sw_plot, ate_by_wave_plot,nrow = 1)
+<!-- ``` -->
 
-```
+<!-- - We see a monotonic decrease in the power as more of the sample is treated  -->
+<!-- later. This occurs because treating units later means observing less of the -->
+<!-- potential outcomes. The potential outcomes are more variant, so we're better -->
+<!-- off when we observe more of them [I think!] -->
 
+<!-- ### Spillovers -->
 
-
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-# Diagnose design
-diagnosis <- diagnose_design(design)
-```
-
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("05_Stepped_Wedge_Designs.Rmd"), "/diagnosis.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis, path = rds_file_path)
-}
-diagnosis <- read_rds(rds_file_path)
-```
-
-```{r, echo = FALSE}
-diag_tab <- reshape_diagnosis(diagnosis) 
-diag_tab %>% select(c("Estimator Label", "Bias","Power","Coverage","Mean Estimate","SD Estimate","Mean Se")) %>% kable()
-```
-
-- Comparing 1 and 2, stepped wedge gives a big improvement in power, is
-unbiased, and gets the coverage correct. Clearly better than just doing a
-cross-section at wave 2. 
-
-- Estimator 3 shows two pitfalls, however, that can lead us to overestimate
-benefits of SW.
-
-1. First, it is biased: [explain how treated POs are more commonly observed in
-periods when they're higher, we need to weight for this. How weights come about:
-There is one way that a unit can be observed in a treated state in wave 1: they
-are assigned to W1 with probability `p_W1`. There are two ways in which a unit
-can be treated in wave 2: they are assigned in W1 with `p_W1` or in W2 with
-`p_W2`. Because being assigned in W1 or in W2 are exclusive and independent
-events, we can get the prob of being treated in any period by wave 2 by summing
-the probs.]
-
-2. Second, standard errors are wrong. Units should be treated as clusters (draw
-analogue to two-stage random assignment in saturation design?)
-
-A natural question is how power changes as more or fewer units are assigned. 
-Here, we consider variations on the stepped wedge design declared above, in 
-which we hold constant at 3 the number of units assigned to the pure control, 
-and shift an increasing proportion of the assignment to later waves.
-
-```{r}
-designs <- list(
-  a = redesign(design, p_00 = 3/8, p_W1 =  3/8, p_W2 = 1/8, p_W3 = 1/8),
-  b = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 2/8, p_W3 = 1/8),
-  c = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 1/8, p_W3 = 2/8),
-  d = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 3/8, p_W3 = 1/8),
-  e = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 2/8, p_W3 = 2/8),
-  f = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 1/8, p_W3 = 3/8)
-  )
-```
-
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-# Diagnose design
-diagnoses <- diagnose_designs(designs)
-```
-
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("05_Stepped_Wedge_Designs.Rmd"), "/diagnoses.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnoses, path = rds_file_path)
-}
-diagnoses <- read_rds(rds_file_path)
-```
-
-
-```{r, echo = FALSE}
-designs_data <- names(designs) %>% 
-  lapply(function(name) designs[[name]] %>% 
-           draw_data %>% 
-           mutate(design_id = name)) %>% 
-  do.call(what = rbind,args = .) %>% 
-  arrange(design_id,wave,i) %>% 
-  group_by(t,design_id) %>%
-  mutate(i = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control")) 
-
-
-diags <- diagnoses %>% 
-  get_diagnosands() %>% 
-  filter(estimator_label == "2: Weighted, clustered SW") %>% 
-  mutate(
-    design_name = paste0("Design ", design_label, ": W1 = ",8*p_W1,
-                         "; W2 = ", 8*p_W2, 
-                         "; W3 = ", 8*p_W3,",\nPower = ",round(power,2)
-                         
-                         )
-  )
-
-designs_data <- left_join(designs_data, diags %>% select(design_name, design_label), by = c("design_id" = "design_label"))
-
-designs_data %>% 
-  ggplot(aes(x = t, y = i, fill = Assignment)) +
-  geom_tile(color = "white") + 
-  scale_fill_manual(values = c(control_color, treatment_color)) +
-  dd_theme() + facet_wrap(~ design_name, nrow = 1) + 
-  scale_y_continuous("",labels = NULL)
-
-
-```
-
-- We see a monotonic decrease in the power as more of the sample is treated 
-later. This occurs because treating units later means observing less of the
-potential outcomes. The potential outcomes are more variant, so we're better
-off when we observe more of them [I think!]
-
-### Spillovers
-
-An important assumption is that the potential outcomes revealed are not a
-function of what wave the unit entered into treatment. In other words, there are
-no Show how, in case of such spillovers, you can just treat the effects as
-different, but then you lose power gains (and possibly change estimand)
+<!-- An important assumption is that the potential outcomes revealed are not a -->
+<!-- function of what wave the unit entered into treatment. In other words, there are -->
+<!-- no Show how, in case of such spillovers, you can just treat the effects as -->
+<!-- different, but then you lose power gains (and possibly change estimand) -->
 
 
 
