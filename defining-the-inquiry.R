@@ -8,7 +8,9 @@ lapply(packages, require, character.only = TRUE)
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 library(dagitty)
 
-dat <- fabricate(N = 500, X = rnorm(N), Y = 0.5 *X + -0.5 * X^2 + -0.5* X^3 + 0.05 * X^4 + rnorm(N))
+set.seed(1)
+dat <- fabricate(N = 500, X = rnorm(N), Y = 0.5 *X + -0.5 * X^2 + -0.5* X^3 + 0.05 * X^4 + rnorm(N)) %>%
+  mutate(Y = Y - mean(Y))
 
 fit_1 <- lm(Y ~ 1, data = dat)
 fit_2 <- lm(Y ~ X, data = dat)
@@ -26,10 +28,10 @@ gg_df <- bind_rows( `1` = dat1, `2` = dat2, `3` = dat3, `4` = dat4,.id = "comple
     complexity,
     levels = 1:4,
     labels = c(
-      'One number summary',
-      'Two number summary',
-      'Three number summary',
-      'Four number summary'
+      paste0('One number summary:\n(',paste(round(coef(fit_1), 2)), ")"),
+      paste0('Two number summary:\n(', paste(round(coef(fit_2), 2), collapse = ", "), ")"),
+      paste0('Three number summary:\n(', paste(round(coef(fit_3), 2), collapse = ", "), ")"),
+      paste0('Four number summary:\n(', paste(round(coef(fit_4), 2), collapse = ", "), ")")
     )
   ))
 
