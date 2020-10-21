@@ -94,6 +94,87 @@ g
 
 dag <-
   dagify(aw ~ w + I,
+         w ~ M,
+         d ~ D + w,
+         ad ~ A + d)
+
+dag_base <- tidy_dagitty(dag) %>%
+  select(name, direction, to, circular) %>%
+  as_tibble
+
+nodes_df <- nodes_df[-c(7, 10, 11),]
+nodes_df[1, 3] <- c("Possible worlds") 
+nodes_df[5, 1] <- c("w") 
+nodes_df[5, 2] <- c("w") 
+nodes_df[5, 3] <- c("World") 
+nodes_df[6, 1] <- c("aw") 
+nodes_df[6, 2] <- c("a<sup>w</sup>") 
+nodes_df[6, 3] <- c("True answer") 
+
+endnodes_df <-
+  nodes_df %>%
+  transmute(to = name, xend = x, yend = y)
+
+gg_df <-
+  dag_base %>%
+  left_join(nodes_df, by = "name") %>%
+  left_join(endnodes_df, by = "to")
+
+gg_df <-
+  gg_df %>%
+  mutate(arced1 = (name == "w" & to == "d"),
+         arced2 = (name == "I" & to == "aw")) %>%
+  arrange(name)
+
+rect_df <-
+  tibble(
+    xmin = c(.4, 4.9),
+    xmax = c(2.6, 7.1),
+    ymin = c(1.15, 1.15),
+    ymax = c(3.85, 3.85)
+  )
+
+g <-
+  ggplot(data = filter(gg_df, !arced1), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_point(color = gray(.1), fill = NA, size = 15, stroke = 0.5, pch = 1) +
+  geom_dag_edges(edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.28, edge_width = 0.35) +
+#  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .7, edge_width = 0.35) +
+  geom_richtext(color = "black",
+                parse = TRUE,
+                aes(label = label),
+                fill = NA,
+                label.color = NA,
+                label.padding = grid::unit(rep(0, 4), "pt"),
+                size = 4) +
+  geom_richtext(
+    aes(y = y + if_else(lbl_direction == "N", 0.4, -0.4),
+        vjust = if_else(lbl_direction == "N", "bottom", "top"),
+        label = long_label),
+    color = gray(0.5),
+    parse = TRUE,
+    fill = NA,
+    label.color = NA,
+    label.padding = grid::unit(rep(0, 4), "pt"),
+    size = 4) +
+  coord_fixed(ylim = c(1.15, 4)) + 
+  geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
+                                xend = NULL, yend = NULL,
+                                xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            alpha = 0.15) +
+  annotate("text", x = 1.5, y = 4.05, label = "Theory") +
+  annotate("text", x = 6, y = 4.05, label = "Empirics") +
+  # annotate("text", x = 3, y = 1.6, label = "Truth") +
+  theme_dag()
+g
+
+dag <-
+  dagify(aw ~ w + I,
          m ~ M,
          am ~ m + I,
          d ~ D + m,

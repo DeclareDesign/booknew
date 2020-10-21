@@ -537,9 +537,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb1-52" title="52"><span class="st">  </span><span class="co"># calculate the difference-in-means of Y depending on Z </span></a>
 <a class="sourceLine" id="cb1-53" title="53"><span class="st">  </span><span class="co"># we link this estimator to ATE because this is our estimate of our inquiry</span></a>
 <a class="sourceLine" id="cb1-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">clusters =</span> villages, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a></code></pre></div>
-<p>For each design that we declare in the book, we will also present a graphical representation of the design. Below, we visualize the simplified form of the Gulzar Khan design:</p>
+<p>For each design that we declare in the book, we will also present a graphical representation of the design. Below, we visualize the simplified form of the Gulzar-Khan design:</p>
 <p><img src="book_files/figure-html/unnamed-chunk-15-1.png" width="100%" /></p>
-<p>With the declared design, you can learn about it in a number of ways. You can “diagnose” or simulate its properties via <code>diagnose_design(design)</code>, you can simulate mock data from it to explore possible estimation strategies before analyzing the real data with <code>draw_data(design</code>), you can obtain simulated estimates via <code>draw_estimates(design)</code>, and after the data comes in you can apply the planned design to your data via <code>get_estimates(design, data = study_data)</code>. We introduce the software in more detail in the next section.</p>
+<p>With the declared design, you can learn about it in a number of ways:</p>
+<ul>
+<li>You can “diagnose” or simulate its properties via <code>diagnose_design(design)</code></li>
+<li>You can simulate data from it to explore possible estimation strategies before analyzing the real data with <code>draw_data(design</code>)</li>
+<li>You can obtain simulated estimates via <code>draw_estimates(design)</code>, and after the data comes in,</li>
+<li>You can apply the planned design to your data via <code>get_estimates(design, data = study_data)</code>.</li>
+</ul>
+<p>We introduce the software in more detail in the next section.</p>
 <p>We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have a <a href="https://declaredesign.org/pap">translation</a> of parts of the declaration and diagnosis process into Stata, Python, and Excel. In addition, we link to a <a href="https://eos.wzb.eu/ipi/DDWizard/">“Design wizard”</a> that lets you declare and diagnose variations of standard designs via a web interface.</p>
 </div>
 <h3>References</h3>
