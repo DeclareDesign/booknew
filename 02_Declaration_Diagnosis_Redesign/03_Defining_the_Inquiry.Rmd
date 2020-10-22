@@ -36,18 +36,26 @@ library(dagitty)
 
 # Defining the inquiry
 
-An inquiry is a summary of a theoretical model. Suppose your theory is that $X$ affects $Y$, but that the effect is bigger for units with higher values of a third variable C. One inquiry might be the average level of $Y$. A second might be the average treatment effect of $X$ on $Y$. A third might be the difference in the effect of $X$ on $Y$ for units with high values of $C$ versus units with low values. 
+An inquiry is a summary of a theoretical model. Suppose your theory is that $X$ affects $Y$. Using the framework provided in @pearl2018book, one inquiry might be descriptive, or associational: what is the average level of $Y$ when $X=1$? A second might be about the effects of interventions: what is the average treatment effect of $X$ on $Y$? A third is about counterfactuals: for what share of units would $Y$  have been different if $X$ were different?  If a theory involves more variables, many more questions open up, for instance regarding how the effect of one variable passes through, or is modified by, another. 
 
-Your inquiry is your research question. Simple or complex, causal or descriptive, your inquiry is a summary feature of your theoretical model. Like models, inquiries themselves are theoretical objects. A common confusion occurs between inquiries and the output of answer strategies. If our theory posits the existence of an Average Treatment Effect, we might use an answer strategy like difference-in-means to estimate it, but the estimate is fundamentally distinct from the inquiry. Estimates are empirical, inquiries are theoretical.
+Your inquiry is your research question. Simple or complex, causal or descriptive, your inquiry can be thought of a summary of a data generating processes. Like models, inquiries---the questions you ask---are themselves theoretical objects. It is easy to confuse  inquiries and the output of answer strategies. If our theory posits the existence of an Average Treatment Effect, we might use an answer strategy like difference-in-means to estimate it, but the estimate is fundamentally distinct from the inquiry. Estimates are empirical, inquiries are theoretical.
 
-In general, an inquiry is a summary function $I$ that operates on the model $M$. When we summarize the model with the inquiry, we obtain an "answer under the model." We formalized this as $I(m) = a^m$. You can think of the difference between $I$ and $a^M$ as the difference between a question and its answer. $I$ is the question we ask about the model and $a^m$ is the answer. Alternatively, you can think of $I$ as the "estimand" (that which is to be estimated) and $a^m$ as the value of the estimand.  
+<!-- Is the estimate from simulated data empirical? -->
+
+In general, an inquiry is a summary function $I$ that operates on an instance of a model $m \in M$. When we summarize the model with the inquiry, we obtain an "answer under the model." We formalized this as $I(m) = a^m$. You can think of the difference between $I$ and $a^m$ as the difference between a question and its answer. $I$ is the question we ask about the model and $a^m$ is the answer. Alternatively, you can think of $I$ as the "estimand" (that which is to be estimated) and $a^m$ as the value of the estimand.  
+
+<!-- I'm getting tripped up by I being the estimand. In APSR we say a^m is what we want to estimate. I think we don;t want to estimate I -- I is a function, we want to estimate a^m-->
 
 In this book when we talk about inquiries, we will usually be referring to single-number summaries of models. Some common estimands are descripitive, such as the means, conditional means, correlations, partial correlations, quantiles, and truth statements about variable in the model. Others are causal, such as the average difference in one variable when a second varible is set to two different values. You can think of a single-number inquiry as the atom of research question. 
 
-While most inquiries are "atomic" in this way, some inquiries are more complex than a single-number summary. For example, the best linear predictor of Y given X is a two-number summary: it is the pair of numbers (the slope and intercept) that minimizes the total squared distance between the line and each value of Y. Why stop at two-number summaries? We could imagine the best quadratic predictor of Y given X (three-number summary) or the best cubic predictor (four), and so on. We could have an inquiry that is the full conditional expectation function of Y given X, no matter how wiggly, nonlinear, and nuanced the shape of that function -- it could in principle be a 1,000 number summary of the model, or much more.
+While most inquiries are "atomic" in this way, some inquiries are more complex than a single-number summary. For example, the best linear predictor of $Y$ given $X$ is a two-number summary: it is the pair of numbers (the slope and intercept) that minimizes the total squared distance between the line and each value of $Y$. Note that this is not a *causal* estimand but it is still well defined. No need to stop at two-number summaries though. We could imagine the best quadratic predictor of $Y$ given $X$ (three-number summary), and so on. See Figure \@ref(fig:ch3polynomials). We could have an inquiry that is the full conditional expectation function of $Y$ given $X$, no matter how wiggly, nonlinear, and nuanced the shape of that function -- it could in principle be a 1,000 number summary of the model, or much more. 
 
-```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE, caption = "Inquiries based on different numbers of parameters"}
-dat <- fabricate(N = 500, X = rnorm(N), Y = 0.5 *X + -0.5 * X^2 + -0.5* X^3 + 0.05 * X^4 + rnorm(N))
+<!-- MH: Is this an example of an estimand that is a function of d not m?  -->
+
+```{r ch3polynomials, fig.width = 6.5, fig.height = 2.5, echo = FALSE, fig.cap = "Inquiries based on different numbers of parameters"}
+set.seed(1)
+dat <- fabricate(N = 500, X = rnorm(N), Y = 0.5 *X + -0.5 * X^2 + -0.5* X^3 + 0.05 * X^4 + rnorm(N)) %>%
+  mutate(Y = Y - mean(Y))
 
 fit_1 <- lm(Y ~ 1, data = dat)
 fit_2 <- lm(Y ~ X, data = dat)
@@ -65,10 +73,10 @@ gg_df <- bind_rows( `1` = dat1, `2` = dat2, `3` = dat3, `4` = dat4,.id = "comple
     complexity,
     levels = 1:4,
     labels = c(
-      'One number summary',
-      'Two number summary',
-      'Three number summary',
-      'Four number summary'
+      paste0('One number summary:\n(',paste(round(coef(fit_1), 2)), ")"),
+      paste0('Two number summary:\n(', paste(round(coef(fit_2), 2), collapse = ", "), ")"),
+      paste0('Three number summary:\n(', paste(round(coef(fit_3), 2), collapse = ", "), ")"),
+      paste0('Four number summary:\n(', paste(round(coef(fit_4), 2), collapse = ", "), ")")
     )
   ))
 
@@ -79,7 +87,10 @@ ggplot(gg_df, aes(X, pred)) +
   theme_void()
 ```
 
-Complex inquiries can also be something along the lines of "should I reject $M$" as a causal model of the world? A researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries -- we're interested in the sub-inquiries only insofar as they help us understand the real inquiry -- is this model of the world a good one or not.
+<!-- These graphs are beautiful -->
+
+
+And of course it need not be a number at all: the answer to your question might be "blue" or "the normal distribution." Your inquiry could  be "should I reject $M$ as a useful model of the world?" A researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries -- we're interested in the sub-inquiries only insofar as they help us understand the real inquiry -- is this model of the world a good one or not.
 
 
 ## Kinds of Inquiries
@@ -95,11 +106,15 @@ Atomic inquiries $I$ about a model $M$ fall into two basic categories, descripti
 
 Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. The fundamental problem of causal inference is well known. For the same reason that a unit cannot simultaneously be both treated and untreated, we can only every observe at most one potential outcome for any particular unit. The fundamental problem of descriptive inference is similar. The concepts we want to measure are latent constructs. Perfect measurement is impossible, so our measurements of the latent constructs always include some measurement error. Just like we can't know for sure how, counterfactually, a unit would have responded if the treatment had been set to a different level, we likewise can't know for sure whether our measurements accurately reflect the latent construct.
 
-More specifically, a descriptive *inference* is a conclusion about a latent variable $Y^*$ on the basis of a measured variable $Y$. The feature we seek to describe -- our inquiry -- is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$. A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. Even if we do an exceptional job measuring $X^*$ and $Y^*$ with $X$ and $Y$, we will still have trouble learning about edges because causal effects are quite literally unobservable. We have to *infer* causality on the basis of a strong research design because we can't just see it.
+More specifically, a descriptive *inference* is a conclusion about features of a latent variable $Y^*$ on the basis of observations of a measured variable $Y$. The feature we seek to describe---our inquiry---is some summary of $Y^*$ like its mean or perhaps its covariance with a second latent variable $X^*$. When we do descripitive research, we draw inferences about features of the nodes of the latent causal model $M$. Our measurement can be imperfect for two reasons: that we do not get to observe the quantity of interest direcly for the units we study, and because the units we study are only a subset of the units of interest. It is these challenges that gives rise to the focus on descriptive *inference* rather than measurement alone.  
+
+A causal *inference* is a conclusion about the edge between two latent variables $X^*$ and $Y^*$. Even if we do an exceptional job measuring $X^*$ and $Y^*$ with $X$ and $Y$, we will still have trouble learning about edges because causal effects are quite literally unobservable. We have to *infer* causality on the basis of a strong research design because we can't just see it.
 
 ### Descriptive inquiries
 
-Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Because of the fundamental problem of descriptive inference, measured variables are always distinct from latent variables. For the most part, we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts.
+Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Measured variables are often distinct from latent variables giving rise to a problem of descriptive inference. For the most part, we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts.
+
+<!-- MH: I am not sure that there is a fundamental problem of descriptive  inference. Sure if you stipulate that you cannot measure correctly then we have a problem; but the fundamental problem of causal inference is that this is techically impossible. It's not just a stipulation -->
 
 Table ZZZ enumerates some common descriptive estimands. 
 
@@ -131,13 +146,13 @@ Table ZZZ enumerates some common causal estimands.
 | $E[Y_i(1) - Y_i(0)]$                                     | PATE                                                                           |
 | $E[Y_i(1) - Y_i(0) | S = 1]$                             | SATE                                                                           |
 
-Generations of students have been told to excise words that connote causality from their empirical writing. "Affects" becomes "is associated with" and "impacts" becomes "moves with." Being careful about causal language is of course very important (it's really true that correlation does not imply causation!). But this change in language is not usually accompanied by a change in inquiry. Many times we are faced with drawing causal inferences from than ideal data -- but the deficiencies of the data strategy should not lead us too far away from our inferential targets. If the inquiry is a causal inquiry, then the move from "causes" to "is correlated with" might be a good description of the actual data analysis, but it doesn't move us closer to providing an answer to the inquiry.
+Generations of students have been told to excise words that connote causality from their empirical writing. "Affects" becomes "is associated with" and "impacts" becomes "moves with." Being careful about causal language is of course very important (it's really true that correlation does not imply causation!). But this change in language is not usually accompanied by a change in inquiry. Many times we are faced with drawing causal inferences from less than ideal data -- but the deficiencies of the data strategy should not lead us too far away from our inferential targets. If the inquiry is a causal inquiry, then the move from "causes" to "is correlated with" might be a good description of the actual data analysis, but it doesn't move us closer to providing an answer to the inquiry.
 
 ### Relationship between causal and descriptive inquiries
 
 You can think of causal inference as repeated descriptive inference: we have to describe $Y$ in multiple possible worlds.
 
-Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing desscripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
+Causal inquiries like the average effect of A on B in a causal model like $A -> B <- U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing descripitve inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A -> B$ because it could be that $A <- U -> B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.
 
 ### Data-dependent inquiries
 
@@ -165,7 +180,7 @@ Among important questions, researchers can select the $I$ they think they are li
 
 The final criteria is that among important, probative research designs there must be a feasible $M$, $D$, and $A$ that could answer $I$. That means picking a good question $I$ does not just involve theory. You should study $M$ to understand which $I$s are worth knowing. But you should also study $D$ and $A$ in order to learn how to demonstrate $I$. A central goal of research methodologists is to expand the feasible set of $D$ and $A$ that can provide informative answers to important questions.
 
-Clearly research designs will vary how important, feasible, and probative they are, and so researchers so these criteria do not provide an immediate answer to how to select a design. Instead, the researcher must choose a weighting of the three, and norms in a research community may guide those weightings. In some disciplines, providing a minimally probative answer to a highly important question may be preferable to a highly probative answer to a less important question. 
+Clearly research designs will vary how important, feasible, and probative they are, and so  these criteria do not provide an immediate answer to how to select a design. Instead, the researcher must choose a weighting of the three, and norms in a research community may guide those weightings. In some disciplines, providing a minimally probative answer to a highly important question may be preferable to a highly probative answer to a less important question. 
 
 ```{r, fig.width = 4, fig.height = 4, echo = FALSE}
 ggplot() + 

@@ -36,7 +36,7 @@ This book offers a language for describing research designs and an algorithm for
 
 Empirical research designs share in common that they all have a model, an inquiry, a data strategy, and an answer strategy. 
 
-The model is your theory of the system under study. It includes causal beliefs about what causes what and why. It includes beliefs about how important variables are distributed, how things are correlated, the sequences of events. Even though we don't know for sure that every part of our model is true, we nevertheless \textit{think} it is. As research designers, we often have to proceed under difficult or impossible to verify assumptions about our theories for the plain reason that so little about the social world is known for sure.
+The model is your theory of the system under study. It includes causal beliefs about what causes what and why. It includes beliefs about how important variables are distributed, how things are correlated, the sequences of events. Of course we do not know the true model---if we did we would not have to do any further research. That's not the point. The point is that by  *stipulating*  a model we can assess how our analysis would perform if the model were in fact correct. In practice, the models we describe are *sets* of models, and our hope only is that the world (the real model!) is sufficiently "like" the models in this set.
 
 The model is \textit{not} the research question. The research question -- what we're calling the inquiry -- is a feature of the model we want to measure. Our theories are rich, so in a single model, there may be many possible inquiries that a researcher could seek to learn about. A model may be a complex dance of 10 or more interrelated variables, but an inquiry is something like the average causal effect of a single variable on another, the decripitive distribution of a third variable, or a prediction about the value a single variable will take on some time in the future. 
 
@@ -56,7 +56,7 @@ The four together, which we refer to as MIDA, represent both your suppositions a
 
 The model defines a set of units, people or neighborhoods or social groups, that we wish to study. Often, this set of units is a large population of units we cannot afford to take measurements of, but we can nevertheless define and make inferences about through sampling and studying a subset of its units. The model then includes a set of baseline characteristics that describe each unit and the probability distributions of each characteristic (i.e., are heights normally distributed, or is there skew that comes from stunting in infants). Finally, the model includes a set of endogenous outcome variables that may be functions of exogenous (pretreatment) characteristics and the effects of interventions. Each endogenous outcome variable has a function that defines the variables that affect what values it takes on. When an outcome depends on an intervention, it will be a potential outcome, where we can define what value the outcome would take on if a unit received the treatment and what outcome that unit would take on if it did not receive the treatment. Typically, endogenous outcome variables are random variables, either because it is a function of an exogenous baseline variable for which we defined a probability distributions or because whether a unit is assigned to treatment or control is randomly assigned as part of the data strategy.
 
-Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. Yet declaring a model is often unavoidable when declaring reserach designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section XX). Further, researchers can inform their substantive models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
+Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. Yet declaring a model is often unavoidable when declaring research designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section XX). Further, researchers can inform their substantive models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
 
 The second component of a research design is the inquiry, often known as the estimand. This is a quantity that represents the true answer to the research question we are asking. Inquiries may be causal, as in the average treatment effect, or descriptive, as in the proportion of units who hold a certain characteristic. An inquiry is a function of the exogenous characteristics of units, of endogenous outcome variables, or both. It may be defined over all units in the population defined by the model, as in the average treatment effect for all units, or it may be defined over a subset of units, as in the conditional average treatment effect for women. Because we defined the distribution of the variables in the model, we can define the probability distribution of inquiries, which are a function of those variables. 
 
@@ -139,7 +139,7 @@ simple_design <-
   declare_estimator(Y ~ Z, clusters = villages, model = difference_in_means, estimand = "ATE")
 ```
 
-For each design that we declare in the book, we will also present a graphical representation of the design. Below, we visualize the simplified form of the Gulzar Khan design:
+For each design that we declare in the book, we will also present a graphical representation of the design. Below, we visualize the simplified form of the Gulzar-Khan design:
 
 ```{r,echo=FALSE}
 
@@ -181,7 +181,14 @@ base_dag_plot %+% ggdd_df
 ```
 
 
-With the declared design, you can learn about it in a number of ways. You can "diagnose" or simulate its properties via `diagnose_design(design)`, you can simulate mock data from it to explore possible estimation strategies before analyzing the real data with `draw_data(design`), you can obtain simulated estimates via `draw_estimates(design)`, and after the data comes in you can apply the planned design to your data via `get_estimates(design, data = study_data)`. We introduce the software in more detail in the next section.
+With the declared design, you can learn about it in a number of ways: 
+
+* You can "diagnose" or simulate its properties via `diagnose_design(design)`
+* You can simulate data from it to explore possible estimation strategies before analyzing the real data with `draw_data(design`)
+* You can obtain simulated estimates via `draw_estimates(design)`, and after the data comes in, 
+* You can apply the planned design to your data via `get_estimates(design, data = study_data)`. 
+
+We introduce the software in more detail in the next section.
 
 We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have a [translation](https://declaredesign.org/pap) of parts of the declaration and diagnosis process into Stata, Python, and Excel. In addition, we link to a ["Design wizard"](https://eos.wzb.eu/ipi/DDWizard/) that lets you declare and diagnose variations of standard designs via a web interface.
 
@@ -230,6 +237,7 @@ In `DeclareDesign`, the `redesign()` function replaces key inputs to the design 
 ## Relationship to other ways of thinking about research design
 
 [This UNWRITTEN secion should be a bit of a history of how different fields think about research designs, including beyond political science ]
+[MH: Vote to move to footnote]
 
 We build on two influential research design frameworks. [@kkv1994, p. 13] enumerate four components of a research design: a theory, a research question, data, and an approach to using the data. @geddes2003paradigms articulates the links between theory formation, research question formulation, case selection and coding strategies, and strategies for case comparison and inference. In both cases, the set of components are closely aligned to those in the framework we propose.
 
@@ -286,3 +294,4 @@ Finally, we see a risk that the variation in the suitability of design declarati
 <!-- Using this framework, researchers can declare a research design as a computer code object and then diagnose its statistical properties on the basis of this declaration. A researcher may declare the features of designs in our framework for their own understanding and declaring designs may be useful before or after the research is implemented. Researchers can declare and diagnose their designs with the companion software for this paper, DeclareDesign, but the principles of design declaration and diagnosis do not depend on any particular software implementation. -->
 
 <!-- The formal characterization and diagnosis of designs before implementation can serve many purposes. First, researchers can learn about and improve their inferential strategies. Done at this stage, diagnosis of a design and alternatives can help a researcher select from a range of designs, a process we call "redesign." Later, a researcher may include design declaration and diagnosis as part of a preanalysis plan or in a funding request. At this stage, the full specification of a design serves a communication function and enables third parties to understand a design and an author’s intentions. Even if declared ex-post, formal declaration still has benefits. The characterization can help readers understand the properties of a research project, facilitate transparent replication, and can help guide future (re-)analysis of the study data. -->
+
