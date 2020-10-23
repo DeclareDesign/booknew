@@ -1,12 +1,12 @@
 ---
 title: "Choosing an answer strategy"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     toc: yes
-    toc_depth: 2
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 bibliography: ../bib/book.bib
 ---
 
@@ -40,134 +40,387 @@ We want to pick an A() s.t. A(d) = a^d is close to a^m. We have to design w. r. 
 
 The distance between a^d and a^m depends on assumptions. When we can assure those assumptions with design, we can engage in design-based inference. That is, when we can ensure that treatment assignment is independent of potential outcomes by conducting a literal random assigment, we can rely on known features of the randomization process to conduct inference. In the absence of literal random assignment, we have to assume (perhaps after statistical adjustment) that the treatment is "as-if" randomly assigned. When the required assumption are part of M() rather than part of D(), we engage in model-based inference.
 
-## How to choose an answer strategy
+- use a DAG (M!), informed by your inquiry (plug in principle), analyze as you randomize
 
-1. Plug-in principle (match your inquiry)
-2. Analyze as you sample, randomize, and measure
+- put elemental kinds of answer strategies (point, uncertainty, tests, intervals, visualization,  written narratives)
 
-<!-- example of when there is a mismatch between Am and Ad -->
+How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers' inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.
 
-```{r, echo = FALSE}
-ATE <- 0.0
+```{r make-all-models, echo = FALSE}
+possible_models <-
+  expand.grid(
+    XU = c("X<-U", "none"),
+    YU = c("Y<-U", "none"),
+    YX = c("Y->X", "Y<-X", "none"),
+    DU = c("D<-U", "none"),
+    DX = c("D->X", "D<-X", "none"),
+    DY = c("D->Y", "D<-Y", "none"),
+    stringsAsFactors = FALSE
+  )
 
-design <- 
-  declare_population(N = 1000,
-                     binary_covariate = rbinom(N, 1, 0.5),
-                     normal_error = rnorm(N)) +
-  # crucial step in POs: effects are not heterogeneous
-  declare_potential_outcomes(Y ~ ATE * Z + normal_error) +
-  declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE(0)") + 
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE(1)") +
-  declare_estimator(Y ~ Z * binary_covariate, 
-                    model = lm_robust, term = "Z:binary_covariate", label = "Interaction")
-```
+possible_models <-
+  possible_models %>%
+  rowwise() %>%
+  mutate(
+    var = str_c(XU, YU, YX, DU, DX, DY, sep = ";"),
+    var = str_remove_all(var, "none;"),
+    var = str_remove_all(var, "none"),
+    dag = list(dagitty(paste0(
+      "dag{", var, "; X; D; Y; U}"
+    ))),
+    acyclic = isAcyclic(dag),
+    consistent_with_ignorability = !(DU == "D<-U" & YU == "Y<-U"),
+    id_if_adjusted = isAdjustmentSet(dag, "X", exposure = "D", outcome = "Y"),
+    id_if_unadjusted = isAdjustmentSet(dag, NULL, exposure = "D", outcome = "Y"),
+    id_adjustment_fac = as.factor(
+      case_when(
+        id_if_unadjusted &
+          id_if_adjusted ~ "Yes, regardless of conditioning",
+        id_if_unadjusted &
+          !id_if_adjusted ~ "Only when NOT conditioning on X",!id_if_unadjusted &
+          id_if_adjusted ~ "Only when conditioning on X",!id_if_unadjusted &
+          !id_if_adjusted ~ "No, regardless of conditioning"
+      )
+    ),
+    consistent_with_RA = DU != "D<-U" &
+      DX != "D<-X" & DY != "D<-Y",
+    consistent_with_X_pretreatment =
+      DX != "D->X" &
+      YX != "Y->X" &
+      !(DU == "D->U" & XU == "X<-U") &
+      !(YU == "Y->U" & XU == "X<-U")
+  )
 
-```{r, echo = FALSE, purl = FALSE}
-# note this was rerun a bunch of times to get the right example (one is non sig the other is sig diff and diff-in-CATE is not diff from zero)
-# estimates <- draw_estimates(design)
-rds_file_path <- paste0(get_dropbox_path("answer_strategy"), "/estimates_diff_in_significance_plot.RDS")
-# write_rds(estimates, path = rds_file_path)
-estimates <- read_rds(rds_file_path)
-```
+nested_data <-
+  possible_models %>%
+  filter(var != "") %>%
+  mutate(dag_data = list(as_tibble(tidy_dagitty(dag))))
 
-```{r, echo = FALSE, fig.height = 3}
+points_df <-
+  tibble(name = as.factor(c("D", "X", "Y", "U")),
+         x = c(1, 2, 2, 1),
+         y = c(1, 2, 1, 2))
+ends <-
+  points_df %>%
+  rename(to = name,
+         xend = x,
+         yend = y)
 
-g1 <- ggplot(data = estimates %>% filter(term == "Z"), aes(estimator_label, estimate)) + 
-  geom_point() + 
-  geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) + 
-  ylab("Estimate (95% confidence interval)") +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  ggtitle("Visualization A") +
-  dd_theme() + 
-  theme(axis.title.x = element_blank())
+fix_no_edges <-
+  tibble(
+    var = "no edges",
+    acyclic = TRUE,
+    consistent_with_RA = TRUE,
+    consistent_with_X_pretreatment = TRUE,
+    XU = "none",
+    YU = "none",
+    YX = "none",
+    DU = "none",
+    DX = "none",
+    DY = "none",
+    name = "X",
+    id_adjustment_fac = "Yes, regardless of conditioning"
+  )
 
-g2 <- ggplot(data = estimates, aes(estimator_label, estimate)) + 
-  geom_point() + 
-  geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) + 
-  ylab("Estimate (95% confidence interval)") +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  ggtitle("Visualization B") +
-  dd_theme() + 
-  theme(axis.title.x = element_blank())
+gg_df <-
+  nested_data %>%
+  unnest(cols = dag_data) %>%
+  select(-x, -y, -xend, -yend) %>%
+  left_join(points_df) %>%
+  left_join(ends) %>%
+  bind_rows(fix_no_edges) %>%
+  mutate(
+    XU_fac = factor(
+      XU,
+      levels =  c("X<-U", "X->U", "none"),
+      labels =  c("X %<-% U", "X %->% U", "X~~~U")
+    ),
+    YU_fac = factor(
+      YU,
+      levels =  c("Y<-U", "Y->U", "none"),
+      labels =  c("Y %<-% U", "Y %->% U", "Y~~~U")
+    ),
+    YX_fac = factor(
+      YX,
+      levels =  c("Y<-X", "Y->X", "none"),
+      labels =  c("Y %<-% X", "Y %->% X", "Y~~~X")
+    ),
+    DU_fac = factor(
+      DU,
+      levels =  c("D<-U", "D->U", "none"),
+      labels =  c("D %<-% U", "D %->% U", "D~~~U")
+    ),
+    DX_fac = factor(
+      DX,
+      levels =  c("D<-X", "D->X", "none"),
+      labels =  c("D %<-% X", "D %->% X", "D~~~X")
+    ),
+    DY_fac = factor(
+      DY,
+      levels =  c("D<-Y", "D->Y", "none"),
+      labels =  c("D %<-% Y", "D %->% Y", "D~~~Y")
+    )
+  ) %>%
+  arrange(XU_fac, YU_fac, YX_fac, DU_fac, DX_fac, DY_fac)
 
-g1 + g2
-```
-
-We now demonstrate that the answer strategy on the left is flawed. XXYY describe sims.
-
-```{r, echo = FALSE}
-# sweep across all ATEs from 0 to 0.5
-designs <- redesign(design, ATE = seq(0, 0.5, 0.05))
-```
-
-```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_one_significant_not_other <- simulate_design(designs, sims = sims)
-```
-
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("answer_strategy"), "/simulations_one_significant_not_other.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_one_significant_not_other, path = rds_file_path)
-}
-simulations_one_significant_not_other <- read_rds(rds_file_path)
-```
-
-```{r, echo = FALSE, fig.height = 3.5}
-# Summarize simulations ---------------------------------------------------
-
-reshaped_simulations <-
-  simulations_one_significant_not_other %>%
-  transmute(ATE,
-            sim_ID,
-            estimator_label,
-            estimate,
-            conf.high,
-            conf.low,
-            significant = p.value < 0.05) %>%
-  pivot_wider(id_cols = c("ATE", "sim_ID"), names_from = "estimator_label", values_from = c("estimate", "conf.high", "conf.low", "significant"))
-
-
-# Plot 1 ------------------------------------------------------------------
-
-gg_df <- 
-  reshaped_simulations %>%
-  group_by(ATE) %>%
-  summarize(`Significant for one group but not the other` = mean(xor(significant_CATE_0, significant_CATE_1)),
-            `Difference in subgroup effects is significant` = mean(significant_interaction)) %>%
-  gather(condition, power, -ATE)
-
-ggplot(gg_df, aes(ATE, power, color = condition)) +
-  geom_point() +
-  geom_line() +
-  geom_label(data = (. %>% filter(ATE == 0.2)),
-             aes(label = condition),
-             nudge_y = 0.02,
-             family = "Palatino") +
-  dd_theme() +
-  scale_color_manual(values = c("red", "blue")) +
-  theme(legend.position = "none") +
-  labs(
-    x = "True constant effect size",
-    y = "Probability of result (akin to statistical power)"
+gg_df <-
+  gg_df %>%
+  mutate(
+    var_fac = factor(var, levels = c(possible_models$var, "no edges")),
+    DY_DX = as.factor(paste0(DY, " ", DX)),
+    U_relationship = paste0(XU, " ", YU, " ", DU),
+    U_relationship_fac =
+      factor(
+        U_relationship,
+        levels = c(
+          'X<-U Y<-U D<-U',
+          'none Y<-U D<-U',
+          'X<-U none D<-U',
+          'X<-U Y<-U none',
+          'none none D<-U',
+          'none Y<-U none',
+          'X<-U none none',
+          'none none none'
+        ),
+        labels = c(
+          "U affects: D, X, Y",
+          "U affects: D, Y",
+          "U affects: D, X",
+          "U affects: X, Y",
+          "U affects: D",
+          "U affects: Y",
+          "U affects: X",
+          "U affects: none"
+        )
+      ),
+    ruled_out_by = as.factor(
+      case_when(
+        !acyclic ~ "Acyclicity",!consistent_with_RA ~ "Random assignment",!consistent_with_X_pretreatment ~ "Measuring X before treatment",
+        TRUE ~ NA_character_
+      )
+    )
   )
 ```
 
 
-## Types of answers
+## using model to inform answer strategy
 
-- tests, point, bounds, visualizations, written narratives
+- your inquiry defines was you are shooting at, now question is how to use model to choose an answer stategy to shoot at it
 
-<!-- MH: Are there distinct classes of answer strategies we might point to, that might all be used for the same I e.g. -->
-<!-- * point valued estimates -->
-<!-- * bounds -->
-<!-- * posterior distributions -->
-<!-- * test results -->
+- types of paths table
 
-In this section, we describe four large classes of answer strategies.
+- descriptive
+- causal (obsefvational, experimental)
 
-### Testing
+Definition: The backdoor criterion. Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satifies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. (pg. 61 Pearl primer)
+
+$$\Pr(Y = y \mid do(D=d)) = \sum_x \Pr(Y = y \mid D = d, X = x) \Pr(X = x)$$
+$$\Pr(Y_i(D_i = 1) = y) = \sum_x \Pr(Y_i(D_i = 1) = y \mid X_i = x) \Pr(X_i = x)$$
+
+Definition: The frontdoor criterion. A set of variables X is said to satisfy the frontdoor criterion relative to an ordered pair of variables D, Y if X intercepts all directed paths from D to Y, there is no unblocked path from D to X, all backdoor paths from X to Y are blocked by D. (pg. 69 Pearl primer)
+
+$$\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})$$
+
+
+### Descriptive analysis
+
+- analyze as you sampled and measured
+
+### Causal analysis
+
+#### Analysis of observational data
+
+- stratified adjustment with no unobserved confounding
+- stratified adjustment with unobserved confounding
+
+```{r, echo = FALSE, fig.width = 30, fig.height = 21}
+gg_df <-
+  gg_df %>%
+  mutate(tile_fac = as.factor(
+    case_when(
+      !acyclic ~ "Ruled out by acyclicity",
+      consistent_with_ignorability == 0 ~ "Ruled out by ignorability",
+      TRUE ~ as.character(id_adjustment_fac) 
+    )
+  ))
+
+fill_scale <- c(
+  `Ruled out by acyclicity` = dd_light_gray,
+  `Yes, regardless of conditioning` = "transparent",  
+  `Only when NOT conditioning on X` = dd_purple,
+  `Only when conditioning on X` = dd_light_blue,
+  `No, regardless of conditioning` = dd_pink,
+  `Ruled out by ignorability` = dd_dark_blue_alpha
+)
+
+subplot_function <- function(data) {
+  dag_df <-
+    data %>%
+    group_by(var, DX_fac, YX_fac, tile_fac) %>%
+    summarize(x = 1.5, y = 1.5, n = n())
+  
+  g <- 
+  ggplot(data, aes(x, y)) +
+    geom_tile(data = dag_df, aes(fill = tile_fac), height = 1.75, width = 1.75, alpha = 0.5) +
+    geom_text(data = points_df, aes(label = name), size = 5) +
+    geom_dag_edges(aes(xend = xend, yend = yend), 
+                   edge_width = 0.4, 
+                   arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 1)) + 
+    facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
+    coord_fixed() + 
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5), 
+          plot.subtitle = element_text(hjust = 0.5)) + 
+    labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
+  if(as.character(unique(data$DY_fac)) == "D %->% Y"){
+    g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
+  }
+  g
+}
+
+my_fun <- function(data){
+  data %>%
+    split(.$DY_fac) %>% 
+    map(~subplot_function(.)) %>% 
+    wrap_plots(nrow = 1) 
+}
+
+gg <- gg_df %>% 
+  split(.$U_relationship_fac) %>% 
+  map(my_fun) 
+
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
+```
+
+#### Analysis of experimental data
+
+- same graph but slice the connectoins to unobserved confounding into D
+- then block RA where we slice connections to unobserved confounding but not the X into D
+- analyze as you randomize
+
+```{r, echo = FALSE, fig.width = 30, fig.height = 21}
+gg_df <-
+  gg_df %>%
+  mutate(tile_fac = as.factor(if_else(
+    !acyclic,
+    "Ruled out by acyclicity",
+    as.character(id_adjustment_fac)
+  )))
+
+gg_df <-
+  gg_df %>%
+  mutate(
+    tile_fac2 = as.factor(case_when(
+      ruled_out_by == "Acyclicity" ~ "Ruled out by acyclicity",
+      ruled_out_by == "Measuring X before treatment" ~ "Ruled out by pretreatment measurement",
+      ruled_out_by == "Random assignment" ~ "Ruled out by random assignment",
+      is.na(ruled_out_by) ~ "Effect of D on Y identified"
+    ))
+  )
+
+fill_scale <- c(
+  `Ruled out by acyclicity` = dd_light_gray,
+  `Ruled out by pretreatment measurement` = dd_orange,  
+  `Ruled out by random assignment` = dd_dark_blue,
+  `Effect of D on Y identified` = "transparent" 
+)
+
+subplot_function <- function(data) {
+  dag_df <-
+    data %>%
+    group_by(var, DX_fac, YX_fac, tile_fac2) %>%
+    summarize(x = 1.5, y = 1.5, n = n())
+  
+  g <- 
+    ggplot(data, aes(x, y)) +
+    geom_tile(data = dag_df, aes(fill = tile_fac2), height = 1.75, width = 1.75, alpha = 0.5) +
+    geom_text(data = points_df, aes(label = name), size = 5) +
+    geom_dag_edges(aes(xend = xend, yend = yend), 
+                   edge_width = 0.4, 
+                   arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
+    scale_fill_manual("Situation", values = fill_scale, drop = FALSE) + 
+    facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
+    coord_fixed() + 
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5), 
+          plot.subtitle = element_text(hjust = 0.5)) + 
+    labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
+  if(as.character(unique(data$DY_fac)) == "D %->% Y"){
+    g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
+  }
+  g
+}
+
+my_fun <- function(data){
+  data %>%
+    split(.$DY_fac) %>% 
+    map(~subplot_function(.)) %>% 
+    wrap_plots(nrow = 1) 
+}
+
+gg <- gg_df %>% 
+  split(.$U_relationship_fac) %>% 
+  map(my_fun) 
+
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
+```
+
+## choosing an estimator
+
+Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
+
+(point people to Hastie and Tibshirani)
+
+```{r, echo = FALSE, fig.width = 30, fig.height = 21}
+gg_df <-
+  gg_df %>%
+  filter(is.na(ruled_out_by)) %>% 
+  mutate(
+    ruled_out_by_sig_test = as.factor(if_else(DY_fac == "D~~~Y", "Ruled out by rejection of null hypothesis of no effect", "Cannot rule out")),
+    fct_rows = paste0(YX_fac, YU_fac, XU_fac)
+  )
+
+fill_scale <- c(
+  `Ruled out by rejection of null hypothesis of no effect` = dd_dark_blue,
+  `Cannot rule out` = "transparent"
+)
+
+dag_df <-
+  gg_df %>%
+  group_by(var, DX_fac, DY_fac, YX_fac, ruled_out_by_sig_test, fct_rows) %>%
+  summarize(x = 1.5, y = 1.5, n = n()) 
+
+g <- 
+  ggplot(gg_df, aes(x, y)) +
+  geom_tile(data = dag_df, aes(fill = ruled_out_by_sig_test), height = 1.75, width = 1.75, alpha = 0.5) +
+  geom_text(data = points_df, aes(label = name), size = 5) +
+  geom_dag_edges(aes(xend = xend, yend = yend), 
+                 edge_width = 0.4, 
+                 arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
+  scale_fill_manual("Situation", values = fill_scale, drop = FALSE) + 
+  facet_grid(DY_fac ~ fct_rows) +
+  coord_fixed() + 
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position = "bottom",
+        strip.text.y = element_blank()) 
+
+g
+```
+
+
+## when parameters are not point identified
+
+- confounding
+- EV bounds
+- trimming bounds
+
+## characterizing uncertainty (s.e., CIs, posterior probs)
+
+## constructing tests (test value, p-value)
+
 Tests are an elemental kind of answer strategy. Tests yield yes / no answers to specific tests. In some qualitative traditions, hoop tests, straw-in-the-wind tests, smoking-gun tests, and doubly-decisive tests are common. These tests are procedures for making analysis decisions in a structured way. In frequentist statistics, significance tests are used to make a decision whether to reject or fail to reject a particular null hypothesis. Null hypothesis significance testing has developed a (rightfully) sketchy reputation in recent years as too much weight has been put on the reject / fail to reject decision. That said, sometimes that decision is rightfully important and in such cases, null hypothesis significance testing is a great tool.
 
 Tests are answer strategies that return TRUE or FALSE as an answer. 
@@ -181,27 +434,7 @@ Tests are answer strategies that return TRUE or FALSE as an answer.
 [cite erin and naoki on sign tests]
 [cite erin on equivalence testinf]
 
-### Point estimation
-
-Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
-
-(point people to Hastie and Tibshirani)
-
-### Bounds
-
-- EV bounds
-- trimming bounds
-- is CI a bounding estimator?
-
-### Posterior distributions
-
-### Visualization
-
-How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers' inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.
-
-
-
-## Procedures
+## Answer strategies as procedures
 
 Consider a randomized experiment that seeks to estimate the causal effect of a treatment. The answer strategy is not just "Logistic Regression with Covariate adjustment". It includes every step in the process that takes the raw data, cleans and recodes it, considers 5 alternative estimators (DIM, OLS with covariate adjustment, a fancy thing your colleague suggested but you couldn't get to converge), before finally settling on logit.
 
@@ -223,42 +456,6 @@ In fact, there are examples of analysis procedures in most types of research, qu
 
 We demonstrate the fact that the properties of procedures differ from the properties of a design with the final estimator in a simple example. We compare two possible estimation specifications, with and without covariates, to a procedure in which we run both models and report the model in our paper that has the lower p-value. The models are exactly the same, but the properties of the *procedure* differ from the properties of either of the two possible models. In particular, the procedure has higher power than either of the two models, but it exhibits poor coverage, which means we have a bias in our measure of uncertainty. 
 
-```{r}
-report_lower_p_value <- function(data){
-  fit_nocov <- lm_robust(Y ~ Z, data)
-  fit_cov <- lm_robust(Y ~ Z + X, data)
-  
-  # select fit with lower p.value on Z
-  if(fit_cov$p.value[2] < fit_nocov$p.value[2]){
-    fit_selected <- fit_cov
-  } else {
-    fit_selected <- fit_nocov
-  }
-  fit_selected %>% tidy %>% filter(term == "Z")
-}
-
-design <-
-  declare_population(    
-    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N)
-  ) + 
-  declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + u) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_assignment(prob = 0.5) + 
-  declare_reveal(Y, Z) + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") + 
-  declare_estimator(
-    handler = label_estimator(report_lower_p_value),
-    label = "select-lower-p-value",
-    estimand = "ATE") 
-
-diags <- diagnose_design(design, sims = sims)
-```
-
-```{r, echo = FALSE}
-kable(get_diagnosands(diags))
-```
-
 ## Robustness
 
 **Robustness checks** are part of the answer strategy. Often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). These differ from multiple estimates of a latent quantity in that the goal is not a primary analysis, but rather to support the main analysis. The purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. The decision a reader makes from a paper depends not only on the main estimate but also the robustness checks. As a result, we want to assess the properties of the two together. 
@@ -267,85 +464,8 @@ kable(get_diagnosands(diags))
 
 We illustrate with a simple analysis of the correlation between two variables `y1` and `y2`, who have a true positive correlation. `y2` is also a function of an observed covariate `x` and measurement error. Our main analysis is a bivariate regression predicting `y2` with `y1`. We compare this answer strategy to one in which we run that analysis, but also run a robustness check controlling for `x`. We do this because as the analyst we are unsure of the true DGP and wish to demonstrate to reviewer's that our results are not dependent on the functional form we choose. 
 
-```{r}
-bivariate_correlation_decision <- function(data) {
-  fit <- lm_robust(y2 ~ y1, data) %>% tidy %>% filter(term == "y1")
-  tibble(decision = fit$p.value <= 0.05)
-}
-
-interacted_correlation_decision <- function(data) {
-  fit <- lm_robust(y2 ~ y1 + x, data) %>% tidy %>% filter(term == "y1")
-  tibble(decision = fit$p.value <= 0.05)
-}
-
-robustness_check_decision <- function(data) {
-  main_analysis <- bivariate_correlation_decision(data)
-  robustness_check <- interacted_correlation_decision(data)
-  tibble(decision = main_analysis$decision == TRUE & robustness_check$decision == TRUE)
-}
-
-robustness_checks_design <- 
-  declare_population(
-    N = 100,
-    x = rnorm(N),
-    y1 = rnorm(N),
-    y2 = 0.15 * y1 + 0.01 * x + rnorm(N)
-  ) +
-  declare_estimand(y1_y2_are_related = TRUE) + 
-  declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") + 
-  declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check")
-
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
-
-diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis)
-```
-
-We evaluate the two answer strategies in terms of the rate of correctly deciding there is a correlation between `y2` and `y1`. In the main analysis, this means we judge there is a correlation when the p-value is below $0.05$. In our robustness check answer strategy, we decide there is a correlation when both the main analysis and the robustness check return p-values below $0.05$ on the coefficient on `y1`. We see that we are more likely to correctly judge there is a correlation in the simpler analysis strategy. This is because we added an additional criterion to our decision; both criteria, due to random noise, sometimes fail to reject the null of no correlation. Our second answer strategy is more robust in the sense that we have stronger evidence of a correlation when we run the two analyses together. But we are also less likely to decide (correctly) that there is a relationship. The robustness check is conservative. This exercise highlights that the properties of an answer strategy with secondary analyses will be different than the properties of the main analysis alone. If we planned (or conducted) robustness checks, we may wish to know how good the pair of strategies is together.
-
 <!-- - distinguish this from changes to the model where we do robustnesss vis a vis a fixed answer and data strategy. i.e. two notions of "robustness". one is fix I D A and change M, is this "design" robust to changes in M. the other is, within a given run, is the estimate "robust" to changing the estimation procedure, so this is a diagnostic statistic. note I must be defined across these changes in M. -->
 
 Using the MIDA way of thinking about designs, we discuss in the diagnosis section another notion of the "robustness" of a design. The typical way we think of robustness checks is multiple secondary analyses *conditional on the observed data* to build confidence in an analysis of that fixed data. However, the motivation for these robustness checks is uncertainty about the true data generating process. By declaring a design in terms of MIDA, we can think about the robustness of a *single* estimator to multiple possible true data generating processes. An estimator that is robust in this sense is one that is unbiased with low uncertainty regardless of, say, the true functional form between `y1` and `y2`. To determine whether an estimator is robust, we can redefine a set of designs with different functional forms and assess the rate of correct decisions of our robustness checks strategy under each different model. 
 
-<!--
-```{r}
-robustness_checks_design <-
-  robustness_checks_design +
-  declare_estimator(handler = label_estimator(interacted_correlation_decision), label = "interacted")
 
-robustness_checks_design_dgp2 <- replace_step(
-  robustness_checks_design,
-  step = 1,
-  new_step = 
-    declare_population(
-      N = 100,
-      x = rnorm(N),
-      y1 = rnorm(N),
-      y2 = 0.15 * y1 + 0.01 * x + 0.05 * y1 * x + rnorm(N)
-    )
-)
-
-robustness_checks_design_dgp3 <- replace_step(
-  robustness_checks_design,
-  step = 1,
-  new_step = 
-    declare_population(
-      N = 100,
-      x = rnorm(N),
-      y1 = 0.15 * x + rnorm(N),
-      y2 = 0.15 * x + rnorm(N)
-    )
-)
-
-robustness_checks_design_dgp3 <- replace_step(
-  robustness_checks_design_dgp3, 
-  step = 2,
-  new_step = declare_estimand(y1_y2_are_related = FALSE)
-)
-
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
-
-diag <- diagnose_design(
-  robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, 
-  sims = sims, diagnosands = decision_diagnosis)
-```
--->
