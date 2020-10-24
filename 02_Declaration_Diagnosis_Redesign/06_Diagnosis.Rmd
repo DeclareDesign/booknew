@@ -698,187 +698,187 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 
 <!-- - Do a diagnosis of how many minutes of subject time are wasted by audit experiments, weigh that against the cost of demonstrating outright racial bias. (cite an audit study that does this calculation) -->
 
-## grab bag
+<!-- ## grab bag -->
 
-<!-- example of when there is a mismatch between Am and Ad -->
+<!-- <!-- example of when there is a mismatch between Am and Ad --> -->
 
-```{r, echo = FALSE}
-ATE <- 0.0
+<!-- ```{r, echo = FALSE} -->
+<!-- ATE <- 0.0 -->
 
-design <- 
-  declare_population(N = 1000,
-                     binary_covariate = rbinom(N, 1, 0.5),
-                     normal_error = rnorm(N)) +
-  # crucial step in POs: effects are not heterogeneous
-  declare_potential_outcomes(Y ~ ATE * Z + normal_error) +
-  declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE(0)") + 
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE(1)") +
-  declare_estimator(Y ~ Z * binary_covariate, 
-                    model = lm_robust, term = "Z:binary_covariate", label = "Interaction")
-```
+<!-- design <-  -->
+<!--   declare_population(N = 1000, -->
+<!--                      binary_covariate = rbinom(N, 1, 0.5), -->
+<!--                      normal_error = rnorm(N)) + -->
+<!--   # crucial step in POs: effects are not heterogeneous -->
+<!--   declare_potential_outcomes(Y ~ ATE * Z + normal_error) + -->
+<!--   declare_assignment(prob = 0.5) + -->
+<!--   declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE(0)") +  -->
+<!--   declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE(1)") + -->
+<!--   declare_estimator(Y ~ Z * binary_covariate,  -->
+<!--                     model = lm_robust, term = "Z:binary_covariate", label = "Interaction") -->
+<!-- ``` -->
 
-```{r, echo = FALSE, purl = FALSE}
-# note this was rerun a bunch of times to get the right example (one is non sig the other is sig diff and diff-in-CATE is not diff from zero)
-# estimates <- draw_estimates(design)
-rds_file_path <- paste0(get_dropbox_path("answer_strategy"), "/estimates_diff_in_significance_plot.RDS")
-# write_rds(estimates, path = rds_file_path)
-estimates <- read_rds(rds_file_path)
-```
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # note this was rerun a bunch of times to get the right example (one is non sig the other is sig diff and diff-in-CATE is not diff from zero) -->
+<!-- # estimates <- draw_estimates(design) -->
+<!-- rds_file_path <- paste0(get_dropbox_path("answer_strategy"), "/estimates_diff_in_significance_plot.RDS") -->
+<!-- # write_rds(estimates, path = rds_file_path) -->
+<!-- estimates <- read_rds(rds_file_path) -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 3}
+<!-- ```{r, echo = FALSE, fig.height = 3} -->
 
-g1 <- ggplot(data = estimates %>% filter(term == "Z"), aes(estimator_label, estimate)) + 
-  geom_point() + 
-  geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) + 
-  ylab("Estimate (95% confidence interval)") +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  ggtitle("Visualization A") +
-  dd_theme() + 
-  theme(axis.title.x = element_blank())
+<!-- g1 <- ggplot(data = estimates %>% filter(term == "Z"), aes(estimator_label, estimate)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) +  -->
+<!--   ylab("Estimate (95% confidence interval)") + -->
+<!--   geom_hline(yintercept = 0, lty = "dashed") + -->
+<!--   ggtitle("Visualization A") + -->
+<!--   dd_theme() +  -->
+<!--   theme(axis.title.x = element_blank()) -->
 
-g2 <- ggplot(data = estimates, aes(estimator_label, estimate)) + 
-  geom_point() + 
-  geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) + 
-  ylab("Estimate (95% confidence interval)") +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  ggtitle("Visualization B") +
-  dd_theme() + 
-  theme(axis.title.x = element_blank())
+<!-- g2 <- ggplot(data = estimates, aes(estimator_label, estimate)) +  -->
+<!--   geom_point() +  -->
+<!--   geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) +  -->
+<!--   ylab("Estimate (95% confidence interval)") + -->
+<!--   geom_hline(yintercept = 0, lty = "dashed") + -->
+<!--   ggtitle("Visualization B") + -->
+<!--   dd_theme() +  -->
+<!--   theme(axis.title.x = element_blank()) -->
 
-g1 + g2
-```
+<!-- g1 + g2 -->
+<!-- ``` -->
 
-We now demonstrate that the answer strategy on the left is flawed. XXYY describe sims.
+<!-- We now demonstrate that the answer strategy on the left is flawed. XXYY describe sims. -->
 
-```{r, echo = FALSE}
-# sweep across all ATEs from 0 to 0.5
-designs <- redesign(design, ATE = seq(0, 0.5, 0.05))
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- # sweep across all ATEs from 0 to 0.5 -->
+<!-- designs <- redesign(design, ATE = seq(0, 0.5, 0.05)) -->
+<!-- ``` -->
 
-```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_one_significant_not_other <- simulate_design(designs, sims = sims)
-```
+<!-- ```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")} -->
+<!-- simulations_one_significant_not_other <- simulate_design(designs, sims = sims) -->
+<!-- ``` -->
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("answer_strategy"), "/simulations_one_significant_not_other.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_one_significant_not_other, path = rds_file_path)
-}
-simulations_one_significant_not_other <- read_rds(rds_file_path)
-```
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("answer_strategy"), "/simulations_one_significant_not_other.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(simulations_one_significant_not_other, path = rds_file_path) -->
+<!-- } -->
+<!-- simulations_one_significant_not_other <- read_rds(rds_file_path) -->
+<!-- ``` -->
 
-```{r, eval = FALSE, echo = FALSE, fig.height = 3.5}
-# Summarize simulations ---------------------------------------------------
+<!-- ```{r, eval = FALSE, echo = FALSE, fig.height = 3.5} -->
+<!-- # Summarize simulations --------------------------------------------------- -->
 
-reshaped_simulations <-
-  simulations_one_significant_not_other %>%
-  transmute(ATE,
-            sim_ID,
-            estimator_label,
-            estimate,
-            conf.high,
-            conf.low,
-            significant = p.value < 0.05) %>%
-  pivot_wider(id_cols = c("ATE", "sim_ID"), names_from = "estimator_label", values_from = c("estimate", "conf.high", "conf.low", "significant"))
+<!-- reshaped_simulations <- -->
+<!--   simulations_one_significant_not_other %>% -->
+<!--   transmute(ATE, -->
+<!--             sim_ID, -->
+<!--             estimator_label, -->
+<!--             estimate, -->
+<!--             conf.high, -->
+<!--             conf.low, -->
+<!--             significant = p.value < 0.05) %>% -->
+<!--   pivot_wider(id_cols = c("ATE", "sim_ID"), names_from = "estimator_label", values_from = c("estimate", "conf.high", "conf.low", "significant")) -->
 
 
-# Plot 1 ------------------------------------------------------------------
+<!-- # Plot 1 ------------------------------------------------------------------ -->
 
-gg_df <- 
-  reshaped_simulations %>%
-  group_by(ATE) %>%
-  summarize(`Significant for one group but not the other` = mean(xor(significant_CATE_0, significant_CATE_1)),
-            `Difference in subgroup effects is significant` = mean(significant_interaction)) %>%
-  gather(condition, power, -ATE)
+<!-- gg_df <-  -->
+<!--   reshaped_simulations %>% -->
+<!--   group_by(ATE) %>% -->
+<!--   summarize(`Significant for one group but not the other` = mean(xor(significant_CATE_0, significant_CATE_1)), -->
+<!--             `Difference in subgroup effects is significant` = mean(significant_interaction)) %>% -->
+<!--   gather(condition, power, -ATE) -->
 
-ggplot(gg_df, aes(ATE, power, color = condition)) +
-  geom_point() +
-  geom_line() +
-  geom_label(data = (. %>% filter(ATE == 0.2)),
-             aes(label = condition),
-             nudge_y = 0.02,
-             family = "Palatino") +
-  dd_theme() +
-  scale_color_manual(values = c("red", "blue")) +
-  theme(legend.position = "none") +
-  labs(
-    x = "True constant effect size",
-    y = "Probability of result (akin to statistical power)"
-  )
-```
+<!-- ggplot(gg_df, aes(ATE, power, color = condition)) + -->
+<!--   geom_point() + -->
+<!--   geom_line() + -->
+<!--   geom_label(data = (. %>% filter(ATE == 0.2)), -->
+<!--              aes(label = condition), -->
+<!--              nudge_y = 0.02, -->
+<!--              family = "Palatino") + -->
+<!--   dd_theme() + -->
+<!--   scale_color_manual(values = c("red", "blue")) + -->
+<!--   theme(legend.position = "none") + -->
+<!--   labs( -->
+<!--     x = "True constant effect size", -->
+<!--     y = "Probability of result (akin to statistical power)" -->
+<!--   ) -->
+<!-- ``` -->
 
-```{r}
-report_lower_p_value <- function(data){
-  fit_nocov <- lm_robust(Y ~ Z, data)
-  fit_cov <- lm_robust(Y ~ Z + X, data)
-  
-  # select fit with lower p.value on Z
-  if(fit_cov$p.value[2] < fit_nocov$p.value[2]){
-    fit_selected <- fit_cov
-  } else {
-    fit_selected <- fit_nocov
-  }
-  fit_selected %>% tidy %>% filter(term == "Z")
-}
+<!-- ```{r} -->
+<!-- report_lower_p_value <- function(data){ -->
+<!--   fit_nocov <- lm_robust(Y ~ Z, data) -->
+<!--   fit_cov <- lm_robust(Y ~ Z + X, data) -->
 
-design <-
-  declare_population(    
-    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N)
-  ) + 
-  declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + u) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_assignment(prob = 0.5) + 
-  declare_reveal(Y, Z) + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") + 
-  declare_estimator(
-    handler = label_estimator(report_lower_p_value),
-    label = "select-lower-p-value",
-    estimand = "ATE") 
+<!--   # select fit with lower p.value on Z -->
+<!--   if(fit_cov$p.value[2] < fit_nocov$p.value[2]){ -->
+<!--     fit_selected <- fit_cov -->
+<!--   } else { -->
+<!--     fit_selected <- fit_nocov -->
+<!--   } -->
+<!--   fit_selected %>% tidy %>% filter(term == "Z") -->
+<!-- } -->
 
-diags <- diagnose_design(design, sims = sims)
-```
+<!-- design <- -->
+<!--   declare_population(     -->
+<!--     N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N) -->
+<!--   ) +  -->
+<!--   declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + u) +  -->
+<!--   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +  -->
+<!--   declare_assignment(prob = 0.5) +  -->
+<!--   declare_reveal(Y, Z) +  -->
+<!--   declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") +  -->
+<!--   declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") +  -->
+<!--   declare_estimator( -->
+<!--     handler = label_estimator(report_lower_p_value), -->
+<!--     label = "select-lower-p-value", -->
+<!--     estimand = "ATE")  -->
 
-```{r, echo = FALSE}
-kable(get_diagnosands(diags))
-```
+<!-- diags <- diagnose_design(design, sims = sims) -->
+<!-- ``` -->
 
-```{r}
-bivariate_correlation_decision <- function(data) {
-  fit <- lm_robust(y2 ~ y1, data) %>% tidy %>% filter(term == "y1")
-  tibble(decision = fit$p.value <= 0.05)
-}
+<!-- ```{r, echo = FALSE} -->
+<!-- kable(get_diagnosands(diags)) -->
+<!-- ``` -->
 
-interacted_correlation_decision <- function(data) {
-  fit <- lm_robust(y2 ~ y1 + x, data) %>% tidy %>% filter(term == "y1")
-  tibble(decision = fit$p.value <= 0.05)
-}
+<!-- ```{r} -->
+<!-- bivariate_correlation_decision <- function(data) { -->
+<!--   fit <- lm_robust(y2 ~ y1, data) %>% tidy %>% filter(term == "y1") -->
+<!--   tibble(decision = fit$p.value <= 0.05) -->
+<!-- } -->
 
-robustness_check_decision <- function(data) {
-  main_analysis <- bivariate_correlation_decision(data)
-  robustness_check <- interacted_correlation_decision(data)
-  tibble(decision = main_analysis$decision == TRUE & robustness_check$decision == TRUE)
-}
+<!-- interacted_correlation_decision <- function(data) { -->
+<!--   fit <- lm_robust(y2 ~ y1 + x, data) %>% tidy %>% filter(term == "y1") -->
+<!--   tibble(decision = fit$p.value <= 0.05) -->
+<!-- } -->
 
-robustness_checks_design <- 
-  declare_population(
-    N = 100,
-    x = rnorm(N),
-    y1 = rnorm(N),
-    y2 = 0.15 * y1 + 0.01 * x + rnorm(N)
-  ) +
-  declare_estimand(y1_y2_are_related = TRUE) + 
-  declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") + 
-  declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check")
+<!-- robustness_check_decision <- function(data) { -->
+<!--   main_analysis <- bivariate_correlation_decision(data) -->
+<!--   robustness_check <- interacted_correlation_decision(data) -->
+<!--   tibble(decision = main_analysis$decision == TRUE & robustness_check$decision == TRUE) -->
+<!-- } -->
 
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+<!-- robustness_checks_design <-  -->
+<!--   declare_population( -->
+<!--     N = 100, -->
+<!--     x = rnorm(N), -->
+<!--     y1 = rnorm(N), -->
+<!--     y2 = 0.15 * y1 + 0.01 * x + rnorm(N) -->
+<!--   ) + -->
+<!--   declare_estimand(y1_y2_are_related = TRUE) +  -->
+<!--   declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") +  -->
+<!--   declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check") -->
 
-diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis)
-```
+<!-- decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE) -->
 
-We evaluate the two answer strategies in terms of the rate of correctly deciding there is a correlation between `y2` and `y1`. In the main analysis, this means we judge there is a correlation when the p-value is below $0.05$. In our robustness check answer strategy, we decide there is a correlation when both the main analysis and the robustness check return p-values below $0.05$ on the coefficient on `y1`. We see that we are more likely to correctly judge there is a correlation in the simpler analysis strategy. This is because we added an additional criterion to our decision; both criteria, due to random noise, sometimes fail to reject the null of no correlation. Our second answer strategy is more robust in the sense that we have stronger evidence of a correlation when we run the two analyses together. But we are also less likely to decide (correctly) that there is a relationship. The robustness check is conservative. This exercise highlights that the properties of an answer strategy with secondary analyses will be different than the properties of the main analysis alone. If we planned (or conducted) robustness checks, we may wish to know how good the pair of strategies is together.
+<!-- diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis) -->
+<!-- ``` -->
+
+<!-- We evaluate the two answer strategies in terms of the rate of correctly deciding there is a correlation between `y2` and `y1`. In the main analysis, this means we judge there is a correlation when the p-value is below $0.05$. In our robustness check answer strategy, we decide there is a correlation when both the main analysis and the robustness check return p-values below $0.05$ on the coefficient on `y1`. We see that we are more likely to correctly judge there is a correlation in the simpler analysis strategy. This is because we added an additional criterion to our decision; both criteria, due to random noise, sometimes fail to reject the null of no correlation. Our second answer strategy is more robust in the sense that we have stronger evidence of a correlation when we run the two analyses together. But we are also less likely to decide (correctly) that there is a relationship. The robustness check is conservative. This exercise highlights that the properties of an answer strategy with secondary analyses will be different than the properties of the main analysis alone. If we planned (or conducted) robustness checks, we may wish to know how good the pair of strategies is together. -->
 
 <!--
 ```{r}
