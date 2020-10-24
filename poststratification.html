@@ -511,23 +511,23 @@ design <-
 <li><p><strong>D</strong>ata strategy: Ten individuals from each group are included in the sample. Thus, whereas 2/3 of the population belong to the <span class="math inline">\(X = 0\)</span> group, only 1/2 of the sample does. Conversely, while only 1/3 of the population belongs to the <span class="math inline">\(X = 1\)</span> group, 1/2 of the sample does.</p></li>
 <li><p><strong>A</strong>nswer strategy: The answer strategy involves taking a weighted average of <span class="math inline">\(Y\)</span> in the sample, where each unit’s weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, <span class="math inline">\(X = 0\)</span>, get a weight of 100/10 = 10, while the overrepresented group, <span class="math inline">\(X = 1\)</span>, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents.</p></li>
 </ul>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1">fixed_population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb59-2" title="2">  <span class="dt">group =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">2</span>, <span class="dt">X =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">population_n =</span> <span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">50</span>)),</a>
-<a class="sourceLine" id="cb59-3" title="3">  <span class="dt">individual =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> population_n, <span class="dt">Y =</span> X <span class="op">+</span><span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>)))()</a>
-<a class="sourceLine" id="cb59-4" title="4"></a>
-<a class="sourceLine" id="cb59-5" title="5">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb59-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_population) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb59-7" title="7"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Ybar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb59-8" title="8"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">strata_n =</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">10</span>), <span class="dt">strata =</span> X) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb59-9" title="9"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> group_by, <span class="dt">groups =</span> X) <span class="op">+</span></a>
-<a class="sourceLine" id="cb59-10" title="10"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> mutate, </a>
-<a class="sourceLine" id="cb59-11" title="11">               <span class="dt">sample_n =</span> <span class="kw">n</span>(), </a>
-<a class="sourceLine" id="cb59-12" title="12">               <span class="dt">weight =</span> population_n <span class="op">/</span><span class="st"> </span>sample_n) <span class="op">+</span></a>
-<a class="sourceLine" id="cb59-13" title="13"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">term =</span> <span class="st">&quot;(Intercept)&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">weights =</span> weight, <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1">fixed_population &lt;-<span class="st"> </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb60-2" title="2">  <span class="dt">group =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">2</span>, <span class="dt">X =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">population_n =</span> <span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">50</span>)),</a>
+<a class="sourceLine" id="cb60-3" title="3">  <span class="dt">individual =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> population_n, <span class="dt">Y =</span> X <span class="op">+</span><span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>)))()</a>
+<a class="sourceLine" id="cb60-4" title="4"></a>
+<a class="sourceLine" id="cb60-5" title="5">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb60-6" title="6"><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">data =</span> fixed_population) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-7" title="7"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">Ybar =</span> <span class="kw">mean</span>(Y)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-8" title="8"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">strata_n =</span> <span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">10</span>), <span class="dt">strata =</span> X) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-9" title="9"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> group_by, <span class="dt">groups =</span> X) <span class="op">+</span></a>
+<a class="sourceLine" id="cb60-10" title="10"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> mutate, </a>
+<a class="sourceLine" id="cb60-11" title="11">               <span class="dt">sample_n =</span> <span class="kw">n</span>(), </a>
+<a class="sourceLine" id="cb60-12" title="12">               <span class="dt">weight =</span> population_n <span class="op">/</span><span class="st"> </span>sample_n) <span class="op">+</span></a>
+<a class="sourceLine" id="cb60-13" title="13"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">term =</span> <span class="st">&quot;(Intercept)&quot;</span>, <span class="dt">model =</span> lm_robust, <span class="dt">weights =</span> weight, <span class="dt">estimand =</span> <span class="st">&quot;Ybar&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-1" class="section level3">
 <h3><span class="header-section-number">14.2.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-194-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-195-1.png" width="100%" /></p>
 </div>
 <div id="exercises-1" class="section level3">
 <h3><span class="header-section-number">14.2.3</span> Exercises</h3>
@@ -737,98 +737,98 @@ prop_republican
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1"><span class="co"># US population</span></a>
-<a class="sourceLine" id="cb60-2" title="2">delaware_population_df &lt;-<span class="st"> </span><span class="kw">fabricate</span>(</a>
-<a class="sourceLine" id="cb60-3" title="3">  <span class="dt">data =</span> delaware_senate_districts_df,</a>
-<a class="sourceLine" id="cb60-4" title="4">  <span class="dt">individuals =</span> <span class="kw">add_level</span>(</a>
-<a class="sourceLine" id="cb60-5" title="5">    <span class="dt">N =</span> population_size,</a>
-<a class="sourceLine" id="cb60-6" title="6">    <span class="dt">race_white =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_white),</a>
-<a class="sourceLine" id="cb60-7" title="7">    <span class="dt">race_black =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_black),</a>
-<a class="sourceLine" id="cb60-8" title="8">    <span class="dt">race_asian =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_black),</a>
-<a class="sourceLine" id="cb60-9" title="9">    <span class="dt">race_hispanic_other =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_hispanic_other),</a>
-<a class="sourceLine" id="cb60-10" title="10">    <span class="dt">pid_republican =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_republican),</a>
-<a class="sourceLine" id="cb60-11" title="11">    <span class="dt">pid_democrat =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_democrat)</a>
-<a class="sourceLine" id="cb60-12" title="12">  )</a>
-<a class="sourceLine" id="cb60-13" title="13">) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-14" title="14"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">starts_with</span>(<span class="st">&quot;prop_&quot;</span>), <span class="op">-</span>population_size)</a>
-<a class="sourceLine" id="cb60-15" title="15"></a>
-<a class="sourceLine" id="cb60-16" title="16"><span class="co"># population weights for MRP</span></a>
-<a class="sourceLine" id="cb60-17" title="17">mrp_weights &lt;-<span class="st"> </span>delaware_population_df <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-18" title="18"><span class="st">  </span><span class="kw">group_by</span>(district, race_white, race_black, race_asian, race_hispanic_other, pid_republican, pid_democrat) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-19" title="19"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_cell =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-20" title="20"><span class="st">  </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-21" title="21"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">proportion_cell =</span> n_cell<span class="op">/</span><span class="kw">sum</span>(n_cell)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-22" title="22"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>n_cell) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-23" title="23"><span class="st">  </span>ungroup </a>
-<a class="sourceLine" id="cb60-24" title="24"></a>
-<a class="sourceLine" id="cb60-25" title="25">delaware_population_df &lt;-<span class="st"> </span>mrp_weights <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-26" title="26"><span class="st">  </span><span class="kw">select</span>(district, proportion_cell) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-27" title="27"><span class="st">  </span><span class="kw">right_join</span>(delaware_population_df)</a>
-<a class="sourceLine" id="cb60-28" title="28"></a>
-<a class="sourceLine" id="cb60-29" title="29"><span class="co"># Lax and Philips APSR 2009</span></a>
-<a class="sourceLine" id="cb60-30" title="30"><span class="co"># Policies are coded dichotomously, 1 for the progay policy and 0 otherwise: Adoption (9 states allow second-parent adoption in all jurisdictions)</span></a>
-<a class="sourceLine" id="cb60-31" title="31"></a>
-<a class="sourceLine" id="cb60-32" title="32">design &lt;-</a>
-<a class="sourceLine" id="cb60-33" title="33"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb60-34" title="34">    <span class="dt">data =</span> delaware_population_df, </a>
-<a class="sourceLine" id="cb60-35" title="35">    </a>
-<a class="sourceLine" id="cb60-36" title="36">    <span class="dt">districts =</span> <span class="kw">modify_level</span>(<span class="dt">district_effect =</span> <span class="kw">rnorm</span>(N)),</a>
-<a class="sourceLine" id="cb60-37" title="37">    </a>
-<a class="sourceLine" id="cb60-38" title="38">    <span class="dt">individuals =</span> <span class="kw">modify_level</span>(</a>
-<a class="sourceLine" id="cb60-39" title="39">      <span class="dt">noise =</span> <span class="kw">rnorm</span>(N, <span class="dt">mean =</span> district_effect),</a>
-<a class="sourceLine" id="cb60-40" title="40">      <span class="dt">policy_support =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">pnorm</span>(</a>
-<a class="sourceLine" id="cb60-41" title="41">        <span class="fl">0.25</span> <span class="op">+</span><span class="st"> </span><span class="fl">0.2</span> <span class="op">*</span><span class="st"> </span>race_white <span class="op">-</span><span class="st"> </span><span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span>race_black <span class="op">-</span><span class="st"> </span><span class="fl">0.2</span> <span class="op">*</span><span class="st"> </span>race_hispanic_other <span class="op">-</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-42" title="42"><span class="st">          </span><span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span>pid_democrat <span class="op">+</span><span class="st"> </span><span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>pid_republican <span class="op">+</span><span class="st"> </span>noise))</a>
-<a class="sourceLine" id="cb60-43" title="43">    )</a>
-<a class="sourceLine" id="cb60-44" title="44">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-45" title="45"><span class="st">  </span></a>
-<a class="sourceLine" id="cb60-46" title="46"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">handler =</span> <span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb60-47" title="47">    data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-48" title="48"><span class="st">      </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-49" title="49"><span class="st">      </span><span class="kw">summarize</span>(<span class="dt">estimand =</span> <span class="kw">mean</span>(policy_support)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-50" title="50"><span class="st">      </span>ungroup <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-51" title="51"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">estimand_label =</span> <span class="st">&quot;mean_policy_support&quot;</span>)</a>
-<a class="sourceLine" id="cb60-52" title="52">  }) <span class="op">+</span></a>
-<a class="sourceLine" id="cb60-53" title="53"><span class="st">  </span></a>
-<a class="sourceLine" id="cb60-54" title="54"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">500</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb60-55" title="55"><span class="st">  </span></a>
-<a class="sourceLine" id="cb60-56" title="56"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(<span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb60-57" title="57">    data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-58" title="58"><span class="st">      </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-59" title="59"><span class="st">      </span><span class="kw">summarize</span>(<span class="dt">estimate =</span> <span class="kw">mean</span>(policy_support))</a>
-<a class="sourceLine" id="cb60-60" title="60">  }), <span class="dt">label =</span> <span class="st">&quot;strata_means&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;mean_policy_support&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb60-61" title="61"></a>
-<a class="sourceLine" id="cb60-62" title="62"><span class="st">  </span><span class="co"># this estimator owes code to https://timmastny.rbind.io/blog/multilevel-mrp-tidybayes-brms-stan/</span></a>
-<a class="sourceLine" id="cb60-63" title="63"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(<span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb60-64" title="64"></a>
-<a class="sourceLine" id="cb60-65" title="65">    model_fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(</a>
-<a class="sourceLine" id="cb60-66" title="66">      <span class="dt">formula =</span> policy_support <span class="op">~</span><span class="st"> </span>race_white <span class="op">+</span><span class="st"> </span>race_black <span class="op">+</span><span class="st"> </span>race_asian <span class="op">+</span><span class="st"> </span>race_hispanic_other <span class="op">+</span></a>
-<a class="sourceLine" id="cb60-67" title="67"><span class="st">        </span>pid_democrat <span class="op">+</span><span class="st"> </span>pid_republican <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>district),</a>
-<a class="sourceLine" id="cb60-68" title="68">      <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))</a>
-<a class="sourceLine" id="cb60-69" title="69"></a>
-<a class="sourceLine" id="cb60-70" title="70">    data <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-71" title="71"><span class="st">      </span><span class="kw">mutate</span>(</a>
-<a class="sourceLine" id="cb60-72" title="72">        <span class="dt">support_predicted =</span></a>
-<a class="sourceLine" id="cb60-73" title="73">          <span class="kw">prediction</span>(model_fit, <span class="dt">data =</span> ., <span class="dt">allow.new.levels =</span> <span class="ot">TRUE</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>),</a>
-<a class="sourceLine" id="cb60-74" title="74">        <span class="dt">support_predicted_weighted =</span> support_predicted <span class="op">*</span><span class="st"> </span>proportion_cell</a>
-<a class="sourceLine" id="cb60-75" title="75">      ) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-76" title="76"><span class="st">      </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb60-77" title="77"><span class="st">      </span><span class="kw">summarize</span>(<span class="dt">estimate =</span> <span class="kw">sum</span>(support_predicted_weighted))</a>
-<a class="sourceLine" id="cb60-78" title="78"></a>
-<a class="sourceLine" id="cb60-79" title="79">  }), <span class="dt">label =</span> <span class="st">&quot;mrp_mle&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;mean_policy_support&quot;</span>)</a>
-<a class="sourceLine" id="cb60-80" title="80"></a>
-<a class="sourceLine" id="cb60-81" title="81">dat &lt;-<span class="st"> </span><span class="kw">draw_data</span>(design)</a>
-<a class="sourceLine" id="cb60-82" title="82"></a>
-<a class="sourceLine" id="cb60-83" title="83"><span class="kw">draw_estimates</span>(design)</a>
-<a class="sourceLine" id="cb60-84" title="84"></a>
-<a class="sourceLine" id="cb60-85" title="85">sims &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb60-86" title="86"></a>
-<a class="sourceLine" id="cb60-87" title="87">diag &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> <span class="dv">100</span>, <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(<span class="dt">select =</span> bias), <span class="dt">add_grouping_variables =</span> <span class="st">&quot;state&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="co"># US population</span></a>
+<a class="sourceLine" id="cb61-2" title="2">delaware_population_df &lt;-<span class="st"> </span><span class="kw">fabricate</span>(</a>
+<a class="sourceLine" id="cb61-3" title="3">  <span class="dt">data =</span> delaware_senate_districts_df,</a>
+<a class="sourceLine" id="cb61-4" title="4">  <span class="dt">individuals =</span> <span class="kw">add_level</span>(</a>
+<a class="sourceLine" id="cb61-5" title="5">    <span class="dt">N =</span> population_size,</a>
+<a class="sourceLine" id="cb61-6" title="6">    <span class="dt">race_white =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_white),</a>
+<a class="sourceLine" id="cb61-7" title="7">    <span class="dt">race_black =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_black),</a>
+<a class="sourceLine" id="cb61-8" title="8">    <span class="dt">race_asian =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_black),</a>
+<a class="sourceLine" id="cb61-9" title="9">    <span class="dt">race_hispanic_other =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_hispanic_other),</a>
+<a class="sourceLine" id="cb61-10" title="10">    <span class="dt">pid_republican =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_republican),</a>
+<a class="sourceLine" id="cb61-11" title="11">    <span class="dt">pid_democrat =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> prop_democrat)</a>
+<a class="sourceLine" id="cb61-12" title="12">  )</a>
+<a class="sourceLine" id="cb61-13" title="13">) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-14" title="14"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">starts_with</span>(<span class="st">&quot;prop_&quot;</span>), <span class="op">-</span>population_size)</a>
+<a class="sourceLine" id="cb61-15" title="15"></a>
+<a class="sourceLine" id="cb61-16" title="16"><span class="co"># population weights for MRP</span></a>
+<a class="sourceLine" id="cb61-17" title="17">mrp_weights &lt;-<span class="st"> </span>delaware_population_df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-18" title="18"><span class="st">  </span><span class="kw">group_by</span>(district, race_white, race_black, race_asian, race_hispanic_other, pid_republican, pid_democrat) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-19" title="19"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_cell =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-20" title="20"><span class="st">  </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-21" title="21"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">proportion_cell =</span> n_cell<span class="op">/</span><span class="kw">sum</span>(n_cell)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-22" title="22"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>n_cell) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-23" title="23"><span class="st">  </span>ungroup </a>
+<a class="sourceLine" id="cb61-24" title="24"></a>
+<a class="sourceLine" id="cb61-25" title="25">delaware_population_df &lt;-<span class="st"> </span>mrp_weights <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-26" title="26"><span class="st">  </span><span class="kw">select</span>(district, proportion_cell) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-27" title="27"><span class="st">  </span><span class="kw">right_join</span>(delaware_population_df)</a>
+<a class="sourceLine" id="cb61-28" title="28"></a>
+<a class="sourceLine" id="cb61-29" title="29"><span class="co"># Lax and Philips APSR 2009</span></a>
+<a class="sourceLine" id="cb61-30" title="30"><span class="co"># Policies are coded dichotomously, 1 for the progay policy and 0 otherwise: Adoption (9 states allow second-parent adoption in all jurisdictions)</span></a>
+<a class="sourceLine" id="cb61-31" title="31"></a>
+<a class="sourceLine" id="cb61-32" title="32">design &lt;-</a>
+<a class="sourceLine" id="cb61-33" title="33"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb61-34" title="34">    <span class="dt">data =</span> delaware_population_df, </a>
+<a class="sourceLine" id="cb61-35" title="35">    </a>
+<a class="sourceLine" id="cb61-36" title="36">    <span class="dt">districts =</span> <span class="kw">modify_level</span>(<span class="dt">district_effect =</span> <span class="kw">rnorm</span>(N)),</a>
+<a class="sourceLine" id="cb61-37" title="37">    </a>
+<a class="sourceLine" id="cb61-38" title="38">    <span class="dt">individuals =</span> <span class="kw">modify_level</span>(</a>
+<a class="sourceLine" id="cb61-39" title="39">      <span class="dt">noise =</span> <span class="kw">rnorm</span>(N, <span class="dt">mean =</span> district_effect),</a>
+<a class="sourceLine" id="cb61-40" title="40">      <span class="dt">policy_support =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">pnorm</span>(</a>
+<a class="sourceLine" id="cb61-41" title="41">        <span class="fl">0.25</span> <span class="op">+</span><span class="st"> </span><span class="fl">0.2</span> <span class="op">*</span><span class="st"> </span>race_white <span class="op">-</span><span class="st"> </span><span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span>race_black <span class="op">-</span><span class="st"> </span><span class="fl">0.2</span> <span class="op">*</span><span class="st"> </span>race_hispanic_other <span class="op">-</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-42" title="42"><span class="st">          </span><span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span>pid_democrat <span class="op">+</span><span class="st"> </span><span class="fl">0.15</span> <span class="op">*</span><span class="st"> </span>pid_republican <span class="op">+</span><span class="st"> </span>noise))</a>
+<a class="sourceLine" id="cb61-43" title="43">    )</a>
+<a class="sourceLine" id="cb61-44" title="44">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-45" title="45"><span class="st">  </span></a>
+<a class="sourceLine" id="cb61-46" title="46"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">handler =</span> <span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb61-47" title="47">    data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-48" title="48"><span class="st">      </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-49" title="49"><span class="st">      </span><span class="kw">summarize</span>(<span class="dt">estimand =</span> <span class="kw">mean</span>(policy_support)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-50" title="50"><span class="st">      </span>ungroup <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-51" title="51"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">estimand_label =</span> <span class="st">&quot;mean_policy_support&quot;</span>)</a>
+<a class="sourceLine" id="cb61-52" title="52">  }) <span class="op">+</span></a>
+<a class="sourceLine" id="cb61-53" title="53"><span class="st">  </span></a>
+<a class="sourceLine" id="cb61-54" title="54"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">500</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb61-55" title="55"><span class="st">  </span></a>
+<a class="sourceLine" id="cb61-56" title="56"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(<span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb61-57" title="57">    data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-58" title="58"><span class="st">      </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-59" title="59"><span class="st">      </span><span class="kw">summarize</span>(<span class="dt">estimate =</span> <span class="kw">mean</span>(policy_support))</a>
+<a class="sourceLine" id="cb61-60" title="60">  }), <span class="dt">label =</span> <span class="st">&quot;strata_means&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;mean_policy_support&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-61" title="61"></a>
+<a class="sourceLine" id="cb61-62" title="62"><span class="st">  </span><span class="co"># this estimator owes code to https://timmastny.rbind.io/blog/multilevel-mrp-tidybayes-brms-stan/</span></a>
+<a class="sourceLine" id="cb61-63" title="63"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(<span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb61-64" title="64"></a>
+<a class="sourceLine" id="cb61-65" title="65">    model_fit &lt;-<span class="st"> </span><span class="kw">glmer</span>(</a>
+<a class="sourceLine" id="cb61-66" title="66">      <span class="dt">formula =</span> policy_support <span class="op">~</span><span class="st"> </span>race_white <span class="op">+</span><span class="st"> </span>race_black <span class="op">+</span><span class="st"> </span>race_asian <span class="op">+</span><span class="st"> </span>race_hispanic_other <span class="op">+</span></a>
+<a class="sourceLine" id="cb61-67" title="67"><span class="st">        </span>pid_democrat <span class="op">+</span><span class="st"> </span>pid_republican <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>district),</a>
+<a class="sourceLine" id="cb61-68" title="68">      <span class="dt">data =</span> data, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))</a>
+<a class="sourceLine" id="cb61-69" title="69"></a>
+<a class="sourceLine" id="cb61-70" title="70">    data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-71" title="71"><span class="st">      </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb61-72" title="72">        <span class="dt">support_predicted =</span></a>
+<a class="sourceLine" id="cb61-73" title="73">          <span class="kw">prediction</span>(model_fit, <span class="dt">data =</span> ., <span class="dt">allow.new.levels =</span> <span class="ot">TRUE</span>, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>),</a>
+<a class="sourceLine" id="cb61-74" title="74">        <span class="dt">support_predicted_weighted =</span> support_predicted <span class="op">*</span><span class="st"> </span>proportion_cell</a>
+<a class="sourceLine" id="cb61-75" title="75">      ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-76" title="76"><span class="st">      </span><span class="kw">group_by</span>(district) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb61-77" title="77"><span class="st">      </span><span class="kw">summarize</span>(<span class="dt">estimate =</span> <span class="kw">sum</span>(support_predicted_weighted))</a>
+<a class="sourceLine" id="cb61-78" title="78"></a>
+<a class="sourceLine" id="cb61-79" title="79">  }), <span class="dt">label =</span> <span class="st">&quot;mrp_mle&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;mean_policy_support&quot;</span>)</a>
+<a class="sourceLine" id="cb61-80" title="80"></a>
+<a class="sourceLine" id="cb61-81" title="81">dat &lt;-<span class="st"> </span><span class="kw">draw_data</span>(design)</a>
+<a class="sourceLine" id="cb61-82" title="82"></a>
+<a class="sourceLine" id="cb61-83" title="83"><span class="kw">draw_estimates</span>(design)</a>
+<a class="sourceLine" id="cb61-84" title="84"></a>
+<a class="sourceLine" id="cb61-85" title="85">sims &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb61-86" title="86"></a>
+<a class="sourceLine" id="cb61-87" title="87">diag &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> <span class="dv">100</span>, <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(<span class="dt">select =</span> bias), <span class="dt">add_grouping_variables =</span> <span class="st">&quot;state&quot;</span>)</a></code></pre></div>
 <p>This chunk is set to <code>echo = TRUE</code> and <code>eval = do_diagnosis</code></p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1">simulations_pilot &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">simulations_pilot &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p>Right after you do simulations, you want to save the simulations rds.</p>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1"><span class="kw">kable</span>(<span class="kw">head</span>(simulations_pilot))</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="kw">kable</span>(<span class="kw">head</span>(simulations_pilot))</a></code></pre></div>
 <table>
 <thead>
 <tr>
