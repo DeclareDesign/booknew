@@ -203,9 +203,11 @@ gg_df <-
 ```
 
 
-## using model to inform answer strategy
+## Using the Model to inform your Answer strategy
 
-- your inquiry defines was you are shooting at, now question is how to use model to choose an answer stategy to shoot at it
+As we described in chapter 6, we can (non-parametrically) express our model of the world as a directed acyclic graph, or DAG. DAGs express *some* but not all parts of our model, precisely because they are nonparametric. They don't encode how variables cause each other, just whether they do. Even so, writing down a theoretical model in as parsimonious a form as a nonparametric structual causal model can guide answer strategies in an enormously powerful way. Given a DAG, we can learn whether *any* answer strategy would be sufficient for estimating a causal effect. Further, we can learn which variable our answer strategy must condition on, and which must be left alone. 
+
+Table XXX shows the three elemental building blocks of DAGs: chains, collider paths, and forks. All three kinds paths involve three variables. A chain describes a mediation path. The causal effect of D on Y is mediated through X, so we can describe X as a "mediator." A collider path is a chain of three variables in which the middle variable X is caused by both D and Y. Here X is a collider variable. Finally, forks describe a causal setting in which the middle variable X causes both D and Y. Here X is a "confounder", since it confounds the relationship between X and Y.
 
 
 | Path         | X is a ... | Path is called a... |
@@ -215,8 +217,48 @@ gg_df <-
 | D <- X -> Y  | confounder | fork                |
 
 
-- descriptive
-- causal (obsefvational, experimental)
+```{r, echo=FALSE, fig.width=6.5, fig.height=2}
+dag1 <- dagitty("dag{
+                D<-X->Y; D->Y
+                }")
+
+dag2 <- dagitty("dag{
+                D->X<-Y; D->Y
+                }")
+
+dag3 <- dagitty("dag{
+                D->X->Y; D->Y
+                }")
+
+
+points_df <-
+  tibble(name = c("D", "X", "Y"),
+         x = c(1, 2, 3),
+         y = c(0, 1, 0))
+
+
+gg_df <-
+  list(dag1, dag2, dag3) %>%
+  map_df( ~ as_tibble(tidy_dagitty(., layout = points)), .id = "dag") %>%
+  mutate(dag = factor(
+    dag,
+    levels = 1:3,
+    labels = c("X is a confounder", "X is a collider", "X is a mediator")
+  ))
+
+
+
+ggplot(gg_df, aes(x, y)) +
+  geom_text(data = points_df, aes(label = name)) +
+  geom_dag_edges(aes(xend = xend, yend = yend)) +
+  coord_fixed() +
+  facet_wrap(~dag) +
+  theme_void()
+
+```
+
+
+
 
 Definition: The backdoor criterion. Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satifies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. (pg. 61 Pearl primer)
 
