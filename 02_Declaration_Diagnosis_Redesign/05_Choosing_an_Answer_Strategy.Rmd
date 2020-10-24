@@ -221,20 +221,45 @@ Definition: The frontdoor criterion. A set of variables X is said to satisfy the
 
 $$\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})$$
 
-
 ### Descriptive analysis
 
 Answering descriptive inquiries involves studying the existence of nodes and the values they take on. We might study whether a behavior exists in the world, and measure its frequency. We might also study how the frequency of the behavior varies over time and across people. Our answer strategy, following the plug-in principle, will often involve the average value of the node in the sample as an estimator of the average value in the population. 
 
 ### Causal analysis
 
-By contrast, when we target a causal inquiry with our answer strategy, we are interested in the existence (or non-existence) of an edge between two nodes. 
+By contrast, when we target a causal inquiry with our answer strategy, we are interested in the existence (or non-existence) of an edge between two nodes. We can label the two $D$ (treatment) and $Y$ (outcome).
 
-Our aim is to distinguish between the 
+We can only learn the answer to the inquiry when we can identify the causal effect, meaning if we had infinite data we could estimate without bias the causal effect. Identification can be obtained if the backdoor criterion is met, if the frontdoor criterion is met, or if there are no other causal relationships into both $D$ and $Y$. These conditions will be violated in several circumstances, including when an observed confounder $X$ confounds the relationship between $D$ and $Y$ and is left unadjusted or when there is an unobserved confounder $U$. 
 
-#### Ruling out confounding by adjustment
+To reason about causal identification, we turn back to DAGs. We start with a simple DAG with four variables: a treatment $D$, an outcome $Y$, a observed variable $X$ (which may or may not confound the relationship between $D$ and $Y$), and an unobserved variable $U$. There are six edges between these variables, each with three possible relations: each variable may cause (e.g., $D \rightarrow Y$), be caused by (e.g., $D \leftarrow Y$), or not be causally related to every other variable. With three possible relationships and six edges, there are $3^6 = 729$ conceptually possible DAGs. We rule out DAGs in which other variables cause $U$, because we defined $U$ as an unobserved confounder. This leaves 216 possible combinations.
 
-```{r, echo = FALSE, fig.width = 30, fig.height = 21}
+```{r}
+# four variable dag with undirected edges between all sides
+```
+
+In the presence of possible confounding from $X$ and/or $U$, we have several options for our research design: we can estimate the causal effect of $D$ on $Y$ by controlling for the observed confounder $X$ (or not), by invoking additional conditional independence assumptions, and by randomizing the treatment. In each case, our aim is to rule out DAGs in which the causal effect is not identified. 
+
+#### Causal identification through controls 
+
+The first strategy is that we can control for the observed variable $X$ or not. Whether controlling for $X$ enables, prevents, or does not affect the causal identification of the effect of $D$ on $Y$ depends on our beliefs about which DAG is the true DAG. 
+
+We illustrate possible beliefs about these edges by visualizing all of the 216 DAGs in which $U$ is an unobserved confounder (see Figure XX). The large groups of three squares of nine group DAGs based on how $U$ affects other variables in the model: the top left grouping of 27 DAGs represents those in which $U$ affects all of $D$, $X$ and $Y$. Within that grouping, there are three squares of nine squares. Each group of nine squares represents a set of DAGs with a single relationship between $D$ and $Y$. The top left group of nine are those DAGs in which $D\rightarrow Y$. 
+
+We can rule out several of these 216 through acyclicity: the gray squares are graphs that are cyclical. (We operate under the view that cyclicity is not possible in the world, which would imply that these variables simulataneously cause each other.) 
+
+We color the rest of the squares in terms of whether controlling for $X$ will identify the causal effect of $D$ on $Y$.
+
+In some cases, the effect of $D$ on $Y$ will be identified regardless of whether we control for $X$ (white squares). For example, in the left DAG, $X$ affects $D$ and $U$ affects $Y$ but neither affect both. The causal effect is identified because there is no path between $D$ and $Y$ except for the direct effect $D\rightarrow Y$. In other words, neither $X$ nor $U$ confound the relationship, and the potential outcomes of $Y$ are independent of $D$.
+
+In other cases, the effect of $D$ on $Y$ is identified if and only if we control for $X$ (blue squares). These are situations in which $X$ confounds the relationship and there is no additional confounding from unmeasured confounders. These are cases in which the potential outcomes of $Y$ are independent of $D$ *conditional* on $X$. 
+
+However, conditioning on $X$ is risky, because if we are not in one of the blue DAGs we might be in the purple DAGs in which the effect of $D$ on $Y$ is identified only if we do *not* condition on $X$ (purple squares). These are DAGs in which $X$ is a collider, opening a backdoor path between $D$ and $Y$ aside from the direct effect when $X$ is conditioned on. If we knew we were in one of these DAGs, we would not control for $X$. 
+
+There are also many situations --- a majority in fact, the pink squares --- in which the relationship between $D$ and $Y$ is *never* identified, regardless of whether you control for $X$. Most of these result from confounding from unobservable confounders $U$. The upper left quadrant contains the cases where $U$ affects all of the other variables, and the middle left those where $U$ affects $D$ and $Y$. In both cases, identification would require at a minimum the ability to control for these unmeasured confounders. The other situations in which causal identification fails are those in which the causal order between $D$ and $Y$ is reversed, i.e. $Y$ causes $D$. Without additional assumptions or control of the order in which variables are collected from the data strategy, we cannot rule out this possibility, the first and fourth columns of subgraphs labeled $D\leftarrow Y$.
+
+Without additional assumptions or manipulation in our data strategy, we cannot know where we are among the 200 acyclic DAGs represented in the plot. As a result, we are in danger either of having the effect of $D$ on $Y$ unidentified regardless of what we do, or of making the wrong choice to control or not to control. 
+
+```{r fig-dags-adjustment, echo = FALSE, fig.width = 30, fig.height = 21}
 gg_df <-
   gg_df %>%
   mutate(tile_fac = as.factor(if_else(
@@ -292,9 +317,15 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 ```
 
-#### Ruling out confounding by assumption
+#### Causal identification by assumption
 
-We can address the problem of unmeasured confounding by invoking conditional independence assumptions. The ``selection-on-observables'' answer strategy invokes the assumption that D is statistically independent of the potential outcomes of $Y$ *given* X, i.e. after adjusting for $X$. This means that there are no unobserved confounders not in $X$. 
+We can address the problem of unmeasured confounding by invoking conditional independence assumptions. The ``selection-on-observables'' answer strategy invokes the assumption that $D$ is statistically independent of the potential outcomes of $Y$ *given* X, i.e. after adjusting for $X$. In other words, controlling for $X$ blocks all backdoor paths between $D$ and $Y$. This assumption is also known as a conditional independence or ignorability assumption.
+
+In Figure XX, we display the 216 possible causal graphs again, ruling out in gray those that are cyclical. Among the 200 that remain, we color in the same way as under controlling for $X$ but add a fourth color: lavender for DAGs that we rule out based on our conditional independence assumption. Those that are ruled out, in the upper left quadrantes, have unobserved confounding from $U$ that cannot be addressed by adjusting for $X$.
+
+Analysts who invoke this conditional independence assumption assure that there are many fewer circumstances in which identification is not possible either through controlling for $X$ or not controlling for $X$. However, this is a strong assumption that is not possible to test directly. Instead, the analyst must justify the assumption based on circumstantial qualitative or quantitative evidence. The task is to rule out through this evidence either a relationship between $U$ and $D$ or a relationship between $U$ and $Y$ or both. In the first case, this evidence might take the form of background knowledge about how values of $D$ are determined. The treatment might be assigned using a cut-off rule, in which case all those above the cut-off are assigned to treatment (e.g., are admitted to a college) and those below are not. In this case, there is no relationship between unobserved variables $U$ and treatment $D$, there is only a relationship between $X$ (score) and $D$. Controlling for $X$ will enable causal identification even if $Y$ is affected by $U$. However, the assumption of conditional independence between $U$ and $D$ given $X$ is a strong assumption: the analyst must be sure that there is no unobserved variable $U$ that directly affects $D$, such as legacy applicants who may be "pushed" over the threshold of the cut-off if they are close enough to it. 
+
+Under selection-on-observables, there are still many DAGs that raise problems for us. There are still many DAGs in which $D\leftarrow Y$, $D$ is caused by $Y$ instead of the other way around. If we cannot rule those out by assumption, we will never identify the causal effect of $D$ on $Y$ regardless of whether we control for $X$. The DAGs in blue (the effect is identified only when we condition on $X$ and not otherwise) and purple (the opposite, that we only achieve identification when we do not condition on $X$) still remain. Those in blue involve $X$ confounding the relationship between $D$ and $Y$ and those in purple are when $X$ is a collider so conditioning on it opens up a backdoor path to $U$. In other words, the conditional independence of $D$ and $U$ given $X$ is insufficient to identify the effect, without ruling out these other scenarios. 
 
 ```{r, echo = FALSE, fig.width = 30, fig.height = 21}
 gg_df <-
