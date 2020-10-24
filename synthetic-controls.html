@@ -485,71 +485,71 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">16.6</span> Synthetic controls</h2>
 <div id="declaration-15" class="section level3">
 <h3><span class="header-section-number">16.6.1</span> Declaration</h3>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" title="1">design &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb111-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb111-3" title="3">    <span class="dt">unit =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">10</span>, <span class="dt">units =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">X =</span> <span class="kw">rnorm</span>(N, <span class="dt">sd =</span> <span class="fl">0.5</span>)),</a>
-<a class="sourceLine" id="cb111-4" title="4">    <span class="dt">period =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">3</span>, <span class="dt">time =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">nest =</span> <span class="ot">FALSE</span>),</a>
-<a class="sourceLine" id="cb111-5" title="5">    <span class="dt">unit_period =</span> <span class="kw">cross_levels</span>(<span class="dt">by =</span> <span class="kw">join</span>(unit, period), <span class="dt">U =</span> <span class="kw">rnorm</span>(N))</a>
-<a class="sourceLine" id="cb111-6" title="6">  ) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb111-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">as.numeric</span>(period) <span class="op">+</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb111-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>), <span class="dt">subset =</span> period <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb111-9" title="9"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> mutate, <span class="dt">Z =</span> unit <span class="op">==</span><span class="st"> &quot;01&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb111-10" title="10"><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="dt">Y =</span> <span class="kw">if_else</span>(Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">|</span><span class="st"> </span>period <span class="op">&lt;</span><span class="st"> </span><span class="dv">3</span>, Y_Z_<span class="dv">0</span>, Y_Z_<span class="dv">1</span>), <span class="dt">handler =</span> mutate) <span class="op">+</span></a>
-<a class="sourceLine" id="cb111-11" title="11"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">predictors =</span> <span class="st">&quot;X&quot;</span>,</a>
-<a class="sourceLine" id="cb111-12" title="12">               <span class="dt">time.predictors.prior =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb111-13" title="13">               <span class="dt">dependent =</span> <span class="st">&quot;Y&quot;</span>,</a>
-<a class="sourceLine" id="cb111-14" title="14">               <span class="dt">unit.variable =</span> <span class="st">&quot;units&quot;</span>,</a>
-<a class="sourceLine" id="cb111-15" title="15">               <span class="dt">time.variable =</span> <span class="st">&quot;time&quot;</span>,</a>
-<a class="sourceLine" id="cb111-16" title="16">               <span class="dt">treatment.identifier =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb111-17" title="17">               <span class="dt">controls.identifier =</span> <span class="dv">2</span><span class="op">:</span><span class="dv">10</span>, </a>
-<a class="sourceLine" id="cb111-18" title="18">               <span class="dt">handler =</span> synth_weights_tidy) <span class="op">+</span></a>
-<a class="sourceLine" id="cb111-19" title="19"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">subset =</span> time <span class="op">&gt;=</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">weights =</span> synth_weights, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;synth&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" title="1">design &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb110-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb110-3" title="3">    <span class="dt">unit =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">10</span>, <span class="dt">units =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">X =</span> <span class="kw">rnorm</span>(N, <span class="dt">sd =</span> <span class="fl">0.5</span>)),</a>
+<a class="sourceLine" id="cb110-4" title="4">    <span class="dt">period =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> <span class="dv">3</span>, <span class="dt">time =</span> <span class="dv">1</span><span class="op">:</span>N, <span class="dt">nest =</span> <span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb110-5" title="5">    <span class="dt">unit_period =</span> <span class="kw">cross_levels</span>(<span class="dt">by =</span> <span class="kw">join</span>(unit, period), <span class="dt">U =</span> <span class="kw">rnorm</span>(N))</a>
+<a class="sourceLine" id="cb110-6" title="6">  ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb110-7" title="7"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span> <span class="op">*</span><span class="st"> </span><span class="kw">as.numeric</span>(period) <span class="op">+</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>U) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb110-8" title="8"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>), <span class="dt">subset =</span> period <span class="op">==</span><span class="st"> </span><span class="dv">3</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb110-9" title="9"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> mutate, <span class="dt">Z =</span> unit <span class="op">==</span><span class="st"> &quot;01&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb110-10" title="10"><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="dt">Y =</span> <span class="kw">if_else</span>(Z <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">|</span><span class="st"> </span>period <span class="op">&lt;</span><span class="st"> </span><span class="dv">3</span>, Y_Z_<span class="dv">0</span>, Y_Z_<span class="dv">1</span>), <span class="dt">handler =</span> mutate) <span class="op">+</span></a>
+<a class="sourceLine" id="cb110-11" title="11"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">predictors =</span> <span class="st">&quot;X&quot;</span>,</a>
+<a class="sourceLine" id="cb110-12" title="12">               <span class="dt">time.predictors.prior =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb110-13" title="13">               <span class="dt">dependent =</span> <span class="st">&quot;Y&quot;</span>,</a>
+<a class="sourceLine" id="cb110-14" title="14">               <span class="dt">unit.variable =</span> <span class="st">&quot;units&quot;</span>,</a>
+<a class="sourceLine" id="cb110-15" title="15">               <span class="dt">time.variable =</span> <span class="st">&quot;time&quot;</span>,</a>
+<a class="sourceLine" id="cb110-16" title="16">               <span class="dt">treatment.identifier =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb110-17" title="17">               <span class="dt">controls.identifier =</span> <span class="dv">2</span><span class="op">:</span><span class="dv">10</span>, </a>
+<a class="sourceLine" id="cb110-18" title="18">               <span class="dt">handler =</span> synth_weights_tidy) <span class="op">+</span></a>
+<a class="sourceLine" id="cb110-19" title="19"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">subset =</span> time <span class="op">&gt;=</span><span class="st"> </span><span class="dv">3</span>, <span class="dt">weights =</span> synth_weights, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;synth&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-14" class="section level3">
 <h3><span class="header-section-number">16.6.2</span> Dag</h3>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" title="1"><span class="co"># Simulation --------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb112-2" title="2"></a>
-<a class="sourceLine" id="cb112-3" title="3"><span class="co"># simulations &lt;- simulate_design(design, sims = 100)</span></a>
-<a class="sourceLine" id="cb112-4" title="4"><span class="co"># ggplot(simulations, aes(estimate)) + geom_histogram()</span></a>
-<a class="sourceLine" id="cb112-5" title="5"></a>
-<a class="sourceLine" id="cb112-6" title="6"></a>
-<a class="sourceLine" id="cb112-7" title="7"><span class="co"># Synth plot --------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb112-8" title="8"></a>
-<a class="sourceLine" id="cb112-9" title="9"><span class="co"># data &lt;- draw_data(design)</span></a>
-<a class="sourceLine" id="cb112-10" title="10"><span class="co"># summary_df &lt;- data %&gt;%</span></a>
-<a class="sourceLine" id="cb112-11" title="11"><span class="co">#   group_by(Z, time) %&gt;%</span></a>
-<a class="sourceLine" id="cb112-12" title="12"><span class="co">#   summarize(Y = weighted.mean(Y, w = synth_weights))</span></a>
-<a class="sourceLine" id="cb112-13" title="13"><span class="co"># ggplot(summary_df, aes(x = time, y = Y, color = Z)) +</span></a>
-<a class="sourceLine" id="cb112-14" title="14"><span class="co">#   geom_line(size = 2, alpha = 0.5) +</span></a>
-<a class="sourceLine" id="cb112-15" title="15"><span class="co">#   geom_line(data = data, aes(x = time, y = Y, group = units), color = &quot;black&quot;, alpha = 0.3) +</span></a>
-<a class="sourceLine" id="cb112-16" title="16"><span class="co">#   geom_point(data = data, aes(x = time, y = Y, size = synth_weights^2), alpha = 0.3) +</span></a>
-<a class="sourceLine" id="cb112-17" title="17"><span class="co">#   geom_vline(xintercept = 2.5)</span></a>
-<a class="sourceLine" id="cb112-18" title="18"></a>
-<a class="sourceLine" id="cb112-19" title="19">dag &lt;-<span class="st"> </span><span class="kw">dagify</span>(Y <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>period <span class="op">+</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>U,</a>
-<a class="sourceLine" id="cb112-20" title="20">              Z <span class="op">~</span><span class="st"> </span>X)</a>
-<a class="sourceLine" id="cb112-21" title="21"></a>
-<a class="sourceLine" id="cb112-22" title="22">nodes &lt;-</a>
-<a class="sourceLine" id="cb112-23" title="23"><span class="st">  </span><span class="kw">tibble</span>(</a>
-<a class="sourceLine" id="cb112-24" title="24">    <span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;U&quot;</span>, <span class="st">&quot;X&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="st">&quot;Z&quot;</span>, <span class="st">&quot;Y&quot;</span>),</a>
-<a class="sourceLine" id="cb112-25" title="25">    <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;U&quot;</span>, <span class="st">&quot;X&quot;</span>, <span class="st">&quot;T&quot;</span>, <span class="st">&quot;Z&quot;</span>, <span class="st">&quot;Y&quot;</span>),</a>
-<a class="sourceLine" id="cb112-26" title="26">    <span class="dt">annotation =</span> <span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb112-27" title="27">      <span class="st">&quot;**Unknown heterogeneity**&quot;</span>,</a>
-<a class="sourceLine" id="cb112-28" title="28">      <span class="st">&quot;**Unit effect**&quot;</span>,</a>
-<a class="sourceLine" id="cb112-29" title="29">      <span class="st">&quot;**Time period**&quot;</span>,</a>
-<a class="sourceLine" id="cb112-30" title="30">      <span class="st">&quot;**Treatment assignment**&quot;</span>,</a>
-<a class="sourceLine" id="cb112-31" title="31">      <span class="st">&quot;**Outcome variable**&quot;</span></a>
-<a class="sourceLine" id="cb112-32" title="32">    ),</a>
-<a class="sourceLine" id="cb112-33" title="33">    </a>
-<a class="sourceLine" id="cb112-34" title="34">    <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>),</a>
-<a class="sourceLine" id="cb112-35" title="35">    <span class="dt">y =</span> <span class="kw">c</span>(<span class="fl">1.5</span>,<span class="fl">3.5</span>, <span class="dv">1</span>, <span class="fl">2.5</span>, <span class="fl">2.5</span>), </a>
-<a class="sourceLine" id="cb112-36" title="36">    <span class="dt">nudge_direction =</span> <span class="kw">c</span>(<span class="st">&quot;S&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;S&quot;</span>, <span class="st">&quot;S&quot;</span>,<span class="st">&quot;N&quot;</span>),</a>
-<a class="sourceLine" id="cb112-37" title="37">    <span class="dt">answer_strategy =</span> <span class="st">&quot;uncontrolled&quot;</span>)</a>
-<a class="sourceLine" id="cb112-38" title="38">    </a>
-<a class="sourceLine" id="cb112-39" title="39">    </a>
-<a class="sourceLine" id="cb112-40" title="40"></a>
-<a class="sourceLine" id="cb112-41" title="41">ggdd_df &lt;-<span class="st"> </span><span class="kw">make_dag_df</span>(dag, nodes, design)</a>
-<a class="sourceLine" id="cb112-42" title="42"></a>
-<a class="sourceLine" id="cb112-43" title="43">base_dag_plot <span class="op">%+%</span><span class="st"> </span>ggdd_df</a></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" title="1"><span class="co"># Simulation --------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb111-2" title="2"></a>
+<a class="sourceLine" id="cb111-3" title="3"><span class="co"># simulations &lt;- simulate_design(design, sims = 100)</span></a>
+<a class="sourceLine" id="cb111-4" title="4"><span class="co"># ggplot(simulations, aes(estimate)) + geom_histogram()</span></a>
+<a class="sourceLine" id="cb111-5" title="5"></a>
+<a class="sourceLine" id="cb111-6" title="6"></a>
+<a class="sourceLine" id="cb111-7" title="7"><span class="co"># Synth plot --------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb111-8" title="8"></a>
+<a class="sourceLine" id="cb111-9" title="9"><span class="co"># data &lt;- draw_data(design)</span></a>
+<a class="sourceLine" id="cb111-10" title="10"><span class="co"># summary_df &lt;- data %&gt;%</span></a>
+<a class="sourceLine" id="cb111-11" title="11"><span class="co">#   group_by(Z, time) %&gt;%</span></a>
+<a class="sourceLine" id="cb111-12" title="12"><span class="co">#   summarize(Y = weighted.mean(Y, w = synth_weights))</span></a>
+<a class="sourceLine" id="cb111-13" title="13"><span class="co"># ggplot(summary_df, aes(x = time, y = Y, color = Z)) +</span></a>
+<a class="sourceLine" id="cb111-14" title="14"><span class="co">#   geom_line(size = 2, alpha = 0.5) +</span></a>
+<a class="sourceLine" id="cb111-15" title="15"><span class="co">#   geom_line(data = data, aes(x = time, y = Y, group = units), color = &quot;black&quot;, alpha = 0.3) +</span></a>
+<a class="sourceLine" id="cb111-16" title="16"><span class="co">#   geom_point(data = data, aes(x = time, y = Y, size = synth_weights^2), alpha = 0.3) +</span></a>
+<a class="sourceLine" id="cb111-17" title="17"><span class="co">#   geom_vline(xintercept = 2.5)</span></a>
+<a class="sourceLine" id="cb111-18" title="18"></a>
+<a class="sourceLine" id="cb111-19" title="19">dag &lt;-<span class="st"> </span><span class="kw">dagify</span>(Y <span class="op">~</span><span class="st"> </span>X <span class="op">+</span><span class="st"> </span>period <span class="op">+</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>U,</a>
+<a class="sourceLine" id="cb111-20" title="20">              Z <span class="op">~</span><span class="st"> </span>X)</a>
+<a class="sourceLine" id="cb111-21" title="21"></a>
+<a class="sourceLine" id="cb111-22" title="22">nodes &lt;-</a>
+<a class="sourceLine" id="cb111-23" title="23"><span class="st">  </span><span class="kw">tibble</span>(</a>
+<a class="sourceLine" id="cb111-24" title="24">    <span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;U&quot;</span>, <span class="st">&quot;X&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="st">&quot;Z&quot;</span>, <span class="st">&quot;Y&quot;</span>),</a>
+<a class="sourceLine" id="cb111-25" title="25">    <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;U&quot;</span>, <span class="st">&quot;X&quot;</span>, <span class="st">&quot;T&quot;</span>, <span class="st">&quot;Z&quot;</span>, <span class="st">&quot;Y&quot;</span>),</a>
+<a class="sourceLine" id="cb111-26" title="26">    <span class="dt">annotation =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb111-27" title="27">      <span class="st">&quot;**Unknown heterogeneity**&quot;</span>,</a>
+<a class="sourceLine" id="cb111-28" title="28">      <span class="st">&quot;**Unit effect**&quot;</span>,</a>
+<a class="sourceLine" id="cb111-29" title="29">      <span class="st">&quot;**Time period**&quot;</span>,</a>
+<a class="sourceLine" id="cb111-30" title="30">      <span class="st">&quot;**Treatment assignment**&quot;</span>,</a>
+<a class="sourceLine" id="cb111-31" title="31">      <span class="st">&quot;**Outcome variable**&quot;</span></a>
+<a class="sourceLine" id="cb111-32" title="32">    ),</a>
+<a class="sourceLine" id="cb111-33" title="33">    </a>
+<a class="sourceLine" id="cb111-34" title="34">    <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb111-35" title="35">    <span class="dt">y =</span> <span class="kw">c</span>(<span class="fl">1.5</span>,<span class="fl">3.5</span>, <span class="dv">1</span>, <span class="fl">2.5</span>, <span class="fl">2.5</span>), </a>
+<a class="sourceLine" id="cb111-36" title="36">    <span class="dt">nudge_direction =</span> <span class="kw">c</span>(<span class="st">&quot;S&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;S&quot;</span>, <span class="st">&quot;S&quot;</span>,<span class="st">&quot;N&quot;</span>),</a>
+<a class="sourceLine" id="cb111-37" title="37">    <span class="dt">answer_strategy =</span> <span class="st">&quot;uncontrolled&quot;</span>)</a>
+<a class="sourceLine" id="cb111-38" title="38">    </a>
+<a class="sourceLine" id="cb111-39" title="39">    </a>
+<a class="sourceLine" id="cb111-40" title="40"></a>
+<a class="sourceLine" id="cb111-41" title="41">ggdd_df &lt;-<span class="st"> </span><span class="kw">make_dag_df</span>(dag, nodes, design)</a>
+<a class="sourceLine" id="cb111-42" title="42"></a>
+<a class="sourceLine" id="cb111-43" title="43">base_dag_plot <span class="op">%+%</span><span class="st"> </span>ggdd_df</a></code></pre></div>
 <p><img src="book_files/figure-html/unnamed-chunk-337-1.png" width="100%" /></p>
 </div>
 <div id="example-15" class="section level3">
@@ -571,87 +571,87 @@ Abstract: We test for an effect of Arizona’s 2007 Legal Arizona Workers Act (L
 (3) how to diagnose when you are outside the convex hull
 - declaration outside the convex hull and use the Abadie diagnostic demonstrating a poor match. (possibly explore power of this diagnostic)
 - show that synth is biased in this setting. augsynth is not.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" title="1"><span class="co"># tidy function that takes data and just adds the synthetic control weights to it</span></a>
-<a class="sourceLine" id="cb113-2" title="2">synth_weights_tidy &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb113-3" title="3">  dataprep.out &lt;-<span class="st"> </span><span class="kw">dataprep</span>(</a>
-<a class="sourceLine" id="cb113-4" title="4">    <span class="dt">foo =</span> data,</a>
-<a class="sourceLine" id="cb113-5" title="5">    <span class="dt">predictors =</span> <span class="st">&quot;prop_non_hispanic_below_hs&quot;</span>,</a>
-<a class="sourceLine" id="cb113-6" title="6">    <span class="dt">predictors.op =</span> <span class="st">&quot;mean&quot;</span>,</a>
-<a class="sourceLine" id="cb113-7" title="7">    <span class="dt">time.predictors.prior =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2006</span>,</a>
-<a class="sourceLine" id="cb113-8" title="8">    <span class="dt">dependent =</span> <span class="st">&quot;prop_non_hispanic_below_hs&quot;</span>,</a>
-<a class="sourceLine" id="cb113-9" title="9">    <span class="dt">unit.variable =</span> <span class="st">&quot;state_number&quot;</span>,</a>
-<a class="sourceLine" id="cb113-10" title="10">    <span class="dt">time.variable =</span> <span class="st">&quot;year&quot;</span>,</a>
-<a class="sourceLine" id="cb113-11" title="11">    <span class="dt">treatment.identifier =</span> <span class="dv">4</span>,</a>
-<a class="sourceLine" id="cb113-12" title="12">    <span class="dt">controls.identifier =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">50</span>), <span class="co"># states without Arizona</span></a>
-<a class="sourceLine" id="cb113-13" title="13">    <span class="dt">time.optimize.ssr =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2006</span>,</a>
-<a class="sourceLine" id="cb113-14" title="14">    <span class="dt">time.plot =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2009</span>)</a>
-<a class="sourceLine" id="cb113-15" title="15">  <span class="kw">capture.output</span>(fit &lt;-<span class="st"> </span><span class="kw">synth</span>(<span class="dt">data.prep.obj =</span> dataprep.out))</a>
-<a class="sourceLine" id="cb113-16" title="16">  tab &lt;-<span class="st"> </span><span class="kw">synth.tab</span>(<span class="dt">dataprep.res =</span> dataprep.out, <span class="dt">synth.res =</span> fit) </a>
-<a class="sourceLine" id="cb113-17" title="17">  </a>
-<a class="sourceLine" id="cb113-18" title="18">  data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb113-19" title="19"><span class="st">    </span><span class="kw">left_join</span>(tab<span class="op">$</span>tab.w <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">synth_weights =</span> w.weights) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(synth_weights, unit.numbers), <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;state_number&quot;</span> =<span class="st"> &quot;unit.numbers&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb113-20" title="20"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">synth_weights =</span> <span class="kw">replace</span>(synth_weights, state_number <span class="op">==</span><span class="st"> </span><span class="dv">4</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb113-21" title="21">}</a>
-<a class="sourceLine" id="cb113-22" title="22"></a>
-<a class="sourceLine" id="cb113-23" title="23">augsynth_tidy &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb113-24" title="24">  fit &lt;-<span class="st"> </span><span class="kw">augsynth</span>(prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>legal_worker_act, state, year, <span class="dt">t_int =</span> <span class="dv">2007</span>, <span class="dt">data =</span> data)</a>
-<a class="sourceLine" id="cb113-25" title="25">  res &lt;-<span class="st"> </span><span class="kw">summary</span>(fit)<span class="op">$</span>att <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Time <span class="op">==</span><span class="st"> </span><span class="dv">2007</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Estimate, Std.Error)</a>
-<a class="sourceLine" id="cb113-26" title="26">  <span class="kw">names</span>(res) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;std.error&quot;</span>)</a>
-<a class="sourceLine" id="cb113-27" title="27">  res<span class="op">$</span>p.value &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pt</span>(<span class="op">-</span><span class="kw">abs</span>(res<span class="op">$</span>estimate<span class="op">/</span>res<span class="op">$</span>std.error), <span class="dt">df =</span> <span class="kw">nrow</span>(data) <span class="op">-</span><span class="st"> </span><span class="dv">15</span>)</a>
-<a class="sourceLine" id="cb113-28" title="28">  res<span class="op">$</span>conf.low &lt;-<span class="st"> </span>res<span class="op">$</span>estimate <span class="op">-</span><span class="st"> </span><span class="fl">1.96</span> <span class="op">*</span><span class="st"> </span>res<span class="op">$</span>std.error</a>
-<a class="sourceLine" id="cb113-29" title="29">  res<span class="op">$</span>conf.high &lt;-<span class="st"> </span>res<span class="op">$</span>estimate <span class="op">+</span><span class="st"> </span><span class="fl">1.96</span> <span class="op">*</span><span class="st"> </span>res<span class="op">$</span>std.error</a>
-<a class="sourceLine" id="cb113-30" title="30">  res</a>
-<a class="sourceLine" id="cb113-31" title="31">}</a>
-<a class="sourceLine" id="cb113-32" title="32"></a>
-<a class="sourceLine" id="cb113-33" title="33"><span class="co"># note need to clean up the range of the data, currently over 1</span></a>
-<a class="sourceLine" id="cb113-34" title="34">design &lt;-</a>
-<a class="sourceLine" id="cb113-35" title="35"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb113-36" title="36">    <span class="dt">states =</span> <span class="kw">add_level</span>(</a>
-<a class="sourceLine" id="cb113-37" title="37">      <span class="dt">N =</span> <span class="dv">50</span>, </a>
-<a class="sourceLine" id="cb113-38" title="38">      <span class="dt">state =</span> state.abb,</a>
-<a class="sourceLine" id="cb113-39" title="39">      <span class="dt">state_number =</span> <span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(state)),</a>
-<a class="sourceLine" id="cb113-40" title="40">      <span class="dt">state_shock =</span> <span class="kw">runif</span>(N, <span class="fl">-.15</span>, <span class="fl">.15</span>),</a>
-<a class="sourceLine" id="cb113-41" title="41">      <span class="dt">border_state =</span> state <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AZ&quot;</span>, <span class="st">&quot;CA&quot;</span>, <span class="st">&quot;NM&quot;</span>, <span class="st">&quot;TX&quot;</span>),</a>
-<a class="sourceLine" id="cb113-42" title="42">      <span class="dt">state_shock =</span> <span class="kw">ifelse</span>(border_state, <span class="fl">.2</span>, state_shock)</a>
-<a class="sourceLine" id="cb113-43" title="43">    ),</a>
-<a class="sourceLine" id="cb113-44" title="44">    <span class="dt">years =</span> <span class="kw">add_level</span>(</a>
-<a class="sourceLine" id="cb113-45" title="45">      <span class="dt">N =</span> <span class="dv">12</span>, <span class="dt">nest =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb113-46" title="46">      <span class="dt">year =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2009</span>,</a>
-<a class="sourceLine" id="cb113-47" title="47">      <span class="dt">post_treatment_period =</span> year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">2007</span>,</a>
-<a class="sourceLine" id="cb113-48" title="48">      <span class="dt">year_shock =</span> <span class="kw">runif</span>(N, <span class="fl">-.025</span>, <span class="fl">.025</span>), </a>
-<a class="sourceLine" id="cb113-49" title="49">      <span class="dt">year_trend =</span> year <span class="op">-</span><span class="st"> </span><span class="dv">1998</span></a>
-<a class="sourceLine" id="cb113-50" title="50">    ),</a>
-<a class="sourceLine" id="cb113-51" title="51">    <span class="dt">obs =</span> <span class="kw">cross_levels</span>(</a>
-<a class="sourceLine" id="cb113-52" title="52">      <span class="dt">by =</span> <span class="kw">join</span>(states, years),</a>
-<a class="sourceLine" id="cb113-53" title="53">      <span class="co"># treatment indicator:</span></a>
-<a class="sourceLine" id="cb113-54" title="54">      <span class="dt">legal_worker_act =</span> <span class="kw">if_else</span>(post_treatment_period <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span> <span class="op">&amp;</span><span class="st"> </span>state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb113-55" title="55">      <span class="dt">state_year_shock =</span> <span class="kw">runif</span>(N, <span class="fl">-.025</span>, <span class="fl">.025</span>),</a>
-<a class="sourceLine" id="cb113-56" title="56">      <span class="dt">prop_non_hispanic_below_hs_baseline =</span> </a>
-<a class="sourceLine" id="cb113-57" title="57">        <span class="fl">0.4</span> <span class="op">+</span><span class="st"> </span>state_shock <span class="op">+</span><span class="st"> </span>year_shock <span class="op">+</span><span class="st"> </span>(.<span class="dv">01</span> <span class="op">+</span><span class="st"> </span><span class="fl">.05</span> <span class="op">*</span><span class="st"> </span>border_state) <span class="op">*</span><span class="st"> </span>year_trend <span class="op">+</span><span class="st"> </span>state_year_shock</a>
-<a class="sourceLine" id="cb113-58" title="58">    )</a>
-<a class="sourceLine" id="cb113-59" title="59">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-60" title="60"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb113-61" title="61">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>prop_non_hispanic_below_hs_baseline <span class="op">+</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>legal_worker_act, </a>
-<a class="sourceLine" id="cb113-62" title="62">    <span class="dt">assignment_variable =</span> legal_worker_act) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-63" title="63"><span class="st">  </span><span class="kw">declare_estimand</span>(</a>
-<a class="sourceLine" id="cb113-64" title="64">    <span class="dt">ATE_AZ =</span> <span class="kw">mean</span>(prop_non_hispanic_below_hs_legal_worker_act_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb113-65" title="65"><span class="st">                    </span>prop_non_hispanic_below_hs_legal_worker_act_<span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb113-66" title="66">    <span class="dt">subset =</span> legal_worker_act <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-67" title="67"><span class="st">  </span><span class="kw">declare_reveal</span>(prop_non_hispanic_below_hs, legal_worker_act) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-68" title="68"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> synth_weights_tidy) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-69" title="69"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb113-70" title="70">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>legal_worker_act, </a>
-<a class="sourceLine" id="cb113-71" title="71">    <span class="dt">subset =</span> year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">2007</span>, <span class="dt">weights =</span> synth_weights, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;synth&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-72" title="72"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb113-73" title="73">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>legal_worker_act, <span class="dt">subset =</span> year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">2007</span>, </a>
-<a class="sourceLine" id="cb113-74" title="74">    <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;unweighted&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-75" title="75"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb113-76" title="76">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span><span class="kw">I</span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>) <span class="op">+</span><span class="st"> </span>post_treatment_period <span class="op">+</span><span class="st"> </span>legal_worker_act, <span class="dt">term =</span> <span class="st">&quot;legal_worker_act&quot;</span>, </a>
-<a class="sourceLine" id="cb113-77" title="77">    <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;unweighted_did&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb113-78" title="78"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(augsynth_tidy), <span class="dt">label =</span> <span class="st">&quot;augsynth&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" title="1">state_data &lt;-<span class="st"> </span><span class="kw">draw_data</span>(design)</a>
-<a class="sourceLine" id="cb114-2" title="2"></a>
-<a class="sourceLine" id="cb114-3" title="3">state_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(state, synth_weights) <span class="op">%&gt;%</span><span class="st"> </span>distinct <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="op">-</span>synth_weights) <span class="op">%&gt;%</span><span class="st"> </span>head</a></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" title="1"><span class="co"># tidy function that takes data and just adds the synthetic control weights to it</span></a>
+<a class="sourceLine" id="cb112-2" title="2">synth_weights_tidy &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb112-3" title="3">  dataprep.out &lt;-<span class="st"> </span><span class="kw">dataprep</span>(</a>
+<a class="sourceLine" id="cb112-4" title="4">    <span class="dt">foo =</span> data,</a>
+<a class="sourceLine" id="cb112-5" title="5">    <span class="dt">predictors =</span> <span class="st">&quot;prop_non_hispanic_below_hs&quot;</span>,</a>
+<a class="sourceLine" id="cb112-6" title="6">    <span class="dt">predictors.op =</span> <span class="st">&quot;mean&quot;</span>,</a>
+<a class="sourceLine" id="cb112-7" title="7">    <span class="dt">time.predictors.prior =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2006</span>,</a>
+<a class="sourceLine" id="cb112-8" title="8">    <span class="dt">dependent =</span> <span class="st">&quot;prop_non_hispanic_below_hs&quot;</span>,</a>
+<a class="sourceLine" id="cb112-9" title="9">    <span class="dt">unit.variable =</span> <span class="st">&quot;state_number&quot;</span>,</a>
+<a class="sourceLine" id="cb112-10" title="10">    <span class="dt">time.variable =</span> <span class="st">&quot;year&quot;</span>,</a>
+<a class="sourceLine" id="cb112-11" title="11">    <span class="dt">treatment.identifier =</span> <span class="dv">4</span>,</a>
+<a class="sourceLine" id="cb112-12" title="12">    <span class="dt">controls.identifier =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">50</span>), <span class="co"># states without Arizona</span></a>
+<a class="sourceLine" id="cb112-13" title="13">    <span class="dt">time.optimize.ssr =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2006</span>,</a>
+<a class="sourceLine" id="cb112-14" title="14">    <span class="dt">time.plot =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2009</span>)</a>
+<a class="sourceLine" id="cb112-15" title="15">  <span class="kw">capture.output</span>(fit &lt;-<span class="st"> </span><span class="kw">synth</span>(<span class="dt">data.prep.obj =</span> dataprep.out))</a>
+<a class="sourceLine" id="cb112-16" title="16">  tab &lt;-<span class="st"> </span><span class="kw">synth.tab</span>(<span class="dt">dataprep.res =</span> dataprep.out, <span class="dt">synth.res =</span> fit) </a>
+<a class="sourceLine" id="cb112-17" title="17">  </a>
+<a class="sourceLine" id="cb112-18" title="18">  data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb112-19" title="19"><span class="st">    </span><span class="kw">left_join</span>(tab<span class="op">$</span>tab.w <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">synth_weights =</span> w.weights) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(synth_weights, unit.numbers), <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;state_number&quot;</span> =<span class="st"> &quot;unit.numbers&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb112-20" title="20"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">synth_weights =</span> <span class="kw">replace</span>(synth_weights, state_number <span class="op">==</span><span class="st"> </span><span class="dv">4</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb112-21" title="21">}</a>
+<a class="sourceLine" id="cb112-22" title="22"></a>
+<a class="sourceLine" id="cb112-23" title="23">augsynth_tidy &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb112-24" title="24">  fit &lt;-<span class="st"> </span><span class="kw">augsynth</span>(prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>legal_worker_act, state, year, <span class="dt">t_int =</span> <span class="dv">2007</span>, <span class="dt">data =</span> data)</a>
+<a class="sourceLine" id="cb112-25" title="25">  res &lt;-<span class="st"> </span><span class="kw">summary</span>(fit)<span class="op">$</span>att <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Time <span class="op">==</span><span class="st"> </span><span class="dv">2007</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(Estimate, Std.Error)</a>
+<a class="sourceLine" id="cb112-26" title="26">  <span class="kw">names</span>(res) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;std.error&quot;</span>)</a>
+<a class="sourceLine" id="cb112-27" title="27">  res<span class="op">$</span>p.value &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pt</span>(<span class="op">-</span><span class="kw">abs</span>(res<span class="op">$</span>estimate<span class="op">/</span>res<span class="op">$</span>std.error), <span class="dt">df =</span> <span class="kw">nrow</span>(data) <span class="op">-</span><span class="st"> </span><span class="dv">15</span>)</a>
+<a class="sourceLine" id="cb112-28" title="28">  res<span class="op">$</span>conf.low &lt;-<span class="st"> </span>res<span class="op">$</span>estimate <span class="op">-</span><span class="st"> </span><span class="fl">1.96</span> <span class="op">*</span><span class="st"> </span>res<span class="op">$</span>std.error</a>
+<a class="sourceLine" id="cb112-29" title="29">  res<span class="op">$</span>conf.high &lt;-<span class="st"> </span>res<span class="op">$</span>estimate <span class="op">+</span><span class="st"> </span><span class="fl">1.96</span> <span class="op">*</span><span class="st"> </span>res<span class="op">$</span>std.error</a>
+<a class="sourceLine" id="cb112-30" title="30">  res</a>
+<a class="sourceLine" id="cb112-31" title="31">}</a>
+<a class="sourceLine" id="cb112-32" title="32"></a>
+<a class="sourceLine" id="cb112-33" title="33"><span class="co"># note need to clean up the range of the data, currently over 1</span></a>
+<a class="sourceLine" id="cb112-34" title="34">design &lt;-</a>
+<a class="sourceLine" id="cb112-35" title="35"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb112-36" title="36">    <span class="dt">states =</span> <span class="kw">add_level</span>(</a>
+<a class="sourceLine" id="cb112-37" title="37">      <span class="dt">N =</span> <span class="dv">50</span>, </a>
+<a class="sourceLine" id="cb112-38" title="38">      <span class="dt">state =</span> state.abb,</a>
+<a class="sourceLine" id="cb112-39" title="39">      <span class="dt">state_number =</span> <span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(state)),</a>
+<a class="sourceLine" id="cb112-40" title="40">      <span class="dt">state_shock =</span> <span class="kw">runif</span>(N, <span class="fl">-.15</span>, <span class="fl">.15</span>),</a>
+<a class="sourceLine" id="cb112-41" title="41">      <span class="dt">border_state =</span> state <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;AZ&quot;</span>, <span class="st">&quot;CA&quot;</span>, <span class="st">&quot;NM&quot;</span>, <span class="st">&quot;TX&quot;</span>),</a>
+<a class="sourceLine" id="cb112-42" title="42">      <span class="dt">state_shock =</span> <span class="kw">ifelse</span>(border_state, <span class="fl">.2</span>, state_shock)</a>
+<a class="sourceLine" id="cb112-43" title="43">    ),</a>
+<a class="sourceLine" id="cb112-44" title="44">    <span class="dt">years =</span> <span class="kw">add_level</span>(</a>
+<a class="sourceLine" id="cb112-45" title="45">      <span class="dt">N =</span> <span class="dv">12</span>, <span class="dt">nest =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb112-46" title="46">      <span class="dt">year =</span> <span class="dv">1998</span><span class="op">:</span><span class="dv">2009</span>,</a>
+<a class="sourceLine" id="cb112-47" title="47">      <span class="dt">post_treatment_period =</span> year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">2007</span>,</a>
+<a class="sourceLine" id="cb112-48" title="48">      <span class="dt">year_shock =</span> <span class="kw">runif</span>(N, <span class="fl">-.025</span>, <span class="fl">.025</span>), </a>
+<a class="sourceLine" id="cb112-49" title="49">      <span class="dt">year_trend =</span> year <span class="op">-</span><span class="st"> </span><span class="dv">1998</span></a>
+<a class="sourceLine" id="cb112-50" title="50">    ),</a>
+<a class="sourceLine" id="cb112-51" title="51">    <span class="dt">obs =</span> <span class="kw">cross_levels</span>(</a>
+<a class="sourceLine" id="cb112-52" title="52">      <span class="dt">by =</span> <span class="kw">join</span>(states, years),</a>
+<a class="sourceLine" id="cb112-53" title="53">      <span class="co"># treatment indicator:</span></a>
+<a class="sourceLine" id="cb112-54" title="54">      <span class="dt">legal_worker_act =</span> <span class="kw">if_else</span>(post_treatment_period <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span> <span class="op">&amp;</span><span class="st"> </span>state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb112-55" title="55">      <span class="dt">state_year_shock =</span> <span class="kw">runif</span>(N, <span class="fl">-.025</span>, <span class="fl">.025</span>),</a>
+<a class="sourceLine" id="cb112-56" title="56">      <span class="dt">prop_non_hispanic_below_hs_baseline =</span> </a>
+<a class="sourceLine" id="cb112-57" title="57">        <span class="fl">0.4</span> <span class="op">+</span><span class="st"> </span>state_shock <span class="op">+</span><span class="st"> </span>year_shock <span class="op">+</span><span class="st"> </span>(.<span class="dv">01</span> <span class="op">+</span><span class="st"> </span><span class="fl">.05</span> <span class="op">*</span><span class="st"> </span>border_state) <span class="op">*</span><span class="st"> </span>year_trend <span class="op">+</span><span class="st"> </span>state_year_shock</a>
+<a class="sourceLine" id="cb112-58" title="58">    )</a>
+<a class="sourceLine" id="cb112-59" title="59">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-60" title="60"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb112-61" title="61">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>prop_non_hispanic_below_hs_baseline <span class="op">+</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>legal_worker_act, </a>
+<a class="sourceLine" id="cb112-62" title="62">    <span class="dt">assignment_variable =</span> legal_worker_act) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-63" title="63"><span class="st">  </span><span class="kw">declare_estimand</span>(</a>
+<a class="sourceLine" id="cb112-64" title="64">    <span class="dt">ATE_AZ =</span> <span class="kw">mean</span>(prop_non_hispanic_below_hs_legal_worker_act_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb112-65" title="65"><span class="st">                    </span>prop_non_hispanic_below_hs_legal_worker_act_<span class="dv">0</span>), </a>
+<a class="sourceLine" id="cb112-66" title="66">    <span class="dt">subset =</span> legal_worker_act <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-67" title="67"><span class="st">  </span><span class="kw">declare_reveal</span>(prop_non_hispanic_below_hs, legal_worker_act) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-68" title="68"><span class="st">  </span><span class="kw">declare_step</span>(<span class="dt">handler =</span> synth_weights_tidy) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-69" title="69"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb112-70" title="70">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>legal_worker_act, </a>
+<a class="sourceLine" id="cb112-71" title="71">    <span class="dt">subset =</span> year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">2007</span>, <span class="dt">weights =</span> synth_weights, <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;synth&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-72" title="72"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb112-73" title="73">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>legal_worker_act, <span class="dt">subset =</span> year <span class="op">&gt;=</span><span class="st"> </span><span class="dv">2007</span>, </a>
+<a class="sourceLine" id="cb112-74" title="74">    <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;unweighted&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-75" title="75"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb112-76" title="76">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span><span class="kw">I</span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>) <span class="op">+</span><span class="st"> </span>post_treatment_period <span class="op">+</span><span class="st"> </span>legal_worker_act, <span class="dt">term =</span> <span class="st">&quot;legal_worker_act&quot;</span>, </a>
+<a class="sourceLine" id="cb112-77" title="77">    <span class="dt">model =</span> lm_robust, <span class="dt">label =</span> <span class="st">&quot;unweighted_did&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb112-78" title="78"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(augsynth_tidy), <span class="dt">label =</span> <span class="st">&quot;augsynth&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" title="1">state_data &lt;-<span class="st"> </span><span class="kw">draw_data</span>(design)</a>
+<a class="sourceLine" id="cb113-2" title="2"></a>
+<a class="sourceLine" id="cb113-3" title="3">state_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(state, synth_weights) <span class="op">%&gt;%</span><span class="st"> </span>distinct <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="op">-</span>synth_weights) <span class="op">%&gt;%</span><span class="st"> </span>head</a></code></pre></div>
 <pre><code>##   state synth_weights
 ## 1    AZ         1.000
 ## 2    NM         0.990
@@ -659,31 +659,31 @@ Abstract: We test for an effect of Arizona’s 2007 Legal Arizona Workers Act (L
 ## 4    CA         0.001
 ## 5    AL         0.000
 ## 6    AK         0.000</code></pre>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" title="1">state_data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb116-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb116-3" title="3"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(year, prop_non_hispanic_below_hs)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb116-4" title="4"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>state)</a></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" title="1">state_data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb115-2" title="2"><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb115-3" title="3"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(year, prop_non_hispanic_below_hs)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb115-4" title="4"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>state)</a></code></pre></div>
 <p><img src="book_files/figure-html/unnamed-chunk-340-1.png" width="100%" /></p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" title="1">state_data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">treatment_state =</span> <span class="kw">factor</span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="ot">FALSE</span>, <span class="ot">TRUE</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Synthethic Control&quot;</span>, <span class="st">&quot;Arizona&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(treatment_state, year) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prop_non_hispanic_below_hs =</span> <span class="kw">weighted.mean</span>(prop_non_hispanic_below_hs, <span class="dt">w =</span> synth_weights)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> prop_non_hispanic_below_hs, <span class="dt">color =</span> treatment_state)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb117-6" title="6"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-7" title="7"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">2007</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-8" title="8"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> scales<span class="op">::</span><span class="kw">pretty_breaks</span>()) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb117-9" title="9"><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="fl">2006.7</span>, <span class="dt">y =</span> <span class="fl">1.7</span>, <span class="dt">label =</span> <span class="st">&quot;Law Introduced in 2007&quot;</span>, <span class="dt">hjust =</span> <span class="st">&quot;right&quot;</span>, <span class="dt">family =</span> <span class="st">&quot;Palatino&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb117-10" title="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb117-11" title="11"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Proportion Non-Hispanic Below H.S. Education&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb117-12" title="12"><span class="st">  </span><span class="kw">dd_theme</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" title="1">state_data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">treatment_state =</span> <span class="kw">factor</span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="ot">FALSE</span>, <span class="ot">TRUE</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Synthethic Control&quot;</span>, <span class="st">&quot;Arizona&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(treatment_state, year) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prop_non_hispanic_below_hs =</span> <span class="kw">weighted.mean</span>(prop_non_hispanic_below_hs, <span class="dt">w =</span> synth_weights)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-5" title="5"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> prop_non_hispanic_below_hs, <span class="dt">color =</span> treatment_state)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb116-6" title="6"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-7" title="7"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">2007</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-8" title="8"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> scales<span class="op">::</span><span class="kw">pretty_breaks</span>()) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb116-9" title="9"><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="fl">2006.7</span>, <span class="dt">y =</span> <span class="fl">1.7</span>, <span class="dt">label =</span> <span class="st">&quot;Law Introduced in 2007&quot;</span>, <span class="dt">hjust =</span> <span class="st">&quot;right&quot;</span>, <span class="dt">family =</span> <span class="st">&quot;Palatino&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb116-10" title="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb116-11" title="11"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Proportion Non-Hispanic Below H.S. Education&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb116-12" title="12"><span class="st">  </span><span class="kw">dd_theme</span>()</a></code></pre></div>
 <p><img src="book_files/figure-html/unnamed-chunk-341-1.png" width="100%" /></p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" title="1">simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" title="1">simulations &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" title="1">synth_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(<span class="dt">select =</span> <span class="kw">c</span>(<span class="st">&quot;bias&quot;</span>, <span class="st">&quot;rmse&quot;</span>, <span class="st">&quot;coverage&quot;</span>))</a>
-<a class="sourceLine" id="cb119-2" title="2"></a>
-<a class="sourceLine" id="cb119-3" title="3">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(simulations, <span class="dt">diagnosands =</span> synth_diagnosands, <span class="dt">bootstrap_sims =</span> b_sims)</a>
-<a class="sourceLine" id="cb119-4" title="4"></a>
-<a class="sourceLine" id="cb119-5" title="5"><span class="kw">kable</span>(<span class="kw">reshape_diagnosis</span>(diagnosis))</a></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" title="1">synth_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(<span class="dt">select =</span> <span class="kw">c</span>(<span class="st">&quot;bias&quot;</span>, <span class="st">&quot;rmse&quot;</span>, <span class="st">&quot;coverage&quot;</span>))</a>
+<a class="sourceLine" id="cb118-2" title="2"></a>
+<a class="sourceLine" id="cb118-3" title="3">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(simulations, <span class="dt">diagnosands =</span> synth_diagnosands, <span class="dt">bootstrap_sims =</span> b_sims)</a>
+<a class="sourceLine" id="cb118-4" title="4"></a>
+<a class="sourceLine" id="cb118-5" title="5"><span class="kw">kable</span>(<span class="kw">reshape_diagnosis</span>(diagnosis))</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -910,20 +910,20 @@ legal_worker_act
 </div>
 <div id="when-there-are-not-good-controls-standard-synth-will-get-the-wrong-answer" class="section level3">
 <h3><span class="header-section-number">16.6.4</span> When there are not good controls, standard synth will get the wrong answer</h3>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" title="1"><span class="co"># declaration outside the convex hull</span></a>
-<a class="sourceLine" id="cb120-2" title="2">design_outside_hull &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
-<a class="sourceLine" id="cb120-3" title="3">  design, </a>
-<a class="sourceLine" id="cb120-4" title="4">  <span class="dt">step =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb120-5" title="5">  <span class="dt">new_step =</span> <span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb120-6" title="6">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>prop_non_hispanic_below_hs_baseline <span class="op">+</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>legal_worker_act <span class="op">+</span><span class="st"> </span><span class="fl">0.2</span> <span class="op">*</span><span class="st"> </span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>), </a>
-<a class="sourceLine" id="cb120-7" title="7">    <span class="dt">assignment_variable =</span> legal_worker_act))</a>
-<a class="sourceLine" id="cb120-8" title="8"></a>
-<a class="sourceLine" id="cb120-9" title="9">state_data_outside_hull &lt;-<span class="st"> </span><span class="kw">draw_data</span>(design_outside_hull)</a></code></pre></div>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" title="1">simulations_outside_hull &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design_outside_hull, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" title="1"><span class="co"># declaration outside the convex hull</span></a>
+<a class="sourceLine" id="cb119-2" title="2">design_outside_hull &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
+<a class="sourceLine" id="cb119-3" title="3">  design, </a>
+<a class="sourceLine" id="cb119-4" title="4">  <span class="dt">step =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb119-5" title="5">  <span class="dt">new_step =</span> <span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb119-6" title="6">    prop_non_hispanic_below_hs <span class="op">~</span><span class="st"> </span>prop_non_hispanic_below_hs_baseline <span class="op">+</span><span class="st"> </span><span class="fl">0.25</span> <span class="op">*</span><span class="st"> </span>legal_worker_act <span class="op">+</span><span class="st"> </span><span class="fl">0.2</span> <span class="op">*</span><span class="st"> </span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>), </a>
+<a class="sourceLine" id="cb119-7" title="7">    <span class="dt">assignment_variable =</span> legal_worker_act))</a>
+<a class="sourceLine" id="cb119-8" title="8"></a>
+<a class="sourceLine" id="cb119-9" title="9">state_data_outside_hull &lt;-<span class="st"> </span><span class="kw">draw_data</span>(design_outside_hull)</a></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" title="1">simulations_outside_hull &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(design_outside_hull, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" title="1">diagnosis_outside_hull &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(simulations_outside_hull, <span class="dt">diagnosands =</span> synth_diagnosands, <span class="dt">bootstrap_sims =</span> b_sims)</a>
-<a class="sourceLine" id="cb122-2" title="2"></a>
-<a class="sourceLine" id="cb122-3" title="3"><span class="kw">kable</span>(<span class="kw">reshape_diagnosis</span>(diagnosis_outside_hull))</a></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" title="1">diagnosis_outside_hull &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(simulations_outside_hull, <span class="dt">diagnosands =</span> synth_diagnosands, <span class="dt">bootstrap_sims =</span> b_sims)</a>
+<a class="sourceLine" id="cb121-2" title="2"></a>
+<a class="sourceLine" id="cb121-3" title="3"><span class="kw">kable</span>(<span class="kw">reshape_diagnosis</span>(diagnosis_outside_hull))</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -1144,19 +1144,19 @@ legal_worker_act
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" title="1"><span class="co"># plot the synthetic control constructed in this way (it usually picks just texas and is highly biased)</span></a>
-<a class="sourceLine" id="cb123-2" title="2">state_data_outside_hull <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">treatment_state =</span> <span class="kw">factor</span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="ot">FALSE</span>, <span class="ot">TRUE</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Synthethic Control&quot;</span>, <span class="st">&quot;Arizona&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(treatment_state, year) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-5" title="5"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prop_non_hispanic_below_hs =</span> <span class="kw">weighted.mean</span>(prop_non_hispanic_below_hs, <span class="dt">w =</span> synth_weights)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-6" title="6"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> prop_non_hispanic_below_hs, <span class="dt">color =</span> treatment_state)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb123-7" title="7"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-8" title="8"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">2007</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-9" title="9"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> scales<span class="op">::</span><span class="kw">pretty_breaks</span>()) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb123-10" title="10"><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="fl">2006.7</span>, <span class="dt">y =</span> <span class="fl">1.7</span>, <span class="dt">label =</span> <span class="st">&quot;Law Introduced in 2007&quot;</span>, <span class="dt">hjust =</span> <span class="st">&quot;right&quot;</span>, <span class="dt">family =</span> <span class="st">&quot;Palatino&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb123-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb123-12" title="12"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Proportion Non-Hispanic Below H.S. Education&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb123-13" title="13"><span class="st">  </span><span class="kw">dd_theme</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" title="1"><span class="co"># plot the synthetic control constructed in this way (it usually picks just texas and is highly biased)</span></a>
+<a class="sourceLine" id="cb122-2" title="2">state_data_outside_hull <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">treatment_state =</span> <span class="kw">factor</span>(state <span class="op">==</span><span class="st"> &quot;AZ&quot;</span>, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="ot">FALSE</span>, <span class="ot">TRUE</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;Synthethic Control&quot;</span>, <span class="st">&quot;Arizona&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(treatment_state, year) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-5" title="5"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prop_non_hispanic_below_hs =</span> <span class="kw">weighted.mean</span>(prop_non_hispanic_below_hs, <span class="dt">w =</span> synth_weights)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-6" title="6"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> prop_non_hispanic_below_hs, <span class="dt">color =</span> treatment_state)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb122-7" title="7"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-8" title="8"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">2007</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-9" title="9"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> scales<span class="op">::</span><span class="kw">pretty_breaks</span>()) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb122-10" title="10"><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="fl">2006.7</span>, <span class="dt">y =</span> <span class="fl">1.7</span>, <span class="dt">label =</span> <span class="st">&quot;Law Introduced in 2007&quot;</span>, <span class="dt">hjust =</span> <span class="st">&quot;right&quot;</span>, <span class="dt">family =</span> <span class="st">&quot;Palatino&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb122-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb122-12" title="12"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Proportion Non-Hispanic Below H.S. Education&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb122-13" title="13"><span class="st">  </span><span class="kw">dd_theme</span>()</a></code></pre></div>
 <p><img src="book_files/figure-html/unnamed-chunk-349-1.png" width="100%" /></p>
 </div>
 <div id="references-1" class="section level3">
