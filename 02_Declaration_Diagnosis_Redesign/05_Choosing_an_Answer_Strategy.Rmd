@@ -234,7 +234,7 @@ Our aim is to distinguish between the
 
 #### Ruling out confounding by adjustment
 
-```{r, fig.width = 30, fig.height = 21}
+```{r, echo = FALSE, fig.width = 30, fig.height = 21}
 gg_df <-
   gg_df %>%
   mutate(tile_fac = as.factor(if_else(
@@ -294,7 +294,7 @@ wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & them
 
 #### Ruling out confounding by assumption
 
-A model-based answer strategy will invoke assumptions
+We can address the problem of unmeasured confounding by invoking conditional independence assumptions. The ``selection-on-observables'' answer strategy invokes the assumption that D is statistically independent of the potential outcomes of $Y$ *given* X, i.e. after adjusting for $X$. This means that there are no unobserved confounders not in $X$. 
 
 ```{r, echo = FALSE, fig.width = 30, fig.height = 21}
 gg_df <-
