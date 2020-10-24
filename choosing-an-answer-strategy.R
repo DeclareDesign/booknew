@@ -5,187 +5,315 @@
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")
 lapply(packages, require, character.only = TRUE)
 
-ATE <- 0.0
-
-design <- 
-  declare_population(N = 1000,
-                     binary_covariate = rbinom(N, 1, 0.5),
-                     normal_error = rnorm(N)) +
-  # crucial step in POs: effects are not heterogeneous
-  declare_potential_outcomes(Y ~ ATE * Z + normal_error) +
-  declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE(0)") + 
-  declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE(1)") +
-  declare_estimator(Y ~ Z * binary_covariate, 
-                    model = lm_robust, term = "Z:binary_covariate", label = "Interaction")
-
-
-
-
-g1 <- ggplot(data = estimates %>% filter(term == "Z"), aes(estimator_label, estimate)) + 
-  geom_point() + 
-  geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) + 
-  ylab("Estimate (95% confidence interval)") +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  ggtitle("Visualization A") +
-  dd_theme() + 
-  theme(axis.title.x = element_blank())
-
-g2 <- ggplot(data = estimates, aes(estimator_label, estimate)) + 
-  geom_point() + 
-  geom_errorbar(aes(x = estimator_label, ymin = conf.low, ymax = conf.high), width = 0.2) + 
-  ylab("Estimate (95% confidence interval)") +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  ggtitle("Visualization B") +
-  dd_theme() + 
-  theme(axis.title.x = element_blank())
-
-g1 + g2
-
-# sweep across all ATEs from 0 to 0.5
-designs <- redesign(design, ATE = seq(0, 0.5, 0.05))
-
-
-
-
-
-# Summarize simulations ---------------------------------------------------
-
-reshaped_simulations <-
-  simulations_one_significant_not_other %>%
-  transmute(ATE,
-            sim_ID,
-            estimator_label,
-            estimate,
-            conf.high,
-            conf.low,
-            significant = p.value < 0.05) %>%
-  pivot_wider(id_cols = c("ATE", "sim_ID"), names_from = "estimator_label", values_from = c("estimate", "conf.high", "conf.low", "significant"))
-
-
-# Plot 1 ------------------------------------------------------------------
-
-gg_df <- 
-  reshaped_simulations %>%
-  group_by(ATE) %>%
-  summarize(`Significant for one group but not the other` = mean(xor(significant_CATE_0, significant_CATE_1)),
-            `Difference in subgroup effects is significant` = mean(significant_interaction)) %>%
-  gather(condition, power, -ATE)
-
-ggplot(gg_df, aes(ATE, power, color = condition)) +
-  geom_point() +
-  geom_line() +
-  geom_label(data = (. %>% filter(ATE == 0.2)),
-             aes(label = condition),
-             nudge_y = 0.02,
-             family = "Palatino") +
-  dd_theme() +
-  scale_color_manual(values = c("red", "blue")) +
-  theme(legend.position = "none") +
-  labs(
-    x = "True constant effect size",
-    y = "Probability of result (akin to statistical power)"
+possible_models <-
+  expand.grid(
+    XU = c("X<-U", "none"),
+    YU = c("Y<-U", "none"),
+    YX = c("Y->X", "Y<-X", "none"),
+    DU = c("D<-U", "none"),
+    DX = c("D->X", "D<-X", "none"),
+    DY = c("D->Y", "D<-Y", "none"),
+    stringsAsFactors = FALSE
   )
 
-report_lower_p_value <- function(data){
-  fit_nocov <- lm_robust(Y ~ Z, data)
-  fit_cov <- lm_robust(Y ~ Z + X, data)
+possible_models <-
+  possible_models %>%
+  rowwise() %>%
+  mutate(
+    var = str_c(XU, YU, YX, DU, DX, DY, sep = ";"),
+    var = str_remove_all(var, "none;"),
+    var = str_remove_all(var, "none"),
+    dag = list(dagitty(paste0(
+      "dag{", var, "; X; D; Y; U}"
+    ))),
+    acyclic = isAcyclic(dag),
+    consistent_with_ignorability = !(DU == "D<-U" & YU == "Y<-U"),
+    id_if_adjusted = isAdjustmentSet(dag, "X", exposure = "D", outcome = "Y"),
+    id_if_unadjusted = isAdjustmentSet(dag, NULL, exposure = "D", outcome = "Y"),
+    id_adjustment_fac = as.factor(
+      case_when(
+        id_if_unadjusted &
+          id_if_adjusted ~ "Yes, regardless of conditioning",
+        id_if_unadjusted &
+          !id_if_adjusted ~ "Only when NOT conditioning on X",!id_if_unadjusted &
+          id_if_adjusted ~ "Only when conditioning on X",!id_if_unadjusted &
+          !id_if_adjusted ~ "No, regardless of conditioning"
+      )
+    ),
+    consistent_with_RA = DU != "D<-U" &
+      DX != "D<-X" & DY != "D<-Y",
+    consistent_with_X_pretreatment =
+      DX != "D->X" &
+      YX != "Y->X" &
+      !(DU == "D->U" & XU == "X<-U") &
+      !(YU == "Y->U" & XU == "X<-U")
+  )
+
+nested_data <-
+  possible_models %>%
+  filter(var != "") %>%
+  mutate(dag_data = list(as_tibble(tidy_dagitty(dag))))
+
+points_df <-
+  tibble(name = as.factor(c("D", "X", "Y", "U")),
+         x = c(1, 2, 2, 1),
+         y = c(1, 2, 1, 2))
+ends <-
+  points_df %>%
+  rename(to = name,
+         xend = x,
+         yend = y)
+
+fix_no_edges <-
+  tibble(
+    var = "no edges",
+    acyclic = TRUE,
+    consistent_with_RA = TRUE,
+    consistent_with_X_pretreatment = TRUE,
+    XU = "none",
+    YU = "none",
+    YX = "none",
+    DU = "none",
+    DX = "none",
+    DY = "none",
+    name = "X",
+    id_adjustment_fac = "Yes, regardless of conditioning"
+  )
+
+gg_df <-
+  nested_data %>%
+  unnest(cols = dag_data) %>%
+  select(-x, -y, -xend, -yend) %>%
+  left_join(points_df) %>%
+  left_join(ends) %>%
+  bind_rows(fix_no_edges) %>%
+  mutate(
+    XU_fac = factor(
+      XU,
+      levels =  c("X<-U", "X->U", "none"),
+      labels =  c("X %<-% U", "X %->% U", "X~~~U")
+    ),
+    YU_fac = factor(
+      YU,
+      levels =  c("Y<-U", "Y->U", "none"),
+      labels =  c("Y %<-% U", "Y %->% U", "Y~~~U")
+    ),
+    YX_fac = factor(
+      YX,
+      levels =  c("Y<-X", "Y->X", "none"),
+      labels =  c("Y %<-% X", "Y %->% X", "Y~~~X")
+    ),
+    DU_fac = factor(
+      DU,
+      levels =  c("D<-U", "D->U", "none"),
+      labels =  c("D %<-% U", "D %->% U", "D~~~U")
+    ),
+    DX_fac = factor(
+      DX,
+      levels =  c("D<-X", "D->X", "none"),
+      labels =  c("D %<-% X", "D %->% X", "D~~~X")
+    ),
+    DY_fac = factor(
+      DY,
+      levels =  c("D<-Y", "D->Y", "none"),
+      labels =  c("D %<-% Y", "D %->% Y", "D~~~Y")
+    )
+  ) %>%
+  arrange(XU_fac, YU_fac, YX_fac, DU_fac, DX_fac, DY_fac)
+
+gg_df <-
+  gg_df %>%
+  mutate(
+    var_fac = factor(var, levels = c(possible_models$var, "no edges")),
+    DY_DX = as.factor(paste0(DY, " ", DX)),
+    U_relationship = paste0(XU, " ", YU, " ", DU),
+    U_relationship_fac =
+      factor(
+        U_relationship,
+        levels = c(
+          'X<-U Y<-U D<-U',
+          'none Y<-U D<-U',
+          'X<-U none D<-U',
+          'X<-U Y<-U none',
+          'none none D<-U',
+          'none Y<-U none',
+          'X<-U none none',
+          'none none none'
+        ),
+        labels = c(
+          "U affects: D, X, Y",
+          "U affects: D, Y",
+          "U affects: D, X",
+          "U affects: X, Y",
+          "U affects: D",
+          "U affects: Y",
+          "U affects: X",
+          "U affects: none"
+        )
+      ),
+    ruled_out_by = as.factor(
+      case_when(
+        !acyclic ~ "Acyclicity",!consistent_with_RA ~ "Random assignment",!consistent_with_X_pretreatment ~ "Measuring X before treatment",
+        TRUE ~ NA_character_
+      )
+    )
+  )
+
+gg_df <-
+  gg_df %>%
+  mutate(tile_fac = as.factor(
+    case_when(
+      !acyclic ~ "Ruled out by acyclicity",
+      consistent_with_ignorability == 0 ~ "Ruled out by ignorability",
+      TRUE ~ as.character(id_adjustment_fac) 
+    )
+  ))
+
+fill_scale <- c(
+  `Ruled out by acyclicity` = dd_light_gray,
+  `Yes, regardless of conditioning` = "transparent",  
+  `Only when NOT conditioning on X` = dd_purple,
+  `Only when conditioning on X` = dd_light_blue,
+  `No, regardless of conditioning` = dd_pink,
+  `Ruled out by ignorability` = dd_dark_blue_alpha
+)
+
+subplot_function <- function(data) {
+  dag_df <-
+    data %>%
+    group_by(var, DX_fac, YX_fac, tile_fac) %>%
+    summarize(x = 1.5, y = 1.5, n = n())
   
-  # select fit with lower p.value on Z
-  if(fit_cov$p.value[2] < fit_nocov$p.value[2]){
-    fit_selected <- fit_cov
-  } else {
-    fit_selected <- fit_nocov
+  g <- 
+  ggplot(data, aes(x, y)) +
+    geom_tile(data = dag_df, aes(fill = tile_fac), height = 1.75, width = 1.75, alpha = 0.5) +
+    geom_text(data = points_df, aes(label = name), size = 5) +
+    geom_dag_edges(aes(xend = xend, yend = yend), 
+                   edge_width = 0.4, 
+                   arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 1)) + 
+    facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
+    coord_fixed() + 
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5), 
+          plot.subtitle = element_text(hjust = 0.5)) + 
+    labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
+  if(as.character(unique(data$DY_fac)) == "D %->% Y"){
+    g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
   }
-  fit_selected %>% tidy %>% filter(term == "Z")
+  g
 }
 
-design <-
-  declare_population(    
-    N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N)
-  ) + 
-  declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + u) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_assignment(prob = 0.5) + 
-  declare_reveal(Y, Z) + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") + 
-  declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") + 
-  declare_estimator(
-    handler = label_estimator(report_lower_p_value),
-    label = "select-lower-p-value",
-    estimand = "ATE") 
-
-diags <- diagnose_design(design, sims = sims)
-
-kable(get_diagnosands(diags))
-
-bivariate_correlation_decision <- function(data) {
-  fit <- lm_robust(y2 ~ y1, data) %>% tidy %>% filter(term == "y1")
-  tibble(decision = fit$p.value <= 0.05)
+my_fun <- function(data){
+  data %>%
+    split(.$DY_fac) %>% 
+    map(~subplot_function(.)) %>% 
+    wrap_plots(nrow = 1) 
 }
 
-interacted_correlation_decision <- function(data) {
-  fit <- lm_robust(y2 ~ y1 + x, data) %>% tidy %>% filter(term == "y1")
-  tibble(decision = fit$p.value <= 0.05)
-}
+gg <- gg_df %>% 
+  split(.$U_relationship_fac) %>% 
+  map(my_fun) 
 
-robustness_check_decision <- function(data) {
-  main_analysis <- bivariate_correlation_decision(data)
-  robustness_check <- interacted_correlation_decision(data)
-  tibble(decision = main_analysis$decision == TRUE & robustness_check$decision == TRUE)
-}
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 
-robustness_checks_design <- 
-  declare_population(
-    N = 100,
-    x = rnorm(N),
-    y1 = rnorm(N),
-    y2 = 0.15 * y1 + 0.01 * x + rnorm(N)
-  ) +
-  declare_estimand(y1_y2_are_related = TRUE) + 
-  declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") + 
-  declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check")
+gg_df <-
+  gg_df %>%
+  mutate(tile_fac = as.factor(if_else(
+    !acyclic,
+    "Ruled out by acyclicity",
+    as.character(id_adjustment_fac)
+  )))
 
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+gg_df <-
+  gg_df %>%
+  mutate(
+    tile_fac2 = as.factor(case_when(
+      ruled_out_by == "Acyclicity" ~ "Ruled out by acyclicity",
+      ruled_out_by == "Measuring X before treatment" ~ "Ruled out by pretreatment measurement",
+      ruled_out_by == "Random assignment" ~ "Ruled out by random assignment",
+      is.na(ruled_out_by) ~ "Effect of D on Y identified"
+    ))
+  )
 
-diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis)
-
-robustness_checks_design <-
-  robustness_checks_design +
-  declare_estimator(handler = label_estimator(interacted_correlation_decision), label = "interacted")
-
-robustness_checks_design_dgp2 <- replace_step(
-  robustness_checks_design,
-  step = 1,
-  new_step = 
-    declare_population(
-      N = 100,
-      x = rnorm(N),
-      y1 = rnorm(N),
-      y2 = 0.15 * y1 + 0.01 * x + 0.05 * y1 * x + rnorm(N)
-    )
+fill_scale <- c(
+  `Ruled out by acyclicity` = dd_light_gray,
+  `Ruled out by pretreatment measurement` = dd_orange,  
+  `Ruled out by random assignment` = dd_dark_blue,
+  `Effect of D on Y identified` = "transparent" 
 )
 
-robustness_checks_design_dgp3 <- replace_step(
-  robustness_checks_design,
-  step = 1,
-  new_step = 
-    declare_population(
-      N = 100,
-      x = rnorm(N),
-      y1 = 0.15 * x + rnorm(N),
-      y2 = 0.15 * x + rnorm(N)
-    )
+subplot_function <- function(data) {
+  dag_df <-
+    data %>%
+    group_by(var, DX_fac, YX_fac, tile_fac2) %>%
+    summarize(x = 1.5, y = 1.5, n = n())
+  
+  g <- 
+    ggplot(data, aes(x, y)) +
+    geom_tile(data = dag_df, aes(fill = tile_fac2), height = 1.75, width = 1.75, alpha = 0.5) +
+    geom_text(data = points_df, aes(label = name), size = 5) +
+    geom_dag_edges(aes(xend = xend, yend = yend), 
+                   edge_width = 0.4, 
+                   arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
+    scale_fill_manual("Situation", values = fill_scale, drop = FALSE) + 
+    facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
+    coord_fixed() + 
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5), 
+          plot.subtitle = element_text(hjust = 0.5)) + 
+    labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
+  if(as.character(unique(data$DY_fac)) == "D %->% Y"){
+    g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
+  }
+  g
+}
+
+my_fun <- function(data){
+  data %>%
+    split(.$DY_fac) %>% 
+    map(~subplot_function(.)) %>% 
+    wrap_plots(nrow = 1) 
+}
+
+gg <- gg_df %>% 
+  split(.$U_relationship_fac) %>% 
+  map(my_fun) 
+
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
+
+gg_df <-
+  gg_df %>%
+  filter(is.na(ruled_out_by)) %>% 
+  mutate(
+    ruled_out_by_sig_test = as.factor(if_else(DY_fac == "D~~~Y", "Ruled out by rejection of null hypothesis of no effect", "Cannot rule out")),
+    fct_rows = paste0(YX_fac, YU_fac, XU_fac)
+  )
+
+fill_scale <- c(
+  `Ruled out by rejection of null hypothesis of no effect` = dd_dark_blue,
+  `Cannot rule out` = "transparent"
 )
 
-robustness_checks_design_dgp3 <- replace_step(
-  robustness_checks_design_dgp3, 
-  step = 2,
-  new_step = declare_estimand(y1_y2_are_related = FALSE)
-)
+dag_df <-
+  gg_df %>%
+  group_by(var, DX_fac, DY_fac, YX_fac, ruled_out_by_sig_test, fct_rows) %>%
+  summarize(x = 1.5, y = 1.5, n = n()) 
 
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+g <- 
+  ggplot(gg_df, aes(x, y)) +
+  geom_tile(data = dag_df, aes(fill = ruled_out_by_sig_test), height = 1.75, width = 1.75, alpha = 0.5) +
+  geom_text(data = points_df, aes(label = name), size = 5) +
+  geom_dag_edges(aes(xend = xend, yend = yend), 
+                 edge_width = 0.4, 
+                 arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
+  scale_fill_manual("Situation", values = fill_scale, drop = FALSE) + 
+  facet_grid(DY_fac ~ fct_rows) +
+  coord_fixed() + 
+  theme_void() +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.subtitle = element_text(hjust = 0.5),
+        legend.position = "bottom",
+        strip.text.y = element_blank()) 
 
-diag <- diagnose_design(
-  robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, 
-  sims = sims, diagnosands = decision_diagnosis)
+g
