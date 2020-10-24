@@ -369,7 +369,7 @@ wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & them
 
 We can address the problem of unmeasured confounding by invoking conditional independence assumptions. The ``selection-on-observables'' answer strategy invokes the assumption that $D$ is statistically independent of the potential outcomes of $Y$ *given* X, i.e. after adjusting for $X$. In other words, controlling for $X$ blocks all backdoor paths between $D$ and $Y$. This assumption is also known as a conditional independence or ignorability assumption.
 
-In Figure XX, we display the 216 possible causal graphs again, ruling out in gray those that are cyclical. Among the 200 that remain, we color in the same way as under controlling for $X$ but add a fourth color: lavender for DAGs that we rule out based on our conditional independence assumption. Those that are ruled out, in the upper left quadrantes, have unobserved confounding from $U$ that cannot be addressed by adjusting for $X$.
+In Figure XX, we display the 216 possible causal graphs again, ruling out in gray those that are cyclical. Among the 200 that remain, we color in the same way as under controlling for $X$ but add a fourth color: lavender for DAGs that we rule out based on our conditional independence assumption. Those that are ruled out, in the upper left quadrants, have unobserved confounding from $U$ that cannot be addressed by adjusting for $X$.
 
 Analysts who invoke this conditional independence assumption assure that there are many fewer circumstances in which identification is not possible either through controlling for $X$ or not controlling for $X$. However, this is a strong assumption that is not possible to test directly. Instead, the analyst must justify the assumption based on circumstantial qualitative or quantitative evidence. The task is to rule out through this evidence either a relationship between $U$ and $D$ or a relationship between $U$ and $Y$ or both. In the first case, this evidence might take the form of background knowledge about how values of $D$ are determined. The treatment might be assigned using a cut-off rule, in which case all those above the cut-off are assigned to treatment (e.g., are admitted to a college) and those below are not. In this case, there is no relationship between unobserved variables $U$ and treatment $D$, there is only a relationship between $X$ (score) and $D$. Controlling for $X$ will enable causal identification even if $Y$ is affected by $U$. However, the assumption of conditional independence between $U$ and $D$ given $X$ is a strong assumption: the analyst must be sure that there is no unobserved variable $U$ that directly affects $D$, such as legacy applicants who may be "pushed" over the threshold of the cut-off if they are close enough to it. 
 
@@ -435,11 +435,13 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 ```
 
-#### Ruling out confounding by design
+#### Causal identification through random assignment
 
-- same graph but slice the connectoins to unobserved confounding into D
-- then block RA where we slice connections to unobserved confounding but not the X into D
-- analyze as you randomize
+When we are unable to rule out confounding by assumption and adjustment, we can randomly assign $D$ to sever connections between unobserved variables $U$ and $D$ by design. Ruling out confounders by assumption or adjustment requires the *model* to be correct, so is often known as model-based inference, whereas ruling out confounders by design is labeled design-based inference.^[In truth, there is a continuum between the two. Design-based inferences that rely on non-parametric estimators of the average treatment effect using data from a randomized experiment are a classic design-based estimator, yet they also rely on a modeling assumption: the stable unit treatment-value assumption.] In addition, we can measure $X$ before treatment to rule out situations in which $D$ causes $X$, which can lead to collider bias or opening backdoor paths from $D$ to $Y$. 
+
+In doing so, we dramatically reduce the set of possible DAGs, because we set the causal order between $X$ and $D$, and dramatically expand the number of settings under which the effect of $D$ on $Y$ is identified both due to this restriction on causal order and the randomization of $D$ which guarantees ignorability of $U$.
+
+In Figure XX, we swap the colors to now indicate DAGs ruled out by measuring $X$ before treatment (salmon squares), and those ruled out by random assignment (blue squares). In all of the remaining white squares, the effect of $D$ on $Y$ is causally identified, regardless of whether we adjust for $X$ or not. We remove the conditionality of inference depending on whether we control. This is good, because ultimately even in the presence of strong ignorability assumptions outlined in the last section there are many possible DAGs in which controlling or failing to control lead to bias. Now, our inferences do not depend on guessing the correct DAG. 
 
 ```{r, echo = FALSE, fig.width = 30, fig.height = 21}
 gg_df <-
@@ -508,11 +510,23 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 ```
 
-## choosing an estimator
+In short, what we do by controlling the timing of measurement of $X$ and randomizing $D$ is to move our assumptions about conditional independence from $M$ our assumed (but possible incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.
 
-Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
+However, in order to benefit from these two controlled decisions in our data strategy, we must follow the dictum due to R.A. Fisher to "analyze as you randomize." Your answer strategy should follow your data strategy. There are four components: make comparisons only across randomly-assigned conditions; analyze data at the level of random assignment; make comparisons only in groups within which random assignment was conducted (e.g., strata); and adjust for differences in probabilities of random assignment.
 
-(point people to Hastie and Tibshirani)
+Making comparisons across randomly-assigned conditions within groups in which random assignment was conducted directly follow from our comparison of causal identification by assignment vs. by design. If we make comparisons that rely on differences both in $D$ and $X$, for example a difference in treatment effects between two subgroups, we are susceptible to confounding from $U$, because $X$ is not randomly-assigned. Similarly, analysis of data from block-randomized experiments can be broken by failing to account for blocking, because blocks are not randomly assigned and in fact are typically constructed so that the outcomes of units in the block are similar within blocks and very different across blocks. If there are differential probabilities of assignment across blocks and we pool our data ignoring the blocking structure, our unweighted comparisons may be contrasting groups that differ systematically.
+
+more on analyze as you randomize
+
+#### Effect estimation and distinguishing among DAGs
+
+The identification of the causal effect of $D$ on $Y$ either by assumption or design enables us to undertake two tasks: estimate the average treatment effect, estimate the sign of the effect, or estimate whether there is an affect or not. 
+
+The first task, estimating the magnitude of the effect of $D$ on $Y$, can be accomplished using model-based inference under the selection-on-observables design or under a randomized experiment. In both cases, we apply the plug-in principle, replacing the true but unknown average potential outcomes under treatment (control) with the sample analogues, the average outcomes in the treatment (control) group. With data from randomized experiments, $X$ is ignorable, so we can either adjust for it (which may reduce variability in estimates) or not without bias. But under selection-on-observables, we have to rule out many DAGs by assumption that include $X$ as a collider or in which $X$ opens a backdoor path between $D$ and $Y$ in order to safely select an answer strategy.
+
+For estimating the sign of the effect, we can calculate the sign of the effect magnitude, and then conduct a statistical test of the null hypothesis of zero effect to distinguish among zero, positive, and negative effects.
+
+The third task, determining whether there is an effect or not, similarly involves a statistical test of the null hypothesis of zero effect. If we fail to reject the null, then our posterior belief is that there is no effect, but if we reject in a two-sided test then we leave believing there is an effect. This zero average effect null hypothesis test can help us take the final step in distinguishing among the 216 possible DAGs representing the relationships between $D$ and $Y$ and the confounders $X$ and $U$. In Figure XX, we display the 16 DAGs that are identified under random assignment and pretreatment measurement of $X$. We need to use data and the two-sided null hypothesis test to distinguish between the top row (there is an effect $D\rightarrow Y$) and the bottom row (there is no effect). Our design got us most of the way there, but then we need to use the data to narrow further to one of the two rows of eight DAGs. Since our inquiry is about the causal relationship between $D$ and $Y$, we may not be concerned about distinguishing among the eight. If we are, we need to develop an alternative research design, to learn about the causal effects of $X$.
 
 ```{r, echo = FALSE, fig.width = 30, fig.height = 21}
 gg_df <-
@@ -552,29 +566,36 @@ g <-
 g
 ```
 
+## Point estimation
 
-## when parameters are not point identified
+Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
+
+(point people to Hastie and Tibshirani)
+
+## When parameters are not point identified
 
 - confounding
 - EV bounds
 - trimming bounds
 
-## characterizing uncertainty (s.e., CIs, posterior probs)
+## Characterizing uncertainty 
 
-## constructing tests (test value, p-value)
+<!-- (s.e., CIs, posterior probs) -->
 
-Tests are an elemental kind of answer strategy. Tests yield yes / no answers to specific tests. In some qualitative traditions, hoop tests, straw-in-the-wind tests, smoking-gun tests, and doubly-decisive tests are common. These tests are procedures for making analysis decisions in a structured way. In frequentist statistics, significance tests are used to make a decision whether to reject or fail to reject a particular null hypothesis. Null hypothesis significance testing has developed a (rightfully) sketchy reputation in recent years as too much weight has been put on the reject / fail to reject decision. That said, sometimes that decision is rightfully important and in such cases, null hypothesis significance testing is a great tool.
+## Tests
 
-Tests are answer strategies that return TRUE or FALSE as an answer. 
+Tests are an elemental kind of answer strategy. Tests yield binary yes/no answers to an inquiry. In some qualitative traditions, hoop tests, straw-in-the-wind tests, smoking-gun tests, and doubly-decisive tests are common. These tests are procedures for making analysis decisions in a structured way. In frequentist statistics, significance tests are used to make a decision whether to reject or fail to reject a particular null hypothesis. 
 
-- significance testing (incl. sign test)
-- equivalence testing
-- straw in the wind / hoop test
-- doubly decisive
-- 1997 book on tests
+<!-- Null hypothesis significance testing has developed a (rightfully) sketchy reputation in recent years as too much weight has been put on the reject / fail to reject decision. That said, sometimes that decision is rightfully important and in such cases, null hypothesis significance testing is a great tool. -->
 
-[cite erin and naoki on sign tests]
-[cite erin on equivalence testinf]
+<!-- - significance testing (incl. sign test) -->
+<!-- - equivalence testing -->
+<!-- - straw in the wind / hoop test -->
+<!-- - doubly decisive -->
+<!-- - 1997 book on tests -->
+
+<!-- [cite erin and naoki on sign tests] -->
+<!-- [cite erin on equivalence testinf] -->
 
 ## Answer strategies as procedures
 
