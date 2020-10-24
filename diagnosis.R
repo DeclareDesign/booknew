@@ -282,8 +282,6 @@ ggplot(simulations, aes(x = estimate, y = as.factor(sim_ID)), color = dd_light_b
 
 diagnosis
 
-knitr::include_app('https://gblair.shinyapps.io/diagnosis/', height = '400px')
-
 n <- 50
 
 points_df <- tibble(rho = sqrt(runif(n)),
