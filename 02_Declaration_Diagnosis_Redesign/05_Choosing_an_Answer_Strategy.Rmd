@@ -34,17 +34,17 @@ sims <- 10
 b_sims <- 10
 ```
 
-Making good on M:I::D:A
 
-We want to pick an A() s.t. A(d) = a^d is close to a^m. We have to design w. r. t. a^m. 
+Your answer strategy is your plan for what you will do with the information gathered from the world in order to generate an answer to the inquiry. Qualtitative and quantitative methods courses overflow with advice about which answer strategies to choose. Under what conditions should you use Ordinary Least Squares, when should you use logit? When is a machine learning algorithm the appropriate choice and when would a comparative case study be more informative? When is *no* answer strategy worth persuing because of the fundamental limitations of the data strategy? 
 
-The distance between a^d and a^m depends on assumptions. When we can assure those assumptions with design, we can engage in design-based inference. That is, when we can ensure that treatment assignment is independent of potential outcomes by conducting a literal random assigment, we can rely on known features of the randomization process to conduct inference. In the absence of literal random assignment, we have to assume (perhaps after statistical adjustment) that the treatment is "as-if" randomly assigned. When the required assumption are part of M() rather than part of D(), we engage in model-based inference.
+Our perspective on answer strategies is that they should be informed by the other three elements of research design: the model, the inquiry, and the data strategy. Sometimes answer strategy advice is offered on the on the basis of the realized data $d$ only, without any particular attention paid to important features of the question to be answered or the manner in which the data were collected and generated. For example, a bit of recieved methodological wisdom holds that whenever a dependent variable is binary, a binary choice statistical model like logit or probit must be used. This advice is based only the knowledge that $d$ contains a binary outcome; whether it is appropriate depends on features of $I$ and features of $D$. For example, if $I$ is the average treatment effect and $D$ includes randomization of the treatment, answer strategies beyond binary choice models may serve just as well or better. If a student asks, "which estimator should I use?" the response is always, "it depends." What does it depend on? The model, the inquiry, and the answer strategy.
 
-- use a DAG (M!), informed by your inquiry (plug in principle), analyze as you randomize
+Choosing "design-aware" answer strategies sounds straightforward enough, but the precise way in which this approach is applied in any real empricial setting will of course differ from case to case. Our highest-level advice is that we want to pick an answer strategy $A$ such that the answer it provides $A(d) = a^d$ is close to the answer under our model of the world, $I(m) = a^m$. The implication is that we should strive for parallelism across $A$ and $I$ -- this is the "plug-in principle." When the function $A$ is very close to the function $I$, then we can "plug in" $d$ for $m$. 
 
-- put elemental kinds of answer strategies (point, uncertainty, tests, intervals, visualization,  written narratives)
+Because all answer strategies rely on assumptions. For descriptive inference, we have to assume that the sample represents the population well. For causal inference, we have to assume that treated and untreated units are similar in all other respects beyond treatment status. For all kinds of inference, we have to assume that our measurements are close to the latent construsts we wish to measure. Answer strategies are "model-based" when the most consequential of these assumptions are part of $M$. Answer strategies are "design-based" to the extent that we can pull the assumptions out of $M$ and assure them by design, i.e., by choosing $D$ in such a way that we can be confident that the assumption is true. Observational causal inference often relies on an assumption of "selection on observables," or the claim that within groups of units that have the same observed characteristics, treatments are as-if randomly assigned.  Observational causal inference is model-based in the sense that the selection on observables assumption is grounded in researchers' theoretical model of the world, which of course might be wrong. Experimental causal inference is "design-based" in the sense that we can be sure that treatments were *actually* randomly assigned because random assignment was part of the data. In both observational and experimental settings we need to make the same assumption, but in one case, we rely on a theoretical model and in the other, we rely on a data strategy. To the extent possible, we prefer assuring assumptions by design to asserting them on the basis of a theoretical model.
 
-How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers' inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.
+Answer strategies come in a number of varieties. The most familiar of these are point-estimators that produce estimates of parameters. Ordinary least squares, difference-in-means, logit, random forests, and a very long list of others are in the point-estimator answer strategy class. A second class is comprised by tests. Tests return a binary decision (True or False). Null hypothesis significance tests are a common form of test in quantitative research. Qualitative researchers also employ tests; these go by names like "hoop test" and "straw-in-the-wind" test. Bayesian answer strategies return full posterior distributions. In contrast to point-estimators some answer strategies are interval-estimators. 
+
 
 ```{r make-all-models, echo = FALSE}
 possible_models <-
@@ -203,14 +203,62 @@ gg_df <-
 ```
 
 
-## using model to inform answer strategy
+## Using the Model to inform your Answer strategy
 
-- your inquiry defines was you are shooting at, now question is how to use model to choose an answer stategy to shoot at it
+As we described in chapter 6, we can (non-parametrically) express our model of the world as a directed acyclic graph, or DAG. DAGs express *some* but not all parts of our model, precisely because they are nonparametric. They don't encode how variables cause each other, just whether they do. Even so, writing down a theoretical model in as parsimonious a form as a nonparametric structual causal model can guide answer strategies in an enormously powerful way. Given a DAG, we can learn whether *any* answer strategy would be sufficient for estimating a causal effect. Further, we can learn which variable our answer strategy must condition on, and which must be left alone. 
 
-- types of paths table
+Table XXX shows the three elemental building blocks of DAGs: chains, collider paths, and forks. All three kinds paths involve three variables. A chain describes a mediation path. The causal effect of D on Y is mediated through X, so we can describe X as a "mediator." A collider path is a chain of three variables in which the middle variable X is caused by both D and Y. Here X is a collider variable. Finally, forks describe a causal setting in which the middle variable X causes both D and Y. Here X is a "confounder", since it confounds the relationship between X and Y.
 
-- descriptive
-- causal (obsefvational, experimental)
+
+| Path         | X is a ... | Path is called a... |
+| ------------ | ---------- | ------------------- |
+| D -> X -> Y  | mediator   | chain               |
+| D -> X <- Y  | collider   | collider path       |
+| D <- X -> Y  | confounder | fork                |
+
+
+```{r, echo=FALSE, fig.width=6.5, fig.height=2}
+dag1 <- dagitty("dag{
+                D<-X->Y; D->Y
+                }")
+
+dag2 <- dagitty("dag{
+                D->X<-Y; D->Y
+                }")
+
+dag3 <- dagitty("dag{
+                D->X->Y; D->Y
+                }")
+
+
+points_df <-
+  tibble(name = c("D", "X", "Y"),
+         x = c(1, 2, 3),
+         y = c(0, 1, 0))
+
+
+gg_df <-
+  list(dag1, dag2, dag3) %>%
+  map_df( ~ as_tibble(tidy_dagitty(., layout = points)), .id = "dag") %>%
+  mutate(dag = factor(
+    dag,
+    levels = 1:3,
+    labels = c("X is a confounder", "X is a collider", "X is a mediator")
+  ))
+
+
+
+ggplot(gg_df, aes(x, y)) +
+  geom_text(data = points_df, aes(label = name)) +
+  geom_dag_edges(aes(xend = xend, yend = yend)) +
+  coord_fixed() +
+  facet_wrap(~dag) +
+  theme_void()
+
+```
+
+
+
 
 Definition: The backdoor criterion. Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satifies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. (pg. 61 Pearl primer)
 
@@ -563,3 +611,6 @@ We illustrate with a simple analysis of the correlation between two variables `y
 Using the MIDA way of thinking about designs, we discuss in the diagnosis section another notion of the "robustness" of a design. The typical way we think of robustness checks is multiple secondary analyses *conditional on the observed data* to build confidence in an analysis of that fixed data. However, the motivation for these robustness checks is uncertainty about the true data generating process. By declaring a design in terms of MIDA, we can think about the robustness of a *single* estimator to multiple possible true data generating processes. An estimator that is robust in this sense is one that is unbiased with low uncertainty regardless of, say, the true functional form between `y1` and `y2`. To determine whether an estimator is robust, we can redefine a set of designs with different functional forms and assess the rate of correct decisions of our robustness checks strategy under each different model. 
 
 
+## Concluding thoughts on answer strategies
+
+How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers' inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.
