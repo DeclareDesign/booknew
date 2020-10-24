@@ -33,6 +33,7 @@ bookwide_packages <-
     # ggplot packages
     "ggforce",
     "ggtext",
+    "ggrepel",
     # extras
     "dddag"
   )
