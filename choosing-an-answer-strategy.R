@@ -160,15 +160,15 @@ gg_df <-
   )
 
 dag1 <- dagitty("dag{
-                D<-X->Y; D->Y
+                D <- X -> Y; D -> Y
                 }")
 
 dag2 <- dagitty("dag{
-                D->X<-Y; D->Y
+                D -> X <- Y ; D -> Y
                 }")
 
 dag3 <- dagitty("dag{
-                D->X->Y; D->Y
+                D -> X -> Y; D -> Y
                 }")
 
 
@@ -176,18 +176,23 @@ points_df_small <-
   tibble(name = c("D", "X", "Y"),
          x = c(1, 2, 3),
          y = c(0, 1, 0))
+ends_df_small <-
+  tibble(to = c("D", "X", "Y"),
+         xend = c(1, 2, 3),
+         yend = c(0, 1, 0))
 
 
 gg_df_small <-
   list(dag1, dag2, dag3) %>%
-  map_df( ~ as_tibble(tidy_dagitty(., layout = points_df_small[,-1])), .id = "dag") %>%
+  map_df( ~ as_tibble(tidy_dagitty(.)), .id = "dag") %>%
   mutate(dag = factor(
     dag,
     levels = 1:3,
     labels = c("X is a confounder", "X is a collider", "X is a mediator")
-  ))
-
-
+  )) %>%
+  select(-x, -y, -xend, -yend) %>%
+  left_join(points_df_small) %>%
+  left_join(ends_df_small)
 
 ggplot(gg_df_small, aes(x, y)) +
   geom_text(data = points_df_small, aes(label = name)) +
