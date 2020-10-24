@@ -586,6 +586,14 @@ g
 
 Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
 
+
+### Bias variance tradeoff
+
+- overfitting
+- add modeling assumptions that might decrease variance a lot at the cost of a little bias.
+- interacts with testing: could win on RMSE, but have a higher false positive rate.
+
+
 (point people to Hastie and Tibshirani)
 
 ## When parameters are not point identified
@@ -595,6 +603,10 @@ Point estimation is possibly the most common class of answer strategy in quantit
 - trimming bounds
 
 ## Characterizing uncertainty 
+
+Variance estimation is often more difficult than point estimation.
+
+We can often do the bootstrap, which plugs in (re-) sampling from the sample for sampling from the population.
 
 <!-- (s.e., CIs, posterior probs) -->
 
@@ -612,6 +624,9 @@ Tests are an elemental kind of answer strategy. Tests yield binary yes/no answer
 
 <!-- [cite erin and naoki on sign tests] -->
 <!-- [cite erin on equivalence testinf] -->
+
+
+### randomization inference
 
 ## Answer strategies as procedures
 
@@ -648,6 +663,6 @@ We illustrate with a simple analysis of the correlation between two variables `y
 Using the MIDA way of thinking about designs, we discuss in the diagnosis section another notion of the "robustness" of a design. The typical way we think of robustness checks is multiple secondary analyses *conditional on the observed data* to build confidence in an analysis of that fixed data. However, the motivation for these robustness checks is uncertainty about the true data generating process. By declaring a design in terms of MIDA, we can think about the robustness of a *single* estimator to multiple possible true data generating processes. An estimator that is robust in this sense is one that is unbiased with low uncertainty regardless of, say, the true functional form between `y1` and `y2`. To determine whether an estimator is robust, we can redefine a set of designs with different functional forms and assess the rate of correct decisions of our robustness checks strategy under each different model. 
 
 
-## Concluding thoughts on answer strategies
+## Grab bag
 
 How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers' inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.
