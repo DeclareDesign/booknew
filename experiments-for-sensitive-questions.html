@@ -239,7 +239,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="10" data-path="diagnosis.html"><a href="diagnosis.html"><i class="fa fa-check"></i><b>10</b> Diagnosis</a><ul>
 <li class="chapter" data-level="10.1" data-path="estimating-diagnosands-analytically.html"><a href="estimating-diagnosands-analytically.html"><i class="fa fa-check"></i><b>10.1</b> Estimating diagnosands analytically</a></li>
-<li class="chapter" data-level="10.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html"><i class="fa fa-check"></i><b>10.2</b> Estimating diagnosands via simulation</a></li>
+<li class="chapter" data-level="10.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html"><i class="fa fa-check"></i><b>10.2</b> Estimating diagnosands via simulation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#interpreting-diagnosands"><i class="fa fa-check"></i><b>10.2.1</b> Interpreting diagnosands</a></li>
+<li class="chapter" data-level="10.2.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#how-many-simulations-to-run"><i class="fa fa-check"></i><b>10.2.2</b> How many simulations to run</a></li>
+</ul></li>
 <li class="chapter" data-level="10.3" data-path="diagnosands.html"><a href="diagnosands.html"><i class="fa fa-check"></i><b>10.3</b> How to choose among diagnosands</a></li>
 <li class="chapter" data-level="10.4" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html"><i class="fa fa-check"></i><b>10.4</b> Diagnosing with respect to variations in M</a><ul>
 <li class="chapter" data-level="10.4.1" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#estimating-the-minimum-detectable-effect-size"><i class="fa fa-check"></i><b>10.4.1</b> Estimating the minimum detectable effect size</a></li>
@@ -483,28 +486,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">15.2</span> Experiments for sensitive questions</h2>
 <div id="declaration-5" class="section level3">
 <h3><span class="header-section-number">15.2.1</span> Declaration</h3>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1">design &lt;-</a>
-<a class="sourceLine" id="cb66-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb66-3" title="3">    <span class="dt">N =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb66-4" title="4">    <span class="dt">U =</span> <span class="kw">rnorm</span>(N),</a>
-<a class="sourceLine" id="cb66-5" title="5">    <span class="dt">Y_star =</span> <span class="kw">rbinom</span>(N, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.3</span>),</a>
-<a class="sourceLine" id="cb66-6" title="6">    <span class="dt">S =</span> <span class="kw">case_when</span>(Y_star <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span>0L,</a>
-<a class="sourceLine" id="cb66-7" title="7">                  Y_star <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="kw">rbinom</span>(N, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.2</span>)),</a>
-<a class="sourceLine" id="cb66-8" title="8">    <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>)</a>
-<a class="sourceLine" id="cb66-9" title="9">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-10" title="10"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">proportion =</span> <span class="kw">mean</span>(Y_star)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-11" title="11"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">Y_direct =</span> Y_star <span class="op">-</span><span class="st"> </span>S) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-12" title="12"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y_list <span class="op">~</span><span class="st"> </span>Y_star <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-13" title="13"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-14" title="14"><span class="st">  </span><span class="kw">declare_estimator</span>(Y_direct <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb66-15" title="15">                    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb66-16" title="16">                    <span class="dt">estimand =</span> <span class="st">&quot;proportion&quot;</span>,</a>
-<a class="sourceLine" id="cb66-17" title="17">                    <span class="dt">label =</span> <span class="st">&quot;direct&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb66-18" title="18"><span class="st">  </span><span class="kw">declare_estimator</span>(Y_list <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;proportion&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;list&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">design &lt;-</a>
+<a class="sourceLine" id="cb70-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb70-3" title="3">    <span class="dt">N =</span> <span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb70-4" title="4">    <span class="dt">U =</span> <span class="kw">rnorm</span>(N),</a>
+<a class="sourceLine" id="cb70-5" title="5">    <span class="dt">Y_star =</span> <span class="kw">rbinom</span>(N, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.3</span>),</a>
+<a class="sourceLine" id="cb70-6" title="6">    <span class="dt">S =</span> <span class="kw">case_when</span>(Y_star <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">~</span><span class="st"> </span>0L,</a>
+<a class="sourceLine" id="cb70-7" title="7">                  Y_star <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="kw">rbinom</span>(N, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.2</span>)),</a>
+<a class="sourceLine" id="cb70-8" title="8">    <span class="dt">X =</span> <span class="kw">rbinom</span>(N, <span class="dt">size =</span> <span class="dv">3</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb70-9" title="9">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-10" title="10"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">proportion =</span> <span class="kw">mean</span>(Y_star)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-11" title="11"><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">Y_direct =</span> Y_star <span class="op">-</span><span class="st"> </span>S) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-12" title="12"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y_list <span class="op">~</span><span class="st"> </span>Y_star <span class="op">*</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>X) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-13" title="13"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-14" title="14"><span class="st">  </span><span class="kw">declare_estimator</span>(Y_direct <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb70-15" title="15">                    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb70-16" title="16">                    <span class="dt">estimand =</span> <span class="st">&quot;proportion&quot;</span>,</a>
+<a class="sourceLine" id="cb70-17" title="17">                    <span class="dt">label =</span> <span class="st">&quot;direct&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb70-18" title="18"><span class="st">  </span><span class="kw">declare_estimator</span>(Y_list <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;proportion&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;list&quot;</span>)</a></code></pre></div>
 </div>
 <div id="dag-5" class="section level3">
 <h3><span class="header-section-number">15.2.2</span> Dag</h3>
-<p><img src="book_files/figure-html/unnamed-chunk-223-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-225-1.png" width="100%" /></p>
 </div>
 <div id="example-9" class="section level3">
 <h3><span class="header-section-number">15.2.3</span> Example</h3>
@@ -562,64 +565,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><strong>D</strong>ata strategy: First we sample 500 respondents from the U.S. population at random, then we randomly assign 250 of the 500 to treatment and the remainder to control. In the survey, we ask subjects both the direct question and the list experiment question.</p></li>
 <li><p><strong>A</strong>nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.</p></li>
 </ul>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1"><span class="co"># Model -------------------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb67-2" title="2">proportion_shy &lt;-<span class="st"> </span><span class="fl">.06</span></a>
-<a class="sourceLine" id="cb67-3" title="3"></a>
-<a class="sourceLine" id="cb67-4" title="4">list_design &lt;-</a>
-<a class="sourceLine" id="cb67-5" title="5"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-6" title="6"><span class="st">  </span><span class="co"># Model</span></a>
-<a class="sourceLine" id="cb67-7" title="7"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb67-8" title="8">    <span class="dt">N =</span> <span class="dv">5000</span>,</a>
-<a class="sourceLine" id="cb67-9" title="9">    <span class="co"># true trump vote (unobservable)</span></a>
-<a class="sourceLine" id="cb67-10" title="10">    <span class="dt">truthful_trump_vote =</span> <span class="kw">draw_binary</span>(.<span class="dv">45</span>, N),</a>
-<a class="sourceLine" id="cb67-11" title="11">    </a>
-<a class="sourceLine" id="cb67-12" title="12">    <span class="co"># shy voter (unobservable)</span></a>
-<a class="sourceLine" id="cb67-13" title="13">    <span class="dt">shy =</span> <span class="kw">draw_binary</span>(proportion_shy, N),</a>
-<a class="sourceLine" id="cb67-14" title="14">    </a>
-<a class="sourceLine" id="cb67-15" title="15">    <span class="co"># direct question response (1 if Trump supporter and not shy, 0 otherwise)</span></a>
-<a class="sourceLine" id="cb67-16" title="16">    <span class="dt">Y_direct =</span> <span class="kw">if_else</span>(truthful_trump_vote <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>shy <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb67-17" title="17">    </a>
-<a class="sourceLine" id="cb67-18" title="18">    <span class="co"># nonsensitive list experiment items</span></a>
-<a class="sourceLine" id="cb67-19" title="19">    <span class="dt">raise_minimum_wage =</span> <span class="kw">draw_binary</span>(.<span class="dv">8</span>, N),</a>
-<a class="sourceLine" id="cb67-20" title="20">    <span class="dt">repeal_obamacare =</span> <span class="kw">draw_binary</span>(.<span class="dv">6</span>, N),</a>
-<a class="sourceLine" id="cb67-21" title="21">    <span class="dt">ban_assault_weapons =</span> <span class="kw">draw_binary</span>(.<span class="dv">5</span>, N)</a>
-<a class="sourceLine" id="cb67-22" title="22">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-23" title="23"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-24" title="24"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb67-25" title="25">    <span class="dt">Y_list_Z_0 =</span> raise_minimum_wage <span class="op">+</span><span class="st"> </span>repeal_obamacare <span class="op">+</span><span class="st"> </span>ban_assault_weapons,</a>
-<a class="sourceLine" id="cb67-26" title="26">    <span class="dt">Y_list_Z_1 =</span> Y_list_Z_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>truthful_trump_vote</a>
-<a class="sourceLine" id="cb67-27" title="27">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-28" title="28"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-29" title="29"><span class="st">  </span><span class="co"># Inquiry</span></a>
-<a class="sourceLine" id="cb67-30" title="30"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">proportion_truthful_trump_vote =</span> <span class="kw">mean</span>(truthful_trump_vote),</a>
-<a class="sourceLine" id="cb67-31" title="31">                   <span class="dt">ATE =</span> <span class="kw">mean</span>(Y_list_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_list_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-32" title="32"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-33" title="33"><span class="st">  </span><span class="co"># Data Strategy</span></a>
-<a class="sourceLine" id="cb67-34" title="34"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">500</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-35" title="35"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.5</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-36" title="36"><span class="st">  </span><span class="kw">declare_reveal</span>(Y_list) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-37" title="37"><span class="st">  </span></a>
-<a class="sourceLine" id="cb67-38" title="38"><span class="st">  </span><span class="co"># Answer Strategy</span></a>
-<a class="sourceLine" id="cb67-39" title="39"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb67-40" title="40">    Y_direct <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="st">&quot;(Intercept)&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;proportion_truthful_trump_vote&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;direct&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb67-41" title="41"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb67-42" title="42">    Y_list <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="kw">c</span>(<span class="st">&quot;proportion_truthful_trump_vote&quot;</span>, <span class="st">&quot;ATE&quot;</span>), <span class="dt">label =</span> <span class="st">&quot;list&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1">simulations_list &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(list_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1"><span class="co"># Model -------------------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb71-2" title="2">proportion_shy &lt;-<span class="st"> </span><span class="fl">.06</span></a>
+<a class="sourceLine" id="cb71-3" title="3"></a>
+<a class="sourceLine" id="cb71-4" title="4">list_design &lt;-</a>
+<a class="sourceLine" id="cb71-5" title="5"><span class="st">  </span></a>
+<a class="sourceLine" id="cb71-6" title="6"><span class="st">  </span><span class="co"># Model</span></a>
+<a class="sourceLine" id="cb71-7" title="7"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb71-8" title="8">    <span class="dt">N =</span> <span class="dv">5000</span>,</a>
+<a class="sourceLine" id="cb71-9" title="9">    <span class="co"># true trump vote (unobservable)</span></a>
+<a class="sourceLine" id="cb71-10" title="10">    <span class="dt">truthful_trump_vote =</span> <span class="kw">draw_binary</span>(.<span class="dv">45</span>, N),</a>
+<a class="sourceLine" id="cb71-11" title="11">    </a>
+<a class="sourceLine" id="cb71-12" title="12">    <span class="co"># shy voter (unobservable)</span></a>
+<a class="sourceLine" id="cb71-13" title="13">    <span class="dt">shy =</span> <span class="kw">draw_binary</span>(proportion_shy, N),</a>
+<a class="sourceLine" id="cb71-14" title="14">    </a>
+<a class="sourceLine" id="cb71-15" title="15">    <span class="co"># direct question response (1 if Trump supporter and not shy, 0 otherwise)</span></a>
+<a class="sourceLine" id="cb71-16" title="16">    <span class="dt">Y_direct =</span> <span class="kw">if_else</span>(truthful_trump_vote <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>shy <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb71-17" title="17">    </a>
+<a class="sourceLine" id="cb71-18" title="18">    <span class="co"># nonsensitive list experiment items</span></a>
+<a class="sourceLine" id="cb71-19" title="19">    <span class="dt">raise_minimum_wage =</span> <span class="kw">draw_binary</span>(.<span class="dv">8</span>, N),</a>
+<a class="sourceLine" id="cb71-20" title="20">    <span class="dt">repeal_obamacare =</span> <span class="kw">draw_binary</span>(.<span class="dv">6</span>, N),</a>
+<a class="sourceLine" id="cb71-21" title="21">    <span class="dt">ban_assault_weapons =</span> <span class="kw">draw_binary</span>(.<span class="dv">5</span>, N)</a>
+<a class="sourceLine" id="cb71-22" title="22">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-23" title="23"><span class="st">  </span></a>
+<a class="sourceLine" id="cb71-24" title="24"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb71-25" title="25">    <span class="dt">Y_list_Z_0 =</span> raise_minimum_wage <span class="op">+</span><span class="st"> </span>repeal_obamacare <span class="op">+</span><span class="st"> </span>ban_assault_weapons,</a>
+<a class="sourceLine" id="cb71-26" title="26">    <span class="dt">Y_list_Z_1 =</span> Y_list_Z_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>truthful_trump_vote</a>
+<a class="sourceLine" id="cb71-27" title="27">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-28" title="28"><span class="st">  </span></a>
+<a class="sourceLine" id="cb71-29" title="29"><span class="st">  </span><span class="co"># Inquiry</span></a>
+<a class="sourceLine" id="cb71-30" title="30"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">proportion_truthful_trump_vote =</span> <span class="kw">mean</span>(truthful_trump_vote),</a>
+<a class="sourceLine" id="cb71-31" title="31">                   <span class="dt">ATE =</span> <span class="kw">mean</span>(Y_list_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_list_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-32" title="32"><span class="st">  </span></a>
+<a class="sourceLine" id="cb71-33" title="33"><span class="st">  </span><span class="co"># Data Strategy</span></a>
+<a class="sourceLine" id="cb71-34" title="34"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">500</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-35" title="35"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob =</span> <span class="fl">.5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-36" title="36"><span class="st">  </span><span class="kw">declare_reveal</span>(Y_list) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-37" title="37"><span class="st">  </span></a>
+<a class="sourceLine" id="cb71-38" title="38"><span class="st">  </span><span class="co"># Answer Strategy</span></a>
+<a class="sourceLine" id="cb71-39" title="39"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb71-40" title="40">    Y_direct <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="st">&quot;(Intercept)&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;proportion_truthful_trump_vote&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;direct&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb71-41" title="41"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb71-42" title="42">    Y_list <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> difference_in_means, <span class="dt">estimand =</span> <span class="kw">c</span>(<span class="st">&quot;proportion_truthful_trump_vote&quot;</span>, <span class="st">&quot;ATE&quot;</span>), <span class="dt">label =</span> <span class="st">&quot;list&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1">simulations_list &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(list_design, <span class="dt">sims =</span> sims)</a></code></pre></div>
 <p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="#ref-blair2018list">2018</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
-<p><img src="book_files/figure-html/unnamed-chunk-228-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-230-1.png" width="100%" /></p>
 </div>
 <div id="violations-of-identifying-assumptions" class="section level4">
 <h4><span class="header-section-number">15.2.4.2</span> Violations of identifying assumptions</h4>
 <p>In our model, the definition of the treated potential outcome, <code>Y_list_Z_1 = Y_list_Z_0 + truthful_trump_vote</code>, bakes in the no design effects and no liars assumptions. The first component is the control item count <code>Y_list_Z_0</code>, which ensures the respondent’s count of control items is the same in both groups. The second is the true trump vote, which assumes no liars.</p>
 <p>What do we learn from this experimental design if these assumptions do not hold? We examine the case of “ceiling effects,” in which respondents whose control item count is the maximum (in the example, they would vote yes to all three control items) withhold their true support for Trump in the treatment group. We thus redefine the treated potential outcome to be a function of the original count, but those who would respond 4 (all control items plus Trump support) instead respond 3. These are the “liars.”</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1">list_design_ceiling &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
-<a class="sourceLine" id="cb69-2" title="2">  list_design, <span class="dt">step =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb69-3" title="3">  <span class="dt">new_step =</span> <span class="kw">declare_potential_outcomes</span>(</a>
-<a class="sourceLine" id="cb69-4" title="4">    <span class="dt">Y_list_Z_0 =</span> raise_minimum_wage <span class="op">+</span><span class="st"> </span>repeal_obamacare <span class="op">+</span><span class="st"> </span>ban_assault_weapons,</a>
-<a class="sourceLine" id="cb69-5" title="5">    <span class="dt">Y_list_Z_1_no_liars =</span> Y_list_Z_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>truthful_trump_vote,</a>
-<a class="sourceLine" id="cb69-6" title="6">    <span class="dt">Y_list_Z_1 =</span> <span class="kw">ifelse</span>(Y_list_Z_<span class="dv">1</span>_no_liars <span class="op">==</span><span class="st"> </span><span class="dv">4</span>, <span class="dv">3</span>, Y_list_Z_<span class="dv">1</span>_no_liars))</a>
-<a class="sourceLine" id="cb69-7" title="7">)</a></code></pre></div>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">diagnosis_list_ceiling &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(list_design_ceiling, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" title="1">list_design_ceiling &lt;-<span class="st"> </span><span class="kw">replace_step</span>(</a>
+<a class="sourceLine" id="cb73-2" title="2">  list_design, <span class="dt">step =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb73-3" title="3">  <span class="dt">new_step =</span> <span class="kw">declare_potential_outcomes</span>(</a>
+<a class="sourceLine" id="cb73-4" title="4">    <span class="dt">Y_list_Z_0 =</span> raise_minimum_wage <span class="op">+</span><span class="st"> </span>repeal_obamacare <span class="op">+</span><span class="st"> </span>ban_assault_weapons,</a>
+<a class="sourceLine" id="cb73-5" title="5">    <span class="dt">Y_list_Z_1_no_liars =</span> Y_list_Z_<span class="dv">0</span> <span class="op">+</span><span class="st"> </span>truthful_trump_vote,</a>
+<a class="sourceLine" id="cb73-6" title="6">    <span class="dt">Y_list_Z_1 =</span> <span class="kw">ifelse</span>(Y_list_Z_<span class="dv">1</span>_no_liars <span class="op">==</span><span class="st"> </span><span class="dv">4</span>, <span class="dv">3</span>, Y_list_Z_<span class="dv">1</span>_no_liars))</a>
+<a class="sourceLine" id="cb73-7" title="7">)</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1">diagnosis_list_ceiling &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(list_design_ceiling, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -730,65 +733,65 @@ proportion_truthful_trump_vote
 </div>
 <div id="randomized-response-technique" class="section level3">
 <h3><span class="header-section-number">15.2.5</span> Randomized response technique</h3>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1"><span class="kw">library</span>(rr)</a>
-<a class="sourceLine" id="cb71-2" title="2"></a>
-<a class="sourceLine" id="cb71-3" title="3">rr_forced_known &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb71-4" title="4">  fit  &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">rrreg</span>(Y_forced_known <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> data, <span class="dt">p =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">p0 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">6</span>, <span class="dt">p1 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">6</span>, <span class="dt">design =</span> <span class="st">&quot;forced-known&quot;</span>))</a>
-<a class="sourceLine" id="cb71-5" title="5">  pred &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">as.data.frame</span>(<span class="kw">predict</span>(fit, <span class="dt">avg =</span> <span class="ot">TRUE</span>, <span class="dt">quasi.bayes =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb71-6" title="6">  <span class="cf">if</span>(<span class="kw">class</span>(fit) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">class</span>(pred) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span>) {</a>
-<a class="sourceLine" id="cb71-7" title="7">    <span class="kw">names</span>(pred) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;std.error&quot;</span>, <span class="st">&quot;conf.low&quot;</span>, <span class="st">&quot;conf.high&quot;</span>)</a>
-<a class="sourceLine" id="cb71-8" title="8">    pred<span class="op">$</span>p.value &lt;-<span class="st"> </span><span class="kw">with</span>(pred, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span><span class="kw">abs</span>(estimate <span class="op">/</span><span class="st"> </span>std.error)))</a>
-<a class="sourceLine" id="cb71-9" title="9">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb71-10" title="10">    pred &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">estimate =</span> <span class="ot">NA</span>, <span class="dt">std.error =</span> <span class="ot">NA</span>, <span class="dt">conf.low =</span> <span class="ot">NA</span>, <span class="dt">conf.high =</span> <span class="ot">NA</span>, <span class="dt">p.value =</span> <span class="ot">NA</span>, <span class="dt">error =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb71-11" title="11">  }</a>
-<a class="sourceLine" id="cb71-12" title="12">  pred</a>
-<a class="sourceLine" id="cb71-13" title="13">}</a>
-<a class="sourceLine" id="cb71-14" title="14"></a>
-<a class="sourceLine" id="cb71-15" title="15">rr_mirrored &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
-<a class="sourceLine" id="cb71-16" title="16">  fit  &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">rrreg</span>(Y_mirrored <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> data, <span class="dt">p =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">design =</span> <span class="st">&quot;mirrored&quot;</span>))</a>
-<a class="sourceLine" id="cb71-17" title="17">  pred &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">as.data.frame</span>(<span class="kw">predict</span>(fit, <span class="dt">avg =</span> <span class="ot">TRUE</span>, <span class="dt">quasi.bayes =</span> <span class="ot">TRUE</span>)))</a>
-<a class="sourceLine" id="cb71-18" title="18">  <span class="cf">if</span>(<span class="kw">class</span>(fit) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">class</span>(pred) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span>) {</a>
-<a class="sourceLine" id="cb71-19" title="19">    <span class="kw">names</span>(pred) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;std.error&quot;</span>, <span class="st">&quot;conf.low&quot;</span>, <span class="st">&quot;conf.high&quot;</span>)</a>
-<a class="sourceLine" id="cb71-20" title="20">    pred<span class="op">$</span>p.value &lt;-<span class="st"> </span><span class="kw">with</span>(pred, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span><span class="kw">abs</span>(estimate <span class="op">/</span><span class="st"> </span>std.error)))</a>
-<a class="sourceLine" id="cb71-21" title="21">  } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb71-22" title="22">    pred &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">estimate =</span> <span class="ot">NA</span>, <span class="dt">std.error =</span> <span class="ot">NA</span>, <span class="dt">conf.low =</span> <span class="ot">NA</span>, <span class="dt">conf.high =</span> <span class="ot">NA</span>, <span class="dt">p.value =</span> <span class="ot">NA</span>, <span class="dt">error =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb71-23" title="23">  }</a>
-<a class="sourceLine" id="cb71-24" title="24">  pred</a>
-<a class="sourceLine" id="cb71-25" title="25">}</a>
-<a class="sourceLine" id="cb71-26" title="26"></a>
-<a class="sourceLine" id="cb71-27" title="27">proportion_shy &lt;-<span class="st"> </span><span class="fl">.06</span></a>
-<a class="sourceLine" id="cb71-28" title="28"></a>
-<a class="sourceLine" id="cb71-29" title="29">rr_design &lt;-</a>
-<a class="sourceLine" id="cb71-30" title="30"><span class="st">  </span><span class="kw">declare_population</span>(</a>
-<a class="sourceLine" id="cb71-31" title="31">    <span class="dt">N =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb71-32" title="32">    </a>
-<a class="sourceLine" id="cb71-33" title="33">    <span class="co"># true trump vote (unobservable)</span></a>
-<a class="sourceLine" id="cb71-34" title="34">    <span class="dt">truthful_trump_vote =</span> <span class="kw">draw_binary</span>(.<span class="dv">45</span>, N),</a>
-<a class="sourceLine" id="cb71-35" title="35">    </a>
-<a class="sourceLine" id="cb71-36" title="36">    <span class="co"># shy voter (unobservable)</span></a>
-<a class="sourceLine" id="cb71-37" title="37">    <span class="dt">shy =</span> <span class="kw">draw_binary</span>(proportion_shy, N),</a>
-<a class="sourceLine" id="cb71-38" title="38">    </a>
-<a class="sourceLine" id="cb71-39" title="39">    <span class="co"># Direct question response (1 if Trump supporter and not shy, 0 otherwise)</span></a>
-<a class="sourceLine" id="cb71-40" title="40">    <span class="dt">Y_direct =</span> <span class="kw">as.numeric</span>(truthful_trump_vote <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>shy <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-41" title="41"><span class="st">  </span></a>
-<a class="sourceLine" id="cb71-42" title="42"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">sensitive_item_proportion =</span> <span class="kw">mean</span>(truthful_trump_vote)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-43" title="43"><span class="st">  </span></a>
-<a class="sourceLine" id="cb71-44" title="44"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y_forced_known <span class="op">~</span><span class="st"> </span>(dice <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>(dice <span class="op">%in%</span><span class="st"> </span><span class="dv">2</span><span class="op">:</span><span class="dv">5</span>) <span class="op">*</span><span class="st"> </span>truthful_trump_vote <span class="op">+</span><span class="st"> </span>(dice <span class="op">==</span><span class="st"> </span><span class="dv">6</span>) <span class="op">*</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">assignment_variable =</span> <span class="st">&quot;dice&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-45" title="45"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y_mirrored <span class="op">~</span><span class="st"> </span>(coin <span class="op">==</span><span class="st"> &quot;heads&quot;</span>) <span class="op">*</span><span class="st"> </span>truthful_trump_vote <span class="op">+</span><span class="st"> </span>(coin <span class="op">==</span><span class="st"> &quot;tails&quot;</span>) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>truthful_trump_vote), <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;heads&quot;</span>, <span class="st">&quot;tails&quot;</span>), <span class="dt">assignment_variable =</span> <span class="st">&quot;coin&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-46" title="46"><span class="st">  </span></a>
-<a class="sourceLine" id="cb71-47" title="47"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_each =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">6</span>, <span class="dv">6</span>), <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">assignment_variable =</span> <span class="st">&quot;dice&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-48" title="48"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_each =</span> <span class="kw">c</span>(<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>), <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;heads&quot;</span>, <span class="st">&quot;tails&quot;</span>), <span class="dt">assignment_variable =</span> <span class="st">&quot;coin&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-49" title="49"><span class="st">  </span></a>
-<a class="sourceLine" id="cb71-50" title="50"><span class="st">  </span><span class="kw">declare_reveal</span>(Y_forced_known, dice) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-51" title="51"><span class="st">  </span><span class="kw">declare_reveal</span>(Y_mirrored, coin) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-52" title="52"><span class="st">  </span></a>
-<a class="sourceLine" id="cb71-53" title="53"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(rr_forced_known), <span class="dt">label =</span> <span class="st">&quot;forced_known&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;sensitive_item_proportion&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(rr_mirrored), <span class="dt">label =</span> <span class="st">&quot;mirrored&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;sensitive_item_proportion&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb71-55" title="55"><span class="st">  </span><span class="kw">declare_estimator</span>(Y_direct <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="st">&quot;(Intercept)&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;direct&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;sensitive_item_proportion&quot;</span>)</a>
-<a class="sourceLine" id="cb71-56" title="56"></a>
-<a class="sourceLine" id="cb71-57" title="57">rr_design &lt;-<span class="st"> </span><span class="kw">set_diagnosands</span>(rr_design, <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(<span class="dt">select =</span> <span class="kw">c</span>(mean_estimate, bias, rmse, power)))</a></code></pre></div>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1">rr_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(rr_design, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
-<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" title="1"><span class="kw">kable</span>(<span class="kw">reshape_diagnosis</span>(rr_diagnosis))</a></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" title="1"><span class="kw">library</span>(rr)</a>
+<a class="sourceLine" id="cb75-2" title="2"></a>
+<a class="sourceLine" id="cb75-3" title="3">rr_forced_known &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb75-4" title="4">  fit  &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">rrreg</span>(Y_forced_known <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> data, <span class="dt">p =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">p0 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">6</span>, <span class="dt">p1 =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">6</span>, <span class="dt">design =</span> <span class="st">&quot;forced-known&quot;</span>))</a>
+<a class="sourceLine" id="cb75-5" title="5">  pred &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">as.data.frame</span>(<span class="kw">predict</span>(fit, <span class="dt">avg =</span> <span class="ot">TRUE</span>, <span class="dt">quasi.bayes =</span> <span class="ot">TRUE</span>)))</a>
+<a class="sourceLine" id="cb75-6" title="6">  <span class="cf">if</span>(<span class="kw">class</span>(fit) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">class</span>(pred) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span>) {</a>
+<a class="sourceLine" id="cb75-7" title="7">    <span class="kw">names</span>(pred) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;std.error&quot;</span>, <span class="st">&quot;conf.low&quot;</span>, <span class="st">&quot;conf.high&quot;</span>)</a>
+<a class="sourceLine" id="cb75-8" title="8">    pred<span class="op">$</span>p.value &lt;-<span class="st"> </span><span class="kw">with</span>(pred, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span><span class="kw">abs</span>(estimate <span class="op">/</span><span class="st"> </span>std.error)))</a>
+<a class="sourceLine" id="cb75-9" title="9">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb75-10" title="10">    pred &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">estimate =</span> <span class="ot">NA</span>, <span class="dt">std.error =</span> <span class="ot">NA</span>, <span class="dt">conf.low =</span> <span class="ot">NA</span>, <span class="dt">conf.high =</span> <span class="ot">NA</span>, <span class="dt">p.value =</span> <span class="ot">NA</span>, <span class="dt">error =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb75-11" title="11">  }</a>
+<a class="sourceLine" id="cb75-12" title="12">  pred</a>
+<a class="sourceLine" id="cb75-13" title="13">}</a>
+<a class="sourceLine" id="cb75-14" title="14"></a>
+<a class="sourceLine" id="cb75-15" title="15">rr_mirrored &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</a>
+<a class="sourceLine" id="cb75-16" title="16">  fit  &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">rrreg</span>(Y_mirrored <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">data =</span> data, <span class="dt">p =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">design =</span> <span class="st">&quot;mirrored&quot;</span>))</a>
+<a class="sourceLine" id="cb75-17" title="17">  pred &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">as.data.frame</span>(<span class="kw">predict</span>(fit, <span class="dt">avg =</span> <span class="ot">TRUE</span>, <span class="dt">quasi.bayes =</span> <span class="ot">TRUE</span>)))</a>
+<a class="sourceLine" id="cb75-18" title="18">  <span class="cf">if</span>(<span class="kw">class</span>(fit) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">class</span>(pred) <span class="op">!=</span><span class="st"> &quot;try-error&quot;</span>) {</a>
+<a class="sourceLine" id="cb75-19" title="19">    <span class="kw">names</span>(pred) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;estimate&quot;</span>, <span class="st">&quot;std.error&quot;</span>, <span class="st">&quot;conf.low&quot;</span>, <span class="st">&quot;conf.high&quot;</span>)</a>
+<a class="sourceLine" id="cb75-20" title="20">    pred<span class="op">$</span>p.value &lt;-<span class="st"> </span><span class="kw">with</span>(pred, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span><span class="kw">abs</span>(estimate <span class="op">/</span><span class="st"> </span>std.error)))</a>
+<a class="sourceLine" id="cb75-21" title="21">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb75-22" title="22">    pred &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">estimate =</span> <span class="ot">NA</span>, <span class="dt">std.error =</span> <span class="ot">NA</span>, <span class="dt">conf.low =</span> <span class="ot">NA</span>, <span class="dt">conf.high =</span> <span class="ot">NA</span>, <span class="dt">p.value =</span> <span class="ot">NA</span>, <span class="dt">error =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb75-23" title="23">  }</a>
+<a class="sourceLine" id="cb75-24" title="24">  pred</a>
+<a class="sourceLine" id="cb75-25" title="25">}</a>
+<a class="sourceLine" id="cb75-26" title="26"></a>
+<a class="sourceLine" id="cb75-27" title="27">proportion_shy &lt;-<span class="st"> </span><span class="fl">.06</span></a>
+<a class="sourceLine" id="cb75-28" title="28"></a>
+<a class="sourceLine" id="cb75-29" title="29">rr_design &lt;-</a>
+<a class="sourceLine" id="cb75-30" title="30"><span class="st">  </span><span class="kw">declare_population</span>(</a>
+<a class="sourceLine" id="cb75-31" title="31">    <span class="dt">N =</span> <span class="dv">100</span>, </a>
+<a class="sourceLine" id="cb75-32" title="32">    </a>
+<a class="sourceLine" id="cb75-33" title="33">    <span class="co"># true trump vote (unobservable)</span></a>
+<a class="sourceLine" id="cb75-34" title="34">    <span class="dt">truthful_trump_vote =</span> <span class="kw">draw_binary</span>(.<span class="dv">45</span>, N),</a>
+<a class="sourceLine" id="cb75-35" title="35">    </a>
+<a class="sourceLine" id="cb75-36" title="36">    <span class="co"># shy voter (unobservable)</span></a>
+<a class="sourceLine" id="cb75-37" title="37">    <span class="dt">shy =</span> <span class="kw">draw_binary</span>(proportion_shy, N),</a>
+<a class="sourceLine" id="cb75-38" title="38">    </a>
+<a class="sourceLine" id="cb75-39" title="39">    <span class="co"># Direct question response (1 if Trump supporter and not shy, 0 otherwise)</span></a>
+<a class="sourceLine" id="cb75-40" title="40">    <span class="dt">Y_direct =</span> <span class="kw">as.numeric</span>(truthful_trump_vote <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>shy <span class="op">==</span><span class="st"> </span><span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-41" title="41"><span class="st">  </span></a>
+<a class="sourceLine" id="cb75-42" title="42"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">sensitive_item_proportion =</span> <span class="kw">mean</span>(truthful_trump_vote)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-43" title="43"><span class="st">  </span></a>
+<a class="sourceLine" id="cb75-44" title="44"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y_forced_known <span class="op">~</span><span class="st"> </span>(dice <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">*</span><span class="st"> </span><span class="dv">0</span> <span class="op">+</span><span class="st"> </span>(dice <span class="op">%in%</span><span class="st"> </span><span class="dv">2</span><span class="op">:</span><span class="dv">5</span>) <span class="op">*</span><span class="st"> </span>truthful_trump_vote <span class="op">+</span><span class="st"> </span>(dice <span class="op">==</span><span class="st"> </span><span class="dv">6</span>) <span class="op">*</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">assignment_variable =</span> <span class="st">&quot;dice&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-45" title="45"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y_mirrored <span class="op">~</span><span class="st"> </span>(coin <span class="op">==</span><span class="st"> &quot;heads&quot;</span>) <span class="op">*</span><span class="st"> </span>truthful_trump_vote <span class="op">+</span><span class="st"> </span>(coin <span class="op">==</span><span class="st"> &quot;tails&quot;</span>) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>truthful_trump_vote), <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;heads&quot;</span>, <span class="st">&quot;tails&quot;</span>), <span class="dt">assignment_variable =</span> <span class="st">&quot;coin&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-46" title="46"><span class="st">  </span></a>
+<a class="sourceLine" id="cb75-47" title="47"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_each =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">6</span>, <span class="dv">6</span>), <span class="dt">conditions =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, <span class="dt">assignment_variable =</span> <span class="st">&quot;dice&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-48" title="48"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">prob_each =</span> <span class="kw">c</span>(<span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>), <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;heads&quot;</span>, <span class="st">&quot;tails&quot;</span>), <span class="dt">assignment_variable =</span> <span class="st">&quot;coin&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-49" title="49"><span class="st">  </span></a>
+<a class="sourceLine" id="cb75-50" title="50"><span class="st">  </span><span class="kw">declare_reveal</span>(Y_forced_known, dice) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-51" title="51"><span class="st">  </span><span class="kw">declare_reveal</span>(Y_mirrored, coin) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-52" title="52"><span class="st">  </span></a>
+<a class="sourceLine" id="cb75-53" title="53"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(rr_forced_known), <span class="dt">label =</span> <span class="st">&quot;forced_known&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;sensitive_item_proportion&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-54" title="54"><span class="st">  </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(rr_mirrored), <span class="dt">label =</span> <span class="st">&quot;mirrored&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;sensitive_item_proportion&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb75-55" title="55"><span class="st">  </span><span class="kw">declare_estimator</span>(Y_direct <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">model =</span> lm_robust, <span class="dt">term =</span> <span class="st">&quot;(Intercept)&quot;</span>, <span class="dt">label =</span> <span class="st">&quot;direct&quot;</span>, <span class="dt">estimand =</span> <span class="st">&quot;sensitive_item_proportion&quot;</span>)</a>
+<a class="sourceLine" id="cb75-56" title="56"></a>
+<a class="sourceLine" id="cb75-57" title="57">rr_design &lt;-<span class="st"> </span><span class="kw">set_diagnosands</span>(rr_design, <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(<span class="dt">select =</span> <span class="kw">c</span>(mean_estimate, bias, rmse, power)))</a></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1">rr_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(rr_design, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" title="1"><span class="kw">kable</span>(<span class="kw">reshape_diagnosis</span>(rr_diagnosis))</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -985,8 +988,8 @@ NA
 </table>
 <div id="bias-variance-tradeoff-1" class="section level4">
 <h4><span class="header-section-number">15.2.5.1</span> Bias-variance tradeoff</h4>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1">rr_designs &lt;-<span class="st"> </span><span class="kw">redesign</span>(rr_design, <span class="dt">proportion_shy =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="fl">0.5</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">N =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">500</span>, <span class="dt">to =</span> <span class="dv">5000</span>, <span class="dt">by =</span> <span class="dv">500</span>))</a>
-<a class="sourceLine" id="cb74-2" title="2">rr_tradeoff_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(rr_designs, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1">rr_designs &lt;-<span class="st"> </span><span class="kw">redesign</span>(rr_design, <span class="dt">proportion_shy =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="fl">0.5</span>, <span class="dt">by =</span> <span class="fl">0.05</span>), <span class="dt">N =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">500</span>, <span class="dt">to =</span> <span class="dv">5000</span>, <span class="dt">by =</span> <span class="dv">500</span>))</a>
+<a class="sourceLine" id="cb78-2" title="2">rr_tradeoff_diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(rr_designs, <span class="dt">sims =</span> sims, <span class="dt">bootstrap_sims =</span> b_sims)</a></code></pre></div>
 <!-- ```{r} -->
 <!-- # make a plot -->
 <!-- rr_tradeoff_diagnosis %>%  -->

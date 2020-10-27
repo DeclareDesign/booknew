@@ -282,6 +282,14 @@ ggplot(simulations, aes(x = estimate, y = as.factor(sim_ID)), color = dd_light_b
 
 diagnosis
 
+estimates <- with(diagnosis$simulations_df, estimate)
+mean_estimate <- mean(estimates)
+n_sim <- length(estimates)
+SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((estimates - mean_estimate)^2)))
+SE_bias
+
+diagnosis$diagnosands_df %>% pull("se(bias)")
+
 n <- 50
 
 points_df <- tibble(rho = sqrt(runif(n)),
