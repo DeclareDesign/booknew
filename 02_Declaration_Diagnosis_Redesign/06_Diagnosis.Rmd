@@ -433,27 +433,28 @@ diagnosis
 
 ### Interpreting diagnosands
 
-So you're happy with your design declaration and you decide to simulate the design 1000 times to see if it's biased. You calculate a bias of .02. Unsure whether to be concerned, you simulate the design another 1000 times, and you get a bias of .01. Should you be concerned now? After all, each simulation was randomly generated, so it's normal to get estimates of bias that vary. And .01 doesn't seem that far from zero. Given the random variation in the simulations and how large the estimate and estimand are, maybe it was even quite likely to get .01 or .02 bias even if the true bias is zero. 
+Say you decide to simulate the design 1000 times to see if it's biased. After a few seconds, the computer spits out bias of .02. Unsure whether to be concerned, you simulate the design another 1000 times. Now the computer says the bias is .01. Since each simulation was randomly generated, you should expect to get estimates of bias that vary. Given the random variation in the simulations and how large the estimate and estimand are, maybe it was even quite likely to get .01 or .02 bias even if the true bias is zero. Or maybe your design is biased.
 
-Of course, this is a familiar null hypothesis testing problem---we have an estimate (here, of bias) that varies depending on how many and which simulations we run, and we want to quantify that variation in order to make a decision about what to infer from the bias we estimated. The simulation standard error (or, Monte Carlo standard error) of a diagnosand is an estimate of the variation in the diagnosad created by the simulation procedure. If that estimated variation is high relative to the diagnosand, then we need to increase the number of simulations. Following the example from the previous paragraph, if the simulation standard error was .02, then the simulation we ran was consistent with negative, positive, and no bias given the point estimate of .01. However, if we estimate a simulation standard error of .0001, then the .01 or .02 bias estimates give real cause for concern, since they were so unlikely to arise if the true bias were zero. 
+As with frequentist statistics, we have to separate signal from noise. We have an estimate (here, of the bias diagnosand) that varies depending on how each simulation turns out. We want to quantify that variation in order to make a decision about whether the estimated bias is large enough to be significant. The simulation standard error (or, Monte Carlo standard error) is an estimate of the variation created by the simulation procedure. If that estimated variation is high relative to the estimated diagnosand, then we need to increase the number of simulations. 
+<!-- Following the example from the previous paragraph, if the simulation standard error was .015, then the simulation we ran was consistent with negative, positive, and no bias given the point estimate of .01. However, if we estimate a simulation standard error of .0001, then the .01 or .02 bias estimates give real cause for concern, since they were so unlikely to arise if the true bias were zero.  -->
 
-@morrisetal2019 provide a range of helpful formulas to estimate simulation standard errors of diagnosands under certain conditions. For example, noting the point estimate in the $i$'th simulation $a^d_i$, the total number of simulations $n_{sim}$, and the average of the point estimates across simulations $\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i$, if the estimand is constant and  $a^d_i$ is independently and normally distributed, the simulation standard error for bias can be calculated as $\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^n_{sim}_{i = 1} (a^d_i - \bar{a^d})^2}$. Here is how you can do it in code:
+@morrisetal2019 provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define $a^d_i$ as the point estimate in the $i$'th simulation, $n_{sim}$ as the total number of simulations, and the average of the point estimates across simulations as $\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i$. Then, if the estimand is a constant and $a^d_i$ is independently and normally distributed, the simulation standard error for bias can be calculated as $\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}$. Here is how you can do it in code:
 
 ```{r}
-estimates <- with(diagnosis$simulations_df, estimate)
-mean_estimate <- mean(estimates)
-n_sim <- length(estimates)
-SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((estimates - mean_estimate)^2)))
+simulated_estimates <- with(diagnosis$simulations_df, estimate)
+mean_estimate <- mean(simulated_estimates)
+n_sim <- length(simulated_estimates)
+SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((simulated_estimates - mean_estimate)^2)))
 SE_bias
 ```
 
-Rather than using analytic formulas, we recommend using an approach called bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don't have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your $n_{sims}$ diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resample. The standard deviation of the resulting distribution of diagnosand gives you an estimate of its sampling standard error. `DeclareDesign` does this by default whenever the `diagnose_design()` function is called. The numbers are reported in the parentheses in the table above. Here's the standard error for bias calculated by bootstrap resampling 100 times:
+Of course, this estimate of the variance relies on assumptions and won't work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don't have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your $n_{sims}$ diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. `DeclareDesign` does nonparametric bootstrapping by default whenever the `diagnose_design()` function is called. The numbers are reported in the parentheses under the diagnosand estimates in the table above. Here's the simulation standard error for bias calculated by bootstrap resampling 100 times:
 
 ```{r}
 diagnosis$diagnosands_df %>% pull("se(bias)")
 ```
 
-As you can see, it gets us very close to the correct answer given by the analytic formula.
+As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics.
 
 ### How many simulations to run
 
