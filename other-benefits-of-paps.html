@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Formalizing MIDA | Research Design: Declare, Diagnose, Redesign</title>
+  <title>22.3 Other benefits of PAPS | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Formalizing MIDA | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="22.3 Other benefits of PAPS | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Formalizing MIDA | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="22.3 Other benefits of PAPS | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="part-i-exercises.html"/>
-<link rel="next" href="example-1.html"/>
+<link rel="prev" href="debates-over-the-value-of-paps.html"/>
+<link rel="next" href="ethical-review.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -484,92 +484,77 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="formalizing-mida" class="section level1">
-<h1><span class="header-section-number">Chapter 5</span> Formalizing MIDA</h1>
-<!-- make sure to rename the section title below -->
-<p>In Chapter 2, we gave a high-level overview of our framework for describing research designs in terms of their models, inquiries, data strategies, and answer strategies, our process for diagnosing their properties, and a general purpose approach for improving them to better fit research tasks. Now in this chapter, we place our approach on firmal formal footing. To do so, we employ elements from Pearl’s <span class="citation">(<a href="#ref-Pearl2009">2009</a>)</span> approach to causal modeling (directed acyclic graphs, or DAGs for short), which provides a syntax for mapping design inputs to design outputs. We also use the potential outcomes framework as presented, for example, in <span class="citation">Imbens and Rubin (<a href="#ref-Imbens2015">2015</a>)</span>, which many social scientists use to clarify their inferential targets.</p>
-<p>Our goal here is not formalization for formalization’s sake. Describing a research design as a DAG helps us to see the fundamental symmetries across the theoretical (M and I) and empirical (D and A) halves of a research design. A recurring theme of our book is that research designs tend to be stronger when the relationship of M to I is mirrored by the relationship of D to A; the aim of this chapter is to make this somewhat mystical claim more concrete.</p>
-<p>We define a research design as <span class="math inline">\(\Delta\)</span>, with four elements <span class="math inline">\(&lt;M,I,D,A&gt;\)</span>. Describing a research design entails “declaring” each of these four elements.</p>
-<p><span class="math inline">\(M\)</span> is a theoretical <strong>model</strong> of how the world works. Following Pearl’s definition of a probabilistic causal model, <span class="math inline">\(M\)</span> contains three core elements. The first is a specification of the variables <span class="math inline">\(X\)</span> about which research is being conducted. This includes endogenous and exogenous variables (<span class="math inline">\(V\)</span> and <span class="math inline">\(U\)</span> respectively) and the ranges of these variables. In the formal literature this is sometimes called the <em>signature</em> of a model <span class="citation">(Halpern <a href="#ref-halpern2000">2000</a>)</span>. The second element (<span class="math inline">\(F\)</span>) a specification of how each endogenous variable depends on other variables. These can be considered functional relations or, as in <span class="citation">Imbens and Rubin (<a href="#ref-Imbens2015">2015</a>)</span>, potential outcomes. The third and final element is a probability distribution over exogenous variables, written <span class="math inline">\(P(U)\)</span>. Since the model is probabalistic, we can think of <span class="math inline">\(m\)</span> as a <em>draw</em> from the model <span class="math inline">\(M\)</span>.</p>
-<p>The <strong>inquiry</strong> <span class="math inline">\(I\)</span> is a summary of the variables <span class="math inline">\(X\)</span>, perhaps given interventions on some variables. An inquiry might be the average value of an outcome <span class="math inline">\(Y\)</span>: <span class="math inline">\(\mathbb{E}[Y] = \int{Y*Pr(Y)}\)</span>, or the average value of the outcome conditional on the value of a treatment <span class="math inline">\(Z\)</span>: <span class="math inline">\(\mathbb{E}[Y|Z=1] = \int{Y*Pr(Y|Z=1)}\)</span>. Using Pearl’s notation we can distinguish between descriptive inquiries and causal inquiries. Causal inquiries are those that summarise distributions that would arise under interventions, as indicated by the <span class="math inline">\(do()\)</span> operator, e.g., <span class="math inline">\(\Pr(Y | do(Z = 1))\)</span>. Descriptive inquiries summarise distributions that arise without intervention, such as <span class="math inline">\(\Pr(Y | Z =1)\)</span>.</p>
-<p>We let <span class="math inline">\(a^m\)</span> denote the answer to <span class="math inline">\(I\)</span> . Conditional on the model, <span class="math inline">\(a^m\)</span> is the value of the estimand, the quantity that the researcher wants to learn about. The connection of <span class="math inline">\(a^m\)</span> to the model can be seen in the following relationship: <span class="math inline">\(a^m = I(m)\)</span>.</p>
-<p>As the saying goes, models are wrong but some may perhaps be useful. We denote the <em>true</em> causal model of the world as <span class="math inline">\(W\)</span> and the realized world <span class="math inline">\(w\)</span> as a draw from this true causal model. The true answer, then, is <span class="math inline">\(a^w = I(w)\)</span>. The answer under the model <span class="math inline">\(a^m\)</span> may be close or far from the true value <span class="math inline">\(a^w\)</span>, which is to say it could be wrong. If the model <span class="math inline">\(M\)</span> is far from the <span class="math inline">\(W\)</span>, then of course <span class="math inline">\(a^m\)</span> need not be correct. We note that <span class="math inline">\(a^w\)</span> might be undefined, since inquiries can only be stated in terms of theoretical models. If the theoretical model is wrong enough, then the inquiry might be nonsensical when applied to the real world.</p>
-<p>A <strong>data</strong> strategy, <span class="math inline">\(D\)</span>, generates data <span class="math inline">\(d\)</span>. Data <span class="math inline">\(d\)</span> arises, under model <span class="math inline">\(M\)</span> with probability <span class="math inline">\(P_M(d|D)\)</span>. The data strategy includes sampling strategies and assignment strategies, which we denote with <span class="math inline">\(P_S\)</span> and <span class="math inline">\(P_Z\)</span> respectively. Measurement techniques are also a part of data strategies and can be thought of as a selection of observable variables that carry information about unobservable variables. The data strategy operates on <span class="math inline">\(w\)</span> to produce the observed data: <span class="math inline">\(D(w) = d\)</span>.</p>
-<p>While <span class="math inline">\(M\)</span> reflects our beliefs about true underlying causal processes at work where <span class="math inline">\(D\)</span> is the procedure that results in the collection or creation of data. In this light, the phrase “data generating process” is imprecise. Scholars usually use the phrase “true DGP” to refer to <span class="math inline">\(M\)</span>, even though <span class="math inline">\(M\)</span> doesn’t create data, <span class="math inline">\(D\)</span> does when it is applied to the real world.</p>
-<p>The <strong>answer</strong> strategy, <span class="math inline">\(A\)</span> generates answer <span class="math inline">\(a^d\)</span> using data <span class="math inline">\(d\)</span>. We encode this relationship as <span class="math inline">\(A(d) = a^d\)</span>.</p>
-<p>The full set of causal relationships between <span class="math inline">\(M\)</span>, <span class="math inline">\(I\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span> with respect to <span class="math inline">\(m\)</span>, <span class="math inline">\(a^m\)</span>, <span class="math inline">\(d\)</span>, <span class="math inline">\(a^d\)</span>, <span class="math inline">\(w\)</span>, and <span class="math inline">\(a^w\)</span> can be seen in the DAG schematic representation of a research design.</p>
-<div class="figure"><span id="fig:worldandtheory"></span>
-<img src="book_files/figure-html/worldandtheory-1.png" alt="MIDA as a DAG" width="100%" />
-<p class="caption">
-Figure 5.1: MIDA as a DAG
-</p>
+<div id="other-benefits-of-paps" class="section level2">
+<h2><span class="header-section-number">22.3</span> Other benefits of PAPS</h2>
+<ul>
+<li>involving partners: agreeing on the analysis procedure ex ante reduces ex post conflict</li>
+<li>frontloading research design decisions (get more specific, identify problems)</li>
+<li>Anticipating what might go wrong: attrition, noncompliance, study failure, missing covariate data, etc.</li>
+<li>Faithful reanalysis. Reanalysts lose a degree of freedom in determining what an author might have intended by a given analysis.</li>
+<li>Easier design comparison. If a design is declared at the preanalysis plan phase, then it enables direct comparison with the design as implemented in the final write-up. Side-by-side comparison of the code neatly clarifies which design choices were made ex-ante and ex-post. Side-by-side comparison of the performance of a planned and implemented designs clarify under what conditions deviations from plans are defensible improvements.</li>
+<li>ethics (summarize and cite Jay’s ideas here: <a href="http://www.jasonlyall.com/wp-content/uploads/2020/08/PreregisterYourEthics.pdf" class="uri">http://www.jasonlyall.com/wp-content/uploads/2020/08/PreregisterYourEthics.pdf</a>)</li>
+<li>ethical outcomes are potential outcomes, so we need to think about them ex ante not just on the basis of revealed outcomes</li>
+</ul>
+<div id="countering-objections" class="section level3">
+<h3><span class="header-section-number">22.3.1</span> countering objections:</h3>
+<ul>
+<li><p>Time-consuming. Yes but in our experience we only pay this cost for failed studies. Fur successful studies, nearly all work that goes in to the pap pays off in terms of higher qualtity design, literal words we already wrote, and written-in-advance analysis code.</p></li>
+<li><p>Won’t stop determined cheaters. Yes – remember that the goal is not to prevent fraud, it’s to help <em>researchers</em> improve their designs. Science depends on trust.</p></li>
+<li><p>Replication is better (<span class="citation">Coffman and Niederle (<a href="#ref-Coffman2015">2015</a>)</span>). These are complements, not substitutes.</p></li>
+<li><p>I can’t preregister what I will do because I don’t know what I will find. That’s fine too, just write down how you will go about “finding” things so we (and YOU) can understand your own process.</p></li>
+</ul>
 </div>
-<p>Figure <a href="formalizing-mida.html#fig:worldandtheory">5.1</a> illustrates how a research design is a correspondence <span class="math inline">\(I(m) = a^m\)</span> and <span class="math inline">\(A(d) = a^d\)</span>. The theoretical half of a research design produces an answer to the inquiry <strong>in theory</strong>. The emprical half of a research design produces an <em>empirical estimate</em> of the answer to the inquiry.</p>
-<p>Neither answer is necessarily close to the truth <span class="math inline">\(a^w\)</span>, of course. And, as shown in the figure, the truth is not directly accessible either to us in theory or in empirics. Our gamble in empirical research however is that our theoretical models are close enough to the truth: that the truth is like the set of models we imagine in our model set. If indeed the truth can be thought of as one of the possible worlds in our model set then we have a simpler set of relations between theory and empirics, as shown in Figure X.</p>
-<!-- MH: Having some trouble understanding the distrinction between W and w. If w includes potential outcome functions, isn't it the true causal model? If W is the set of possible worlds, is that a subject of inquiry. For instance say our estimand is sd(ate) would that be a(W) rather than a(w). -->
-<!-- Think it worth having a second figure which shows just two panels:if indeed w \in M, then: -->
-<div class="figure"><span id="fig:worldandtheory2"></span>
-<img src="book_files/figure-html/worldandtheory2-1.png" alt="MIDA as a DAG" width="100%" />
-<p class="caption">
-Figure 5.2: MIDA as a DAG
-</p>
+<div id="other-thoughts" class="section level3">
+<h3><span class="header-section-number">22.3.2</span> Other thoughts</h3>
+<ul>
+<li>when is the right moment to write a pap?</li>
+<li>relationship to registered reports?</li>
+<li>SOPs</li>
+</ul>
 </div>
-<table>
-<colgroup>
-<col width="13%" />
-<col width="87%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Relationship</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(m = M()\)</span></td>
-<td><span class="math inline">\(m\)</span> is a draw from the theoretical causal model <span class="math inline">\(M\)</span></td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(a^m = I(m)\)</span></td>
-<td>the answer under the model <span class="math inline">\(a^m\)</span> is the inquiry applied to a draw from the model <span class="math inline">\(m\)</span></td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(w = W()\)</span></td>
-<td>the real world <span class="math inline">\(w\)</span> is a draw from the true causal model <span class="math inline">\(W\)</span> (unobservable)</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(a^w = I(w)\)</span></td>
-<td>the true answer <span class="math inline">\(a^w\)</span> is the inquiry were it applied to the real world <span class="math inline">\(w\)</span> (unobservable)</td>
-</tr>
-<tr class="odd">
-<td><span class="math inline">\(d = D(w)\)</span></td>
-<td>the realized dataset <span class="math inline">\(d\)</span> results from the data strategy applied to the real world <span class="math inline">\(w\)</span></td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(a^d = A(d)\)</span></td>
-<td>the empirical answer <span class="math inline">\(a^d\)</span> is the answer strategy applied to the dataset <span class="math inline">\(d\)</span></td>
-</tr>
-</tbody>
-</table>
-<p>The central crux of good research design is generated by the deep analogy of Models and Inquiries to Data and Answer Strategies. This analogy can guide many design decisions. The guidance that measurement procedures should be theoretically informed is an instance of the general point that data strategies should parallel theoretical models. The general preference for nonparametric estimation approaches over parametric procedures is an instance of the general point that answer strategies should parallel inquiries.</p>
-<p><span class="math display">\[
-M : I : : D : A
-\]</span></p>
-<p>The DAG also clarifies the main difference between the theoretical and emprical halves of research design is the introduction of reality. When we draw from <span class="math inline">\(M\)</span> to produce <span class="math inline">\(m\)</span>, we write <span class="math inline">\(M() = m\)</span> – the function has no inputs from outside the model because it is purely theoretical. When we draw from the <span class="math inline">\(D\)</span> to produce <span class="math inline">\(d\)</span>, we write <span class="math inline">\(D(w) = d\)</span> – the dataset <span class="math inline">\(d\)</span> that results from the data strategy <span class="math inline">\(D\)</span> depends on the actual state of the world <span class="math inline">\(w\)</span>. Empirical researchers must be theorists too: our goal is to choose our theoretical model <span class="math inline">\(M\)</span> such that <span class="math inline">\(m\)</span> is as close to <span class="math inline">\(w\)</span> as possible.</p>
-<p>Idea we want to express here: M:I::D:A, but M and D are different. How are they different? The first way is that M is theoretical and D is empirical – D() has w as an argument. The second way is that there are two “fundamental” problems facing empirical research. The first is the fundamental problem of causal inference – we can’t observe units in counterfactual states. The second is the fundmental problem of descriptive inference – we can’t observe the latent Y*, only Y as measured.</p>
-<p>With a design declared in terms of MIDA, we can then diagnose its properties, and redesign to find an optimal design subject to constraints. Design diagnosis is the process of simulating both <span class="math inline">\(I(m) = a^m\)</span> and <span class="math inline">\(A(d) = a^d\)</span> over many draws from <span class="math inline">\(M()\)</span> and <span class="math inline">\(D(m)\)</span>, and comparing them. In other words, diagnosis is the process of learning the value of a diagnosand for a single design, often under multiple specifications of M to assess robustness to alternative models. Redesign is the process of <em>changing</em> parts of D and A in order to learn how the diagnosands change. The redesign process is complete when a research selects the best (or one of the best) D and A among the feasible set, as measured by the changing values of the diagnosand.</p>
+<div id="citations-on-paps" class="section level3">
+<h3><span class="header-section-number">22.3.3</span> citations on paps</h3>
+<ul>
+<li><span class="citation">Casey, Glennerster, and Miguel (<a href="#ref-Casey2012">2012</a>)</span>: early entry</li>
+<li><span class="citation">Olken (<a href="#ref-Olken2015">2015</a>)</span>: halfway skeptical</li>
+<li><span class="citation">Green and Lin (<a href="#ref-Green2015">2016</a>)</span>: Standard operating procedures</li>
+<li><span class="citation">Christensen and Miguel (<a href="#ref-Christensen2018">2018</a>)</span>: review</li>
+<li><span class="citation">Coffman and Niederle (<a href="#ref-Coffman2015">2015</a>)</span>: a skeptical take (prefer replications).</li>
+<li><span class="citation">Humphreys, Sierra, and Windt (<a href="#ref-Humphreys2013a">2013</a>)</span>: nonbinding</li>
+<li><span class="citation">Miguel et al. (<a href="#ref-Miguel2014">2014</a>)</span>: distinguishes between disclosure and PAP</li>
+<li><span class="citation">Ofosu and Posner (<a href="#ref-Ofosu2020">2020</a>)</span>: apparently paps hinder publication?</li>
+</ul>
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
+</div>
+<!-- </div> -->
 <h3>References</h3>
 <div id="refs" class="references">
-<div id="ref-halpern2000">
-<p>Halpern, Joseph Y. 2000. “Axiomatizing Causal Reasoning.” <em>Journal of Artificial Intelligence Research</em> 12: 317–37.</p>
+<div id="ref-Casey2012">
+<p>Casey, Katherine, Rachel Glennerster, and Edward Miguel. 2012. “Reshaping Institutions: Evidence on Aid Impacts Using a Pre-Analysis Plan.” <em>The Quarterly Journal of Economics</em> 127 (4): 1755–1812.</p>
 </div>
-<div id="ref-Imbens2015">
-<p>Imbens, Guido W., and Donald B. Rubin. 2015. <em>Causal Inference in Statistics, Social, and Biomedical Sciences</em>. Cambridge: Cambridge University Press.</p>
+<div id="ref-Christensen2018">
+<p>Christensen, Garret, and Edward Miguel. 2018. “Transparency, Reproducibility, and the Credibility of Economics Research.” <em>Journal of Economic Literature</em> 56 (3): 920–80. <a href="https://doi.org/10.1257/jel.20171350">https://doi.org/10.1257/jel.20171350</a>.</p>
 </div>
-<div id="ref-Pearl2009">
-<p>Pearl, Judea. 2009. <em>Causality</em>. Cambridge: Cambridge: Cambridge University Press.</p>
+<div id="ref-Coffman2015">
+<p>Coffman, Lucas C., and Muriel Niederle. 2015. “Pre-Analysis Plans Have Limited Upside, Especially Where Replications Are Feasible.” <em>The Journal of Economic Perspectives</em> 29 (3): 81–97.</p>
+</div>
+<div id="ref-Green2015">
+<p>Green, Donald P., and Winston Lin. 2016. “Standard Operating Procedures: A Safety Net for Pre-Analysis Plans.” <em>PS: Political Science &amp; Politics</em> 49 (3): 495–99.</p>
+</div>
+<div id="ref-Humphreys2013a">
+<p>Humphreys, Macartan, Raul de la Sierra, and Peter van der Windt. 2013. “Fishing, Commitment, and Communication: A Proposal for Comprehensive Nonbinding Research Registration.” <em>Political Analysis</em> 21 (1): 1–20.</p>
+</div>
+<div id="ref-Miguel2014">
+<p>Miguel, Edward, Colin Camerer, Katherine Casey, Joshua Cohen, Kevin M Esterling, Alan Gerber, Rachel Glennerster, et al. 2014. “Promoting Transparency in Social Science Research.” <em>Science</em> 343 (6166): 30.</p>
+</div>
+<div id="ref-Ofosu2020">
+<p>Ofosu, George K., and Daniel N. Posner. 2020. “Do Pre-Analysis Plans Hamper Publication?” <em>AEA Papers and Proceedings</em> 110 (May): 70–74.</p>
+</div>
+<div id="ref-Olken2015">
+<p>Olken, Benjamin A. 2015. “Promises and Perils of Pre-Analysis Plans.” <em>Journal of Economic Perspectives</em> 29 (3): 61–80.</p>
 </div>
 </div>
             </section>
@@ -577,8 +562,8 @@ M : I : : D : A
           </div>
         </div>
       </div>
-<a href="part-i-exercises.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="example-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="debates-over-the-value-of-paps.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ethical-review.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
