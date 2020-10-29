@@ -32,9 +32,9 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
--- can't learn causal effect
--- what can you learn? about Y0, about M, about se
--- bring in blog post
+<!-- -- can't learn causal effect -->
+<!-- -- what can you learn? about Y0, about M, about se -->
+<!-- -- bring in blog post -->
 
 The designs and results of past studies are important guides for selecting M, I, D, and A. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. However, researchers face a problem in being guided by past research: the research context and our inquiries often differ in at least subtle ways from any past study. Even when we are replicating a past study, we are collecting data in a different time period and if effects vary over time then aspects of M may differ from the original study. To deal with this, we often run pilot studies. These take many forms: focus groups to learn about features of M or to learn how to ask survey questions; small-scale tests of measurement tools to verify our data collection technology works; up to mini studies with the planned design but on a smaller scale. 
 
@@ -48,7 +48,7 @@ In the left panel is the sampling distribution of effect size estimates, i.e., a
 
 However, there is good news: we can learn a lot about the power of our main study from the pilot study, just not from the effect estimates. In the right panel of Figure XX, we estimate the minimum detectable effect size of a 500-unit main study, relying on the estimated standard deviation in the control group and the estimated standard deviation in the treatment group to calculate the estimated standard error of the effect estimate in the main study. We then calculate the minimum detectable effect size using the approximation from [@gelman2006data, pg. 441], 2.8 times the estimated standard error. We find that our estimates of the MDE for the full study are much more precise, tightly centered around 0.25. Since we don't know if that is larger or smaller than the true effect size, we then must make an argument based on past studies' effect sizes to justify whether that minimum size is sufficiently large or whether we should increase the sample size in order to detect even smaller effects. The reason the MDE is more precisely estimated is that the standard deviation of the control group is a much less variable estimate of the true standard deviation of the control potential outcome than the effect size estimate is of the true effect size. 
 
-```{r, echo = FALSE, fig.width = 3, fig.height = 1.5}
+```{r, echo = FALSE, fig.width = 6.5, fig.height = 3}
 sd_estimator <- function(data){
   data.frame(sd_y_0_hat = sd(data$Y[data$Z == 0]), sd_y_1_hat = sd(data$Y[data$Z == 1]))
 }
