@@ -1,0 +1,581 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Planning},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{Planning}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{planning}{%
+\section{Planning}\label{planning}}
+
+When embarking on a prospective research design, it is becoming standard
+practice in many research communities to publicly register a
+pre-analysis plans (PAP) prior to the implementation of some or all of
+the Data strategy. PAPs serve many functions, but most importantly, they
+clarify which design choices were made before data collection and which
+were made afterward. Sometimes -- perhaps everytime! -- we conduct a
+research study, aspects of \(M\), \(I\), \(D\), and \(A\) shift along
+the way. A concern is that they shift in ways that invalidate the
+apparent conclusions of the study. For example, ``\(p\)-hacking'' is the
+shady practice of trying out many regression specifications until the
+\(p\)-value associated with an important test attains statistical
+significance. PAPs help researchers to credibly communicate to skeptics
+when design decisions were made: if the regression specification was
+detailed in a PAP posted before any data were collected, the test cannot
+be the result of a \(p\)-hack.
+
+What belongs in a PAP? Thus far, the set of decisions that should be
+specified in a PAP remains remarkably unclear. PAP templates and
+checklists are proliferating, and the number of items they suggest range
+from nine to sixty. PAPs themselves are becoming longer and more
+detailed, with some in the American Economic Association (AEA) and
+Evidence in Governance and Politics (EGAP) study registries reaching
+hundreds of pages, as researchers seek to be ever more comprehensive.
+Some registries emphasize the registration of the hypotheses to be
+tested, while others emphasize the registration of the tests that will
+used. We read many PAPs -- it is often hard to assess whether these
+detailed plans actually contain the key analytically-relevant details.
+
+Our view is that, minimally, a PAP should include a design declaration.
+A good deal of the discussion of what goes in a PAP centers on the
+answer strategy \(A\) -- what estimator to use, what covariates to
+condition on, what subsets of the data to include. But of course we also
+need to know the details of \(D\) -- how units were sampled, how
+treatments were assigned, how the outcomes will be measured. We need to
+know about \(I\) because we need to know what the target of inference
+is\footnote{A major concern in medical trials is ``outcome switching,''
+  wherein the eventual report focuses on different health outcomes that
+  originally intended. When we switch outcomes, we switch inquiries!}.
+We need enough of \(M\) to describe \(I\) in sufficient detail. In
+short, a design declaration is what belongs in a PAP, because a design
+declaration specifies all of the analytically-relevent design decisions.
+
+In addition to a design declaration, a PAP should include mock analyses
+conducted on simulated data. If the design declaration is done formally
+in code, creating simulated data that resemble the eventual realized
+data is quite straightforward. We think researchers should run their
+Answer strategy on the mock data, creating mock figures and tables that
+will eventually be made with real data. In our experience, \emph{this}
+is the step that really causes researchers to think hard about all
+aspects of their design.
+
+Strictly speaking, preanalysis plans should include design declaration,
+but they do not \emph{require} design diagnosis. But since the design
+that is finally settled on as the design to be implemented is usually
+chosen as the result of a diagnosis, it can be informative to describe,
+in a preanalysis plan, the reasons why the particular design was chosen.
+For this reason, a PAP might include estimates of diagnosands like
+power, rmse, or bias. If a researcher writes in a PAP that the power to
+detect a very small effect is large, then if the study comes back null,
+the eventual writeup can much more credibly rule out ``low power'' as an
+explanation for the null. Moreover, ex ante design diagnosis
+communicates the assumptions under which they thought the design was a
+good one before they ran the study. These reasons are often the basis on
+which we convince skeptics of the value of the design, so writing them
+down \emph{before} the results are known increases the faith we put in
+them.
+
+\hypertarget{example}{%
+\subsection{Example}\label{example}}
+
+\begin{itemize}
+\tightlist
+\item
+  This section will be an example PAP.
+\item
+  We will take a (relatively simple) PAP from the EGAP website (with
+  permission) and declare the design in code.
+\item
+  We will make fake figures and tables using mock data
+\item
+  We will choose wisely, because we will use the same study for the
+  section on reconciliation. We want there to be a few differences
+  (enough to make the point) but that the differences don't shame the
+  author
+\item
+  Very open to suggestions on a good study.
+\end{itemize}
+
+Possibility: Bonilla and Tillery (2020) from the APSR on the effects of
+intersectional framing on support for the BLM movement. The takeaway is
+that the feminist and LGBTQ frames cause a decrease in support among the
+men in the sample, but not the women.
+
+This is a 4-arm (control vs.~three treatments) experiment among Black
+americans recruited via qualtrics. 4 dependent variables. Almost
+everything they do in the article and appendix was pre-registered. They
+don't do everything they said they would do (het fx by linked fate) but
+close. This study seems complex enough to be worth doing, but simple
+enough to make it seem ``easy'' to do design declaration. A takeaway is
+that the study was probably underpowered for most of the het fx
+estimation, a point that gets conceeded post-hoc in the article.
+
+The data are posted on dataverse, so the reconciliation section will
+work ok too.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model <-}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_population}\NormalTok{(}
+    \DataTypeTok{N =} \DecValTok{800}\NormalTok{,}
+    \DataTypeTok{female =} \KeywordTok{rbinom}\NormalTok{(N, }\DecValTok{1}\NormalTok{, }\DataTypeTok{prob =} \FloatTok{0.51}\NormalTok{),}
+    \DataTypeTok{lgbtq =} \KeywordTok{rbinom}\NormalTok{(N, }\DecValTok{1}\NormalTok{, }\DataTypeTok{prob =} \FloatTok{0.05}\NormalTok{),}
+    \DataTypeTok{age =} \KeywordTok{sample}\NormalTok{(}\DecValTok{18}\OperatorTok{:}\DecValTok{80}\NormalTok{, N, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{),}
+    \DataTypeTok{religiosity =} \KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{6}\NormalTok{, N, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{),}
+    \DataTypeTok{income =} \KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{12}\NormalTok{, N, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{),}
+    \DataTypeTok{college =} \KeywordTok{rbinom}\NormalTok{(N, }\DecValTok{1}\NormalTok{, }\DataTypeTok{prob =} \FloatTok{0.5}\NormalTok{),}
+    \DataTypeTok{blm_familiarity =} \KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{4}\NormalTok{, N, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{),}
+    \DataTypeTok{linked_fate =} \KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{5}\NormalTok{, N, }\DataTypeTok{replace =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{prob =} \KeywordTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.05}\NormalTok{, }\FloatTok{0.15}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.5}\NormalTok{)),}
+    \DataTypeTok{U =} \KeywordTok{runif}\NormalTok{(N),}
+    \DataTypeTok{blm_support_latent =} \KeywordTok{rescale}\NormalTok{(}
+\NormalTok{      U }\OperatorTok{+}\StringTok{ }\FloatTok{0.1} \OperatorTok{*}\StringTok{ }\NormalTok{blm_familiarity }\OperatorTok{+}\StringTok{ }\FloatTok{0.45} \OperatorTok{*}\StringTok{ }\NormalTok{linked_fate }\OperatorTok{+}\StringTok{ }\FloatTok{0.001} \OperatorTok{*}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }
+\StringTok{        }\FloatTok{0.25} \OperatorTok{*}\StringTok{ }\NormalTok{lgbtq }\OperatorTok{+}\StringTok{ }\FloatTok{0.01} \OperatorTok{*}\StringTok{ }\NormalTok{income }\OperatorTok{+}\StringTok{ }\FloatTok{0.1} \OperatorTok{*}\StringTok{ }\NormalTok{college }\OperatorTok{+}\StringTok{ }\FloatTok{-0.1} \OperatorTok{*}\StringTok{ }\NormalTok{religiosity)}
+\NormalTok{  ) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_potential_outcomes}\NormalTok{(}
+    \DataTypeTok{blm_support_Z_general =} \KeywordTok{likert_cut}\NormalTok{(blm_support_latent),}
+    \DataTypeTok{blm_support_Z_nationalism =} \KeywordTok{likert_cut}\NormalTok{(blm_support_latent }\OperatorTok{+}\StringTok{ }\FloatTok{0.01} \OperatorTok{+}\StringTok{ }\NormalTok{linked_fate }\OperatorTok{*}\StringTok{ }\FloatTok{0.01}\NormalTok{),}
+    \DataTypeTok{blm_support_Z_feminism =} \KeywordTok{likert_cut}\NormalTok{(blm_support_latent }\OperatorTok{+}\StringTok{ }\FloatTok{0.01} \OperatorTok{+}\StringTok{ }\NormalTok{female }\OperatorTok{*}\StringTok{ }\FloatTok{0.05}\NormalTok{),}
+    \DataTypeTok{blm_support_Z_intersectional =} \KeywordTok{likert_cut}\NormalTok{(blm_support_latent }\OperatorTok{+}\StringTok{ }\FloatTok{0.01} \OperatorTok{+}\StringTok{ }\NormalTok{lgbtq }\OperatorTok{*}\StringTok{ }\FloatTok{0.15}\NormalTok{)}
+\NormalTok{  )}
+
+\NormalTok{inquiry <-}\StringTok{  }
+\StringTok{  }\KeywordTok{declare_estimands}\NormalTok{(}
+    \DataTypeTok{ATE_nationalism =} \KeywordTok{mean}\NormalTok{(blm_support_Z_nationalism }\OperatorTok{-}\StringTok{ }\NormalTok{blm_support_Z_general),}
+    \DataTypeTok{ATE_feminism =} \KeywordTok{mean}\NormalTok{(blm_support_Z_feminism }\OperatorTok{-}\StringTok{ }\NormalTok{blm_support_Z_general),}
+    \DataTypeTok{ATE_intersectional =} \KeywordTok{mean}\NormalTok{(blm_support_Z_intersectional }\OperatorTok{-}\StringTok{ }\NormalTok{blm_support_Z_general),}
+    \DataTypeTok{DID_nationalism_linked_fate =} 
+      \KeywordTok{cov}\NormalTok{(blm_support_Z_nationalism }\OperatorTok{-}\StringTok{ }\NormalTok{blm_support_Z_general, linked_fate)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(linked_fate),}
+    \DataTypeTok{DID_feminism_gender =} 
+      \KeywordTok{cov}\NormalTok{(blm_support_Z_feminism }\OperatorTok{-}\StringTok{ }\NormalTok{blm_support_Z_general, female)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(female),}
+    \DataTypeTok{DID_intersectional_lgbtq =} 
+      \KeywordTok{cov}\NormalTok{(blm_support_Z_intersectional }\OperatorTok{-}\StringTok{ }\NormalTok{blm_support_Z_general, lgbtq)}\OperatorTok{/}\KeywordTok{var}\NormalTok{(lgbtq)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_strategy <-}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_assignment}\NormalTok{(}\DataTypeTok{conditions =} \KeywordTok{c}\NormalTok{(}\StringTok{"general"}\NormalTok{, }\StringTok{"nationalism"}\NormalTok{, }\StringTok{"feminism"}\NormalTok{, }\StringTok{"intersectional"}\NormalTok{), }\DataTypeTok{simple =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_reveal}\NormalTok{(blm_support, Z) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{answer_strategy <-}
+\StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
+\NormalTok{    blm_support }\OperatorTok{~}\StringTok{ }\NormalTok{Z,}
+    \DataTypeTok{term =} \KeywordTok{c}\NormalTok{(}\StringTok{"Znationalism"}\NormalTok{, }\StringTok{"Zfeminism"}\NormalTok{, }\StringTok{"Zintersectional"}\NormalTok{),}
+    \DataTypeTok{model =}\NormalTok{ lm_robust,}
+    \DataTypeTok{estimand =} \KeywordTok{c}\NormalTok{(}\StringTok{"ATE_nationalism"}\NormalTok{, }\StringTok{"ATE_feminism"}\NormalTok{, }\StringTok{"ATE_intersectional"}\NormalTok{),}
+    \DataTypeTok{label =} \StringTok{"unadjusted"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
+\NormalTok{    blm_support }\OperatorTok{~}\StringTok{ }\NormalTok{Z }\OperatorTok{+}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{female }\OperatorTok{+}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(linked_fate) }\OperatorTok{+}\StringTok{ }\NormalTok{lgbtq,}
+    \DataTypeTok{term =} \KeywordTok{c}\NormalTok{(}\StringTok{"Znationalism"}\NormalTok{, }\StringTok{"Zfeminism"}\NormalTok{, }\StringTok{"Zintersectional"}\NormalTok{),}
+    \DataTypeTok{estimand =} \KeywordTok{c}\NormalTok{(}\StringTok{"ATE_nationalism"}\NormalTok{, }\StringTok{"ATE_feminism"}\NormalTok{, }\StringTok{"ATE_intersectional"}\NormalTok{),}
+    \DataTypeTok{model =}\NormalTok{ lm_robust,}
+    \DataTypeTok{label =} \StringTok{"adjusted"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
+\NormalTok{    blm_support }\OperatorTok{~}\StringTok{ }\NormalTok{Z }\OperatorTok{*}\StringTok{ }\NormalTok{linked_fate,}
+    \DataTypeTok{term =} \StringTok{"Zfeminism:linked_fate"}\NormalTok{,}
+    \DataTypeTok{model =}\NormalTok{ lm_robust,}
+    \DataTypeTok{estimand =} \StringTok{"DID_nationalism_linked_fate"}\NormalTok{,}
+    \DataTypeTok{label =} \StringTok{"het-fx-nationalism-linked-fate"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
+\NormalTok{    blm_support }\OperatorTok{~}\StringTok{ }\NormalTok{Z }\OperatorTok{*}\StringTok{ }\NormalTok{female,}
+    \DataTypeTok{term =} \StringTok{"Zfeminism:female"}\NormalTok{,}
+    \DataTypeTok{model =}\NormalTok{ lm_robust,}
+    \DataTypeTok{estimand =} \StringTok{"DID_feminism_gender"}\NormalTok{,}
+    \DataTypeTok{label =} \StringTok{"het-fx-feminism-female"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
+\NormalTok{    blm_support }\OperatorTok{~}\StringTok{ }\NormalTok{Z }\OperatorTok{*}\StringTok{ }\NormalTok{lgbtq,}
+    \DataTypeTok{term =} \StringTok{"Zfeminism:lgbtq"}\NormalTok{,}
+    \DataTypeTok{model =}\NormalTok{ lm_robust,}
+    \DataTypeTok{estimand =} \StringTok{"DID_intersectional_lgbtq"}\NormalTok{,}
+    \DataTypeTok{label =} \StringTok{"het-fx-intersectional-lgbtq"}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{design <-}\StringTok{ }\NormalTok{model }\OperatorTok{+}\StringTok{ }\NormalTok{inquiry }\OperatorTok{+}\StringTok{ }\NormalTok{data_strategy }\OperatorTok{+}\StringTok{ }\NormalTok{answer_strategy}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{tabular}{l|l|r|r|r}
+\hline
+Estimand & Estimator & Bias & RMSE & Power\\
+\hline
+ATE feminism & ATE feminism & 0.00 & 0.06 & 0.76\\
+\hline
+ATE feminism & ATE feminism & 0.00 & 0.08 & 0.47\\
+\hline
+ATE intersectional & ATE intersectional & 0.00 & 0.06 & 0.24\\
+\hline
+ATE intersectional & ATE intersectional & 0.00 & 0.08 & 0.14\\
+\hline
+ATE nationalism & ATE nationalism & 0.00 & 0.05 & 0.97\\
+\hline
+ATE nationalism & ATE nationalism & 0.00 & 0.08 & 0.74\\
+\hline
+DID feminism gender & DID feminism gender & 0.00 & 0.16 & 0.27\\
+\hline
+DID intersectional lgbtq & DID intersectional lgbtq & -0.52 & 0.67 & 0.07\\
+\hline
+DID nationalism linked fate & DID nationalism linked fate & -0.05 & 0.07 & 0.06\\
+\hline
+\end{tabular}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{l c c c c}
+\hline
+ & Model 1 & Model 2 & Model 3 & Model 4 \\
+\hline
+(Intercept)                      & $3.63^{***}$ & $1.35^{***}$  & $1.43^{***}$ & $3.06^{***}$ \\
+                                 & $(0.06)$     & $(0.11)$      & $(0.15)$     & $(0.12)$     \\
+Znationalism                     & $0.36^{***}$ & $0.25^{***}$  & $0.09$       & $0.70^{***}$ \\
+                                 & $(0.08)$     & $(0.05)$      & $(0.23)$     & $(0.18)$     \\
+Zfeminism                        & $0.19^{*}$   & $0.16^{***}$  & $0.03$       & $0.26$       \\
+                                 & $(0.08)$     & $(0.05)$      & $(0.22)$     & $(0.19)$     \\
+Zintersectional                  & $0.12$       & $0.06$        & $0.15$       & $0.54^{**}$  \\
+                                 & $(0.08)$     & $(0.05)$      & $(0.19)$     & $(0.19)$     \\
+female                           &              & $0.06$        &              &              \\
+                                 &              & $(0.03)$      &              &              \\
+lgbtq                            &              & $0.43^{***}$  &              &              \\
+                                 &              & $(0.10)$      &              &              \\
+age                              &              & $0.00$        &              &              \\
+                                 &              & $(0.00)$      &              &              \\
+religiosity                      &              & $-0.14^{***}$ &              &              \\
+                                 &              & $(0.01)$      &              &              \\
+income                           &              & $0.02^{***}$  &              &              \\
+                                 &              & $(0.00)$      &              &              \\
+college                          &              & $0.13^{***}$  &              &              \\
+                                 &              & $(0.03)$      &              &              \\
+linked\_fate                     &              & $0.54^{***}$  & $0.54^{***}$ &              \\
+                                 &              & $(0.02)$      & $(0.04)$     &              \\
+blm\_familiarity                 &              & $0.12^{***}$  &              & $0.23^{***}$ \\
+                                 &              & $(0.02)$      &              & $(0.04)$     \\
+Znationalism:linked\_fate        &              &               & $0.05$       &              \\
+                                 &              &               & $(0.05)$     &              \\
+Zfeminism:linked\_fate           &              &               & $0.04$       &              \\
+                                 &              &               & $(0.05)$     &              \\
+Zintersectional:linked\_fate     &              &               & $-0.01$      &              \\
+                                 &              &               & $(0.05)$     &              \\
+Znationalism:blm\_familiarity    &              &               &              & $-0.13^{*}$  \\
+                                 &              &               &              & $(0.07)$     \\
+Zfeminism:blm\_familiarity       &              &               &              & $-0.04$      \\
+                                 &              &               &              & $(0.07)$     \\
+Zintersectional:blm\_familiarity &              &               &              & $-0.17^{*}$  \\
+                                 &              &               &              & $(0.07)$     \\
+\hline
+R$^2$                            & $0.02$       & $0.69$        & $0.56$       & $0.07$       \\
+Adj. R$^2$                       & $0.02$       & $0.69$        & $0.56$       & $0.06$       \\
+Num. obs.                        & $800$        & $800$         & $800$        & $800$        \\
+RMSE                             & $0.86$       & $0.48$        & $0.58$       & $0.84$       \\
+\hline
+\multicolumn{5}{l}{\scriptsize{$^{***}p<0.001$; $^{**}p<0.01$; $^{*}p<0.05$}}
+\end{tabular}
+\caption{Statistical models}
+\label{table:coefficients}
+\end{center}
+\end{table}
+
+\includegraphics{02_Planning_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\hypertarget{debates-over-the-value-of-paps}{%
+\subsection{Debates over the value of
+PAPs}\label{debates-over-the-value-of-paps}}
+
+PAPs are often described as a tool for tying researchers' hand and
+reducing ``researcher degrees of freedom'' to seek out congenial
+analyses. PAPs are sometimes criticized because (A) they don't
+\emph{actually} constrain what researchers do and (B) they
+\emph{shouldn't}.
+
+PAPs might not actually constrain researchers because most journals and
+pressess do not check against PAPs. As reviewers, we have sometimes
+requested that authors send in the PAPs referenced in their papers. In
+nearly every case, some analyses promised in the PAP were not included,
+even in an appendix. Some analyses that appear in the paper were not
+included in the PAP. As we discuss in greater detail in section XXX on
+reconciliation, current practice is clearly too causal when
+distinguishing which analyses were pre-specified and which were not.
+
+Some critics of PAPs charge that we shouldn't pre-register our analysis
+plans because we should be open to discovery. We learn once we arrive in
+the field what the interesting questions are, so we shouldn't be
+constrained by what we thought would happen when sitting in our offices.
+Furthermore, sometimes people pre-register analyses that are biased,
+misspecified, or are otherwise inappropriate, so they shouldn't be
+required to present them. We agree with all the above points --
+researchers should create post-implementation reports (CITE JENS in PA)
+that follow the PAP. Analyses over and above the PAP should simply be
+labeled as such.
+
+Our take is that PAPs are helpful tools for researchers to plan research
+better and they are useful for clarifying what the researcher was
+thinking at each stage.
+
+\hypertarget{other-benefits-of-paps}{%
+\subsection{Other benefits of PAPS}\label{other-benefits-of-paps}}
+
+\begin{itemize}
+\tightlist
+\item
+  involving partners: agreeing on the analysis procedure ex ante reduces
+  ex post conflict
+\item
+  frontloading research design decisions (get more specific, identify
+  problems)
+\item
+  Anticipating what might go wrong: attrition, noncompliance, study
+  failure, missing covariate data, etc.
+\item
+  Faithful reanalysis. Reanalysts lose a degree of freedom in
+  determining what an author might have intended by a given analysis.
+\item
+  Easier design comparison. If a design is declared at the preanalysis
+  plan phase, then it enables direct comparison with the design as
+  implemented in the final write-up. Side-by-side comparison of the code
+  neatly clarifies which design choices were made ex-ante and ex-post.
+  Side-by-side comparison of the performance of a planned and
+  implemented designs clarify under what conditions deviations from
+  plans are defensible improvements.
+\item
+  ethics (summarize and cite Jay's ideas here:
+  \url{http://www.jasonlyall.com/wp-content/uploads/2020/08/PreregisterYourEthics.pdf})
+\item
+  ethical outcomes are potential outcomes, so we need to think about
+  them ex ante not just on the basis of revealed outcomes
+\end{itemize}
+
+\hypertarget{countering-objections}{%
+\subsubsection{countering objections:}\label{countering-objections}}
+
+\begin{itemize}
+\item
+  Time-consuming. Yes but in our experience we only pay this cost for
+  failed studies. Fur successful studies, nearly all work that goes in
+  to the pap pays off in terms of higher qualtity design, literal words
+  we already wrote, and written-in-advance analysis code.
+\item
+  Won't stop determined cheaters. Yes -- remember that the goal is not
+  to prevent fraud, it's to help \emph{researchers} improve their
+  designs. Science depends on trust.
+\item
+  Replication is better (Coffman and Niederle (2015)). These are
+  complements, not substitutes.
+\item
+  I can't preregister what I will do because I don't know what I will
+  find. That's fine too, just write down how you will go about
+  ``finding'' things so we (and YOU) can understand your own process.
+\end{itemize}
+
+\hypertarget{other-thoughts}{%
+\subsubsection{Other thoughts}\label{other-thoughts}}
+
+\begin{itemize}
+\tightlist
+\item
+  when is the right moment to write a pap?
+\item
+  relationship to registered reports?
+\item
+  SOPs
+\end{itemize}
+
+\hypertarget{citations-on-paps}{%
+\subsubsection{citations on paps}\label{citations-on-paps}}
+
+\begin{itemize}
+\tightlist
+\item
+  Casey, Glennerster, and Miguel (2012): early entry
+\item
+  Olken (2015): halfway skeptical
+\item
+  Green and Lin (2016): Standard operating procedures
+\item
+  Christensen and Miguel (2018): review
+\item
+  Coffman and Niederle (2015): a skeptical take (prefer replications).
+\item
+  Humphreys, Sierra, and Windt (2013): nonbinding
+\item
+  Miguel et al. (2014): distinguishes between disclosure and PAP
+\item
+  Ofosu and Posner (2020): apparently paps hinder publication?
+\end{itemize}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-bonilla_tillery_2020}{}%
+Bonilla, Tabitha, and Alvin B. Tillery. 2020. ``Which Identity Frames
+Boost Support for and Mobilization in the \#Blacklivesmatter Movement?
+An Experimental Test.'' \emph{American Political Science Review} 114
+(4): 947--62. \url{https://doi.org/10.1017/S0003055420000544}.
+
+\leavevmode\hypertarget{ref-Casey2012}{}%
+Casey, Katherine, Rachel Glennerster, and Edward Miguel. 2012.
+``Reshaping Institutions: Evidence on Aid Impacts Using a Pre-Analysis
+Plan.'' \emph{The Quarterly Journal of Economics} 127 (4): 1755--1812.
+
+\leavevmode\hypertarget{ref-Christensen2018}{}%
+Christensen, Garret, and Edward Miguel. 2018. ``Transparency,
+Reproducibility, and the Credibility of Economics Research.''
+\emph{Journal of Economic Literature} 56 (3): 920--80.
+\url{https://doi.org/10.1257/jel.20171350}.
+
+\leavevmode\hypertarget{ref-Coffman2015}{}%
+Coffman, Lucas C., and Muriel Niederle. 2015. ``Pre-Analysis Plans Have
+Limited Upside, Especially Where Replications Are Feasible.'' \emph{The
+Journal of Economic Perspectives} 29 (3): 81--97.
+
+\leavevmode\hypertarget{ref-Green2015}{}%
+Green, Donald P., and Winston Lin. 2016. ``Standard Operating
+Procedures: A Safety Net for Pre-Analysis Plans.'' \emph{PS: Political
+Science \& Politics} 49 (3): 495--99.
+
+\leavevmode\hypertarget{ref-Humphreys2013a}{}%
+Humphreys, Macartan, Raul de la Sierra, and Peter van der Windt. 2013.
+``Fishing, Commitment, and Communication: A Proposal for Comprehensive
+Nonbinding Research Registration.'' \emph{Political Analysis} 21 (1):
+1--20.
+
+\leavevmode\hypertarget{ref-Miguel2014}{}%
+Miguel, Edward, Colin Camerer, Katherine Casey, Joshua Cohen, Kevin M
+Esterling, Alan Gerber, Rachel Glennerster, et al. 2014. ``Promoting
+Transparency in Social Science Research.'' \emph{Science} 343 (6166):
+30.
+
+\leavevmode\hypertarget{ref-Ofosu2020}{}%
+Ofosu, George K., and Daniel N. Posner. 2020. ``Do Pre-Analysis Plans
+Hamper Publication?'' \emph{AEA Papers and Proceedings} 110 (May):
+70--74.
+
+\leavevmode\hypertarget{ref-Olken2015}{}%
+Olken, Benjamin A. 2015. ``Promises and Perils of Pre-Analysis Plans.''
+\emph{Journal of Economic Perspectives} 29 (3): 61--80.
+
+\end{document}
