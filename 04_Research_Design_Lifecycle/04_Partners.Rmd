@@ -48,6 +48,75 @@ Our best advice for working with partners is to involve them in the design decla
 
 Sometimes a partnership simply will not work out. Indeed most partnerships are never even initiated because researcher and organizational goals are too far apart. If you find yourself in a setting where partnership is doing too much violence to the research design, find a way to walk away from the project. 
 
+
+```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
+library(tidyverse)
+library(DeclareDesign)
+
+design <- 
+  declare_population(N = 100, U = rnorm(N, sd = 0.2)) +
+  declare_potential_outcomes(Y ~ 0.15*Z + U) +
+  declare_assignment(prob = prob) +
+  declare_estimator(Y ~ Z)
+
+designs <- redesign(design, prob = seq(0.1, 0.9, 0.1))
+  
+simulations <- simulate_designs(designs, sims = 1000)
+
+gg_df <-
+  simulations %>%
+  group_by(prob) %>% 
+  summarise(power = mean(p.value <= 0.05),
+            utility = prob,
+            acceptable_power = power >= 0.80,
+            acceptable_utility = utility >= 2/3, .groups = "drop") %>% 
+  pivot_longer(c(power, utility),names_to = "diagnosand")
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("04_Partners.Rmd"), "/gg_df.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(gg_df, path = rds_file_path)
+}
+gg_df <- read_rds(rds_file_path)
+```
+
+```{r, fig.width = 6.5, fig.height = 6.5}
+rect_df <- 
+  gg_df %>%
+  filter(acceptable_power, acceptable_utility) %>%
+  summarise(min_prob = min(prob),
+            max_prob = max(prob))
+
+lines_df <-
+  tibble(
+    diagnosand = c("power", "utility"),
+    threshold = c(0.8, 2/3)
+  )
+
+
+annotations_df <-
+  tibble(
+    diagnosand = c("power", "utility"),
+    label = c("Researcher constraint: Power must be above 0.80.",
+                       "Partner constraint: Two-thirds of subjects must be treated."),
+    prob = c(0.2, 0.1),
+    value = c(0.725, 0.725)
+  )
+
+ggplot(gg_df) +
+  geom_rect(data = rect_df, aes(xmin = min_prob, xmax = max_prob, ymin = 0, ymax = 1), alpha = 0.1) +
+  geom_line(aes(prob, value)) +
+  geom_text(data = annotations_df, aes(prob, value, label = label), hjust = 0) + 
+  geom_hline(data = lines_df, aes(yintercept = threshold)) +
+  annotate("text", x = 0.75, y = 0.50, label = "Zone of agreement", angle = 270, hjust = 0) + 
+  facet_grid(diagnosand~., scales = "free") +
+  labs(x = "Proportion treated") +
+  theme_bw() + 
+  theme(axis.title.y = element_blank())
+```
+
 ### Scattered thoughts
 
 - Partnerships and ethics should be in here
