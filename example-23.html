@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10.2 Estimating diagnosands via simulation | Research Design: Declare, Diagnose, Redesign</title>
+  <title>29.1 Example | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10.2 Estimating diagnosands via simulation | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="29.1 Example | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10.2 Estimating diagnosands via simulation | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="29.1 Example | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="estimating-diagnosands-analytically.html"/>
-<link rel="next" href="diagnosands.html"/>
+<link rel="prev" href="reconciliation.html"/>
+<link rel="next" href="writing.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -481,145 +481,88 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="estimating-diagnosands-via-simulation" class="section level2">
-<h2><span class="header-section-number">10.2</span> Estimating diagnosands via simulation</h2>
-<p>Research design diagnosis usually occurs in a two-step, simulation-based procedure. First we simulate research designs over and cover, collecting “diagnostic statistics” from each run of the simulation. Second, we summarise the distribution of the diganostic statistics in order to estimate the diagnosands.</p>
-<p>So we estimate diagnosands by summarizing the distribution of diagnostic statistics – of course this raises the question: what is a diagnostic statistic? We take a draw from the model (<span class="math inline">\(m\)</span>) and calculate the value of the inquiry <span class="math inline">\(I(m) = a^m\)</span>. We take one draw from the data strategy (<span class="math inline">\(D(m) = d\)</span>), and calculates the value of the answer strategy <span class="math inline">\(A(d) = a^d\)</span>. A diagnostic statistic is some function of <span class="math inline">\(a^m\)</span> and <span class="math inline">\(a^d\)</span>.</p>
-<p>A simple diagnostic statistic is “error,” or the difference between the estimate and the estimand: <span class="math inline">\(error = a^d - a^m\)</span>. The bias diagnosand is the expectation of the error statistic <span class="math inline">\(E[error]\)</span> over all possible ways the study could have come out.</p>
-<p>Usually, we consider many diagnostic statistics at the same time. Here’s a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.</p>
-<p>One draw of this simulation returns the following:</p>
-<p>One draw from the simulation returns the following:</p>
+<div id="example-23" class="section level2">
+<h2><span class="header-section-number">29.1</span> Example</h2>
 <table>
+<colgroup>
+<col width="18%" />
+<col width="20%" />
+<col width="20%" />
+<col width="40%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th align="right">estimand</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">conf.low</th>
-<th align="right">conf.high</th>
-<th align="right">p.value</th>
+<th>Covariate</th>
+<th>In the preanalysis plan</th>
+<th>In the paper</th>
+<th>In the appendix (at the request of reviewers)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.10</td>
-<td align="right">0.08</td>
-<td align="right">0.04</td>
-<td align="right">0.003</td>
-<td align="right">0.156</td>
-<td align="right">0.04</td>
+<td>Familiarity with BLM</td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Gender</td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>LGBT status</td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Linked fate</td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Religiosity</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+</tr>
+<tr class="even">
+<td>Region</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+</tr>
+<tr class="odd">
+<td>Age</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(\checkmark\)</span></td>
+</tr>
+<tr class="even">
+<td>Education</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(\checkmark\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>Figure XXX shows the information we might obtain from a single run of the simulation. The filled point is the estimate <span class="math inline">\(a^d\)</span>. The open triangle is the estimand <span class="math inline">\(a^m\)</span>. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We’re not sure where <span class="math inline">\(a^d\)</span> is, but if things are going according to plan, confidence intervals constructed this way will bracket <span class="math inline">\(a^d\)</span> 95% of the time.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:right;">
-estimand
-</th>
-<th style="text-align:right;">
-estimate
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-conf.low
-</th>
-<th style="text-align:right;">
-conf.high
-</th>
-<th style="text-align:right;">
-p.value
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0.1
-</td>
-<td style="text-align:right;">
-0.091
-</td>
-<td style="text-align:right;">
-0.038
-</td>
-<td style="text-align:right;">
-0.016
-</td>
-<td style="text-align:right;">
-0.167
-</td>
-<td style="text-align:right;">
-0.018
-</td>
-</tr>
-</tbody>
-</table>
-<p><img src="book_files/figure-html/unnamed-chunk-138-1.png" width="100%" /></p>
-<!-- We're interested in a few diagnosands. Bias (the expectation of the error statistics) is one, but we also want to know about RMSE (the square root of the expectation of the squared errors), power (the probability the $p$-value is below a threshold), and coverage (the probability the 95% confidence interval brackets the estimand).  -->
-<p>From this single draw, we can’t yet estimate diagnosands, but we can estimate diagnostic statistics. The estimate was higher than the estimand in this draw, so the error is 0.10 - 0.08 = 0.02. Likewise, the squared error is <code>(0.10 - 0.08)^2 = 0.0004</code>. The <span class="math inline">\(p\)</span>-value is 0.04, which is just barely lower than the threshold of 0.05, so “statistical significance” diagnostic statistic is equal to <code>TRUE</code>. The confidence interval stretches from 0.003 to 0.156, and the value of the estimand (0.10) is between those bounds, so the “covers” diagnostic statistic is equal to <code>TRUE</code> as well.</p>
-<p>Learning the <strong>distribution</strong> of diagnostic statistics is the main barrier to design diagnosis. If we could simply write down the distribution of diagnostic statistics, it would be a straightforward matter to summarize them in order to calculate diagnosands. But the distributions of diagnositic statistics depend on the complex of information in all four parts of a research design: M, I, D, and A. For example, the error statistic depends on both <span class="math inline">\(a^d\)</span> and <span class="math inline">\(a^m\)</span>, so the details of each matter greatly.</p>
-<p>To calculate the distributions of the diagnostic statistics, we have to simulate designs not just once, but many many times over. The bias diagnosand is the average error over many runs of the simulation. The statistical power diagnosand is the fraction of runs in which the estimate is significant. The coverage diagnosand is the fraction of runs in which the confidence interval covers the estimand.</p>
-<p>This figure visualizes just 10 runs of the simulation (obtained with <code>simulate_design(design)</code>). We can see that in each run, <span class="math inline">\(a^m\)</span> is a little different. This might seem counterintuitive – isn’t the estimand supposed to be a fixed number? Some estimands are fixed, others are stochastic, depending on the specifics of the model. Notice how in the design declaration, we drew the potential outcomes from a distribution rather then having them be fixed numbers. This choice incorportates some of our modeling uncertainty. The treatment effects for each unit are close to 0.1, but we’re not sure how close for each particulat unit. We can also see that some of the draws produce statistical significant estimates (the shaded areas are small and the confidence intervals don’t overlap zero), but not all. We get a sense of the <em>true</em> standard error by seeing how the point estimates bounce around. We get a feel for the difference between the estimates of the standard error and true standard error. Design diagnosis is the process of learning about all the ways the study might come out, not just the one way that it will.</p>
-<p><img src="book_files/figure-html/unnamed-chunk-139-1.png" width="100%" /></p>
-<p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnositic satistics, then we summarise them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1">diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> <span class="dv">1000</span>, </a>
-<a class="sourceLine" id="cb47-2" title="2">                             <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(</a>
-<a class="sourceLine" id="cb47-3" title="3">                               <span class="dt">select =</span> <span class="kw">c</span>(<span class="st">&quot;bias&quot;</span>, <span class="st">&quot;sd_estimate&quot;</span>, <span class="st">&quot;rmse&quot;</span>, <span class="st">&quot;power&quot;</span>, <span class="st">&quot;coverage&quot;</span>)))</a></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1">diagnosis</a></code></pre></div>
-<pre><code>## 
-## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (100 replicates).
-## 
-##  Design Label Estimand Label Estimator Label Term N Sims   Bias SD Estimate
-##        design            ATE       estimator    Z    100   0.00        0.04
-##                                                          (0.00)      (0.00)
-##    RMSE  Power Coverage
-##    0.04   0.62     0.96
-##  (0.00) (0.05)   (0.02)</code></pre>
-<!-- ## Interactive element -->
-<!-- You can have fun building up a design diagnosis run-by-run with this shiny app. Each time you run the design, it adds a new estimate to the sampling distribution so you can learn about the relationship of a single run of the design to the overall diagnosis. -->
-<!-- ```{r, echo = FALSE} -->
-<!-- knitr::include_app('https://gblair.shinyapps.io/diagnosis/', height = '400px') -->
-<!-- ``` -->
-<div id="interpreting-diagnosands" class="section level3">
-<h3><span class="header-section-number">10.2.1</span> Interpreting diagnosands</h3>
-<p>Say you decide to simulate the design 1000 times to see if it’s biased. After a few seconds, the computer spits out bias of .02. Unsure whether to be concerned, you simulate the design another 1000 times. Now the computer says the bias is .01. Since each simulation was randomly generated, you should expect to get estimates of bias that vary. Given the random variation in the simulations and how large the estimate and estimand are, maybe it was even quite likely to get .01 or .02 bias even if the true bias is zero. Or maybe your design is biased.</p>
-<p>As with frequentist statistics, we have to separate signal from noise. We have an estimate (here, of the bias diagnosand) that varies depending on how each simulation turns out. We want to quantify that variation in order to make a decision about whether the estimated bias is large enough to be significant. The simulation standard error (or, Monte Carlo standard error) is an estimate of the variation created by the simulation procedure. If that estimated variation is high relative to the estimated diagnosand, then we need to increase the number of simulations.
-<!-- Following the example from the previous paragraph, if the simulation standard error was .015, then the simulation we ran was consistent with negative, positive, and no bias given the point estimate of .01. However, if we estimate a simulation standard error of .0001, then the .01 or .02 bias estimates give real cause for concern, since they were so unlikely to arise if the true bias were zero.  --></p>
-<p><span class="citation">Morris, White, and Crowther (<a href="#ref-morrisetal2019">2019</a>)</span> provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define <span class="math inline">\(a^d_i\)</span> as the point estimate in the <span class="math inline">\(i\)</span>’th simulation, <span class="math inline">\(n_{sim}\)</span> as the total number of simulations, and the average of the point estimates across simulations as <span class="math inline">\(\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i\)</span>. Then, if the estimand is a constant and <span class="math inline">\(a^d_i\)</span> is independently and normally distributed, the simulation standard error for bias can be calculated as <span class="math inline">\(\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}\)</span>. Here is how you can do it in code:</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">simulated_estimates &lt;-<span class="st"> </span><span class="kw">with</span>(diagnosis<span class="op">$</span>simulations_df, estimate)</a>
-<a class="sourceLine" id="cb50-2" title="2">mean_estimate &lt;-<span class="st"> </span><span class="kw">mean</span>(simulated_estimates)</a>
-<a class="sourceLine" id="cb50-3" title="3">n_sim &lt;-<span class="st"> </span><span class="kw">length</span>(simulated_estimates)</a>
-<a class="sourceLine" id="cb50-4" title="4">SE_bias &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>(n_sim <span class="op">*</span><span class="st"> </span>(n_sim <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)) <span class="op">*</span><span class="st"> </span>(<span class="kw">sum</span>((simulated_estimates <span class="op">-</span><span class="st"> </span>mean_estimate)<span class="op">^</span><span class="dv">2</span>)))</a>
-<a class="sourceLine" id="cb50-5" title="5">SE_bias</a></code></pre></div>
-<pre><code>## [1] 0.004152528</code></pre>
-<p>Of course, this estimate of the variance relies on assumptions and won’t work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don’t have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your <span class="math inline">\(n_{sims}\)</span> diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. <code>DeclareDesign</code> does nonparametric bootstrapping by default whenever the <code>diagnose_design()</code> function is called. The numbers are reported in the parentheses under the diagnosand estimates in the table above. Here’s the simulation standard error for bias calculated by bootstrap resampling 100 times:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1">diagnosis<span class="op">$</span>diagnosands_df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="st">&quot;se(bias)&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] 0.003838199</code></pre>
-<p>As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics.</p>
+<!-- ### Scattered thoughts -->
+<!-- - @ofosu2019pre -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
-<div id="how-many-simulations-to-run" class="section level3">
-<h3><span class="header-section-number">10.2.2</span> How many simulations to run</h3>
-<p>Unlike increasing sample size in the real world, increasing the precision of your diagnosand estimates is as simple as waiting a little longer while your computer runs a higher number of simulations. However, while running 100 simulations may take a matter of seconds, running 10,000,000 simulations may take a few days. So how do you know when you’ve done enough?</p>
-<p>As a rule of thumb, you should be multiplying the simulation standard errors by two in your head in order to make decisions about whether to do more simulations, since this gets you close to the upper and lower bounds of a 95% confidence interval (properly calculated by muliplying the standard error by 1.96). So, if you change your randomization strategy and the power increases from .78 to .82 with a simulation standard error of .015, you should increase the number of simulations: the upper bound on the first estimate <span class="math inline">\((.78 + 0.015*1.96 = .81)\)</span> overlaps with the lower bound on the second <span class="math inline">\((.82 - 0.015*1.96)\)</span>, so the apparent improvement in power may be an artefact of the simulation.</p>
-</div>
-</div>
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-morrisetal2019">
-<p>Morris, Tim P., Ian R. White, and Michael J. Crowther. 2019. “Using Simulation Studies to Evaluate Statistical Methods.” <em>Statistics in Medicine</em>.</p>
-</div>
-</div>
+<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
-<a href="estimating-diagnosands-analytically.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="diagnosands.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="reconciliation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="writing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
