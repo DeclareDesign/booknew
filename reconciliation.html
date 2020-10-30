@@ -490,28 +490,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In some cases, reconciliation will lead to additional learning beyond what can be inferred from the final design itself. When some units could refused to be included in the study sample or some units refused measurement, we learn that important features about those units. Understanding sample exclusions, noncompliance, and attrition not only may inform future research design planning choices, but contribute substantively to our understanding of the social setting. A policy implemented in the same way the study would likely also not be able to work in the units who refused to participate, and future research could examine why or how to convince them of the policy’s benefits.</p>
 <p>What belongs in a reconciliation? At a minimum, we need a full description of the planned design, a full description of the implemented design, and a list of the differences. This can be made explicit through the declaration of both design in computer code, then comparing the two design objects line-by-line.</p>
 <p>In <code>DeclareDesign</code> we take the first steps of comparing designs for you:</p>
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb160-1" title="1">design1 &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-2" title="2"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-3" title="3"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-4" title="4"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">75</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-5" title="5"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">m =</span> <span class="dv">50</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-6" title="6"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-7" title="7"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a>
-<a class="sourceLine" id="cb160-8" title="8"></a>
-<a class="sourceLine" id="cb160-9" title="9">design2 &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">200</span>, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-10" title="10"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-11" title="11"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-12" title="12"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">100</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-13" title="13"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">m =</span> <span class="dv">25</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-14" title="14"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
-<a class="sourceLine" id="cb160-15" title="15"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a>
-<a class="sourceLine" id="cb160-16" title="16"></a>
-<a class="sourceLine" id="cb160-17" title="17"><span class="kw">compare_designs</span>(design1, design2)</a>
-<a class="sourceLine" id="cb160-18" title="18"><span class="kw">compare_design_code</span>(design1, design2)</a>
-<a class="sourceLine" id="cb160-19" title="19"><span class="kw">compare_design_summaries</span>(design1, design2)</a>
-<a class="sourceLine" id="cb160-20" title="20"><span class="kw">compare_design_data</span>(design1, design2)</a>
-<a class="sourceLine" id="cb160-21" title="21"><span class="kw">compare_design_estimates</span>(design1, design2)</a>
-<a class="sourceLine" id="cb160-22" title="22"><span class="kw">compare_design_estimands</span>(design1, design2)</a></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1">design1 &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-2" title="2"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-3" title="3"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-4" title="4"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">75</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-5" title="5"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">m =</span> <span class="dv">50</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-6" title="6"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-7" title="7"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a>
+<a class="sourceLine" id="cb161-8" title="8"></a>
+<a class="sourceLine" id="cb161-9" title="9">design2 &lt;-<span class="st"> </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">200</span>, <span class="dt">u =</span> <span class="kw">rnorm</span>(N)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-10" title="10"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>Z <span class="op">+</span><span class="st"> </span>u) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-11" title="11"><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-12" title="12"><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">n =</span> <span class="dv">100</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-13" title="13"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">m =</span> <span class="dv">25</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-14" title="14"><span class="st">  </span><span class="kw">declare_reveal</span>(Y, Z) <span class="op">+</span></a>
+<a class="sourceLine" id="cb161-15" title="15"><span class="st">  </span><span class="kw">declare_estimator</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">model =</span> lm_robust, <span class="dt">estimand =</span> <span class="st">&quot;ATE&quot;</span>)</a>
+<a class="sourceLine" id="cb161-16" title="16"></a>
+<a class="sourceLine" id="cb161-17" title="17"><span class="kw">compare_designs</span>(design1, design2)</a>
+<a class="sourceLine" id="cb161-18" title="18"><span class="kw">compare_design_code</span>(design1, design2)</a>
+<a class="sourceLine" id="cb161-19" title="19"><span class="kw">compare_design_summaries</span>(design1, design2)</a>
+<a class="sourceLine" id="cb161-20" title="20"><span class="kw">compare_design_data</span>(design1, design2)</a>
+<a class="sourceLine" id="cb161-21" title="21"><span class="kw">compare_design_estimates</span>(design1, design2)</a>
+<a class="sourceLine" id="cb161-22" title="22"><span class="kw">compare_design_estimands</span>(design1, design2)</a></code></pre></div>
 </div>
             </section>
 
