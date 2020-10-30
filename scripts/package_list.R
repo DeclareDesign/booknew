@@ -27,6 +27,7 @@ bookwide_packages <-
     "tibble",
     "stringr",
     "forcats",
+    "haven",
     # DAGs packages
     "dagitty",
     "ggdag",
