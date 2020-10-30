@@ -440,6 +440,7 @@ As with frequentist statistics, we have to separate signal from noise. We have a
 
 @morrisetal2019 provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define $a^d_i$ as the point estimate in the $i$'th simulation, $n_{sim}$ as the total number of simulations, and the average of the point estimates across simulations as $\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i$. Then, if the estimand is a constant and $a^d_i$ is independently and normally distributed, the simulation standard error for bias can be calculated as $\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}$. Here is how you can do it in code:
 
+
 ```{r}
 simulated_estimates <- with(diagnosis$simulations_df, estimate)
 mean_estimate <- mean(simulated_estimates)

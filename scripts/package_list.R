@@ -10,6 +10,7 @@ bookwide_packages <-
     "knitr",
     "kableExtra",
     "gridExtra",
+    "texreg",
     # DeclareDesign packages
     "estimatr",
     "fabricatr",

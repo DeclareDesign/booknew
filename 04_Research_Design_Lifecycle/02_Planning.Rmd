@@ -32,39 +32,234 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-- provide your MIDA
+When embarking on a prospective research design, it is becoming standard practice in many research communities to publicly register a pre-analysis plans (PAP) prior to the implementation of some or all of the Data strategy. PAPs serve many functions, but most importantly, they clarify which design choices were made before data collection and which were made afterward. Sometimes -- perhaps everytime! -- we conduct a research study, aspects of $M$, $I$, $D$, and $A$ shift along the way. A concern is that they shift in ways that invalidate the apparent conclusions of the study. For example, "$p$-hacking" is the shady practice of trying out many regression specifications until the $p$-value associated with an important test attains statistical significance. PAPs help researchers to credibly communicate to skeptics when design decisions were made: if the regression specification was detailed in a PAP posted before any data were collected, the test cannot be the result of a $p$-hack.
 
-Pre-analysis plans (PAPs) are used by researchers to register a set of analyses before they learn about outcomes. PAPs clarify which choices were made before observing outcomes and which were made afterwards. Ironically, the set of decisions that should be specified in a PAP is itself remarkably unclear. PAP templates and checklists are proliferating, and the number of items they suggest range from nine to sixty. PAPs themselves are becoming longer and more detailed, with some in the American Economic Association (AEA) and Evidence in Governance and Politics (EGAP) study registries reaching hundreds of pages, as researchers seek to be ever more comprehensive. For all that, it is hard to assess whether these detailed plans actually contain key analytically-relevant details.
+What belongs in a PAP? Thus far, the set of decisions that should be specified in a PAP remains remarkably unclear. PAP templates and checklists are proliferating, and the number of items they suggest range from nine to sixty. PAPs themselves are becoming longer and more detailed, with some in the American Economic Association (AEA) and Evidence in Governance and Politics (EGAP) study registries reaching hundreds of pages, as researchers seek to be ever more comprehensive. Some registries emphasize the registration of the hypotheses to be tested, while others emphasize the registration of the tests that will used. We read many PAPs -- it is often hard to assess whether these detailed plans actually contain the key analytically-relevant details. 
 
-Lot of debate about the value of PAPs (cite cite cite). Summary. Our take: these are helpful tools for researchers to plan research better; and they have a single interpretation that is useful, clarifying what the researcher was thinking at each stage. Their information signal is a function of the distance from the start of post-intervention outcome data collection. But they are useful at any stage to clarify what decisions were made when.
+Our view is that, minimally, a PAP should include a design declaration. A good deal of the discussion of what goes in a PAP centers on the answer strategy $A$ -- what estimator to use, what covariates to condition on, what subsets of the data to include. But of course we also need to know the details of $D$ -- how units were sampled, how treatments were assigned, how the outcomes will be measured. We need to know about $I$ because we need to know what the target of inference is^[A major concern in medical trials is "outcome switching," wherein the eventual report focuses on different health outcomes that originally intended. When we switch outcomes, we switch inquiries!]. We need enough of $M$ to describe $I$ in sufficient detail. In short, a design declaration is what belongs in a PAP, because a design declaration specifies all of the analytically-relevent design decisions. 
 
-MIDA provides a roadmap: a PAP centered around MIDA will describe the researcher's beliefs about the world, research questions, interventions and measurement, and analysis plans informed by these other elements. The PAP can include a research design diagnosis to communicate the properties of the design as understood before seeing the results of the study, highlighting the diagnosands the researcher believed were important.
+In addition to a design declaration, a PAP should include mock analyses conducted on simulated data. If the design declaration is done formally in code, creating simulated data that resemble the eventual realized data is quite straightforward. We think researchers should run their Answer strategy on the mock data, creating mock figures and tables that will eventually be made with real data. In our experience, *this* is the step that really causes researchers to think hard about all aspects of their design.
 
--- involving partners
--- exante vs expost power calculations
--- frontloading research design decisions (get more specific, identify problems)
--- what happens when things go wrong (not just ideal plan, but plan for how you deal with problems; SOPs) -- attrition, noncompliance, study failure, missing covariate data, etc. -- the properties of your design depend not only on the ideal plan but the procedure
--- registered reports: part of your answer strategy is how you present and writup results. registered reports are a version of preanalysis plans that include the full results-free writeup. virtue is you prespecify the whole answer strategy! you can do if-then guides to writing up.
--- shouldn't just be about analysis. prespecify what you will do in D during implementation if things go wrong, this informs what we can learn. if you drop some units before random assignment (or after), will you rerandomize, add units, change sampling, etc.? this informs what we learn about the design (often expanding what we can learn by saying - if we try to treat this type of unit we won't be able to)
+Strictly speaking, preanalysis plans should include design declaration, but they do not *require* design diagnosis. But since the design that is finally settled on as the design to be implemented is usually chosen as the result of a diagnosis, it can be informative to describe, in a preanalysis plan, the reasons why the particular design was chosen. For this reason, a PAP might include estimates of diagnosands like power, rmse, or bias. If a researcher writes in a PAP that the power to detect a very small effect is large, then if the study comes back null, the eventual writeup can much more credibly rule out "low power" as an explanation for the null. Moreover, ex ante design diagnosis communicates the assumptions under which they thought the design was a good one before they ran the study. These reasons are often the basis on which we convince skeptics of the value of the design, so writing them down *before* the results are known increases the faith we put in them.
 
+## Example
 
-Benefits
--- Declaration can reduce ambiguities in the design. For example, a PAP that says the researchers will “use OLS with clustered standard errors” leaves out which covariates will be included and how they will be coded, whether any interactions will be estimated, and which of several common formulae will be used to calculate standard errors. By contrast, an answer strategy declared in code makes each of these choices explicit.
--- Design declaration can minimize the risk of fishing critiques, since the number of small decisions about modeling and constructing tables and figures that take place after data collection is substantially reduced given the ability to simulate data beforehand.
--- Design declaration may minimize the need for deviations. Simulating the design may reveal aspects of the design researchers were unaware of — variables they did not (yet) plan to collect, assumptions they did not know they needed to make, or planned design strategies were infeasible. The improvements come before implementation not afterwards.
--- Fairer replication, fairer reanalysis. Replicators lose a degree of freedom in determining what an author might have intended by a given analysis. Moreover, ex ante design diagnosis communicates the assumptions under which they thought the design was a good one before they ran the study. This makes it clearer whether a re-analysis involves an improvement in estimation strategies given a researcher’s assumptions or instead requires deviations from a researcher’s assumptions in order to to be justified.
--- Easier design comparison. If a design is declared at the preanalysis plan phase, then it enables direct comparison with the design as implemented in the final write-up. Side-by-side comparison of the code neatly clarifies which design choices were made ex-ante and ex-post. Side-by-side comparison of the performance of a planned and implemented designs clarify under what conditions deviations from plans are defensible improvements.
+- This section will be an example PAP. 
+- We will take a (relatively simple) PAP from the EGAP website (with permission) and declare the design in code. 
+- We will make fake figures and tables using mock data
+- We will choose wisely, because we will use the same study for the section on reconciliation. We want there to be a few differences (enough to make the point) but that the differences don't shame the author
+- Very open to suggestions on a good study.
 
+Possibility: @bonilla_tillery_2020 from the APSR on the effects of intersectional framing on support for the BLM movement. The takeaway is that the feminist and LGBTQ frames cause a decrease in support among the men in the sample, but not the women.
 
+This is a 4-arm (control vs. three treatments) experiment among Black americans recruited via qualtrics. 4 dependent variables. Almost everything they do in the article and appendix was pre-registered. They don't do everything they said they would do (het fx by linked fate) but close. This study seems complex enough to be worth doing, but simple enough to make it seem "easy" to do design declaration.  A takeaway is that the study was probably underpowered for most of the het fx estimation, a point that gets conceeded post-hoc in the article. 
 
-- The design declaration itself is a compact description of the study you want to conduct
-- The diagnosis (and redesign process) shows why you picked the design you did.
-- the Mock analysis section should run the actual tables and figures you plan to create using a draw of the design.
+The data are posted on dataverse, so the reconciliation section will work ok too.
+  
+```{r, echo = FALSE}
+rescale <- function(x) (x - min(x)) / (max(x) - min(x))
+likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
+```
+
+```{r}
+model <- 
+  declare_population(
+    N = 800,
+    female = rbinom(N, 1, prob = 0.51),
+    lgbtq = rbinom(N, 1, prob = 0.05),
+    age = sample(18:80, N, replace = TRUE),
+    religiosity = sample(1:6, N, replace = TRUE),
+    income = sample(1:12, N, replace = TRUE),
+    college = rbinom(N, 1, prob = 0.5),
+    blm_familiarity = sample(1:4, N, replace = TRUE),
+    linked_fate = sample(1:5, N, replace = TRUE, prob = c(0.05, 0.05, 0.15, 0.25, 0.5)),
+    U = runif(N),
+    blm_support_latent = rescale(
+      U + 0.1 * blm_familiarity + 0.45 * linked_fate + 0.001 * age + 
+        0.25 * lgbtq + 0.01 * income + 0.1 * college + -0.1 * religiosity)
+  ) + 
+  declare_potential_outcomes(
+    blm_support_Z_general = likert_cut(blm_support_latent),
+    blm_support_Z_nationalism = likert_cut(blm_support_latent + 0.01 + linked_fate * 0.01),
+    blm_support_Z_feminism = likert_cut(blm_support_latent + 0.01 + female * 0.05),
+    blm_support_Z_intersectional = likert_cut(blm_support_latent + 0.01 + lgbtq * 0.15)
+  )
+
+inquiry <-  
+  declare_estimands(
+    ATE_nationalism = mean(blm_support_Z_nationalism - blm_support_Z_general),
+    ATE_feminism = mean(blm_support_Z_feminism - blm_support_Z_general),
+    ATE_intersectional = mean(blm_support_Z_intersectional - blm_support_Z_general),
+    DID_nationalism_linked_fate = 
+      cov(blm_support_Z_nationalism - blm_support_Z_general, linked_fate)/var(linked_fate),
+    DID_feminism_gender = 
+      cov(blm_support_Z_feminism - blm_support_Z_general, female)/var(female),
+    DID_intersectional_lgbtq = 
+      cov(blm_support_Z_intersectional - blm_support_Z_general, lgbtq)/var(lgbtq)
+  )
+```
+
+```{r}
+data_strategy <- 
+  declare_assignment(conditions = c("general", "nationalism", "feminism", "intersectional"), simple = TRUE) + 
+  declare_reveal(blm_support, Z) 
+```
+
+```{r}
+answer_strategy <-
+  declare_estimator(
+    blm_support ~ Z,
+    term = c("Znationalism", "Zfeminism", "Zintersectional"),
+    model = lm_robust,
+    estimand = c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
+    label = "unadjusted"
+  ) +
+  declare_estimator(
+    blm_support ~ Z + age + female + as.factor(linked_fate) + lgbtq,
+    term = c("Znationalism", "Zfeminism", "Zintersectional"),
+    estimand = c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
+    model = lm_robust,
+    label = "adjusted"
+  ) +
+  declare_estimator(
+    blm_support ~ Z * linked_fate,
+    term = "Zfeminism:linked_fate",
+    model = lm_robust,
+    estimand = "DID_nationalism_linked_fate",
+    label = "het-fx-nationalism-linked-fate"
+  ) +
+  declare_estimator(
+    blm_support ~ Z * female,
+    term = "Zfeminism:female",
+    model = lm_robust,
+    estimand = "DID_feminism_gender",
+    label = "het-fx-feminism-female"
+  ) +
+  declare_estimator(
+    blm_support ~ Z * lgbtq,
+    term = "Zfeminism:lgbtq",
+    model = lm_robust,
+    estimand = "DID_intersectional_lgbtq",
+    label = "het-fx-intersectional-lgbtq"
+  )
+```
+
+```{r}
+design <- model + inquiry + data_strategy + answer_strategy
+```
+
+```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
+diagnosis <- diagnose_design(design, sims = sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("02_Planning.Rmd"), "/diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, path = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+```{r, echo = FALSE}
+diagnosis %>% 
+  get_simulations %>% 
+  group_by(estimand_label, estimator_label) %>% 
+  summarize(
+    bias = mean(estimate - estimand, na.rm = TRUE),
+    rmse = sqrt(mean((estimate - estimand)^2, na.rm = TRUE)),
+    power = mean(p.value <= 0.05, na.rm = TRUE)
+  ) %>% 
+  mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
+         estimator_label = str_replace_all(estimand_label, "_", " ")) %>% 
+  kable(digits = 2, col.names = c("Estimand", "Estimator", "Bias", "RMSE", "Power"))
+```
+
+```{r, echo = FALSE, results = "asis"}
+dat <- draw_data(design) %>% as_tibble
+
+fit_1 <- lm_robust(blm_support ~ Z, data = dat)
+fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income + college + linked_fate + blm_familiarity, data = dat)
+fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = dat)
+fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = dat)
+
+htmlreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE)
+```
+
+```{r, echo = FALSE, fig.width = 5, fig.height = 5}
+female_df <-
+  dat %>%
+  group_by(female) %>%
+  do(tidy(lm_robust(blm_support ~ Z, data = .))) %>%
+  filter(term != "(Intercept)")
+
+female_int <- lm_robust(blm_support  ~ Z*female, data = dat) %>% 
+  tidy() %>% filter(str_detect(term, ":")) %>%
+  mutate(female = 2,
+         term = str_remove(term, ":female")) 
+
+gg_df_1 <-
+  female_df %>% 
+  bind_rows(female_int) %>%
+  mutate(facet = factor(female, 0:2, c("Men", "Women", "Difference")),
+         term = str_to_sentence(str_remove(term, "Z")))
+
+g1 <- 
+ggplot(gg_df_1, aes(estimate, term)) +
+  geom_point() +
+  geom_vline(xintercept = 0, color = gray(0.5), linetype = "dashed") +
+  geom_linerange(aes(xmin = conf.low, xmax = conf.high)) +
+  facet_wrap(~facet, ncol = 1) +
+  theme(axis.title.y = element_blank())
+
+lgbtq_df <-
+  dat %>%
+  group_by(lgbtq) %>%
+  do(tidy(lm_robust(blm_support ~ Z, data = .))) %>%
+  filter(term != "(Intercept)")
+
+lgbtq_int <- lm_robust(blm_support ~ Z*lgbtq, data = dat) %>% 
+  tidy() %>% 
+  filter(str_detect(term, ":")) %>%
+  mutate(lgbtq = 2,
+         term = str_remove(term, ":lgbtq")) 
+
+gg_df_2 <-
+  lgbtq_df %>% 
+  bind_rows(lgbtq_int) %>%
+  mutate(facet = factor(lgbtq, 0:2, c("LGTBQ", "Non-LGBTQ", "Difference")),
+         term = str_to_sentence(str_remove(term, "Z")))
+
+g2 <- 
+ggplot(gg_df_2, aes(estimate, term)) +
+  geom_point() +
+  geom_vline(xintercept = 0, color = gray(0.5), linetype = "dashed") +
+  geom_linerange(aes(xmin = conf.low, xmax = conf.high)) +
+  facet_wrap(~facet, ncol = 1) +
+  theme(axis.title.y = element_blank())
+
+g1 + g2
+```
+
+## Debates over the value of PAPs
+
+PAPs are often described as a tool for tying researchers' hand and reducing "researcher degrees of freedom" to seek out congenial analyses. PAPs are sometimes criticized because (A) they don't *actually* constrain what researchers do and (B) they *shouldn't*.  
+
+PAPs might not actually constrain researchers because most journals and pressess do not check against PAPs. As reviewers, we have sometimes requested that authors send in the PAPs referenced in their papers. In nearly every case, some analyses promised in the PAP were not included, even in an appendix. Some analyses that appear in the paper were not included in the PAP. As we discuss in greater detail in section XXX on reconciliation, current practice is clearly too causal when distinguishing which analyses were pre-specified and which were not.
+
+Some critics of PAPs charge that we shouldn't pre-register our analysis plans because we should be open to discovery. We learn once we arrive in the field what the interesting questions are, so we shouldn't be constrained by what we thought would happen when sitting in our offices. Furthermore, sometimes people pre-register analyses that are biased, misspecified, or are otherwise inappropriate, so they shouldn't be required to present them. We agree with all the above points -- researchers should create post-implementation reports (CITE JENS in PA) that follow the PAP. Analyses over and above the PAP should simply be labeled as such.
+
+Our take is that PAPs are helpful tools for researchers to plan research better and they are useful for clarifying what the researcher was thinking at each stage. 
+
+## Other benefits of PAPS
+
+- involving partners: agreeing on the analysis procedure ex ante reduces ex post conflict
+- frontloading research design decisions (get more specific, identify problems)
+- Anticipating what might go wrong: attrition, noncompliance, study failure, missing covariate data, etc.
+- Faithful reanalysis. Reanalysts lose a degree of freedom in determining what an author might have intended by a given analysis. 
+- Easier design comparison. If a design is declared at the preanalysis plan phase, then it enables direct comparison with the design as implemented in the final write-up. Side-by-side comparison of the code neatly clarifies which design choices were made ex-ante and ex-post. Side-by-side comparison of the performance of a planned and implemented designs clarify under what conditions deviations from plans are defensible improvements.
 - ethics (summarize and cite Jay's ideas here: http://www.jasonlyall.com/wp-content/uploads/2020/08/PreregisterYourEthics.pdf)
 - ethical outcomes are potential outcomes, so we need to think about them ex ante not just on the basis of revealed outcomes
-
-
-- SOPs
 
 ### countering objections:
 
@@ -79,9 +274,8 @@ Benefits
 ### Other thoughts
 
 - when is the right moment to write a pap?
-
-
-
+- relationship to registered reports?
+- SOPs
 
 ### citations on paps
 

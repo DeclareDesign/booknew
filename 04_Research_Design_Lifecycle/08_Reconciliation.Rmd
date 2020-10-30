@@ -32,18 +32,17 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-Inevitably, the research design as implemented will differ in some way from the research design as planned. When they diverge, misleading readers to believe that the design as implemented was the design as planned all along is an error. We should be transparent about how the design changed over the course of the research process -- first of all, it's the honest thing to do, and second, those changes condition how we interpret the research.
+Inevitably, the research design as implemented will differ in some way from the research design as planned. Treatments cannot be implemented as conceived, some people cannot be found to interview, and sometimes what we learn from baseline measures informs how we measure later. An understanding of how your research design changed from conception to implementation is crucial to understanding what was learned from the design. 
 
 Suppose the original design described a three-arm trial: one control and two treatments, but the design as implemented drops all subjects assigned to the second treatment. Sometimes this is an entirely appropriate and reasonable design modification: perhaps it turns out that due to an implementation failure, the second treatment was simply not delivered. Other times, these modification is less benign -- perhaps the estimate of the effect of the second treatment does not achieve statistical significance, so the author simply omits it from the analysis. 
 
-For this reason, we urge researchers to explicitly **reconcile** the design as planned with the design as implemented. Having a publicly-posted preanalysis plan can make the reconciliation process especially credible -- we know for sure what the planned design was because the preanalysis plan describes it (in greater or lesser detail) pre-implementation.  However, a preanalysis plan is **not** a prerequisite for engaging in reconciliation. The scientific enterprise is built in large measure on trust -- we are ready to believe researchers who say, here is the design I though I would implement but due to unanticipated developements, here is the design I ended up implementing. 
+For this reason, explicitly **reconciling** the design as planned with the design as implemented should be the first step to writing up a paper. Having a publicly-posted preanalysis plan can make the reconciliation process especially credible -- we know for sure what the planned design was because the preanalysis plan describes it pre-implementation. However, a preanalysis plan is not a prerequisite for engaging in reconciliation. The scientific enterprise is built in large measure on trust: we are ready to believe researchers who say, here is the design I though I would implement but due to unanticipated developements, here is the design I ended up implementing. 
+
 In some cases, reconciliation will lead to additional learning beyond what can be inferred from the final design itself. When some units could refused to be included in the study sample or some units refused measurement, we learn that important features about those units. Understanding sample exclusions, noncompliance, and attrition not only may inform future research design planning choices, but contribute substantively to our understanding of the social setting. A policy implemented in the same way the study would likely also not be able to work in the units who refused to participate, and future research could examine why or how to convince them of the policy's benefits.
 
-What belongs in a reconciliation? At a minimum, we need a full description of the planned design, a full description of the implemented design, and a list of the differences. 
+What belongs in a reconciliation? At a minimum, we need a full description of the planned design, a full description of the implemented design, and a list of the differences. This can be made explicit through the declaration of both design in computer code, then comparing the two design objects line-by-line.
 
-This can be made explicit through the declaration of both design in computer code, then "diffing" the two design objects.
-
-In declare design:
+In `DeclareDesign` we take the first steps of comparing designs for you:
 
 ```{r, eval = FALSE}
 design1 <- declare_population(N = 100, u = rnorm(N)) +
@@ -71,9 +70,17 @@ compare_design_estimands(design1, design2)
 ```
 
 
-### Scattered thoughts
+## Example
 
-- @ofosu2019pre
+Here we use reconcile the PAP with the planned analysis. In the Bonilla Tilley piece, I think it would be a table of A()s.
+
+They *mostly* did exactly what they said they would do, but dropped some analyses. It looks to me like reviewers asked for additional ones in the appendix.
+
+
+
+<!-- ### Scattered thoughts -->
+
+<!-- - @ofosu2019pre -->
 
 
 
