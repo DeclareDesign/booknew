@@ -112,7 +112,7 @@ fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income
 fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = dat)
 fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = dat)
 
-htmlreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE)
+bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE)
 
 female_df <-
   dat %>%

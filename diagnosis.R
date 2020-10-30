@@ -282,10 +282,10 @@ ggplot(simulations, aes(x = estimate, y = as.factor(sim_ID)), color = dd_light_b
 
 diagnosis
 
-estimates <- with(diagnosis$simulations_df, estimate)
-mean_estimate <- mean(estimates)
-n_sim <- length(estimates)
-SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((estimates - mean_estimate)^2)))
+simulated_estimates <- with(diagnosis$simulations_df, estimate)
+mean_estimate <- mean(simulated_estimates)
+n_sim <- length(simulated_estimates)
+SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((simulated_estimates - mean_estimate)^2)))
 SE_bias
 
 diagnosis$diagnosands_df %>% pull("se(bias)")
