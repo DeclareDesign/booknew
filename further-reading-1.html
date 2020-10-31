@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3.6 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign</title>
+  <title>5.2 Further reading | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3.6 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="5.2 Further reading | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3.6 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="5.2 Further reading | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="simulating-a-research-design.html"/>
-<link rel="next" href="comparing-designs.html"/>
+<link rel="prev" href="example-1.html"/>
+<link rel="next" href="specifying-the-model.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -486,112 +486,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="diagnosing-a-research-design" class="section level2">
-<h2><span class="header-section-number">3.6</span> Diagnosing a research design</h2>
-<p>The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can now calculate the bias, root mean-squared error, and power for each estimator-estimand pair. In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">study_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(</a>
-<a class="sourceLine" id="cb32-2" title="2">  <span class="dt">select =</span> <span class="kw">c</span>(bias, rmse, power), </a>
-<a class="sourceLine" id="cb32-3" title="3">  <span class="dt">mse =</span> <span class="kw">mean</span>((estimate <span class="op">-</span><span class="st"> </span>estimand)<span class="op">^</span><span class="dv">2</span>))</a></code></pre></div>
-<p>Next, take your simulations data and the diagnosands, and diagnose. This runs a single operation, which is to calculate the diagnosands on your simulations data.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">diagnose_design</span>(simulations_df, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-design_label
-</th>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-mse
-</th>
-<th style="text-align:right;">
-se(mse)
-</th>
-<th style="text-align:right;">
-bias
-</th>
-<th style="text-align:right;">
-se(bias)
-</th>
-<th style="text-align:right;">
-rmse
-</th>
-<th style="text-align:right;">
-se(rmse)
-</th>
-<th style="text-align:right;">
-power
-</th>
-<th style="text-align:right;">
-se(power)
-</th>
-<th style="text-align:right;">
-n_sims
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-simple_design
-</td>
-<td style="text-align:left;">
-PATE
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.0985657
-</td>
-<td style="text-align:right;">
-0.0515525
-</td>
-<td style="text-align:right;">
--0.2000416
-</td>
-<td style="text-align:right;">
-0.1087173
-</td>
-<td style="text-align:right;">
-0.3139517
-</td>
-<td style="text-align:right;">
-0.0860497
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-5
-</td>
-</tr>
-</tbody>
-</table>
-<p>We can also do this in a single step. When you send <code>diagnose_design</code> a design object, it will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">diagnose_design</span>(simple_design, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
+<div id="further-reading-1" class="section level2">
+<h2><span class="header-section-number">5.2</span> Further reading</h2>
+<ul>
+<li><span class="citation">Imbens and Rubin (<a href="#ref-Imbens2015">2015</a>)</span> on potential outcomes</li>
+<li><span class="citation">Halpern (<a href="#ref-halpern2000">2000</a>)</span> on causal models</li>
+</ul>
+<!-- ## Brief illustration -->
+<!-- To illustrate, consider the following design.  -->
+<!-- * A model *M* specifies three variables $X$, $Y$ and $Z$ (all defined on the reals). These form the signature. In additional we assume functional relationships between them that allow for the possibility of confounding (for example, $Y =  bX + Z + \epsilon_Y; X = Z+ \epsilon_X$, with $Z, \epsilon_X, \epsilon_Z$ distributed standard normal).  -->
+<!-- * The inquiry $I$ is ``what would be the average effect of a unit increase in $X$ on $Y$ in the population?'' Note that this question depends on the signature of the model, but not the functional equations of the model (the answer provided by the model does of course depend on the functional equations).  -->
+<!-- * Under data strategy, $D$,  data is gathered on $X$ and $Y$ for $n$ randomly selected units.  -->
+<!-- * Answer $a^d$, is then generated using ordinary least squares as the answer strategy, $A$. -->
+<!-- We have specified all the components of MIDA. We now ask: How strong is this research design? One way to answer this question is with respect to the diagnosand "expected error." Here the model's functional equations provide an answer, $a^m$ to the inquiry (for any draw of $\beta$), and so the distribution of the expected error, *given the model*, $a^d-a^m$, can be calculated. In this example the expected performance of the design may be poor, as measured by this diagnosand, because the data and analysis strategy do not handle the confounding described by the model. -->
+<!-- In comparison, better performance may be achieved through an alternative data strategy (e.g., where $D'$ randomly assigned $X$ to $n$ units before recording $X$ and $Y$) or an alternative analysis strategy (e.g., $A'$  conditions on $Z$). These design evaluations depend on the model, and so one might reasonably ask how performance would look were the model different (for example if the underlying process involved nonlinearities). -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you are running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
+</div>
+<!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-halpern2000">
+<p>Halpern, Joseph Y. 2000. “Axiomatizing Causal Reasoning.” <em>Journal of Artificial Intelligence Research</em> 12: 317–37.</p>
+</div>
+<div id="ref-Imbens2015">
+<p>Imbens, Guido W., and Donald B. Rubin. 2015. <em>Causal Inference in Statistics, Social, and Biomedical Sciences</em>. Cambridge: Cambridge University Press.</p>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="simulating-a-research-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="comparing-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="example-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="specifying-the-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

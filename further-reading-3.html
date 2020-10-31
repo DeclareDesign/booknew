@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3.6 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign</title>
+  <title>8.5 Further reading | Research Design: Declare, Diagnose, Redesign</title>
   <meta name="description" content="describe the book" />
   <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3.6 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:title" content="8.5 Further reading | Research Design: Declare, Diagnose, Redesign" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3.6 Diagnosing a research design | Research Design: Declare, Diagnose, Redesign" />
+  <meta name="twitter:title" content="8.5 Further reading | Research Design: Declare, Diagnose, Redesign" />
   
   <meta name="twitter:description" content="describe the book" />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="simulating-a-research-design.html"/>
-<link rel="next" href="comparing-designs.html"/>
+<link rel="prev" href="threats-to-implementation.html"/>
+<link rel="next" href="choosing-an-answer-strategy.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -486,112 +486,59 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="diagnosing-a-research-design" class="section level2">
-<h2><span class="header-section-number">3.6</span> Diagnosing a research design</h2>
-<p>The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can now calculate the bias, root mean-squared error, and power for each estimator-estimand pair. In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">study_diagnosands &lt;-<span class="st"> </span><span class="kw">declare_diagnosands</span>(</a>
-<a class="sourceLine" id="cb32-2" title="2">  <span class="dt">select =</span> <span class="kw">c</span>(bias, rmse, power), </a>
-<a class="sourceLine" id="cb32-3" title="3">  <span class="dt">mse =</span> <span class="kw">mean</span>((estimate <span class="op">-</span><span class="st"> </span>estimand)<span class="op">^</span><span class="dv">2</span>))</a></code></pre></div>
-<p>Next, take your simulations data and the diagnosands, and diagnose. This runs a single operation, which is to calculate the diagnosands on your simulations data.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">diagnose_design</span>(simulations_df, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-design_label
-</th>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-mse
-</th>
-<th style="text-align:right;">
-se(mse)
-</th>
-<th style="text-align:right;">
-bias
-</th>
-<th style="text-align:right;">
-se(bias)
-</th>
-<th style="text-align:right;">
-rmse
-</th>
-<th style="text-align:right;">
-se(rmse)
-</th>
-<th style="text-align:right;">
-power
-</th>
-<th style="text-align:right;">
-se(power)
-</th>
-<th style="text-align:right;">
-n_sims
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-simple_design
-</td>
-<td style="text-align:left;">
-PATE
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.0985657
-</td>
-<td style="text-align:right;">
-0.0515525
-</td>
-<td style="text-align:right;">
--0.2000416
-</td>
-<td style="text-align:right;">
-0.1087173
-</td>
-<td style="text-align:right;">
-0.3139517
-</td>
-<td style="text-align:right;">
-0.0860497
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-5
-</td>
-</tr>
-</tbody>
-</table>
-<p>We can also do this in a single step. When you send <code>diagnose_design</code> a design object, it will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" title="1"><span class="kw">diagnose_design</span>(simple_design, <span class="dt">diagnosands =</span> study_diagnosands)</a></code></pre></div>
+<div id="further-reading-3" class="section level2">
+<h2><span class="header-section-number">8.5</span> Further reading</h2>
+<ul>
+<li><span class="citation">Lohr (<a href="#ref-lohr2009sampling">2010</a>)</span> on sampling.</li>
+<li><span class="citation">Shadish, Cook, and Campbell (<a href="#ref-cook2002experimental">2002</a>)</span>, <span class="citation">Gerber and Green (<a href="#ref-Gerber2012">2012</a>)</span> on experimental design</li>
+<li><span class="citation">Seawright and Gerring (<a href="#ref-seawright2008case">2008</a>)</span> and <span class="citation">Lieberman (<a href="#ref-lieberman2005nested">2005</a>)</span> on case selection</li>
+<li><span class="citation">Collier (<a href="#ref-collier2011understanding">2011</a>)</span>, <span class="citation">Fairfield (<a href="#ref-fairfield2013going">2013</a>)</span>, and <span class="citation">Humphreys and Jacobs (<a href="#ref-humphreys2015mixing">2015</a>)</span> on process tracing</li>
+</ul>
+<!-- - ethics belongs in data strategy -->
+<!-- - just downloading the data.  Did you offload the data strategy -->
+<!-- - possibly ambiguous where the data strategy ends and the analysis strategy ends. -->
+<!-- - SOMEone did parts of the datastrategy -->
+<!-- - Answer strategy section distinguishes qual from quant; should the data strategy section do the same? Make the point that lots of kinds of activities are data strategies. Interviews are a complex interaction of data strategy and answer strategy make them hard to declare. -->
+<!-- - Data strategy is a main locus of ethical problems. That's not to say that ethical challenges don't occur when we have bad models or inquiries, or when our answer strategies violate subject privacy. Data strategies change what outcomes are revealed (as in an experiment) or measured (as in a survey). The act of treating or measure can induce trauma or other bad outcomes.  -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
+</div>
+<!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-collier2011understanding">
+<p>Collier, David. 2011. “Understanding Process Tracing.” <em>PS: Political Science &amp; Politics</em> 44 (4): 823–30.</p>
+</div>
+<div id="ref-fairfield2013going">
+<p>Fairfield, Tasha. 2013. “Going Where the Money Is: Strategies for Taxing Economic Elites in Unequal Democracies.” <em>World Development</em> 47: 42–57.</p>
+</div>
+<div id="ref-Gerber2012">
+<p>Gerber, Alan S., and Donald P. Green. 2012. <em>Field Experiments: Design, Analysis, and Interpretation</em>. New York: W.W. Norton.</p>
+</div>
+<div id="ref-humphreys2015mixing">
+<p>Humphreys, Macartan, and Alan M. Jacobs. 2015. “Mixing Methods: A Bayesian Approach.” <em>American Political Science Review</em> 109 (4): 653–73.</p>
+</div>
+<div id="ref-lieberman2005nested">
+<p>Lieberman, Evan S. 2005. “Nested Analysis as a Mixed-Method Strategy for Comparative Research.” <em>American Political Science Review</em> 99 (3): 435–52.</p>
+</div>
+<div id="ref-lohr2009sampling">
+<p>Lohr, Sharon. 2010. <em>Sampling: Design and Analysis</em>. Boston: Brooks Cole.</p>
+</div>
+<div id="ref-seawright2008case">
+<p>Seawright, Jason, and John Gerring. 2008. “Case Selection Techniques in Case Study Research: A Menu of Qualitative and Quantitative Options.” <em>Political Research Quarterly</em> 61 (2): 294–308.</p>
+</div>
+<div id="ref-cook2002experimental">
+<p>Shadish, William, Thomas D. Cook, and Donald Thomas Campbell. 2002. <em>Experimental and Quasi-Experimental Designs for Generalized Causal Inference</em>. Boston: Houghton Mifflin.</p>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="simulating-a-research-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="comparing-designs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="threats-to-implementation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="choosing-an-answer-strategy.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
