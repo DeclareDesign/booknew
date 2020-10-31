@@ -35,10 +35,10 @@ get_dropbox_path <- function(section){
 bookreg <- function(...) {
   if(knitr:::kable_format() == "html") {
     do.call(htmlreg, args = list(...))
-  } else if(knitr:::kable_format() == "tex") {
+  } else if(knitr:::kable_format() == "latex") {
     do.call(texreg, args = list(...))
   } else {
-    stop("bookreg only supports html and tex")
+    stop(paste0("bookreg only supports html and tex", knitr:::kable_format()))
   }
 }
 
