@@ -27,17 +27,33 @@ model <-
         0.25 * lgbtq + 0.01 * income + 0.1 * college + -0.1 * religiosity)
   ) + 
   declare_potential_outcomes(
-    blm_support_Z_general = likert_cut(blm_support_latent),
-    blm_support_Z_nationalism = likert_cut(blm_support_latent + 0.01 + linked_fate * 0.01),
-    blm_support_Z_feminism = likert_cut(blm_support_latent - 0.02 + female * 0.07),
-    blm_support_Z_intersectional = likert_cut(blm_support_latent  - 0.05 + lgbtq * 0.15)
+    blm_support_Z_general = 
+      likert_cut(blm_support_latent),
+    blm_support_Z_nationalism = 
+      likert_cut(blm_support_latent + 0.01 + 0.01 * linked_fate + 0.01 * blm_familiarity),
+    blm_support_Z_feminism = 
+      likert_cut(blm_support_latent - 0.02 + 0.07 * female + 0.01 * blm_familiarity),
+    blm_support_Z_intersectional = 
+      likert_cut(blm_support_latent  - 0.05 + 0.15 * lgbtq + 0.01 * blm_familiarity)
   )
 
 inquiry <-  
   declare_estimands(
+    
+    # Average effects
     ATE_nationalism = mean(blm_support_Z_nationalism - blm_support_Z_general),
     ATE_feminism = mean(blm_support_Z_feminism - blm_support_Z_general),
     ATE_intersectional = mean(blm_support_Z_intersectional - blm_support_Z_general),
+    
+    # Overall heterogeneity w.r.t. blm_familiarity
+    DID_nationalism_familiarity = 
+      cov(blm_support_Z_nationalism - blm_support_Z_general, blm_familiarity)/var(blm_familiarity),
+    DID_feminism_familiarity = 
+      cov(blm_support_Z_feminism - blm_support_Z_general, blm_familiarity)/var(blm_familiarity),
+    DID_intersectional_familiarity = 
+      cov(blm_support_Z_intersectional - blm_support_Z_general, blm_familiarity)/var(blm_familiarity),
+    
+    # Treatment-specific heterogeneity
     DID_nationalism_linked_fate = 
       cov(blm_support_Z_nationalism - blm_support_Z_general, linked_fate)/var(linked_fate),
     DID_feminism_gender = 
@@ -56,71 +72,62 @@ answer_strategy <-
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
     model = lm_robust,
     estimand = c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
-    label = "unadjusted"
+    label = "OLS"
   ) +
   declare_estimator(
     blm_support ~ Z + age + female + as.factor(linked_fate) + lgbtq,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
     estimand = c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     model = lm_robust,
-    label = "adjusted"
+    label = "OLS with controls"
+  ) +
+    declare_estimator(
+    blm_support ~ Z*blm_familiarity,
+    term = c("Znationalism:blm_familiarity", "Zfeminism:blm_familiarity", "Zintersectional:blm_familiarity"),
+    model = lm_robust,
+    estimand = c("DID_nationalism_familiarity", "DID_feminism_familiarity", "DID_intersectional_familiarity"),
+    label = "DID_familiarity"
   ) +
   declare_estimator(
     blm_support ~ Z * linked_fate,
     term = "Zfeminism:linked_fate",
     model = lm_robust,
     estimand = "DID_nationalism_linked_fate",
-    label = "het-fx-nationalism-linked-fate"
+    label = "DID_nationalism_linked_fate"
   ) +
   declare_estimator(
     blm_support ~ Z * female,
     term = "Zfeminism:female",
     model = lm_robust,
     estimand = "DID_feminism_gender",
-    label = "het-fx-feminism-female"
+    label = "DID_feminism_gender"
   ) +
   declare_estimator(
     blm_support ~ Z * lgbtq,
-    term = "Zfeminism:lgbtq",
+    term = "Zintersectional:lgbtq",
     model = lm_robust,
     estimand = "DID_intersectional_lgbtq",
-    label = "het-fx-intersectional-lgbtq"
+    label = "DID_intersectional_lgbtq"
   )
 
 design <- model + inquiry + data_strategy + answer_strategy
+mock_data <- draw_data(design)
+mock_data %>% head %>% kable()
 
+fit_1 <- lm_robust(blm_support ~ Z, data = mock_data)
+fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income + college + linked_fate + blm_familiarity, data = mock_data)
+fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = mock_data)
+fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = mock_data)
 
-
-
-
-diagnosis %>% 
-  get_simulations %>% 
-  group_by(estimand_label, estimator_label) %>% 
-  summarize(
-    bias = mean(estimate - estimand, na.rm = TRUE),
-    rmse = sqrt(mean((estimate - estimand)^2, na.rm = TRUE)),
-    power = mean(p.value <= 0.05, na.rm = TRUE)
-  ) %>% 
-  mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
-         estimator_label = str_replace_all(estimand_label, "_", " ")) %>% 
-  kable(digits = 2, col.names = c("Estimand", "Estimator", "Bias", "RMSE", "Power"))
-
-dat <- draw_data(design) %>% as_tibble
-
-fit_1 <- lm_robust(blm_support ~ Z, data = dat)
-fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income + college + linked_fate + blm_familiarity, data = dat)
-fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = dat)
-fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = dat)
-
-bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE)
+bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, caption = "Mock Regression Table")
 
 female_df <-
-  dat %>%
+  mock_data %>%
   group_by(female) %>%
   do(tidy(lm_robust(blm_support ~ Z, data = .))) %>%
   filter(term != "(Intercept)")
 
-female_int <- lm_robust(blm_support  ~ Z*female, data = dat) %>% 
+female_int <- lm_robust(blm_support  ~ Z*female, data = mock_data) %>% 
   tidy() %>% filter(str_detect(term, ":")) %>%
   mutate(female = 2,
          term = str_remove(term, ":female")) 
@@ -131,21 +138,13 @@ gg_df_1 <-
   mutate(facet = factor(female, 0:2, c("Men", "Women", "Difference")),
          term = str_to_sentence(str_remove(term, "Z")))
 
-g1 <- 
-ggplot(gg_df_1, aes(estimate, term)) +
-  geom_point() +
-  geom_vline(xintercept = 0, color = gray(0.5), linetype = "dashed") +
-  geom_linerange(aes(xmin = conf.low, xmax = conf.high)) +
-  facet_wrap(~facet, ncol = 1) +
-  theme(axis.title.y = element_blank())
-
 lgbtq_df <-
-  dat %>%
+  mock_data %>%
   group_by(lgbtq) %>%
   do(tidy(lm_robust(blm_support ~ Z, data = .))) %>%
   filter(term != "(Intercept)")
 
-lgbtq_int <- lm_robust(blm_support ~ Z*lgbtq, data = dat) %>% 
+lgbtq_int <- lm_robust(blm_support ~ Z*lgbtq, data = mock_data) %>% 
   tidy() %>% 
   filter(str_detect(term, ":")) %>%
   mutate(lgbtq = 2,
@@ -157,12 +156,30 @@ gg_df_2 <-
   mutate(facet = factor(lgbtq, 0:2, c("LGTBQ", "Non-LGBTQ", "Difference")),
          term = str_to_sentence(str_remove(term, "Z")))
 
-g2 <- 
-ggplot(gg_df_2, aes(estimate, term)) +
+
+g <- 
+ggplot(data = NULL, aes(estimate, term)) +
   geom_point() +
   geom_vline(xintercept = 0, color = gray(0.5), linetype = "dashed") +
   geom_linerange(aes(xmin = conf.low, xmax = conf.high)) +
   facet_wrap(~facet, ncol = 1) +
   theme(axis.title.y = element_blank())
 
-g1 + g2
+(g %+% gg_df_1) +
+  (g %+% gg_df_2) +
+  plot_annotation(title = 'Mock Analysis Figure')
+
+
+
+
+
+diagnosis %>% 
+  get_simulations %>% 
+  group_by(estimand_label, estimator_label) %>% 
+  summarize(
+    bias = mean(estimate - estimand, na.rm = TRUE),
+    power = mean(p.value <= 0.05, na.rm = TRUE)
+  ) %>% 
+  mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
+         estimator_label = str_replace_all(estimator_label, "_", " ")) %>% 
+  kable(digits = 2, col.names = c("Estimand", "Estimator", "Bias", "Power"))
