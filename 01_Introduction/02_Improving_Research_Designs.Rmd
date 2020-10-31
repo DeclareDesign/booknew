@@ -20,8 +20,8 @@ source("scripts/before_chapter_script.R")
 ```{r mida, echo = FALSE, output = FALSE, purl = FALSE}
 # run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
 do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
+sims <- 1000
+b_sims <- 200
 ```
 
 ```{r, echo = FALSE}
@@ -216,10 +216,19 @@ simple_design_diagnosands <-
 
 We then diagnose the design, which involves simulating the design and again and again, and then calculate the diagnosands based on the simulations data. 
 
-```{r}
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
 # Diagnose the design
 simple_design_diagnosis <- 
-  diagnose_design(simple_design, diagnosands = simple_design_diagnosands, sims = 500)
+  diagnose_design(simple_design, diagnosands = simple_design_diagnosands, sims = sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("02_Improving_Research_Designs"), "/simple_design_diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(simple_design_diagnosis, path = rds_file_path)
+}
+simple_design_diagnosis <- read_rds(rds_file_path)
 ```
 
 ```{r, echo = FALSE}
