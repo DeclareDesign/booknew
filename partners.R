@@ -26,7 +26,7 @@ lines_df <-
 
 annotations_df <-
   tibble(
-    diagnosand = c("power", "utility"),
+    diagnosand = c("Power", "Utility"),
     label = c("Researcher constraint: Power must be above 0.80.",
                        "Partner constraint: Two-thirds of subjects must be treated."),
     prob = c(0.2, 0.1),
@@ -41,5 +41,5 @@ ggplot(gg_df) +
   annotate("text", x = 0.75, y = 0.50, label = "Zone of agreement", angle = 270, hjust = 0) + 
   facet_grid(diagnosand~., scales = "free") +
   labs(x = "Proportion treated") +
-  theme_bw() + 
+  dd_theme() + 
   theme(axis.title.y = element_blank())
