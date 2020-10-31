@@ -103,8 +103,8 @@ base_dag_plot %+% ggdd_df
 simple_design_diagnosands <- 
   declare_diagnosands(select = c(bias, rmse, power))
 
-# Diagnose the design
-simple_design_diagnosis <- 
-  diagnose_design(simple_design, diagnosands = simple_design_diagnosands, sims = 500)
+
+
+
 
 get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable
