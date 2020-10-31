@@ -34,11 +34,15 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-When embarking on a prospective research design, it is becoming standard practice in many research communities to publicly register a pre-analysis plans (PAP) prior to the implementation of some or all of the Data strategy. PAPs serve many functions, but most importantly, they clarify which design choices were made before data collection and which were made afterward. Sometimes -- perhaps everytime! -- we conduct a research study, aspects of $M$, $I$, $D$, and $A$ shift along the way. A concern is that they shift in ways that invalidate the apparent conclusions of the study. For example, "$p$-hacking" is the shady practice of trying out many regression specifications until the $p$-value associated with an important test attains statistical significance. PAPs help researchers to credibly communicate to skeptics when design decisions were made: if the regression specification was detailed in a PAP posted before any data were collected, the test cannot be the result of a $p$-hack.
+In many research communities, it is becoming standard practice to publicly register a pre-analysis plan (PAP) prior to the implementation of some or all of the Data strategy. PAPs serve many functions, but most importantly, they clarify which design choices were made before data collection and which were made afterward. Sometimes -- perhaps every time! -- we conduct a research study, aspects of $M$, $I$, $D$, and $A$ shift along the way. A concern is that they shift in ways that invalidate the apparent conclusions of the study. For example, "$p$-hacking" is the shady practice of trying out many regression specifications until the $p$-value associated with an important test attains statistical significance. PAPs help researchers to credibly communicate to skeptics *when* design decisions were made: if the regression specification was detailed in a PAP posted before any data were collected, the test cannot be the result of a $p$-hack. 
 
-What belongs in a PAP? Thus far, the set of decisions that should be specified in a PAP remains remarkably unclear. PAP templates and checklists are proliferating, and the number of items they suggest range from nine to sixty. PAPs themselves are becoming longer and more detailed, with some in the American Economic Association (AEA) and Evidence in Governance and Politics (EGAP) study registries reaching hundreds of pages, as researchers seek to be ever more comprehensive. Some registries emphasize the registration of the hypotheses to be tested, while others emphasize the registration of the tests that will used. We read many PAPs -- it is often hard to assess whether these detailed plans actually contain the key analytically-relevant details. 
+PAPs are sometimes misinterpreted as a binding commitment to report all pre-registered analyses and nothing but. This view is unrealistic and unnecessarily rigid. While we think that researchers should report all pre-registered analyses *somewhere* (see Section XXX on "populated PAPs"), study write-ups inevitably deviate in some way from the PAP -- and that's a good thing. Researchers learn more by conducting research; this learning can and should be reflected in the finalized Answer strategy. Even if not binding, the main point of publicly posting pre-analysis plan is to communicate at what stage in the research process choices were made.
 
-Our view is that, minimally, a PAP should include a design declaration. A good deal of the discussion of what goes in a PAP centers on the answer strategy $A$ -- what estimator to use, what covariates to condition on, what subsets of the data to include. But of course we also need to know the details of $D$ -- how units were sampled, how treatments were assigned, how the outcomes will be measured. We need to know about $I$ because we need to know what the target of inference is^[A major concern in medical trials is "outcome switching," wherein the eventual report focuses on different health outcomes that originally intended. When we switch outcomes, we switch inquiries!]. We need enough of $M$ to describe $I$ in sufficient detail. In short, a design declaration is what belongs in a PAP, because a design declaration specifies all of the analytically-relevent design decisions. 
+Our hunch is that the main consequence of actually writing a PAP is improvement to the research design itself. Just like research design declaration forces us to think through the details of our model, inquiry, data strategy, and answer strategy, describing those choices in a publicly-posted document surely causes deeper reflection about the design. In this way, the main audiencce for a PAP is the study authors themselves.
+
+What belongs in a PAP? Thus far, recommendations for the set of decisions that should be specified in a PAP remain remarkably unclear and inconsistent across research communities. PAP templates and checklists are proliferating, and the number of items they suggest range from nine to sixty. PAPs themselves are becoming longer and more detailed, with some in the American Economic Association (AEA) and Evidence in Governance and Politics (EGAP) study registries reaching hundreds of pages as researchers seek to be ever more comprehensive. Some registries emphasize the registration of the hypotheses to be tested, while others emphasize the registration of the tests that will used. We read many PAPs -- it is often hard to assess whether these detailed plans actually contain the key analytically-relevant details. 
+
+Our view is, minimally, a PAP should include a design declaration. A good deal of the discussion of what goes in a PAP centers on the answer strategy $A$ -- what estimator to use, what covariates to condition on, what subsets of the data to include. But of course we also need to know the details of $D$ -- how units were sampled, how treatments were assigned, how the outcomes will be measured. We need to know about $I$ because we need to know what the target of inference is^[A major concern in medical trials is "outcome switching," wherein the eventual report focuses on different health outcomes that originally intended. When we switch outcomes, we switch inquiries!]. We need enough of $M$ to describe $I$ in sufficient detail. In short, a design declaration is what belongs in a PAP, because a design declaration specifies all of the analytically-relevent design decisions. 
 
 In addition to a design declaration, a PAP should include mock analyses conducted on simulated data. If the design declaration is done formally in code, creating simulated data that resemble the eventual realized data is quite straightforward. We think researchers should run their Answer strategy on the mock data, creating mock figures and tables that will eventually be made with real data. In our experience, *this* is the step that really causes researchers to think hard about all aspects of their design.
 
@@ -46,18 +50,20 @@ Strictly speaking, preanalysis plans should include design declaration, but they
 
 ## Example
 
-- This section will be an example PAP. 
-- We will take a (relatively simple) PAP from the EGAP website (with permission) and declare the design in code. 
-- We will make fake figures and tables using mock data
-- We will choose wisely, because we will use the same study for the section on reconciliation. We want there to be a few differences (enough to make the point) but that the differences don't shame the author
-- Very open to suggestions on a good study.
+In this section, we provide an example of a PAP using a design declaration. We follow the actual PAP for @bonilla_tillery_2020, which was posted to the As Predicted registry here: https://aspredicted.org/q56qq.pdf. The goal of the study is to estimate the causal effects of alternative framings of the Black Lives Matter (BLM) movement on support for the movement among Black Americans overall as well as among subsets of the Black community. These study authors are models of research transparency: they prominently link to the PAP in the published article, they conduct no non-preregistered analyses except those requested during the review process, and their replication archive includes all materials required to confirm their analyses, all of which we were able to reproduce exactly with minimal effort. 
 
-Possibility: @bonilla_tillery_2020 from the APSR on the effects of intersectional framing on support for the BLM movement. The takeaway is that the feminist and LGBTQ frames cause a decrease in support among the men in the sample, but not the women.
+### Model
 
-This is a 4-arm (control vs. three treatments) experiment among Black americans recruited via qualtrics. 4 dependent variables. Almost everything they do in the article and appendix was pre-registered. They don't do everything they said they would do (het fx by linked fate) but close. This study seems complex enough to be worth doing, but simple enough to make it seem "easy" to do design declaration.  A takeaway is that the study was probably underpowered for most of the het fx estimation, a point that gets conceeded post-hoc in the article. 
+The authors write in their PAP: 
 
-The data are posted on dataverse, so the reconciliation section will work ok too.
-  
+> We hypothesize that: H1: Black Nationalist frames of the BLM movement will increase perceived effectiveness of BLM among African American test subjects. H2: Feminist frames of the BLM movement will increase perceived effectiveness of BLM among African American women, but decrease perceived effectiveness in male subjects. H3: LGBTQ and Intersectional frames of the BLM movement will have no effect (or a demobilizing effect) on the perceived effectiveness of BLM African American subjects.
+
+These hypotheses reflect a model of coalition politics that emphasizes the tensions induced by overlapping identities. Framing the BLM movement as feminist or pro-LGBTQ may increase support among Black women or Black LGBTQ identifiers, but that increase may come at the expense of support among Black men or Blacks who do not identify as LGBTQ. Similarly, this model predicts that subjects with stronger attachment to their Black identity will have a larger response to a Black nationalist framing of BLM than those with weaker attachements. 
+
+The model also includes beliefs about the distributions of gender, LGBTQ status, and Black identity strength. In the Data strategy, Black identity will be measured with the standard linked fate measure. Other background characteristics that may be correlated with support for BLM include age, religiosity, income, eductation, and familiarity with the movement, so these are included in the model as well.
+
+The focus of the study will be on the causal effects of the nationalism, feminism, and intersectional frames relative to a general description of the Black Lives Matter movement. Model beliefs about treatment effect heterogeneity are embedded in the `declare_potential_outcomes` call. The effect of the nationalism treatment is hypothesized to be stronger, the greater subjects' sense of linked fate; the effect of the feminism treatment should be negative for men but postive for women; the effect of the intersectionality treatment should be positive for LGBTQ identifies, but negative for non-identifiers. The authors did not specify their predictions of the magnitudes of the differences, so we came up with our own guesses.
+
 ```{r, echo = FALSE}
 rescale <- function(x) (x - min(x)) / (max(x) - min(x))
 likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
@@ -69,12 +75,12 @@ model <-
     N = 800,
     female = rbinom(N, 1, prob = 0.51),
     lgbtq = rbinom(N, 1, prob = 0.05),
+    linked_fate = sample(1:5, N, replace = TRUE, prob = c(0.05, 0.05, 0.15, 0.25, 0.5)),
     age = sample(18:80, N, replace = TRUE),
     religiosity = sample(1:6, N, replace = TRUE),
     income = sample(1:12, N, replace = TRUE),
     college = rbinom(N, 1, prob = 0.5),
     blm_familiarity = sample(1:4, N, replace = TRUE),
-    linked_fate = sample(1:5, N, replace = TRUE, prob = c(0.05, 0.05, 0.15, 0.25, 0.5)),
     U = runif(N),
     blm_support_latent = rescale(
       U + 0.1 * blm_familiarity + 0.45 * linked_fate + 0.001 * age + 
@@ -83,10 +89,16 @@ model <-
   declare_potential_outcomes(
     blm_support_Z_general = likert_cut(blm_support_latent),
     blm_support_Z_nationalism = likert_cut(blm_support_latent + 0.01 + linked_fate * 0.01),
-    blm_support_Z_feminism = likert_cut(blm_support_latent + 0.01 + female * 0.05),
-    blm_support_Z_intersectional = likert_cut(blm_support_latent + 0.01 + lgbtq * 0.15)
+    blm_support_Z_feminism = likert_cut(blm_support_latent - 0.02 + female * 0.07),
+    blm_support_Z_intersectional = likert_cut(blm_support_latent  - 0.05 + lgbtq * 0.15)
   )
+```
 
+### Inquiry
+  
+The inquiries for this study are parameters implied by the three hypotheses quoted above and by the answer strategies described by the authors. We are interested in the average affects of all three treatments relative to the "general" framing, as well as the difference in effectiveness of each treatment by its corresponding covariate. We write these estimands as $\frac{cov(\tau_i, X)}{X}$, which is identical to the difference-in-difference for the binary covariates (`female` and `lgbtq`) and is the slope of the best linear predictor of how the effect changes over the range of `linked_fate`, which we are treating as quasi-continuous here.
+
+```{r}
 inquiry <-  
   declare_estimands(
     ATE_nationalism = mean(blm_support_Z_nationalism - blm_support_Z_general),
@@ -100,6 +112,14 @@ inquiry <-
       cov(blm_support_Z_intersectional - blm_support_Z_general, lgbtq)/var(lgbtq)
   )
 ```
+
+
+### Data strategy
+
+The subjects for this study are 800 Black Americans recruited by the survey firm Qualtrics using a quota sampling procedure. We elide this sampling step in our declaration -- the 800 subjects are described by the `declare_population` call. 
+
+After subjects' background charcteristics are measured, they will be assigned to one of four treatment conditions. Since the survey was conducted on Qualtrics, we assume that the authors used the built-in randomization tools, which typically use simple (Bernoulli) random assignment.
+
 
 ```{r}
 data_strategy <- 
