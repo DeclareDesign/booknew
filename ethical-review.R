@@ -7,7 +7,6 @@ lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
-
 dat <- 
   tibble(
     X = seq(1, 10, 0.001),
