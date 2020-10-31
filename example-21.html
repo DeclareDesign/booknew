@@ -416,7 +416,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="part"><span><b>IV Research Design Lifecycle</b></span></li>
 <li class="chapter" data-level="21" data-path="research-design-lifecycle.html"><a href="research-design-lifecycle.html"><i class="fa fa-check"></i><b>21</b> Research Design Lifecycle</a></li>
 <li class="chapter" data-level="22" data-path="planning.html"><a href="planning.html"><i class="fa fa-check"></i><b>22</b> Planning</a><ul>
-<li class="chapter" data-level="22.1" data-path="example-21.html"><a href="example-21.html"><i class="fa fa-check"></i><b>22.1</b> Example</a></li>
+<li class="chapter" data-level="22.1" data-path="example-21.html"><a href="example-21.html"><i class="fa fa-check"></i><b>22.1</b> Example</a><ul>
+<li class="chapter" data-level="22.1.1" data-path="example-21.html"><a href="example-21.html#model-1"><i class="fa fa-check"></i><b>22.1.1</b> Model</a></li>
+<li class="chapter" data-level="22.1.2" data-path="example-21.html"><a href="example-21.html#inquiry-1"><i class="fa fa-check"></i><b>22.1.2</b> Inquiry</a></li>
+<li class="chapter" data-level="22.1.3" data-path="example-21.html"><a href="example-21.html#data-strategy-1"><i class="fa fa-check"></i><b>22.1.3</b> Data strategy</a></li>
+</ul></li>
 <li class="chapter" data-level="22.2" data-path="debates-over-the-value-of-paps.html"><a href="debates-over-the-value-of-paps.html"><i class="fa fa-check"></i><b>22.2</b> Debates over the value of PAPs</a></li>
 <li class="chapter" data-level="22.3" data-path="other-benefits-of-paps.html"><a href="other-benefits-of-paps.html"><i class="fa fa-check"></i><b>22.3</b> Other benefits of PAPS</a><ul>
 <li class="chapter" data-level="22.3.1" data-path="other-benefits-of-paps.html"><a href="other-benefits-of-paps.html#countering-objections"><i class="fa fa-check"></i><b>22.3.1</b> countering objections:</a></li>
@@ -481,27 +485,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="example-21" class="section level2">
 <h2><span class="header-section-number">22.1</span> Example</h2>
-<ul>
-<li>This section will be an example PAP.</li>
-<li>We will take a (relatively simple) PAP from the EGAP website (with permission) and declare the design in code.</li>
-<li>We will make fake figures and tables using mock data</li>
-<li>We will choose wisely, because we will use the same study for the section on reconciliation. We want there to be a few differences (enough to make the point) but that the differences don’t shame the author</li>
-<li>Very open to suggestions on a good study.</li>
-</ul>
-<p>Possibility: <span class="citation">Bonilla and Tillery (<a href="#ref-bonilla_tillery_2020">2020</a>)</span> from the APSR on the effects of intersectional framing on support for the BLM movement. The takeaway is that the feminist and LGBTQ frames cause a decrease in support among the men in the sample, but not the women.</p>
-<p>This is a 4-arm (control vs. three treatments) experiment among Black americans recruited via qualtrics. 4 dependent variables. Almost everything they do in the article and appendix was pre-registered. They don’t do everything they said they would do (het fx by linked fate) but close. This study seems complex enough to be worth doing, but simple enough to make it seem “easy” to do design declaration. A takeaway is that the study was probably underpowered for most of the het fx estimation, a point that gets conceeded post-hoc in the article.</p>
-<p>The data are posted on dataverse, so the reconciliation section will work ok too.</p>
+<p>In this section, we provide an example of a PAP using a design declaration. We follow the actual PAP for <span class="citation">Bonilla and Tillery (<a href="#ref-bonilla_tillery_2020">2020</a>)</span>, which was posted to the As Predicted registry here: <a href="https://aspredicted.org/q56qq.pdf" class="uri">https://aspredicted.org/q56qq.pdf</a>. The goal of the study is to estimate the causal effects of alternative framings of the Black Lives Matter (BLM) movement on support for the movement among Black Americans overall as well as among subsets of the Black community. These study authors are models of research transparency: they prominently link to the PAP in the published article, they conduct no non-preregistered analyses except those requested during the review process, and their replication archive includes all materials required to confirm their analyses, all of which we were able to reproduce exactly with minimal effort.</p>
+<div id="model-1" class="section level3">
+<h3><span class="header-section-number">22.1.1</span> Model</h3>
+<p>The authors write in their PAP:</p>
+<blockquote>
+<p>We hypothesize that: H1: Black Nationalist frames of the BLM movement will increase perceived effectiveness of BLM among African American test subjects. H2: Feminist frames of the BLM movement will increase perceived effectiveness of BLM among African American women, but decrease perceived effectiveness in male subjects. H3: LGBTQ and Intersectional frames of the BLM movement will have no effect (or a demobilizing effect) on the perceived effectiveness of BLM African American subjects.</p>
+</blockquote>
+<p>These hypotheses reflect a model of coalition politics that emphasizes the tensions induced by overlapping identities. Framing the BLM movement as feminist or pro-LGBTQ may increase support among Black women or Black LGBTQ identifiers, but that increase may come at the expense of support among Black men or Blacks who do not identify as LGBTQ. Similarly, this model predicts that subjects with stronger attachment to their Black identity will have a larger response to a Black nationalist framing of BLM than those with weaker attachements.</p>
+<p>The model also includes beliefs about the distributions of gender, LGBTQ status, and Black identity strength. In the Data strategy, Black identity will be measured with the standard linked fate measure. Other background characteristics that may be correlated with support for BLM include age, religiosity, income, eductation, and familiarity with the movement, so these are included in the model as well.</p>
+<p>The focus of the study will be on the causal effects of the nationalism, feminism, and intersectional frames relative to a general description of the Black Lives Matter movement. Model beliefs about treatment effect heterogeneity are embedded in the <code>declare_potential_outcomes</code> call. The effect of the nationalism treatment is hypothesized to be stronger, the greater subjects’ sense of linked fate; the effect of the feminism treatment should be negative for men but postive for women; the effect of the intersectionality treatment should be positive for LGBTQ identifies, but negative for non-identifiers. The authors did not specify their predictions of the magnitudes of the differences, so we came up with our own guesses.</p>
 <div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb160-1" title="1">model &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb160-2" title="2"><span class="st">  </span><span class="kw">declare_population</span>(</a>
 <a class="sourceLine" id="cb160-3" title="3">    <span class="dt">N =</span> <span class="dv">800</span>,</a>
 <a class="sourceLine" id="cb160-4" title="4">    <span class="dt">female =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.51</span>),</a>
 <a class="sourceLine" id="cb160-5" title="5">    <span class="dt">lgbtq =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.05</span>),</a>
-<a class="sourceLine" id="cb160-6" title="6">    <span class="dt">age =</span> <span class="kw">sample</span>(<span class="dv">18</span><span class="op">:</span><span class="dv">80</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb160-7" title="7">    <span class="dt">religiosity =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb160-8" title="8">    <span class="dt">income =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb160-9" title="9">    <span class="dt">college =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>),</a>
-<a class="sourceLine" id="cb160-10" title="10">    <span class="dt">blm_familiarity =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb160-11" title="11">    <span class="dt">linked_fate =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>, <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)),</a>
+<a class="sourceLine" id="cb160-6" title="6">    <span class="dt">linked_fate =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>, <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>)),</a>
+<a class="sourceLine" id="cb160-7" title="7">    <span class="dt">age =</span> <span class="kw">sample</span>(<span class="dv">18</span><span class="op">:</span><span class="dv">80</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb160-8" title="8">    <span class="dt">religiosity =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb160-9" title="9">    <span class="dt">income =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">12</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb160-10" title="10">    <span class="dt">college =</span> <span class="kw">rbinom</span>(N, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="fl">0.5</span>),</a>
+<a class="sourceLine" id="cb160-11" title="11">    <span class="dt">blm_familiarity =</span> <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, N, <span class="dt">replace =</span> <span class="ot">TRUE</span>),</a>
 <a class="sourceLine" id="cb160-12" title="12">    <span class="dt">U =</span> <span class="kw">runif</span>(N),</a>
 <a class="sourceLine" id="cb160-13" title="13">    <span class="dt">blm_support_latent =</span> <span class="kw">rescale</span>(</a>
 <a class="sourceLine" id="cb160-14" title="14">      U <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span>blm_familiarity <span class="op">+</span><span class="st"> </span><span class="fl">0.45</span> <span class="op">*</span><span class="st"> </span>linked_fate <span class="op">+</span><span class="st"> </span><span class="fl">0.001</span> <span class="op">*</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span></a>
@@ -510,62 +514,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb160-17" title="17"><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</a>
 <a class="sourceLine" id="cb160-18" title="18">    <span class="dt">blm_support_Z_general =</span> <span class="kw">likert_cut</span>(blm_support_latent),</a>
 <a class="sourceLine" id="cb160-19" title="19">    <span class="dt">blm_support_Z_nationalism =</span> <span class="kw">likert_cut</span>(blm_support_latent <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">+</span><span class="st"> </span>linked_fate <span class="op">*</span><span class="st"> </span><span class="fl">0.01</span>),</a>
-<a class="sourceLine" id="cb160-20" title="20">    <span class="dt">blm_support_Z_feminism =</span> <span class="kw">likert_cut</span>(blm_support_latent <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">+</span><span class="st"> </span>female <span class="op">*</span><span class="st"> </span><span class="fl">0.05</span>),</a>
-<a class="sourceLine" id="cb160-21" title="21">    <span class="dt">blm_support_Z_intersectional =</span> <span class="kw">likert_cut</span>(blm_support_latent <span class="op">+</span><span class="st"> </span><span class="fl">0.01</span> <span class="op">+</span><span class="st"> </span>lgbtq <span class="op">*</span><span class="st"> </span><span class="fl">0.15</span>)</a>
-<a class="sourceLine" id="cb160-22" title="22">  )</a>
-<a class="sourceLine" id="cb160-23" title="23"></a>
-<a class="sourceLine" id="cb160-24" title="24">inquiry &lt;-<span class="st">  </span></a>
-<a class="sourceLine" id="cb160-25" title="25"><span class="st">  </span><span class="kw">declare_estimands</span>(</a>
-<a class="sourceLine" id="cb160-26" title="26">    <span class="dt">ATE_nationalism =</span> <span class="kw">mean</span>(blm_support_Z_nationalism <span class="op">-</span><span class="st"> </span>blm_support_Z_general),</a>
-<a class="sourceLine" id="cb160-27" title="27">    <span class="dt">ATE_feminism =</span> <span class="kw">mean</span>(blm_support_Z_feminism <span class="op">-</span><span class="st"> </span>blm_support_Z_general),</a>
-<a class="sourceLine" id="cb160-28" title="28">    <span class="dt">ATE_intersectional =</span> <span class="kw">mean</span>(blm_support_Z_intersectional <span class="op">-</span><span class="st"> </span>blm_support_Z_general),</a>
-<a class="sourceLine" id="cb160-29" title="29">    <span class="dt">DID_nationalism_linked_fate =</span> </a>
-<a class="sourceLine" id="cb160-30" title="30">      <span class="kw">cov</span>(blm_support_Z_nationalism <span class="op">-</span><span class="st"> </span>blm_support_Z_general, linked_fate)<span class="op">/</span><span class="kw">var</span>(linked_fate),</a>
-<a class="sourceLine" id="cb160-31" title="31">    <span class="dt">DID_feminism_gender =</span> </a>
-<a class="sourceLine" id="cb160-32" title="32">      <span class="kw">cov</span>(blm_support_Z_feminism <span class="op">-</span><span class="st"> </span>blm_support_Z_general, female)<span class="op">/</span><span class="kw">var</span>(female),</a>
-<a class="sourceLine" id="cb160-33" title="33">    <span class="dt">DID_intersectional_lgbtq =</span> </a>
-<a class="sourceLine" id="cb160-34" title="34">      <span class="kw">cov</span>(blm_support_Z_intersectional <span class="op">-</span><span class="st"> </span>blm_support_Z_general, lgbtq)<span class="op">/</span><span class="kw">var</span>(lgbtq)</a>
-<a class="sourceLine" id="cb160-35" title="35">  )</a></code></pre></div>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1">data_strategy &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb161-2" title="2"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;general&quot;</span>, <span class="st">&quot;nationalism&quot;</span>, <span class="st">&quot;feminism&quot;</span>, <span class="st">&quot;intersectional&quot;</span>), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb161-3" title="3"><span class="st">  </span><span class="kw">declare_reveal</span>(blm_support, Z) </a></code></pre></div>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" title="1">answer_strategy &lt;-</a>
-<a class="sourceLine" id="cb162-2" title="2"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb162-3" title="3">    blm_support <span class="op">~</span><span class="st"> </span>Z,</a>
-<a class="sourceLine" id="cb162-4" title="4">    <span class="dt">term =</span> <span class="kw">c</span>(<span class="st">&quot;Znationalism&quot;</span>, <span class="st">&quot;Zfeminism&quot;</span>, <span class="st">&quot;Zintersectional&quot;</span>),</a>
-<a class="sourceLine" id="cb162-5" title="5">    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb162-6" title="6">    <span class="dt">estimand =</span> <span class="kw">c</span>(<span class="st">&quot;ATE_nationalism&quot;</span>, <span class="st">&quot;ATE_feminism&quot;</span>, <span class="st">&quot;ATE_intersectional&quot;</span>),</a>
-<a class="sourceLine" id="cb162-7" title="7">    <span class="dt">label =</span> <span class="st">&quot;unadjusted&quot;</span></a>
-<a class="sourceLine" id="cb162-8" title="8">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb162-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb162-10" title="10">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>female <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(linked_fate) <span class="op">+</span><span class="st"> </span>lgbtq,</a>
-<a class="sourceLine" id="cb162-11" title="11">    <span class="dt">term =</span> <span class="kw">c</span>(<span class="st">&quot;Znationalism&quot;</span>, <span class="st">&quot;Zfeminism&quot;</span>, <span class="st">&quot;Zintersectional&quot;</span>),</a>
-<a class="sourceLine" id="cb162-12" title="12">    <span class="dt">estimand =</span> <span class="kw">c</span>(<span class="st">&quot;ATE_nationalism&quot;</span>, <span class="st">&quot;ATE_feminism&quot;</span>, <span class="st">&quot;ATE_intersectional&quot;</span>),</a>
-<a class="sourceLine" id="cb162-13" title="13">    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb162-14" title="14">    <span class="dt">label =</span> <span class="st">&quot;adjusted&quot;</span></a>
-<a class="sourceLine" id="cb162-15" title="15">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb162-16" title="16"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb162-17" title="17">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>linked_fate,</a>
-<a class="sourceLine" id="cb162-18" title="18">    <span class="dt">term =</span> <span class="st">&quot;Zfeminism:linked_fate&quot;</span>,</a>
-<a class="sourceLine" id="cb162-19" title="19">    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb162-20" title="20">    <span class="dt">estimand =</span> <span class="st">&quot;DID_nationalism_linked_fate&quot;</span>,</a>
-<a class="sourceLine" id="cb162-21" title="21">    <span class="dt">label =</span> <span class="st">&quot;het-fx-nationalism-linked-fate&quot;</span></a>
-<a class="sourceLine" id="cb162-22" title="22">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb162-23" title="23"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb162-24" title="24">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>female,</a>
-<a class="sourceLine" id="cb162-25" title="25">    <span class="dt">term =</span> <span class="st">&quot;Zfeminism:female&quot;</span>,</a>
-<a class="sourceLine" id="cb162-26" title="26">    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb162-27" title="27">    <span class="dt">estimand =</span> <span class="st">&quot;DID_feminism_gender&quot;</span>,</a>
-<a class="sourceLine" id="cb162-28" title="28">    <span class="dt">label =</span> <span class="st">&quot;het-fx-feminism-female&quot;</span></a>
-<a class="sourceLine" id="cb162-29" title="29">  ) <span class="op">+</span></a>
-<a class="sourceLine" id="cb162-30" title="30"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
-<a class="sourceLine" id="cb162-31" title="31">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>lgbtq,</a>
-<a class="sourceLine" id="cb162-32" title="32">    <span class="dt">term =</span> <span class="st">&quot;Zfeminism:lgbtq&quot;</span>,</a>
-<a class="sourceLine" id="cb162-33" title="33">    <span class="dt">model =</span> lm_robust,</a>
-<a class="sourceLine" id="cb162-34" title="34">    <span class="dt">estimand =</span> <span class="st">&quot;DID_intersectional_lgbtq&quot;</span>,</a>
-<a class="sourceLine" id="cb162-35" title="35">    <span class="dt">label =</span> <span class="st">&quot;het-fx-intersectional-lgbtq&quot;</span></a>
-<a class="sourceLine" id="cb162-36" title="36">  )</a></code></pre></div>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1">design &lt;-<span class="st"> </span>model <span class="op">+</span><span class="st"> </span>inquiry <span class="op">+</span><span class="st"> </span>data_strategy <span class="op">+</span><span class="st"> </span>answer_strategy</a></code></pre></div>
+<a class="sourceLine" id="cb160-20" title="20">    <span class="dt">blm_support_Z_feminism =</span> <span class="kw">likert_cut</span>(blm_support_latent <span class="op">-</span><span class="st"> </span><span class="fl">0.02</span> <span class="op">+</span><span class="st"> </span>female <span class="op">*</span><span class="st"> </span><span class="fl">0.07</span>),</a>
+<a class="sourceLine" id="cb160-21" title="21">    <span class="dt">blm_support_Z_intersectional =</span> <span class="kw">likert_cut</span>(blm_support_latent  <span class="op">-</span><span class="st"> </span><span class="fl">0.05</span> <span class="op">+</span><span class="st"> </span>lgbtq <span class="op">*</span><span class="st"> </span><span class="fl">0.15</span>)</a>
+<a class="sourceLine" id="cb160-22" title="22">  )</a></code></pre></div>
+</div>
+<div id="inquiry-1" class="section level3">
+<h3><span class="header-section-number">22.1.2</span> Inquiry</h3>
+<p>The inquiries for this study are parameters implied by the three hypotheses quoted above and by the answer strategies described by the authors. We are interested in the average affects of all three treatments relative to the “general” framing, as well as the difference in effectiveness of each treatment by its corresponding covariate. We write these estimands as <span class="math inline">\(\frac{cov(\tau_i, X)}{X}\)</span>, which is identical to the difference-in-difference for the binary covariates (<code>female</code> and <code>lgbtq</code>) and is the slope of the best linear predictor of how the effect changes over the range of <code>linked_fate</code>, which we are treating as quasi-continuous here.</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1">inquiry &lt;-<span class="st">  </span></a>
+<a class="sourceLine" id="cb161-2" title="2"><span class="st">  </span><span class="kw">declare_estimands</span>(</a>
+<a class="sourceLine" id="cb161-3" title="3">    <span class="dt">ATE_nationalism =</span> <span class="kw">mean</span>(blm_support_Z_nationalism <span class="op">-</span><span class="st"> </span>blm_support_Z_general),</a>
+<a class="sourceLine" id="cb161-4" title="4">    <span class="dt">ATE_feminism =</span> <span class="kw">mean</span>(blm_support_Z_feminism <span class="op">-</span><span class="st"> </span>blm_support_Z_general),</a>
+<a class="sourceLine" id="cb161-5" title="5">    <span class="dt">ATE_intersectional =</span> <span class="kw">mean</span>(blm_support_Z_intersectional <span class="op">-</span><span class="st"> </span>blm_support_Z_general),</a>
+<a class="sourceLine" id="cb161-6" title="6">    <span class="dt">DID_nationalism_linked_fate =</span> </a>
+<a class="sourceLine" id="cb161-7" title="7">      <span class="kw">cov</span>(blm_support_Z_nationalism <span class="op">-</span><span class="st"> </span>blm_support_Z_general, linked_fate)<span class="op">/</span><span class="kw">var</span>(linked_fate),</a>
+<a class="sourceLine" id="cb161-8" title="8">    <span class="dt">DID_feminism_gender =</span> </a>
+<a class="sourceLine" id="cb161-9" title="9">      <span class="kw">cov</span>(blm_support_Z_feminism <span class="op">-</span><span class="st"> </span>blm_support_Z_general, female)<span class="op">/</span><span class="kw">var</span>(female),</a>
+<a class="sourceLine" id="cb161-10" title="10">    <span class="dt">DID_intersectional_lgbtq =</span> </a>
+<a class="sourceLine" id="cb161-11" title="11">      <span class="kw">cov</span>(blm_support_Z_intersectional <span class="op">-</span><span class="st"> </span>blm_support_Z_general, lgbtq)<span class="op">/</span><span class="kw">var</span>(lgbtq)</a>
+<a class="sourceLine" id="cb161-12" title="12">  )</a></code></pre></div>
+</div>
+<div id="data-strategy-1" class="section level3">
+<h3><span class="header-section-number">22.1.3</span> Data strategy</h3>
+<p>The subjects for this study are 800 Black Americans recruited by the survey firm Qualtrics using a quota sampling procedure. We elide this sampling step in our declaration – the 800 subjects are described by the <code>declare_population</code> call.</p>
+<p>After subjects’ background charcteristics are measured, they will be assigned to one of four treatment conditions. Since the survey was conducted on Qualtrics, we assume that the authors used the built-in randomization tools, which typically use simple (Bernoulli) random assignment.</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" title="1">data_strategy &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb162-2" title="2"><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;general&quot;</span>, <span class="st">&quot;nationalism&quot;</span>, <span class="st">&quot;feminism&quot;</span>, <span class="st">&quot;intersectional&quot;</span>), <span class="dt">simple =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb162-3" title="3"><span class="st">  </span><span class="kw">declare_reveal</span>(blm_support, Z) </a></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1">answer_strategy &lt;-</a>
+<a class="sourceLine" id="cb163-2" title="2"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb163-3" title="3">    blm_support <span class="op">~</span><span class="st"> </span>Z,</a>
+<a class="sourceLine" id="cb163-4" title="4">    <span class="dt">term =</span> <span class="kw">c</span>(<span class="st">&quot;Znationalism&quot;</span>, <span class="st">&quot;Zfeminism&quot;</span>, <span class="st">&quot;Zintersectional&quot;</span>),</a>
+<a class="sourceLine" id="cb163-5" title="5">    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb163-6" title="6">    <span class="dt">estimand =</span> <span class="kw">c</span>(<span class="st">&quot;ATE_nationalism&quot;</span>, <span class="st">&quot;ATE_feminism&quot;</span>, <span class="st">&quot;ATE_intersectional&quot;</span>),</a>
+<a class="sourceLine" id="cb163-7" title="7">    <span class="dt">label =</span> <span class="st">&quot;unadjusted&quot;</span></a>
+<a class="sourceLine" id="cb163-8" title="8">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb163-9" title="9"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb163-10" title="10">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>female <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(linked_fate) <span class="op">+</span><span class="st"> </span>lgbtq,</a>
+<a class="sourceLine" id="cb163-11" title="11">    <span class="dt">term =</span> <span class="kw">c</span>(<span class="st">&quot;Znationalism&quot;</span>, <span class="st">&quot;Zfeminism&quot;</span>, <span class="st">&quot;Zintersectional&quot;</span>),</a>
+<a class="sourceLine" id="cb163-12" title="12">    <span class="dt">estimand =</span> <span class="kw">c</span>(<span class="st">&quot;ATE_nationalism&quot;</span>, <span class="st">&quot;ATE_feminism&quot;</span>, <span class="st">&quot;ATE_intersectional&quot;</span>),</a>
+<a class="sourceLine" id="cb163-13" title="13">    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb163-14" title="14">    <span class="dt">label =</span> <span class="st">&quot;adjusted&quot;</span></a>
+<a class="sourceLine" id="cb163-15" title="15">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb163-16" title="16"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb163-17" title="17">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>linked_fate,</a>
+<a class="sourceLine" id="cb163-18" title="18">    <span class="dt">term =</span> <span class="st">&quot;Zfeminism:linked_fate&quot;</span>,</a>
+<a class="sourceLine" id="cb163-19" title="19">    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb163-20" title="20">    <span class="dt">estimand =</span> <span class="st">&quot;DID_nationalism_linked_fate&quot;</span>,</a>
+<a class="sourceLine" id="cb163-21" title="21">    <span class="dt">label =</span> <span class="st">&quot;het-fx-nationalism-linked-fate&quot;</span></a>
+<a class="sourceLine" id="cb163-22" title="22">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb163-23" title="23"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb163-24" title="24">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>female,</a>
+<a class="sourceLine" id="cb163-25" title="25">    <span class="dt">term =</span> <span class="st">&quot;Zfeminism:female&quot;</span>,</a>
+<a class="sourceLine" id="cb163-26" title="26">    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb163-27" title="27">    <span class="dt">estimand =</span> <span class="st">&quot;DID_feminism_gender&quot;</span>,</a>
+<a class="sourceLine" id="cb163-28" title="28">    <span class="dt">label =</span> <span class="st">&quot;het-fx-feminism-female&quot;</span></a>
+<a class="sourceLine" id="cb163-29" title="29">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb163-30" title="30"><span class="st">  </span><span class="kw">declare_estimator</span>(</a>
+<a class="sourceLine" id="cb163-31" title="31">    blm_support <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>lgbtq,</a>
+<a class="sourceLine" id="cb163-32" title="32">    <span class="dt">term =</span> <span class="st">&quot;Zfeminism:lgbtq&quot;</span>,</a>
+<a class="sourceLine" id="cb163-33" title="33">    <span class="dt">model =</span> lm_robust,</a>
+<a class="sourceLine" id="cb163-34" title="34">    <span class="dt">estimand =</span> <span class="st">&quot;DID_intersectional_lgbtq&quot;</span>,</a>
+<a class="sourceLine" id="cb163-35" title="35">    <span class="dt">label =</span> <span class="st">&quot;het-fx-intersectional-lgbtq&quot;</span></a>
+<a class="sourceLine" id="cb163-36" title="36">  )</a></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb164-1" title="1">design &lt;-<span class="st"> </span>model <span class="op">+</span><span class="st"> </span>inquiry <span class="op">+</span><span class="st"> </span>data_strategy <span class="op">+</span><span class="st"> </span>answer_strategy</a></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -771,16 +783,16 @@ Model 4
 (Intercept)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-3.63<sup>***</sup>
+3.67<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-1.35<sup>***</sup>
+1.39<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-1.43<sup>***</sup>
+1.58<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-3.06<sup>***</sup>
+3.53<sup>***</sup>
 </td>
 </tr>
 <tr>
@@ -791,13 +803,13 @@ Model 4
 (0.06)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.11)
+(0.10)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.15)
+(0.13)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.12)
+(0.14)
 </td>
 </tr>
 <tr>
@@ -805,50 +817,16 @@ Model 4
 Znationalism
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.36<sup>***</sup>
+0.33<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.25<sup>***</sup>
+0.26<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.09
+-0.13
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.70<sup>***</sup>
-</td>
-</tr>
-<tr>
-<td style="padding-left: 5px;padding-right: 5px;">
- 
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-(0.08)
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-(0.23)
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-(0.18)
-</td>
-</tr>
-<tr>
-<td style="padding-left: 5px;padding-right: 5px;">
-Zfeminism
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-0.19<sup>*</sup>
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-0.16<sup>***</sup>
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-0.03
-</td>
-<td style="padding-left: 5px;padding-right: 5px;">
-0.26
+0.01
 </td>
 </tr>
 <tr>
@@ -856,7 +834,7 @@ Zfeminism
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.08)
+(0.09)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
 (0.05)
@@ -865,24 +843,24 @@ Zfeminism
 (0.22)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.19)
+(0.21)
 </td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">
-Zintersectional
+Zfeminism
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.12
+0.05
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.06
+0.03
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.15
+0.02
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.54<sup>**</sup>
+-0.20
 </td>
 </tr>
 <tr>
@@ -896,10 +874,44 @@ Zintersectional
 (0.05)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.19)
+(0.20)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.20)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zintersectional
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.24<sup>**</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.26<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.36
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.33
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.09)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.05)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
 (0.19)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.21)
 </td>
 </tr>
 <tr>
@@ -910,7 +922,7 @@ female
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.06
+0.09<sup>*</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -944,7 +956,7 @@ lgbtq
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.43<sup>***</sup>
+0.39<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -978,7 +990,7 @@ age
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.00
+-0.00
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1012,7 +1024,7 @@ religiosity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.14<sup>***</sup>
+-0.15<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1046,7 +1058,7 @@ income
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.02<sup>***</sup>
+0.01<sup>*</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1080,7 +1092,7 @@ college
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.13<sup>***</sup>
+0.16<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1114,10 +1126,10 @@ linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.54<sup>***</sup>
+0.56<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.54<sup>***</sup>
+0.52<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1134,7 +1146,7 @@ linked_fate
 (0.02)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.04)
+(0.03)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1148,13 +1160,13 @@ blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.12<sup>***</sup>
+0.14<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.23<sup>***</sup>
+0.06
 </td>
 </tr>
 <tr>
@@ -1171,7 +1183,7 @@ blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.04)
+(0.05)
 </td>
 </tr>
 <tr>
@@ -1185,7 +1197,7 @@ Znationalism:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.05
+0.10
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1219,7 +1231,7 @@ Zfeminism:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.04
+0.01
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1253,7 +1265,7 @@ Zintersectional:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.01
+0.03
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1290,7 +1302,7 @@ Znationalism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.13<sup>*</sup>
+0.13
 </td>
 </tr>
 <tr>
@@ -1307,7 +1319,7 @@ Znationalism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.07)
+(0.08)
 </td>
 </tr>
 <tr>
@@ -1324,7 +1336,7 @@ Zfeminism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.04
+0.10
 </td>
 </tr>
 <tr>
@@ -1341,7 +1353,7 @@ Zfeminism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.07)
+(0.08)
 </td>
 </tr>
 <tr>
@@ -1358,7 +1370,7 @@ Zintersectional:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.17<sup>*</sup>
+0.03
 </td>
 </tr>
 <tr>
@@ -1375,7 +1387,7 @@ Zintersectional:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.07)
+(0.08)
 </td>
 </tr>
 <tr style="border-top: 1px solid #000000;">
@@ -1383,13 +1395,13 @@ Zintersectional:blm_familiarity
 R<sup>2</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.02
+0.05
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.69
+0.71
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.56
+0.59
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
 0.07
@@ -1400,13 +1412,13 @@ R<sup>2</sup>
 Adj. R<sup>2</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.02
+0.04
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.69
+0.71
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.56
+0.59
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
 0.06
@@ -1434,16 +1446,16 @@ Num. obs.
 RMSE
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.86
+0.88
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.48
+0.49
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
 0.58
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.84
+0.87
 </td>
 </tr>
 </tbody>
@@ -1455,7 +1467,8 @@ RMSE
 </tr>
 </tfoot>
 </table>
-<p><img src="book_files/figure-html/unnamed-chunk-465-1.png" width="100%" /></p>
+<p><img src="book_files/figure-html/unnamed-chunk-466-1.png" width="100%" /></p>
+</div>
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
