@@ -218,6 +218,36 @@ ggplot(gg_df, aes(X, Y)) +
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
 
+df <- data.frame(
+  X = 1:10,
+  Y = c(0,2,8,5,4,6,5,9,2,8)
+)
+
+# lm(Y ~ X) %>% hatvalues() %>% which.max()
+
+rbind(
+  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(4,7))),
+  df %>% mutate(strategy = "2. Diverse", S = as.numeric(X %in% c(2,10))),
+  df %>% mutate(strategy = "3. Extreme", S = as.numeric(X %in% c(1,8))),
+  df %>% mutate(strategy = "4. Deviant", S = as.numeric(X %in% c(3,9))),
+  df %>% mutate(strategy = "5. Influential", S = as.numeric(X %in% c(1,10))),
+  df %>% mutate(strategy = "6. Most Similar", S = as.numeric(X %in% c(2,3))),
+  df %>% mutate(strategy = "7. Most Different", S = as.numeric(X %in% c(2,9)))) %>% 
+  mutate(strategy = fct_inorder(strategy), Selected = ifelse(S == 1, "Yes", "No")) %>% 
+  ggplot(aes(X,Y)) + 
+  geom_point(aes(shape = Selected, color = Selected)) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = .1) +
+  scale_x_continuous("Causal factor\n(e.g., democracy)",breaks = 1:10) +
+  scale_y_continuous("Outcome\n(e.g., welfare state generosity)",breaks = 1:10) +
+  scale_shape_manual(values = c(1,16)) +
+  scale_color_manual(values = c(gray(0.95), dd_light_blue)) +
+  facet_wrap(~ strategy,nrow = 1)  + dd_theme() +
+  theme(legend.position = "none",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank())
+
 set.seed(343)
 gg_df <- fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
