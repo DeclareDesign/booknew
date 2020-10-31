@@ -344,9 +344,54 @@ ggplot(gg_df, aes(X, Y)) +
 
 ### Sampling designs for qualitative research
 
-Case selection is another term for a sampling strategy. In case study research, whether qualitative or quantitative, the way you select the (typically small) set of cases is of great importance, and considerable attention has been paid to developing purposive case selection methods. Mills (cite) method of difference is a common case selection procedure, in which cases are selected that have different outcomes and the cases are inspected to identify characteristics that differ that may have led to the divergence. Lieberman (2005) proposes a method for selecting cases for indepth study from an initial regression study: cases on the regression line, well-predicted by it, are selected to determine whether the hypothesized causal relationship took place in those cases. Off-the-line cases, that are not well-predicted, are also selected to determine what factors may be left out of the regression model that provide alternative mechanisms. In each method, the inferential goal determines how cases are selected. Research design diagnosis can also help compare the efficiency and bias of these methods to select cases.
+Case selection is another term for a sampling strategy. In case study research, whether qualitative or quantitative, the way you select the (typically small) set of cases is of great importance, and considerable attention has been paid to developing purposive case selection methods. 
+
+John Stuart @mill1884system elaborated methods of induction that have inspired two popular purposive case selection methods. The method of difference involves selecting cases that have different outcomes and inspecting them for different characteristics that may have led to the divergence in outcomes. The method of similarity involves selecting cases that, while divergent on a host of characteristics, share the same outcome. Any potential causes that are *common* to the cases then become candidates for causal attribution. 
+
+In both of these strategies, the case selection method is informed by the goals of the research: specifically, cases are chosen as a function of their outcomes with the goal of infering those outcomes' causes. This highlights the same general point as above: data strategies should be chosen as a function of your inquiry. 
+
+@seawright2008case elaborate no fewer than seven different purposive sampling strategies that can be used to achieve different goals in case selection contexts. 
+
+
+
+```{r}
+df <- data.frame(
+  X = 1:10,
+  Y = c(0,2,8,5,4,6,5,9,2,8)
+)
+
+
+lm(Y ~ X) %>% hatvalues() %>% which.max()
+
+rbind(
+  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(4,7))),
+  df %>% mutate(strategy = "2. Diverse", S = as.numeric(X %in% c(2,10))),
+  df %>% mutate(strategy = "3. Extreme", S = as.numeric(X %in% c(1,8))),
+  df %>% mutate(strategy = "4. Deviant", S = as.numeric(X %in% c(3,9))),
+  df %>% mutate(strategy = "5. Influential", S = as.numeric(X %in% c(1,10))),
+  df %>% mutate(strategy = "6. Most Similar", S = as.numeric(X %in% c(2,3))),
+  df %>% mutate(strategy = "7. Most Different", S = as.numeric(X %in% c(2,9)))) %>% 
+  mutate(strategy = fct_inorder(strategy)) %>% 
+  ggplot(aes(X,Y)) + 
+  geom_point(aes(shape = as.factor(S))) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_shape_manual(values = c(1,16)) +
+  facet_wrap(~ strategy,nrow = 1) 
+  
+
+```
+
+<!-- Describe all 7 here as well as their goals -->
+
+
+<!-- Summarize results of @herron2016careful monte carlo study of these strategies for a EOC estimand:
+  We have used our framework to evaluate a number of prominent case selection methods that have been discussed at length by Seawright and Ger- ring. Our results suggest that our implementation of influential case selection is generally to be preferred over the other case selection methods under study. We also find that deviant case selection works quite well and that, con- trary to conventional wisdom, simple random sampling performs well rela- tive to most other case selection methods as long as a moderate number (say five or more) of cases are to be selected for case study analysis. Our findings have clear implications for how applied researchers should select cases for analysis, and extending our analytical approach to additional case selection techniques will help shed light on the best techniques in a variety of research situations. That said, we again emphasize that our results only speak directly to our stated goal of inferring effects of causes. -->
+
+Lieberman (2005) proposes a method for selecting cases for indepth study from an initial regression study: cases on the regression line, well-predicted by it, are selected to determine whether the hypothesized causal relationship took place in those cases. Off-the-line cases, that are not well-predicted, are also selected to determine what factors may be left out of the regression model that provide alternative mechanisms. In each method, the inferential goal determines how cases are selected. Research design diagnosis can also help compare the efficiency and bias of these methods to select cases.
 
 Selection on the dependent variable is purposive sampling method that has recieved substantial attention. The procedure is to select positive outcomes --- units in which an event such as a revolution took place, for example --- and study what led to that outcome. Geddes (XXXX) lays out the problem in this method for case study research: we cannot know whether the factors identified from investigating these cases led to the event, because we do not know whether those factors are also present in units where the outcome did not happen. If the factor is present in both, it is unlikely to have caused the positive outcome. The same problem plagues observational quantitative research. Ramsay et al. (XXXX) discuss the bias that results from studying the factors predicting suicide terrorism by only looking at observations where suicide terrorism occurred. In order to avoid these problems accidentally creeping into our research, it is important to diagnose the bias of our designs and not just the efficiency.
+
 
 
 ### Choosing among sampling designs
