@@ -51,7 +51,50 @@ A difficult challenge in this process is that in order to weigh ethical criteria
 
 Scholars are increasingly calling for reporting of ethical considerations in study design beyond IRB approval. By declaring your expectations about the ethical outcomes of an experiment in terms of diagnosands such as the time participants devote to the study and the probability of harm to individuals, a declared research design can be an input to ethical reporting. Readers can review how you considered ethical outcomes in your design and judge the mitigation efforts you undertook in relation to those expectations. Other scholars have proposed including ethical assessments in preanalysis plans. Declarations of ethical diagnosands are a natural complement to these preregistered assessments.
 
-3 x 3 - low medium high power vs low medium high importance; on the graph is 
+```{r, echo=FALSE, fig.height=5, fig.width=5}
+
+dat <- 
+  tibble(
+    X = seq(1, 10, 0.001),
+    cost =  4* X + 6 ,
+    high = log(X, base = 1.05),
+    med = log(X, base = 1.06),
+    low = log(X, base = 1.10)
+  ) 
+
+dat_long <-
+  dat %>% 
+  pivot_longer(c(high, med, low)) %>%
+  mutate(cost_benefit = if_else(value > cost, "A", "B"))
+
+label_df <-
+  tibble(
+    X = c(9.9, 9.9, 9.9),
+    value = c(22, 36, 48),
+    label = c("Low",
+              "Medium",
+              "Inquiry importance: High"),
+    cost_benefit = c("B", "B", "A")
+  )
+
+
+ggplot(dat_long, aes(X)) +
+  geom_ribbon(data = dat, aes(ymax = cost, x = X, ymin = 0), fill = gray(0.8, alpha = 0.3)) + 
+  geom_ribbon(data = dat, aes(ymin = cost, x = X, ymax = 50), fill = "#72B4F344") + 
+  geom_line(aes(y = value, color = cost_benefit, group = name)) +
+  geom_line(data = dat, aes(y = cost), color = dd_pink) +
+  geom_text(data = label_df, aes(y = value, label = label, color = cost_benefit), hjust = 1) +
+  scale_color_manual("", values = c(dd_dark_blue, gray(0.5))) + 
+  annotate("text", x = 1.5, y = 42, label = "Scientific benefits exceed ethical costs", hjust = 0, color = dd_dark_blue) + 
+  annotate("text", x = 4, y = 7, label = "Ethical costs exceed scientific benefits", hjust = 0, color = dd_gray) + 
+  labs(x = "Sample size", y = "Costs and benefits") + 
+  dd_theme() +
+    theme(legend.position = "none",
+          axis.text = element_blank(),
+          panel.grid.major = element_blank())
+  
+```
+
 
 <!-- - Is it the measurement they object to? Is it the random assignment?  -->
 
