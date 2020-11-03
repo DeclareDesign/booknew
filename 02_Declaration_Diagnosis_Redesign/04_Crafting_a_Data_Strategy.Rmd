@@ -330,11 +330,12 @@ ggplot(gg_df, aes(X, Y)) +
 
 Case selection is another term for a sampling strategy. In case study research, whether qualitative or quantitative, the way you select the (typically small) set of cases is of great importance, and considerable attention has been paid to developing purposive case selection methods. 
 
-John Stuart @mill1884system elaborated methods of induction that have inspired two popular purposive case selection methods. The method of difference involves selecting cases that have different outcomes and inspecting them for different characteristics that may have led to the divergence in outcomes. The method of similarity involves selecting cases that, while divergent on a host of characteristics, share the same outcome. Any potential causes that are *common* to the cases then become candidates for causal attribution. 
+John Stuart @mill1884system elaborated methods of induction that have inspired two popular purposive case selection methods. Mill defined the methods based on whether outcomes "agreed" or were "different." The method of difference involves selecting cases that have divergent outcomes but otherwise look very similar, and looking for a characteristic that covaries with the treatment as a candidate for the cause. For example, Skocpol compares historical periods in France, Russia, the United Kingdom, and Germany that look very similar in many regards. The first two, however, had social revolutions, while the second two did not. The presence of agrarian institutions that provided a degree of political autonomy to the peasants in France and Russia and their absence in the UK and Germany then becomes a possible clue to understanding the underlying causal structure of social revolutions. By contrast, the method of agreement involves selecting cases that share the same outcome but diverge on a host of other characteristics. Any characteristics that are *common* to the cases then become candidates for causal attribution.^[Confusingly, while Mill's distinguished these methods based on whether *outcomes* diverged, the literature on case selection usually defines them according to whether *covariates* are similar or different. Thus, Mill's method of difference, in which characteristics are similar but outcomes diverge, is described as the "most similar systems" design, while the method of agreement, which focuses on cases with similar outcomes that diverge on a host of characteristics, is referred to as the "most different systems design"!]
+
 
 In both of these strategies, the case selection method is informed by the goals of the research: specifically, cases are chosen as a function of their outcomes with the goal of infering those outcomes' causes. This highlights the same general point as above: data strategies should be chosen as a function of your inquiry. 
 
-@seawright2008case elaborate no fewer than seven different purposive sampling strategies that can be used to achieve different goals in case selection contexts. 
+@seawright2008case describe no fewer than seven different purposive sampling strategies that can be used to achieve different goals in case selection contexts. Cases have a characteristic, $X$---the strength of collective bargaining institutions like unions, for example--and an outcome, $Y$---the extent of the social safety net, like state-provided healthcare and unemployment benefits.  
 
 ```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 df <- data.frame(
@@ -345,7 +346,7 @@ df <- data.frame(
 # lm(Y ~ X) %>% hatvalues() %>% which.max()
 
 rbind(
-  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(4,7))),
+  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(5,6))),
   df %>% mutate(strategy = "2. Diverse", S = as.numeric(X %in% c(2,10))),
   df %>% mutate(strategy = "3. Extreme", S = as.numeric(X %in% c(1,8))),
   df %>% mutate(strategy = "4. Deviant", S = as.numeric(X %in% c(3,9))),
@@ -356,7 +357,7 @@ rbind(
   ggplot(aes(X,Y)) + 
   geom_point(aes(shape = Selected, color = Selected)) +
   geom_smooth(method = "lm", se = FALSE, color = "black", size = .1) +
-  scale_x_continuous("Causal factor\n(e.g., democracy)",breaks = 1:10) +
+  scale_x_continuous("Causal factor\n(e.g., strength of unions)",breaks = 1:10) +
   scale_y_continuous("Outcome\n(e.g., welfare state generosity)",breaks = 1:10) +
   scale_shape_manual(values = c(1,16)) +
   scale_color_manual(values = c(gray(0.95), dd_light_blue)) +
