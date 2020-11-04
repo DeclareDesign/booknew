@@ -226,8 +226,8 @@ df <- data.frame(
 # lm(Y ~ X) %>% hatvalues() %>% which.max()
 
 rbind(
-  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(5,6))),
-  df %>% mutate(strategy = "2. Diverse", S = as.numeric(X %in% c(2,10))),
+  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(2,5,6,10))),
+  df %>% mutate(strategy = "2. Diverse", S = as.numeric(X %in% c(2,10, 9, 3))),
   df %>% mutate(strategy = "3. Extreme", S = as.numeric(X %in% c(1,8))),
   df %>% mutate(strategy = "4. Deviant", S = as.numeric(X %in% c(3,9))),
   df %>% mutate(strategy = "5. Influential", S = as.numeric(X %in% c(1,10))),
