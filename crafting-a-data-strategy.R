@@ -225,7 +225,7 @@ points_df$id <- 1:nrow(points_df)
 
 # lm(Y ~ X, points_df) %>% hatvalues() %>% sort() %>% tail(2)
 
-gg_df <- 
+gg_df <-
   fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
   households = add_level(N = 4,
@@ -234,18 +234,18 @@ gg_df <-
     N = 4,
     X = village_num + c(-0.25,0.25, -0.25,0.25),
     Y = household_num + c(-0.25, -0.25,0.25,0.25)
-  )) %>% 
-  merge(points_df, by = c("X", "Y"), all.x = TRUE) %>% 
-  mutate(point_X = ifelse(is.na(id), NA, X), 
-         point_Y = ifelse(is.na(id), NA, Y), 
-         a = ifelse(id %in% c(4,7), 1, 0), 
+  )) %>%
+  merge(points_df, by = c("X", "Y"), all.x = TRUE) %>%
+  mutate(point_X = ifelse(is.na(id), NA, X),
+         point_Y = ifelse(is.na(id), NA, Y),
+         a = ifelse(id %in% c(4,7), 1, 0),
          b = ifelse(id %in% c(1,10), 1, 0),
          c = ifelse(id %in% c(9,10), 1, 0),
          d = ifelse(id %in% c(2,9), 1, 0),
          e = ifelse(id %in% c(2,10), 1, 0),
          f = ifelse(id %in% c(1,2), 1, 0),
          g = ifelse(id %in% c(3,9), 1, 0)
-         ) %>% 
+         ) %>%
   pivot_longer(cols = letters[1:7], names_to = "procedure", values_to = "sampled") %>%
   mutate(procedure = factor(
     procedure,
