@@ -1,12 +1,12 @@
 ---
 title: "Choosing an answer strategy"
 output:
-  html_document:
-    toc: yes
-    toc_depth: 4
   pdf_document:
     toc: yes
     toc_depth: '4'
+  html_document:
+    toc: yes
+    toc_depth: 4
 bibliography: ../bib/book.bib
 ---
 
@@ -277,10 +277,6 @@ ggplot(gg_df_small, aes(x, y)) +
 
 ```
 
-
-
-
-
 <!-- Definition: The frontdoor criterion. A set of variables X is said to satisfy the frontdoor criterion relative to an ordered pair of variables D, Y if X intercepts all directed paths from D to Y, there is no unblocked path from D to X, all backdoor paths from X to Y are blocked by D. (pg. 69 Pearl primer) -->
 
 <!-- $$\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})$$ -->
@@ -296,6 +292,8 @@ To reason about causal identification, we turn back to DAGs. We start with a sim
 ```
 
 In the presence of possible confounding from $X$ and/or $U$, we have several options for our research design: we can estimate the causal effect of $D$ on $Y$ by controlling for the observed confounder $X$ (or not), by invoking additional conditional independence assumptions, and by randomizing the treatment. In each case, our aim is to rule out DAGs in which the causal effect is not identified. 
+
+ADD THE DATA PART HERE -- WE HAVE d AND WE WANT TO ESTIMATE effect of D on Y
 
 #### Consequences of conditioning 
 
@@ -570,13 +568,69 @@ g <-
 g
 ```
 
+### Robustness
 
-### Analyze as you randomize
+Robustness checks are part of the answer strategy. Often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). These differ from multiple estimates of a latent quantity in that the goal is not a primary analysis, but rather to support the main analysis. The purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. The decision a reader makes from a paper depends not only on the main estimate but also the robustness checks. As a result, we want to assess the properties of the two together. 
+
+[NOTE TO ADD HERE]: robustness checks are often more about $M$ than about $A$ -- we see how $a^d$ changes when we change $A$ in order see how our inferences change under alternative $M$s.
+
+We illustrate with a simple analysis of the correlation between two variables `y1` and `y2`, who have a true positive correlation. `y2` is also a function of an observed covariate `x` and measurement error. Our main analysis is a bivariate regression predicting `y2` with `y1`. We compare this answer strategy to one in which we run that analysis, but also run a robustness check controlling for `x`. We do this because as the analyst we are unsure of the true DGP and wish to demonstrate to reviewer's that our results are not dependent on the functional form we choose. 
+
+<!-- - distinguish this from changes to the model where we do robustnesss vis a vis a fixed answer and data strategy. i.e. two notions of "robustness". one is fix I D A and change M, is this "design" robust to changes in M. the other is, within a given run, is the estimate "robust" to changing the estimation procedure, so this is a diagnostic statistic. note I must be defined across these changes in M. -->
+
+Using the MIDA way of thinking about designs, we discuss in the diagnosis section another notion of the "robustness" of a design. The typical way we think of robustness checks is multiple secondary analyses *conditional on the observed data* to build confidence in an analysis of that fixed data. However, the motivation for these robustness checks is uncertainty about the true data generating process. By declaring a design in terms of MIDA, we can think about the robustness of a *single* estimator to multiple possible true data generating processes. An estimator that is robust in this sense is one that is unbiased with low uncertainty regardless of, say, the true functional form between `y1` and `y2`. To determine whether an estimator is robust, we can redefine a set of designs with different functional forms and assess the rate of correct decisions of our robustness checks strategy under each different model. 
+
+
+## Following the inquiry
+
+### Plug-in principle
+
+### Point estimation
+
+Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
+
+- Bias variance tradeoff
+ - overfitting
+ - add modeling assumptions that might decrease variance a lot at the cost of a little bias.
+ - interacts with testing: could win on RMSE, but have a higher false positive rate.
+
+(point people to Hastie and Tibshirani)
+
+### Estimating the variance
+
+Variance estimation is often more difficult than point estimation.
+
+We can often do the bootstrap, which plugs in (re-) sampling from the sample for sampling from the population.
+
+<!-- (s.e., CIs, posterior probs) -->
+
+### Tests
+
+Tests are an elemental kind of answer strategy. Tests yield binary yes/no answers to an inquiry. In some qualitative traditions, hoop tests, straw-in-the-wind tests, smoking-gun tests, and doubly-decisive tests are common. These tests are procedures for making analysis decisions in a structured way. In frequentist statistics, significance tests are used to make a decision whether to reject or fail to reject a particular null hypothesis. 
+
+<!-- Null hypothesis significance testing has developed a (rightfully) sketchy reputation in recent years as too much weight has been put on the reject / fail to reject decision. That said, sometimes that decision is rightfully important and in such cases, null hypothesis significance testing is a great tool. -->
+
+<!-- - significance testing (incl. sign test) -->
+<!-- - equivalence testing -->
+<!-- - straw in the wind / hoop test -->
+<!-- - doubly decisive -->
+<!-- - 1997 book on tests -->
+
+<!-- [cite erin and naoki on sign tests] -->
+<!-- [cite erin on equivalence testinf] -->
+
+### Partial identification
+
+- confounding
+- EV bounds
+- trimming bounds
+
+
+## Following the data strategy
 
 However, in order to benefit from these two controlled decisions in our data strategy, we must follow the dictum due to R.A. Fisher to "analyze as you randomize." Your answer strategy should follow your data strategy. There are four components: make comparisons only across randomly-assigned conditions; analyze data at the level of random assignment; make comparisons only in groups within which random assignment was conducted (e.g., strata); and adjust for differences in probabilities of random assignment.
 
 Making comparisons across randomly-assigned conditions within groups in which random assignment was conducted directly follow from our comparison of causal identification by assignment vs. by design. If we make comparisons that rely on differences both in $D$ and $X$, for example a difference in treatment effects between two subgroups, we are susceptible to confounding from $U$, because $X$ is not randomly-assigned. Similarly, analysis of data from block-randomized experiments can be broken by failing to account for blocking, because blocks are not randomly assigned and in fact are typically constructed so that the outcomes of units in the block are similar within blocks and very different across blocks. If there are differential probabilities of assignment across blocks and we pool our data ignoring the blocking structure, our unweighted comparisons may be contrasting groups that differ systematically.
-
 
 One of the best ways to analyze as you randomize is by weighting data to reflect the sampling and assignment probabilities generated by your data strategy. 
 
@@ -594,49 +648,13 @@ This way of thinking provides a framework for poststratification on nonrandom sa
 
 The analogy extends even further when we consider that all random treatment assignment procedures are also sampling procedures. Rather than sampling entire units, however, treatment assignments randomly sample from different potential outcomes. If you assign 5/15 people to treatment and the rest to control, for example, then the five treated potential outcomes need to "represent" $1/(5/15) = 3$ people's treated potential outcomes and the ten people assigned to control represent $1/(10/15) = 1.5$ people's control potential outcomes. If you tried to pool different experiments to get the average treatment effect across all people in all experiments, you would need to take account of the fact that different experiments might over or underrepresent treatment or control potential outcomes, and weight accordingly. This issue arises in block randomized designs where treatment assignment probabilities vary by block (see entry X in the design library), in designs with spillovers where spatial networks induce differential assignment probabilities for spillovers (see entry X in the design library), and in stepped wedge designs where earlier waves overrepresent control potential outcomes and later waves overrepresent treatment potential outcomes (see entry X in the design library). Finally, in the same way that poststratification uses covariates to construct sample weights corresponding to a hypothetical random \textit{sampling} procedure, matching and selection observable designs use covariates to reverse engineer probabilities of sampling treatment and control potential outcomes in order to reweight the data to account for the systematic selection of certain kinds of units into or out of treatment (confounding).
 
-## Following the inquiry
 
-### Plug-in principle
-
-## Following the data strategy
-
-## Point estimation
-
-Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART... the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What's incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.
-
-
-### Bias variance tradeoff
-
-- overfitting
-- add modeling assumptions that might decrease variance a lot at the cost of a little bias.
-- interacts with testing: could win on RMSE, but have a higher false positive rate.
-
-
-(point people to Hastie and Tibshirani)
-
-## When parameters are not point identified
-
-- confounding
-- EV bounds
-- trimming bounds
-
-## Characterizing uncertainty 
-
-Variance estimation is often more difficult than point estimation.
-
-We can often do the bootstrap, which plugs in (re-) sampling from the sample for sampling from the population.
-
-<!-- (s.e., CIs, posterior probs) -->
 
 ## Qualitative methods of inference
 
 <!-- Qualitative methods for causal and descriptive inference use logic in combination  -->
 
-
-
 <!-- Unsure: should we count typologies and concept formation as a form of descriptive inference (e.g., what are the types of capitalism in the world)? or are typologies measurement exercises? The Collier et al. article really frames typologies as measurement devices in the building blocks   -->
-
-
 
 ### Necessity and sufficiency
 
@@ -659,8 +677,6 @@ We can often do the bootstrap, which plugs in (re-) sampling from the sample for
 ### Boolean and set-theoretic methods
 
 <!-- Deterministic vs. probabalistic debate -->
-
-
 
 <!-- DIscuss process-tracing, QCA, and deterministic / probabilistic case comparison. Summarize Sekhon on Geddes + Skocpol. Ragin. Lijphart on problems with case comparison. Elman on explanatory typologies. -->
 <!-- Skocpol clearly believes she is relying on Mill’s methods. -->
@@ -699,23 +715,7 @@ We can often do the bootstrap, which plugs in (re-) sampling from the sample for
 
 
 
-## Tests
-
-Tests are an elemental kind of answer strategy. Tests yield binary yes/no answers to an inquiry. In some qualitative traditions, hoop tests, straw-in-the-wind tests, smoking-gun tests, and doubly-decisive tests are common. These tests are procedures for making analysis decisions in a structured way. In frequentist statistics, significance tests are used to make a decision whether to reject or fail to reject a particular null hypothesis. 
-
-<!-- Null hypothesis significance testing has developed a (rightfully) sketchy reputation in recent years as too much weight has been put on the reject / fail to reject decision. That said, sometimes that decision is rightfully important and in such cases, null hypothesis significance testing is a great tool. -->
-
-<!-- - significance testing (incl. sign test) -->
-<!-- - equivalence testing -->
-<!-- - straw in the wind / hoop test -->
-<!-- - doubly decisive -->
-<!-- - 1997 book on tests -->
-
-<!-- [cite erin and naoki on sign tests] -->
-<!-- [cite erin on equivalence testinf] -->
-
-
-### randomization inference
+<!-- ### randomization inference -->
 
 ## Answer strategies as procedures
 
@@ -736,24 +736,9 @@ In fact, there are examples of analysis procedures in most types of research, qu
 
 We demonstrate the fact that the properties of procedures differ from the properties of a design with the final estimator in a simple example. We compare two possible estimation specifications, with and without covariates, to a procedure in which we run both models and report the model in our paper that has the lower p-value. The models are exactly the same, but the properties of the *procedure* differ from the properties of either of the two possible models. In particular, the procedure has higher power than either of the two models, but it exhibits poor coverage, which means we have a bias in our measure of uncertainty. 
 
-## Robustness
-
-**Robustness checks** are part of the answer strategy. Often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). These differ from multiple estimates of a latent quantity in that the goal is not a primary analysis, but rather to support the main analysis. The purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. The decision a reader makes from a paper depends not only on the main estimate but also the robustness checks. As a result, we want to assess the properties of the two together. 
-
-[NOTE TO ADD HERE]: robustness checks are often more about $M$ than about $A$ -- we see how $a^d$ changes when we change $A$ in order see how our inferences change under alternative $M$s.
-
-We illustrate with a simple analysis of the correlation between two variables `y1` and `y2`, who have a true positive correlation. `y2` is also a function of an observed covariate `x` and measurement error. Our main analysis is a bivariate regression predicting `y2` with `y1`. We compare this answer strategy to one in which we run that analysis, but also run a robustness check controlling for `x`. We do this because as the analyst we are unsure of the true DGP and wish to demonstrate to reviewer's that our results are not dependent on the functional form we choose. 
-
-<!-- - distinguish this from changes to the model where we do robustnesss vis a vis a fixed answer and data strategy. i.e. two notions of "robustness". one is fix I D A and change M, is this "design" robust to changes in M. the other is, within a given run, is the estimate "robust" to changing the estimation procedure, so this is a diagnostic statistic. note I must be defined across these changes in M. -->
-
-Using the MIDA way of thinking about designs, we discuss in the diagnosis section another notion of the "robustness" of a design. The typical way we think of robustness checks is multiple secondary analyses *conditional on the observed data* to build confidence in an analysis of that fixed data. However, the motivation for these robustness checks is uncertainty about the true data generating process. By declaring a design in terms of MIDA, we can think about the robustness of a *single* estimator to multiple possible true data generating processes. An estimator that is robust in this sense is one that is unbiased with low uncertainty regardless of, say, the true functional form between `y1` and `y2`. To determine whether an estimator is robust, we can redefine a set of designs with different functional forms and assess the rate of correct decisions of our robustness checks strategy under each different model. 
-
-
 ## Visualization
 
 How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers' inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.
-
-
 
 ## Further reading
 
