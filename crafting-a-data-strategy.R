@@ -218,35 +218,70 @@ ggplot(gg_df, aes(X, Y)) +
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
 
-df <- data.frame(
-  X = 1:10,
-  Y = c(0,2,8,5,4,6,5,9,2,8)
-)
+points_df <- data.frame(
+  X = c(.85, .85, 1.35, 1.95, 1.95, 3.05, 3.05, 3.55, 4.15, 4.65),
+  Y = c(.85, 4.15, 1.35, 2.45, 3.55, 2.45, 3.55, 4.15, 1.35, 4.65))
+points_df$id <- 1:nrow(points_df)
 
-# lm(Y ~ X) %>% hatvalues() %>% which.max()
+# lm(Y ~ X, points_df) %>% hatvalues() %>% sort() %>% tail(2)
 
-rbind(
-  df %>% mutate(strategy = "1. Typical", S = as.numeric(X %in% c(2,5,6,10))),
-  df %>% mutate(strategy = "2. Diverse", S = as.numeric(X %in% c(2,10, 9, 3))),
-  df %>% mutate(strategy = "3. Extreme", S = as.numeric(X %in% c(1,8))),
-  df %>% mutate(strategy = "4. Deviant", S = as.numeric(X %in% c(3,9))),
-  df %>% mutate(strategy = "5. Influential", S = as.numeric(X %in% c(1,10))),
-  df %>% mutate(strategy = "6. Most Similar", S = as.numeric(X %in% c(2,3))),
-  df %>% mutate(strategy = "7. Most Different", S = as.numeric(X %in% c(2,9)))) %>% 
-  mutate(strategy = fct_inorder(strategy), Selected = ifelse(S == 1, "Yes", "No")) %>% 
-  ggplot(aes(X,Y)) + 
-  geom_point(aes(shape = Selected, color = Selected)) +
-  geom_smooth(method = "lm", se = FALSE, color = "black", size = .1) +
-  scale_x_continuous("Causal factor\n(e.g., strength of unions)",breaks = 1:10) +
-  scale_y_continuous("Outcome\n(e.g., welfare state generosity)",breaks = 1:10) +
-  scale_shape_manual(values = c(1,16)) +
-  scale_color_manual(values = c(gray(0.95), dd_light_blue)) +
-  facet_wrap(~ strategy,nrow = 1)  + dd_theme() +
+gg_df <- 
+  fabricate(
+  villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
+  households = add_level(N = 4,
+                         household_num = 1:4 + 1:4 * 0.1),
+  individuals = add_level(
+    N = 4,
+    X = village_num + c(-0.25,0.25, -0.25,0.25),
+    Y = household_num + c(-0.25, -0.25,0.25,0.25)
+  )) %>% 
+  merge(points_df, by = c("X", "Y"), all.x = TRUE) %>% 
+  mutate(point_X = ifelse(is.na(id), NA, X), 
+         point_Y = ifelse(is.na(id), NA, Y), 
+         a = ifelse(id %in% c(4,7), 1, 0), 
+         b = ifelse(id %in% c(1,10), 1, 0),
+         c = ifelse(id %in% c(9,10), 1, 0),
+         d = ifelse(id %in% c(2,9), 1, 0),
+         e = ifelse(id %in% c(2,10), 1, 0),
+         f = ifelse(id %in% c(1,2), 1, 0),
+         g = ifelse(id %in% c(3,9), 1, 0)
+         ) %>% 
+  pivot_longer(cols = letters[1:7], names_to = "procedure", values_to = "sampled") %>%
+  mutate(procedure = factor(
+    procedure,
+    levels = letters[1:7],
+    labels = c(
+      "Typical",
+      "Diverse",
+      "Extreme",
+      "Deviant",
+      "Influential",
+      "Most Similar",
+      "Most Different"
+    )
+  ),
+  sampled = as.factor(sampled)
+  )
+
+
+ggplot(gg_df, aes(point_X, point_Y)) +
+  geom_tile(aes(X, Y), fill = gray(0.95), color = NA, width = 0.46, height = 0.46) +
+  geom_tile(aes(fill = sampled), color = NA, width = 0.46, height = 0.46) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", size = .5) +
+  coord_fixed() +
+  facet_wrap(~procedure, nrow = 1) +
+  dd_theme() +
+  scale_fill_manual(values = c(gray(0.6), dd_light_blue)) +
+  scale_x_continuous(name = "X", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
+  scale_y_continuous(name = "Y") +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank())
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_blank()
+        )
 
 set.seed(343)
 gg_df <- fabricate(
