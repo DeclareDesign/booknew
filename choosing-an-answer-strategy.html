@@ -81,7 +81,7 @@
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/DeclareDesign/book">View book source <i class="fab fa-github"></i></a></p>
+          
         </div>
       </nav>
 </div>
@@ -95,9 +95,9 @@
 <p>Choosing “design-aware” answer strategies sounds straightforward enough, but the precise way in which this approach is applied in any real empricial setting will of course differ from case to case. Our highest-level advice is that we want to pick an answer strategy <span class="math inline">\(A\)</span> such that the answer it provides <span class="math inline">\(A(d) = a^d\)</span> is close to the answer under our model of the world, <span class="math inline">\(I(m) = a^m\)</span>. The implication is that we should strive for parallelism across <span class="math inline">\(A\)</span> and <span class="math inline">\(I\)</span> – this is the “plug-in principle.” When the function <span class="math inline">\(A\)</span> is very close to the function <span class="math inline">\(I\)</span>, then we can “plug in” <span class="math inline">\(d\)</span> for <span class="math inline">\(m\)</span>.</p>
 <p>Because all answer strategies rely on assumptions FINISH SENTENCE For descriptive inference, we have to assume that the sample represents the population well. For causal inference, we have to assume that treated and untreated units are similar in all other respects beyond treatment status. For all kinds of inference, we have to assume that our measurements are close to the latent construsts we wish to measure. Answer strategies are “model-based” when the most consequential of these assumptions are part of <span class="math inline">\(M\)</span>. Answer strategies are “design-based” to the extent that we can pull the assumptions out of <span class="math inline">\(M\)</span> and assure them by design, i.e., by choosing <span class="math inline">\(D\)</span> in such a way that we can be confident that the assumption is true. Observational causal inference often relies on an assumption of “selection on observables,” or the claim that within groups of units that have the same observed characteristics, treatments are as-if randomly assigned. Observational causal inference is model-based in the sense that the selection on observables assumption is grounded in researchers’ theoretical model of the world, which of course might be wrong. Experimental causal inference is “design-based” in the sense that we can be sure that treatments were <em>actually</em> randomly assigned because random assignment was part of the data strategy. In both observational and experimental settings we need to make the same assumption, but in one case, we rely on a theoretical model and in the other, we rely on a data strategy. To the extent possible, we prefer assuring assumptions by design to asserting them on the basis of a theoretical model.</p>
 <p>Answer strategies come in a number of varieties. The most familiar of these are point-estimators that produce estimates of parameters. Ordinary least squares, difference-in-means, logit, random forests, and a very long list of others are in the point-estimator answer strategy class. A second class is comprised of tests. Tests return a binary decision (True or False). Null hypothesis significance tests are a common form of test in quantitative research. Qualitative researchers also employ tests; these go by names like “hoop test” and “straw-in-the-wind” test. Bayesian answer strategies return full posterior distributions. In contrast to point-estimators some answer strategies are interval-estimators.</p>
-<div id="using-the-model-to-inform-your-answer-strategy" class="section level2">
+<div id="following-the-model" class="section level2">
 <h2>
-<span class="header-section-number">9.1</span> Using the Model to inform your Answer strategy<a class="anchor" aria-label="anchor" href="#using-the-model-to-inform-your-answer-strategy"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1</span> Following the model<a class="anchor" aria-label="anchor" href="#following-the-model"><i class="fas fa-link"></i></a>
 </h2>
 <p>As we described in chapter 6, we can (non-parametrically) express our model of the world as a directed acyclic graph, or DAG. DAGs express <em>some</em> but not all parts of our model, precisely because they are nonparametric. They don’t encode how variables cause each other, just whether they do. Even so, writing down a theoretical model in as parsimonious a form as a nonparametric structual causal model can guide answer strategies in an enormously powerful way. Given a DAG, we can learn whether <em>any</em> answer strategy would be sufficient for estimating a causal effect. Further, we can learn which variables our answer strategy must condition on, and which must be left alone.</p>
 <p>When we want to estimate a particular causal relationship, such as the average causal effect of D on Y, we can read off the DAG whether that relationship is <em>identified</em> or not. The most common (and useful) criterion for identification is the “backdoor criterion.” If there exists an unblocked “backdoor path” from D to Y, then the relationship is not identified.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Footnote here about other criteria.&lt;/p&gt;"><sup>16</sup></a> A backdoor path is a causal path that begins with an arrow in to D and ends with an arrow in to Y. Backdoor paths can be blocked in two ways: conditioning the analysis on a variable along the path or <em>not</em> conditioning on a “collider” along the path.</p>
@@ -113,27 +113,20 @@
 <p>The third case describes a setting in which D has both a direct effect on Y and an indirect effect that travels through X – in this case, X is a mediator. If we condition on X, our estimate of the effect D on Y is biased (X is a descendant of D). Like in the collider case, the effect is identified if we <em>do not</em> control for X, but is not identified if we <em>do</em> condition. Some intuition for the problems associated with controlling for mediatiors: controlling for X “controls away” some portion of the effect.</p>
 <p>This example illustrates in a small way how your model of the world guides your answer strategy. In all three cases, we could in principle have the same dataset of D, X, and Y. If we followed some common regression advice, we would control for X in all three cases because it is correlated with both D and Y – this approach works only if X is a confounder. If X is a collider or a mediator, then this control strategy would induce bias. Without further changes to the design, no empirical tests can distinguish between these three DAGs, so in a very real way, theoretical assumptions in the Model must be relied upon to correctly choose a control strategy.</p>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-126-1.png" width="100%"></div>
-<p>Definition: The frontdoor criterion. A set of variables X is said to satisfy the frontdoor criterion relative to an ordered pair of variables D, Y if X intercepts all directed paths from D to Y, there is no unblocked path from D to X, all backdoor paths from X to Y are blocked by D. (pg. 69 Pearl primer)</p>
-<p><span class="math display">\[\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})\]</span></p>
-<div id="descriptive-analysis" class="section level3">
+<!-- Definition: The frontdoor criterion. A set of variables X is said to satisfy the frontdoor criterion relative to an ordered pair of variables D, Y if X intercepts all directed paths from D to Y, there is no unblocked path from D to X, all backdoor paths from X to Y are blocked by D. (pg. 69 Pearl primer) -->
+<!-- $$\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})$$ -->
+<div id="identification" class="section level3">
 <h3>
-<span class="header-section-number">9.1.1</span> Descriptive analysis<a class="anchor" aria-label="anchor" href="#descriptive-analysis"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1.1</span> Identification<a class="anchor" aria-label="anchor" href="#identification"><i class="fas fa-link"></i></a>
 </h3>
-<p>Answering descriptive inquiries involves studying the existence of nodes and the values they take on. We might study whether a behavior exists in the world, and measure its frequency. We might also study how the frequency of the behavior varies over time and across people. Our answer strategy, following the plug-in principle, will often involve the average value of the node in the sample as an estimator of the average value in the population.</p>
-</div>
-<div id="causal-analysis" class="section level3">
-<h3>
-<span class="header-section-number">9.1.2</span> Causal analysis<a class="anchor" aria-label="anchor" href="#causal-analysis"><i class="fas fa-link"></i></a>
-</h3>
-<p>By contrast, when we target a causal inquiry with our answer strategy, we are interested in the existence (or non-existence) of an edge between two nodes. We can label the two <span class="math inline">\(D\)</span> (treatment) and <span class="math inline">\(Y\)</span> (outcome).</p>
 <p>We can only learn the answer to the inquiry when we can identify the causal effect, meaning if we had infinite data we could estimate without bias the causal effect. Identification can be obtained if the backdoor criterion is met, if the frontdoor criterion is met, or if there are no other causal relationships into both <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>. These conditions will be violated in several circumstances, including when an observed confounder <span class="math inline">\(X\)</span> confounds the relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span> and is left unadjusted or when there is an unobserved confounder <span class="math inline">\(U\)</span>.</p>
 <p>To reason about causal identification, we turn back to DAGs. We start with a simple DAG with four variables: a treatment <span class="math inline">\(D\)</span>, an outcome <span class="math inline">\(Y\)</span>, a observed variable <span class="math inline">\(X\)</span> (which may or may not confound the relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>), and an unobserved variable <span class="math inline">\(U\)</span>. There are six edges between these variables, each with three possible relations: each variable may cause (e.g., <span class="math inline">\(D \rightarrow Y\)</span>), be caused by (e.g., <span class="math inline">\(D \leftarrow Y\)</span>), or not be causally related to every other variable. With three possible relationships and six edges, there are <span class="math inline">\(3^6 = 729\)</span> conceptually possible DAGs. We rule out DAGs in which other variables cause <span class="math inline">\(U\)</span>, because we defined <span class="math inline">\(U\)</span> as an unobserved confounder. This leaves 216 possible combinations.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># four variable dag with undirected edges between all sides</span></code></pre></div>
 <p>In the presence of possible confounding from <span class="math inline">\(X\)</span> and/or <span class="math inline">\(U\)</span>, we have several options for our research design: we can estimate the causal effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> by controlling for the observed confounder <span class="math inline">\(X\)</span> (or not), by invoking additional conditional independence assumptions, and by randomizing the treatment. In each case, our aim is to rule out DAGs in which the causal effect is not identified.</p>
-<div id="causal-identification-through-controls" class="section level4">
+<div id="consequences-of-conditioning" class="section level4">
 <h4>
-<span class="header-section-number">9.1.2.1</span> Causal identification through controls<a class="anchor" aria-label="anchor" href="#causal-identification-through-controls"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1.1.1</span> Consequences of conditioning<a class="anchor" aria-label="anchor" href="#consequences-of-conditioning"><i class="fas fa-link"></i></a>
 </h4>
 <p>The first strategy is that we can control for the observed variable <span class="math inline">\(X\)</span> or not. Whether controlling for <span class="math inline">\(X\)</span> enables, prevents, or does not affect the causal identification of the effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> depends on our beliefs about which DAG is the true DAG.</p>
 <p>We illustrate possible beliefs about these edges by visualizing all of the 216 DAGs in which <span class="math inline">\(U\)</span> is an unobserved confounder (see Figure XX). The large groups of three squares of nine group DAGs based on how <span class="math inline">\(U\)</span> affects other variables in the model: the top left grouping of 27 DAGs represents those in which <span class="math inline">\(U\)</span> affects all of <span class="math inline">\(D\)</span>, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Within that grouping, there are three squares of nine squares. Each group of nine squares represents a set of DAGs with a single relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>. The top left group of nine are those DAGs in which <span class="math inline">\(D\rightarrow Y\)</span>.</p>
@@ -146,9 +139,9 @@
 <p>Without additional assumptions or manipulation in our data strategy, we cannot know where we are among the 200 acyclic DAGs represented in the plot. As a result, we are in danger either of having the effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> unidentified regardless of what we do, or of making the wrong choice to control or not to control.</p>
 <div class="inline-figure"><img src="book_files/figure-html/fig-dags-adjustment-1.png" width="100%"></div>
 </div>
-<div id="causal-identification-by-assumption" class="section level4">
+<div id="adding-model-based-assumptions" class="section level4">
 <h4>
-<span class="header-section-number">9.1.2.2</span> Causal identification by assumption<a class="anchor" aria-label="anchor" href="#causal-identification-by-assumption"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1.1.2</span> Adding model-based assumptions<a class="anchor" aria-label="anchor" href="#adding-model-based-assumptions"><i class="fas fa-link"></i></a>
 </h4>
 <p>We can address the problem of unmeasured confounding by invoking conditional independence assumptions. The ``selection-on-observables’’ answer strategy invokes the assumption that <span class="math inline">\(D\)</span> is statistically independent of the potential outcomes of <span class="math inline">\(Y\)</span> <em>given</em> X, i.e. after adjusting for <span class="math inline">\(X\)</span>. In other words, controlling for <span class="math inline">\(X\)</span> blocks all backdoor paths between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>. This assumption is also known as a conditional independence or ignorability assumption.</p>
 <p>In Figure XX, we display the 216 possible causal graphs again, ruling out in gray those that are cyclical. Among the 200 that remain, we color in the same way as under controlling for <span class="math inline">\(X\)</span> but add a fourth color: lavender for DAGs that we rule out based on our conditional independence assumption. Those that are ruled out, in the upper left quadrants, have unobserved confounding from <span class="math inline">\(U\)</span> that cannot be addressed by adjusting for <span class="math inline">\(X\)</span>.</p>
@@ -156,20 +149,20 @@
 <p>Under selection-on-observables, there are still many DAGs that raise problems for us. There are still many DAGs in which <span class="math inline">\(D\leftarrow Y\)</span>, <span class="math inline">\(D\)</span> is caused by <span class="math inline">\(Y\)</span> instead of the other way around. If we cannot rule those out by assumption, we will never identify the causal effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> regardless of whether we control for <span class="math inline">\(X\)</span>. The DAGs in blue (the effect is identified only when we condition on <span class="math inline">\(X\)</span> and not otherwise) and purple (the opposite, that we only achieve identification when we do not condition on <span class="math inline">\(X\)</span>) still remain. Those in blue involve <span class="math inline">\(X\)</span> confounding the relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span> and those in purple are when <span class="math inline">\(X\)</span> is a collider so conditioning on it opens up a backdoor path to <span class="math inline">\(U\)</span>. In other words, the conditional independence of <span class="math inline">\(D\)</span> and <span class="math inline">\(U\)</span> given <span class="math inline">\(X\)</span> is insufficient to identify the effect, without ruling out these other scenarios.</p>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-128-1.png" width="100%"></div>
 </div>
-<div id="causal-identification-through-random-assignment" class="section level4">
+<div id="design-based-identification" class="section level4">
 <h4>
-<span class="header-section-number">9.1.2.3</span> Causal identification through random assignment<a class="anchor" aria-label="anchor" href="#causal-identification-through-random-assignment"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1.1.3</span> Design-based identification<a class="anchor" aria-label="anchor" href="#design-based-identification"><i class="fas fa-link"></i></a>
 </h4>
 <p>When we are unable to rule out confounding by assumption and adjustment, we can randomly assign <span class="math inline">\(D\)</span> to sever connections between unobserved variables <span class="math inline">\(U\)</span> and <span class="math inline">\(D\)</span> by design. Ruling out confounders by assumption or adjustment requires the <em>model</em> to be correct, so is often known as model-based inference, whereas ruling out confounders by design is labeled design-based inference.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;In truth, there is a continuum between the two. Design-based inferences that rely on non-parametric estimators of the average treatment effect using data from a randomized experiment are a classic design-based estimator, yet they also rely on a modeling assumption: the stable unit treatment-value assumption.&lt;/p&gt;"><sup>17</sup></a> In addition, we can measure <span class="math inline">\(X\)</span> before treatment to rule out situations in which <span class="math inline">\(D\)</span> causes <span class="math inline">\(X\)</span>, which can lead to collider bias or opening backdoor paths from <span class="math inline">\(D\)</span> to <span class="math inline">\(Y\)</span>.</p>
 <p>In doing so, we dramatically reduce the set of possible DAGs, because we set the causal order between <span class="math inline">\(X\)</span> and <span class="math inline">\(D\)</span>, and dramatically expand the number of settings under which the effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> is identified both due to this restriction on causal order and the randomization of <span class="math inline">\(D\)</span> which guarantees ignorability of <span class="math inline">\(U\)</span>.</p>
 <p>In Figure XX, we swap the colors to now indicate DAGs ruled out by measuring <span class="math inline">\(X\)</span> before treatment (salmon squares), and those ruled out by random assignment (blue squares). In all of the remaining white squares, the effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> is causally identified, regardless of whether we adjust for <span class="math inline">\(X\)</span> or not. We remove the conditionality of inference depending on whether we control. This is good, because ultimately even in the presence of strong ignorability assumptions outlined in the last section there are many possible DAGs in which controlling or failing to control lead to bias. Now, our inferences do not depend on guessing the correct DAG.</p>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-129-1.png" width="100%"></div>
-<p>In short, what we do by controlling the timing of measurement of <span class="math inline">\(X\)</span> and randomizing <span class="math inline">\(D\)</span> is to move our assumptions about conditional independence from <span class="math inline">\(M\)</span> our assumed (but possible incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.</p>
+<p>In short, what we do by controlling the timing of measurement of <span class="math inline">\(X\)</span> and randomizing <span class="math inline">\(D\)</span> is to move our assumptions about conditional independence from <span class="math inline">\(M\)</span> our assumed (but possibly incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.</p>
 </div>
 </div>
-<div id="effect-estimation-and-distinguishing-among-dags" class="section level3">
+<div id="estimation" class="section level3">
 <h3>
-<span class="header-section-number">9.1.3</span> Effect estimation and distinguishing among DAGs<a class="anchor" aria-label="anchor" href="#effect-estimation-and-distinguishing-among-dags"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1.2</span> Estimation<a class="anchor" aria-label="anchor" href="#estimation"><i class="fas fa-link"></i></a>
 </h3>
 <p>The identification of the causal effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> either by assumption or design enables us to undertake two tasks: estimate the average treatment effect, estimate the sign of the effect, or estimate whether there is an affect or not.</p>
 <p>The first task, estimating the magnitude of the effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span>, can be accomplished using model-based inference under the selection-on-observables design or under a randomized experiment. In both cases, we apply the plug-in principle, replacing the true but unknown average potential outcomes under treatment (control) with the sample analogues, the average outcomes in the treatment (control) group. With data from randomized experiments, <span class="math inline">\(X\)</span> is ignorable, so we can either adjust for it (which may reduce variability in estimates) or not without bias. But under selection-on-observables, we have to rule out many DAGs by assumption that include <span class="math inline">\(X\)</span> as a collider or in which <span class="math inline">\(X\)</span> opens a backdoor path between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span> in order to safely select an answer strategy.</p>
@@ -179,7 +172,7 @@
 </div>
 <div id="analyze-as-you-randomize" class="section level3">
 <h3>
-<span class="header-section-number">9.1.4</span> Analyze as you randomize<a class="anchor" aria-label="anchor" href="#analyze-as-you-randomize"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.1.3</span> Analyze as you randomize<a class="anchor" aria-label="anchor" href="#analyze-as-you-randomize"><i class="fas fa-link"></i></a>
 </h3>
 <p>However, in order to benefit from these two controlled decisions in our data strategy, we must follow the dictum due to R.A. Fisher to “analyze as you randomize.” Your answer strategy should follow your data strategy. There are four components: make comparisons only across randomly-assigned conditions; analyze data at the level of random assignment; make comparisons only in groups within which random assignment was conducted (e.g., strata); and adjust for differences in probabilities of random assignment.</p>
 <p>Making comparisons across randomly-assigned conditions within groups in which random assignment was conducted directly follow from our comparison of causal identification by assignment vs. by design. If we make comparisons that rely on differences both in <span class="math inline">\(D\)</span> and <span class="math inline">\(X\)</span>, for example a difference in treatment effects between two subgroups, we are susceptible to confounding from <span class="math inline">\(U\)</span>, because <span class="math inline">\(X\)</span> is not randomly-assigned. Similarly, analysis of data from block-randomized experiments can be broken by failing to account for blocking, because blocks are not randomly assigned and in fact are typically constructed so that the outcomes of units in the block are similar within blocks and very different across blocks. If there are differential probabilities of assignment across blocks and we pool our data ignoring the blocking structure, our unweighted comparisons may be contrasting groups that differ systematically.</p>
@@ -193,14 +186,29 @@
 <p>The analogy extends even further when we consider that all random treatment assignment procedures are also sampling procedures. Rather than sampling entire units, however, treatment assignments randomly sample from different potential outcomes. If you assign 5/15 people to treatment and the rest to control, for example, then the five treated potential outcomes need to “represent” <span class="math inline">\(1/(5/15) = 3\)</span> people’s treated potential outcomes and the ten people assigned to control represent <span class="math inline">\(1/(10/15) = 1.5\)</span> people’s control potential outcomes. If you tried to pool different experiments to get the average treatment effect across all people in all experiments, you would need to take account of the fact that different experiments might over or underrepresent treatment or control potential outcomes, and weight accordingly. This issue arises in block randomized designs where treatment assignment probabilities vary by block (see entry X in the design library), in designs with spillovers where spatial networks induce differential assignment probabilities for spillovers (see entry X in the design library), and in stepped wedge designs where earlier waves overrepresent control potential outcomes and later waves overrepresent treatment potential outcomes (see entry X in the design library). Finally, in the same way that poststratification uses covariates to construct sample weights corresponding to a hypothetical random  procedure, matching and selection observable designs use covariates to reverse engineer probabilities of sampling treatment and control potential outcomes in order to reweight the data to account for the systematic selection of certain kinds of units into or out of treatment (confounding).</p>
 </div>
 </div>
+<div id="following-the-inquiry" class="section level2">
+<h2>
+<span class="header-section-number">9.2</span> Following the inquiry<a class="anchor" aria-label="anchor" href="#following-the-inquiry"><i class="fas fa-link"></i></a>
+</h2>
+<div id="plug-in-principle" class="section level3">
+<h3>
+<span class="header-section-number">9.2.1</span> Plug-in principle<a class="anchor" aria-label="anchor" href="#plug-in-principle"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+</div>
+<div id="following-the-data-strategy" class="section level2">
+<h2>
+<span class="header-section-number">9.3</span> Following the data strategy<a class="anchor" aria-label="anchor" href="#following-the-data-strategy"><i class="fas fa-link"></i></a>
+</h2>
+</div>
 <div id="point-estimation" class="section level2">
 <h2>
-<span class="header-section-number">9.2</span> Point estimation<a class="anchor" aria-label="anchor" href="#point-estimation"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4</span> Point estimation<a class="anchor" aria-label="anchor" href="#point-estimation"><i class="fas fa-link"></i></a>
 </h2>
 <p>Point estimation is possibly the most common class of answer strategy in quantitative social science. Point estimators are things like the difference-in-means, ordinary least squares regression, instrumental variables regression, random forests, the LASSO, ridge regression, BART… the list goes on and on. These are the data analysis tools taught in many graduate methods courses. What’s incredible is that even though the population of estimators proliferates with each passing year, the number of kinds of inquiries they are useful for estimating stays relatively flat. When we do point estimatation, we are mainly interested in estimating averages, differences, variances, and conditional expectation functions of increasing dimensionality. There are of course many other kinds of estimands (like ratios and quantiles), but the main point is, most of the variation in how scholars conduct point estimation is in the answer strategy, not in the inquiry.</p>
 <div id="bias-variance-tradeoff" class="section level3">
 <h3>
-<span class="header-section-number">9.2.1</span> Bias variance tradeoff<a class="anchor" aria-label="anchor" href="#bias-variance-tradeoff"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.1</span> Bias variance tradeoff<a class="anchor" aria-label="anchor" href="#bias-variance-tradeoff"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li>overfitting</li>
@@ -212,7 +220,7 @@
 </div>
 <div id="when-parameters-are-not-point-identified" class="section level2">
 <h2>
-<span class="header-section-number">9.3</span> When parameters are not point identified<a class="anchor" aria-label="anchor" href="#when-parameters-are-not-point-identified"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.5</span> When parameters are not point identified<a class="anchor" aria-label="anchor" href="#when-parameters-are-not-point-identified"><i class="fas fa-link"></i></a>
 </h2>
 <ul>
 <li>confounding</li>
@@ -222,7 +230,7 @@
 </div>
 <div id="characterizing-uncertainty" class="section level2">
 <h2>
-<span class="header-section-number">9.4</span> Characterizing uncertainty<a class="anchor" aria-label="anchor" href="#characterizing-uncertainty"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.6</span> Characterizing uncertainty<a class="anchor" aria-label="anchor" href="#characterizing-uncertainty"><i class="fas fa-link"></i></a>
 </h2>
 <p>Variance estimation is often more difficult than point estimation.</p>
 <p>We can often do the bootstrap, which plugs in (re-) sampling from the sample for sampling from the population.</p>
@@ -230,18 +238,18 @@
 </div>
 <div id="qualitative-methods-of-inference" class="section level2">
 <h2>
-<span class="header-section-number">9.5</span> Qualitative methods of inference<a class="anchor" aria-label="anchor" href="#qualitative-methods-of-inference"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.7</span> Qualitative methods of inference<a class="anchor" aria-label="anchor" href="#qualitative-methods-of-inference"><i class="fas fa-link"></i></a>
 </h2>
 <!-- Qualitative methods for causal and descriptive inference use logic in combination  -->
 <!-- Unsure: should we count typologies and concept formation as a form of descriptive inference (e.g., what are the types of capitalism in the world)? or are typologies measurement exercises? The Collier et al. article really frames typologies as measurement devices in the building blocks   -->
 <div id="necessity-and-sufficiency" class="section level3">
 <h3>
-<span class="header-section-number">9.5.1</span> Necessity and sufficiency<a class="anchor" aria-label="anchor" href="#necessity-and-sufficiency"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.7.1</span> Necessity and sufficiency<a class="anchor" aria-label="anchor" href="#necessity-and-sufficiency"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="process-tracing" class="section level3">
 <h3>
-<span class="header-section-number">9.5.2</span> Process-tracing<a class="anchor" aria-label="anchor" href="#process-tracing"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.7.2</span> Process-tracing<a class="anchor" aria-label="anchor" href="#process-tracing"><i class="fas fa-link"></i></a>
 </h3>
 <!-- Bayesian and non-bayesian -->
 <!-- As part of an initiative to establish process tracing as a rigorous method, the literature -->
@@ -255,7 +263,7 @@
 </div>
 <div id="boolean-and-set-theoretic-methods" class="section level3">
 <h3>
-<span class="header-section-number">9.5.3</span> Boolean and set-theoretic methods<a class="anchor" aria-label="anchor" href="#boolean-and-set-theoretic-methods"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.7.3</span> Boolean and set-theoretic methods<a class="anchor" aria-label="anchor" href="#boolean-and-set-theoretic-methods"><i class="fas fa-link"></i></a>
 </h3>
 <!-- Deterministic vs. probabalistic debate -->
 <!-- DIscuss process-tracing, QCA, and deterministic / probabilistic case comparison. Summarize Sekhon on Geddes + Skocpol. Ragin. Lijphart on problems with case comparison. Elman on explanatory typologies. -->
@@ -275,7 +283,7 @@
 </div>
 <div id="narratives-and-sequences" class="section level3">
 <h3>
-<span class="header-section-number">9.5.4</span> Narratives and sequences<a class="anchor" aria-label="anchor" href="#narratives-and-sequences"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.7.4</span> Narratives and sequences<a class="anchor" aria-label="anchor" href="#narratives-and-sequences"><i class="fas fa-link"></i></a>
 </h3>
 <!-- Example of debate between Moore 1966 (democracy emerges from lord and peasant relationship) vs.  -->
 <!-- For example, in Social Origins o f Dictatorship and Democracy (1966), Moore attributes the ultimate choice between dictatorship and democracy to the kind of relationship that had developed through history between lords and peasant village communities. Although Moore's argument takes the reader through a series of historical turning points to explain the rise of commercial agricul- ture and resulting changes in landlord-peasant relationships in different situations, he concludes with a series of causal generaliza- tions, including: -->
@@ -292,7 +300,7 @@
 </div>
 <div id="tests" class="section level2">
 <h2>
-<span class="header-section-number">9.6</span> Tests<a class="anchor" aria-label="anchor" href="#tests"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.8</span> Tests<a class="anchor" aria-label="anchor" href="#tests"><i class="fas fa-link"></i></a>
 </h2>
 <p>Tests are an elemental kind of answer strategy. Tests yield binary yes/no answers to an inquiry. In some qualitative traditions, hoop tests, straw-in-the-wind tests, smoking-gun tests, and doubly-decisive tests are common. These tests are procedures for making analysis decisions in a structured way. In frequentist statistics, significance tests are used to make a decision whether to reject or fail to reject a particular null hypothesis.</p>
 <!-- Null hypothesis significance testing has developed a (rightfully) sketchy reputation in recent years as too much weight has been put on the reject / fail to reject decision. That said, sometimes that decision is rightfully important and in such cases, null hypothesis significance testing is a great tool. -->
@@ -305,13 +313,13 @@
 <!-- [cite erin on equivalence testinf] -->
 <div id="randomization-inference" class="section level3">
 <h3>
-<span class="header-section-number">9.6.1</span> randomization inference<a class="anchor" aria-label="anchor" href="#randomization-inference"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.8.1</span> randomization inference<a class="anchor" aria-label="anchor" href="#randomization-inference"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 </div>
 <div id="answer-strategies-as-procedures" class="section level2">
 <h2>
-<span class="header-section-number">9.7</span> Answer strategies as procedures<a class="anchor" aria-label="anchor" href="#answer-strategies-as-procedures"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.9</span> Answer strategies as procedures<a class="anchor" aria-label="anchor" href="#answer-strategies-as-procedures"><i class="fas fa-link"></i></a>
 </h2>
 <p>Consider a randomized experiment that seeks to estimate the causal effect of a treatment. The answer strategy is not just “Logistic Regression with Covariate adjustment”. It includes every step in the process that takes the raw data, cleans and recodes it, considers 5 alternative estimators (DIM, OLS with covariate adjustment, a fancy thing your colleague suggested but you couldn’t get to converge), before finally settling on logit.</p>
 <p><strong>Multiple estimates.</strong> Answer strategies can account how many statistical tests you are conducting. Often, when generating an answer to a single inquiry, we may construct multiple estimates that provide different types of answers of varying quality. When you present the results from many null hypothesis tests, the rate of falsely rejecting at least one of those tests even when all are true goes up, due to the multiple comparisons problem. If you plan to adjust for this problem, those adjustments are part of your answer strategy, because they will typically adjust the p-values you report and the decisions readers make with them. We may have three survey items that imperfectly estimate a latent quantity. In presenting the results, we could present three estimates from three regressions, we could adjust the three estimates using a procedure such as a family-wise error rate correction, or we could average the three items together into an index and present one estimate from one regression. Which of these three methods we select will change the properties of our answer strategy.</p>
@@ -325,7 +333,7 @@
 </div>
 <div id="robustness" class="section level2">
 <h2>
-<span class="header-section-number">9.8</span> Robustness<a class="anchor" aria-label="anchor" href="#robustness"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.10</span> Robustness<a class="anchor" aria-label="anchor" href="#robustness"><i class="fas fa-link"></i></a>
 </h2>
 <p><strong>Robustness checks</strong> are part of the answer strategy. Often, a single estimator is presented as the main analysis but then a series of alternative specifications are displayed in an appendix (such as including or excluding covariates and their interactions, different subsets of the data, or alternative statistical models). These differ from multiple estimates of a latent quantity in that the goal is not a primary analysis, but rather to support the main analysis. The purpose is to provide readers with evidence about how dependent the main results are on the specification, data subset, and statistical model used. The decision a reader makes from a paper depends not only on the main estimate but also the robustness checks. As a result, we want to assess the properties of the two together.</p>
 <p>We illustrate with a simple analysis of the correlation between two variables <code>y1</code> and <code>y2</code>, who have a true positive correlation. <code>y2</code> is also a function of an observed covariate <code>x</code> and measurement error. Our main analysis is a bivariate regression predicting <code>y2</code> with <code>y1</code>. We compare this answer strategy to one in which we run that analysis, but also run a robustness check controlling for <code>x</code>. We do this because as the analyst we are unsure of the true DGP and wish to demonstrate to reviewer’s that our results are not dependent on the functional form we choose.</p>
@@ -334,13 +342,13 @@
 </div>
 <div id="visualization" class="section level2">
 <h2>
-<span class="header-section-number">9.9</span> Visualization<a class="anchor" aria-label="anchor" href="#visualization"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.11</span> Visualization<a class="anchor" aria-label="anchor" href="#visualization"><i class="fas fa-link"></i></a>
 </h2>
 <p>How results are presented in tables and figures is an important part of the answer strategy. Considerable attention has been paid to how to display data, including arguments for switching from tables to graphs as the primary way to present statistical models (Kastellec) and for visually present raw data and models together (Coppock). The reason for this attention is that what inferences readers make when reading a paper depends not only on the statistical procedures used for estimation but the medium in which they are displayed. When numerical estimates are not provided at all, and only visualizations of results, clearly aesthetic choices about which estimates are displayed and even the width of axes will determine what the reader takes away from the answer strategy. This principle applies not just to tables and visualizations; how we describe results in the text of a paper also shapes readers’ inferences from the data. Registered reports are a format for preparing scientific papers that involves prespecifying not only the form of graphs and tables but the text the author plans to write depending on the results. In short, decisions made from your results by readers are not just a function of numerical estimates but how they are presented.</p>
 </div>
 <div id="further-reading-4" class="section level2">
 <h2>
-<span class="header-section-number">9.10</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-4"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.12</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-4"><i class="fas fa-link"></i></a>
 </h2>
 <ul>
 <li>
@@ -362,39 +370,41 @@
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#choosing-an-answer-strategy"><span class="header-section-number">9</span> Choosing an answer strategy</a></li>
 <li>
-<a class="nav-link" href="#using-the-model-to-inform-your-answer-strategy"><span class="header-section-number">9.1</span> Using the Model to inform your Answer strategy</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#descriptive-analysis"><span class="header-section-number">9.1.1</span> Descriptive analysis</a></li>
-<li><a class="nav-link" href="#causal-analysis"><span class="header-section-number">9.1.2</span> Causal analysis</a></li>
-<li><a class="nav-link" href="#effect-estimation-and-distinguishing-among-dags"><span class="header-section-number">9.1.3</span> Effect estimation and distinguishing among DAGs</a></li>
-<li><a class="nav-link" href="#analyze-as-you-randomize"><span class="header-section-number">9.1.4</span> Analyze as you randomize</a></li>
+<a class="nav-link" href="#following-the-model"><span class="header-section-number">9.1</span> Following the model</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#identification"><span class="header-section-number">9.1.1</span> Identification</a></li>
+<li><a class="nav-link" href="#estimation"><span class="header-section-number">9.1.2</span> Estimation</a></li>
+<li><a class="nav-link" href="#analyze-as-you-randomize"><span class="header-section-number">9.1.3</span> Analyze as you randomize</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#point-estimation"><span class="header-section-number">9.2</span> Point estimation</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#bias-variance-tradeoff"><span class="header-section-number">9.2.1</span> Bias variance tradeoff</a></li></ul>
+<a class="nav-link" href="#following-the-inquiry"><span class="header-section-number">9.2</span> Following the inquiry</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#plug-in-principle"><span class="header-section-number">9.2.1</span> Plug-in principle</a></li></ul>
 </li>
-<li><a class="nav-link" href="#when-parameters-are-not-point-identified"><span class="header-section-number">9.3</span> When parameters are not point identified</a></li>
-<li><a class="nav-link" href="#characterizing-uncertainty"><span class="header-section-number">9.4</span> Characterizing uncertainty</a></li>
+<li><a class="nav-link" href="#following-the-data-strategy"><span class="header-section-number">9.3</span> Following the data strategy</a></li>
 <li>
-<a class="nav-link" href="#qualitative-methods-of-inference"><span class="header-section-number">9.5</span> Qualitative methods of inference</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#necessity-and-sufficiency"><span class="header-section-number">9.5.1</span> Necessity and sufficiency</a></li>
-<li><a class="nav-link" href="#process-tracing"><span class="header-section-number">9.5.2</span> Process-tracing</a></li>
-<li><a class="nav-link" href="#boolean-and-set-theoretic-methods"><span class="header-section-number">9.5.3</span> Boolean and set-theoretic methods</a></li>
-<li><a class="nav-link" href="#narratives-and-sequences"><span class="header-section-number">9.5.4</span> Narratives and sequences</a></li>
+<a class="nav-link" href="#point-estimation"><span class="header-section-number">9.4</span> Point estimation</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#bias-variance-tradeoff"><span class="header-section-number">9.4.1</span> Bias variance tradeoff</a></li></ul>
+</li>
+<li><a class="nav-link" href="#when-parameters-are-not-point-identified"><span class="header-section-number">9.5</span> When parameters are not point identified</a></li>
+<li><a class="nav-link" href="#characterizing-uncertainty"><span class="header-section-number">9.6</span> Characterizing uncertainty</a></li>
+<li>
+<a class="nav-link" href="#qualitative-methods-of-inference"><span class="header-section-number">9.7</span> Qualitative methods of inference</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#necessity-and-sufficiency"><span class="header-section-number">9.7.1</span> Necessity and sufficiency</a></li>
+<li><a class="nav-link" href="#process-tracing"><span class="header-section-number">9.7.2</span> Process-tracing</a></li>
+<li><a class="nav-link" href="#boolean-and-set-theoretic-methods"><span class="header-section-number">9.7.3</span> Boolean and set-theoretic methods</a></li>
+<li><a class="nav-link" href="#narratives-and-sequences"><span class="header-section-number">9.7.4</span> Narratives and sequences</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#tests"><span class="header-section-number">9.6</span> Tests</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#randomization-inference"><span class="header-section-number">9.6.1</span> randomization inference</a></li></ul>
+<a class="nav-link" href="#tests"><span class="header-section-number">9.8</span> Tests</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#randomization-inference"><span class="header-section-number">9.8.1</span> randomization inference</a></li></ul>
 </li>
-<li><a class="nav-link" href="#answer-strategies-as-procedures"><span class="header-section-number">9.7</span> Answer strategies as procedures</a></li>
-<li><a class="nav-link" href="#robustness"><span class="header-section-number">9.8</span> Robustness</a></li>
-<li><a class="nav-link" href="#visualization"><span class="header-section-number">9.9</span> Visualization</a></li>
-<li><a class="nav-link" href="#further-reading-4"><span class="header-section-number">9.10</span> Further reading</a></li>
+<li><a class="nav-link" href="#answer-strategies-as-procedures"><span class="header-section-number">9.9</span> Answer strategies as procedures</a></li>
+<li><a class="nav-link" href="#robustness"><span class="header-section-number">9.10</span> Robustness</a></li>
+<li><a class="nav-link" href="#visualization"><span class="header-section-number">9.11</span> Visualization</a></li>
+<li><a class="nav-link" href="#further-reading-4"><span class="header-section-number">9.12</span> Further reading</a></li>
 </ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/DeclareDesign/book/blob/master/02_Declaration_Diagnosis_Redesign/05_Choosing_an_Answer_Strategy.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/DeclareDesign/book/edit/master/02_Declaration_Diagnosis_Redesign/05_Choosing_an_Answer_Strategy.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+          
         </ul>
 </div>
     </nav>
