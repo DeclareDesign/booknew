@@ -203,7 +203,7 @@ gg_df <-
 ```
 
 
-## Using the Model to inform your Answer strategy
+## Following the model
 
 As we described in chapter 6, we can (non-parametrically) express our model of the world as a directed acyclic graph, or DAG. DAGs express *some* but not all parts of our model, precisely because they are nonparametric. They don't encode how variables cause each other, just whether they do. Even so, writing down a theoretical model in as parsimonious a form as a nonparametric structual causal model can guide answer strategies in an enormously powerful way. Given a DAG, we can learn whether *any* answer strategy would be sufficient for estimating a causal effect. Further, we can learn which variables our answer strategy must condition on, and which must be left alone. 
 
@@ -281,17 +281,11 @@ ggplot(gg_df_small, aes(x, y)) +
 
 
 
-Definition: The frontdoor criterion. A set of variables X is said to satisfy the frontdoor criterion relative to an ordered pair of variables D, Y if X intercepts all directed paths from D to Y, there is no unblocked path from D to X, all backdoor paths from X to Y are blocked by D. (pg. 69 Pearl primer)
+<!-- Definition: The frontdoor criterion. A set of variables X is said to satisfy the frontdoor criterion relative to an ordered pair of variables D, Y if X intercepts all directed paths from D to Y, there is no unblocked path from D to X, all backdoor paths from X to Y are blocked by D. (pg. 69 Pearl primer) -->
 
-$$\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})$$
+<!-- $$\Pr(Y = y \mid do(D = d)) = \sum_x \Pr(X = x \mid D = d) \sum_{d^{\prime}} \Pr(Y = y \mid D = d^{\prime}, X = x) \Pr(D = d^{\prime})$$ -->
 
-### Descriptive analysis
-
-Answering descriptive inquiries involves studying the existence of nodes and the values they take on. We might study whether a behavior exists in the world, and measure its frequency. We might also study how the frequency of the behavior varies over time and across people. Our answer strategy, following the plug-in principle, will often involve the average value of the node in the sample as an estimator of the average value in the population. 
-
-### Causal analysis
-
-By contrast, when we target a causal inquiry with our answer strategy, we are interested in the existence (or non-existence) of an edge between two nodes. We can label the two $D$ (treatment) and $Y$ (outcome).
+### Identification
 
 We can only learn the answer to the inquiry when we can identify the causal effect, meaning if we had infinite data we could estimate without bias the causal effect. Identification can be obtained if the backdoor criterion is met, if the frontdoor criterion is met, or if there are no other causal relationships into both $D$ and $Y$. These conditions will be violated in several circumstances, including when an observed confounder $X$ confounds the relationship between $D$ and $Y$ and is left unadjusted or when there is an unobserved confounder $U$. 
 
@@ -303,7 +297,7 @@ To reason about causal identification, we turn back to DAGs. We start with a sim
 
 In the presence of possible confounding from $X$ and/or $U$, we have several options for our research design: we can estimate the causal effect of $D$ on $Y$ by controlling for the observed confounder $X$ (or not), by invoking additional conditional independence assumptions, and by randomizing the treatment. In each case, our aim is to rule out DAGs in which the causal effect is not identified. 
 
-#### Causal identification through controls 
+#### Consequences of conditioning 
 
 The first strategy is that we can control for the observed variable $X$ or not. Whether controlling for $X$ enables, prevents, or does not affect the causal identification of the effect of $D$ on $Y$ depends on our beliefs about which DAG is the true DAG. 
 
@@ -381,7 +375,7 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 ```
 
-#### Causal identification by assumption
+#### Adding model-based assumptions
 
 We can address the problem of unmeasured confounding by invoking conditional independence assumptions. The ``selection-on-observables'' answer strategy invokes the assumption that $D$ is statistically independent of the potential outcomes of $Y$ *given* X, i.e. after adjusting for $X$. In other words, controlling for $X$ blocks all backdoor paths between $D$ and $Y$. This assumption is also known as a conditional independence or ignorability assumption.
 
@@ -451,7 +445,7 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 ```
 
-#### Causal identification through random assignment
+#### Design-based identification
 
 When we are unable to rule out confounding by assumption and adjustment, we can randomly assign $D$ to sever connections between unobserved variables $U$ and $D$ by design. Ruling out confounders by assumption or adjustment requires the *model* to be correct, so is often known as model-based inference, whereas ruling out confounders by design is labeled design-based inference.^[In truth, there is a continuum between the two. Design-based inferences that rely on non-parametric estimators of the average treatment effect using data from a randomized experiment are a classic design-based estimator, yet they also rely on a modeling assumption: the stable unit treatment-value assumption.] In addition, we can measure $X$ before treatment to rule out situations in which $D$ causes $X$, which can lead to collider bias or opening backdoor paths from $D$ to $Y$. 
 
@@ -526,9 +520,9 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
 ```
 
-In short, what we do by controlling the timing of measurement of $X$ and randomizing $D$ is to move our assumptions about conditional independence from $M$ our assumed (but possible incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.
+In short, what we do by controlling the timing of measurement of $X$ and randomizing $D$ is to move our assumptions about conditional independence from $M$ our assumed (but possibly incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.
 
-### Effect estimation and distinguishing among DAGs
+### Estimation
 
 The identification of the causal effect of $D$ on $Y$ either by assumption or design enables us to undertake two tasks: estimate the average treatment effect, estimate the sign of the effect, or estimate whether there is an affect or not. 
 
@@ -599,6 +593,12 @@ Notice that this example is equivalent to a stratified random sampling strategy,
 This way of thinking provides a framework for poststratification on nonrandom samples. Suppose a researcher comes across our dataset of 20 people. They don't know anything about the sampling strategy---to them, it's a non-random sample. However, they do know that there are 10 people from group 1 and 20 people from group 2 in the population, so they are able to construct estimates of the sampling probabilities using $\hat{p_1} = n_1/N_1$ and $\hat{p_2} = n_2/N_2$. From there, they can construct weights using $1/p_1$ and $1/p_2$ that will reweight their data so that it is representative. That's the basic intuition behind \textit{post}stratification: you use known population counts to reverse engineer the probability weights that a hypothetical stratified random sampling strategy would have given you. See entry X in the design library for more on this. 
 
 The analogy extends even further when we consider that all random treatment assignment procedures are also sampling procedures. Rather than sampling entire units, however, treatment assignments randomly sample from different potential outcomes. If you assign 5/15 people to treatment and the rest to control, for example, then the five treated potential outcomes need to "represent" $1/(5/15) = 3$ people's treated potential outcomes and the ten people assigned to control represent $1/(10/15) = 1.5$ people's control potential outcomes. If you tried to pool different experiments to get the average treatment effect across all people in all experiments, you would need to take account of the fact that different experiments might over or underrepresent treatment or control potential outcomes, and weight accordingly. This issue arises in block randomized designs where treatment assignment probabilities vary by block (see entry X in the design library), in designs with spillovers where spatial networks induce differential assignment probabilities for spillovers (see entry X in the design library), and in stepped wedge designs where earlier waves overrepresent control potential outcomes and later waves overrepresent treatment potential outcomes (see entry X in the design library). Finally, in the same way that poststratification uses covariates to construct sample weights corresponding to a hypothetical random \textit{sampling} procedure, matching and selection observable designs use covariates to reverse engineer probabilities of sampling treatment and control potential outcomes in order to reweight the data to account for the systematic selection of certain kinds of units into or out of treatment (confounding).
+
+## Following the inquiry
+
+### Plug-in principle
+
+## Following the data strategy
 
 ## Point estimation
 
