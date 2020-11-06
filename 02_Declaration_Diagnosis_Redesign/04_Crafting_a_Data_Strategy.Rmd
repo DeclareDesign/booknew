@@ -124,17 +124,8 @@ Why would we ever be content to study a sample and not the full population? The 
 
 Owing to the natural appeal of design-based inference, we start off with randomized designs before proceeding to nonrandomized designs. Randomized sampling designs typically begin with a list of all units in a population, then choose a subset to sample using a random process. These random processes can be simple (every unit has an equal probability of inclusion) or complex (first we select regions at random, then villages at random within selected regions, then households within selected villages, then individuals within selected households).
 
-This table describes XX common forms of sampling. The most basic form is simple random sample, also called "coin flip" or Bernoulli random sampling. Under simple random assignment, all units in the population have the same probability $p$ of being included in the sample. It is sometimes called coin flip random sampling because it is as though for each unit, we flip a weighted coin that has probability $p$ of landing heads-up. While quite straightforward, a drawback of simple random sampling is that we can't be sure of the number of sampled units in advance. On average, we'll sample $N*p$ units, sometimes slightly more units will be sampled and sometimes fewer.
+Table \@ref(samplingtypes) collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling. The most basic form is simple random sample, also called "coin flip" or Bernoulli random sampling. Under simple random assignment, all units in the population have the same probability $p$ of being included in the sample. It is sometimes called coin flip random sampling because it is as though for each unit, we flip a weighted coin that has probability $p$ of landing heads-up. While quite straightforward, a drawback of simple random sampling is that we can't be sure of the number of sampled units in advance. On average, we'll sample $N*p$ units, sometimes slightly more units will be sampled and sometimes fewer.
 
-Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$.^[To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, prob = 0.5))` a few times and compare the results with `table(complete_rs(N = 100, n = 50))`]. Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or fewer than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
-
-Complete random sampling solves the problem of fixing the total number of sampled units, but it doesn't address the problem that the total number of units with particular characteristics will not be fixed.  Imagine a population with $N_{y}$ young people and $N_{o}$ old people. If we sample exactly $n$ from the population $N_{y} + N_{o}$, the number of sampled young people ($n_y$) and sampled old people ($n_{o}$) will bounce around from sample to sample. We can solve this problem by conducting complete random sampling *within* each group of units. This procedure goes by the name stratified random sampling, since the sampling is conducted separately within the strata of units.^[To convince yourself of the difference between complete and stratified sampling, run `age <- rep(c("Y", "O"), 50); table(age, complete_rs(N = 100, n = 50))` a few times and compare the results with `table(age, strata_rs(strata = age))`] In our example, our strata were formed by a dichotomoous grouping of people into "young" and "old" categories, but in general, the sampling strata can be formed by any information we have about units before they are sampled. Stratification offers at least three major benefits. First, we defend against sampling surprisingly too few units in some stratum by "bad luck." Second (as discussed in the chapter on answer strategies) stratification tends to produce lower variance estimates of most inquiries. Finally, stratification allows researchers to "oversample"  subgroups of particular interest.
-
-Stratified sampling should not be confused with cluster sampling. Stratified sampling means that a fixed number of units from a particular group are drawn into the sample. Cluster sampling means that units from a particular group are brought into the sample *together*. For example, if we cluster sample households, we interview all individuals living in a sampled household. Clustering introduces dependence in the sampling procedure -- if one member of the household is sampled, the other members are also always sampled. Relative to a complete random sample of the same size, cluster samples tend to produce higher variance estimates. Just as the individual sampling designs, cluster sampling comes in simple, complete, and stratified varieties with exactly parallel logics and motivations.
-
-Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically-structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. The purpose of a multi-stage approach is typically to balance the logistical difficulties of visiting many geographic areas with the relative ease of collecting additional data once you have arrived.
-
-Table \@ref(samplingtypes) collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling.
 
 | Design | Description | Randomizr function |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
@@ -146,6 +137,14 @@ Table \@ref(samplingtypes) collects all of these kinds of random sampling togeth
 | Multi-stage random sampling | First clusters, then units within clusters| cluster_ra(clusters = villages); strata_ra(strata = villages|
 
 Table: (\#tab:samplingtypes) Kinds of random sampling
+
+Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$.^[To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, prob = 0.5))` a few times and compare the results with `table(complete_rs(N = 100, n = 50))`]. Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or fewer than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
+
+Complete random sampling solves the problem of fixing the total number of sampled units, but it doesn't address the problem that the total number of units with particular characteristics will not be fixed.  Imagine a population with $N_{y}$ young people and $N_{o}$ old people. If we sample exactly $n$ from the population $N_{y} + N_{o}$, the number of sampled young people ($n_y$) and sampled old people ($n_{o}$) will bounce around from sample to sample. We can solve this problem by conducting complete random sampling *within* each group of units. This procedure goes by the name stratified random sampling, since the sampling is conducted separately within the strata of units.^[To convince yourself of the difference between complete and stratified sampling, run `age <- rep(c("Y", "O"), 50); table(age, complete_rs(N = 100, n = 50))` a few times and compare the results with `table(age, strata_rs(strata = age))`] In our example, our strata were formed by a dichotomoous grouping of people into "young" and "old" categories, but in general, the sampling strata can be formed by any information we have about units before they are sampled. Stratification offers at least three major benefits. First, we defend against sampling surprisingly too few units in some stratum by "bad luck." Second (as discussed in the chapter on answer strategies) stratification tends to produce lower variance estimates of most inquiries. Finally, stratification allows researchers to "oversample"  subgroups of particular interest.
+
+Stratified sampling should not be confused with cluster sampling. Stratified sampling means that a fixed number of units from a particular group are drawn into the sample. Cluster sampling means that units from a particular group are brought into the sample *together*. For example, if we cluster sample households, we interview all individuals living in a sampled household. Clustering introduces dependence in the sampling procedure -- if one member of the household is sampled, the other members are also always sampled. Relative to a complete random sample of the same size, cluster samples tend to produce higher variance estimates. Just as the individual sampling designs, cluster sampling comes in simple, complete, and stratified varieties with exactly parallel logics and motivations.
+
+Lastly, we turn to multi-stage random sampling, in which we conduct random sampling at multiple levels of a heirarchically-structured population. For example, we might first sample regions, then villages within regions, then households within villages, then individuals within households. Each of those sampling steps might be stratified or clustered depending on researcher goals. The purpose of a multi-stage approach is typically to balance the logistical difficulties of visiting many geographic areas with the relative ease of collecting additional data once you have arrived.
 
 Figure \@(fig:samplingquilt) gives a graphical interpretation of each of these kinds of random sampling. Here, we imagine a population of 64 units with two levels of heirarchy. For concreteness, we can imagine that the units are indiviudals nested within 16 households of four people each and the 16 households are nested within four villages of four people each. Starting at the top left, we have simple random samping at the individual level. The inclusion probability was set to 0.5, so on average, we ought to sample 32 people, but in this particular draw, we actually sampled only 29. Complete random sampling (top center), fixes this problem, so exactly 32 people are sampled -- but these 32 are unevenly spread across the four villages. This is addressed with stratified sampling -- here we sample exactly 8 people at random from each village of 16 total people.
 
@@ -243,10 +242,10 @@ Next, we consider purposive sampling. Purposive is a catch-all term for rule-bas
 
 A second common form of purposive sampling is respondent-driven sampling, which is used to sample from hard-to-reach populations such as HIV-positive needle users. RDS methods often begin with a convenience sample and then systematically obtain contacts for other units who share the same characteristic in order the build a large sample.
 
-Each of these three nonrandom sampling procedures -- convenience, quota, and respondent-driven -- are illustrated in Figure XXX. Imagining that village A is easier to reach, we could obtain a convenience sample by contacting everyone we can reach in village A before moving on to village B. This process doesn't yield good coverage across villages and for that we can turn to quota sampling. Under this quota sampling scheme, we talk to the five people who are easiest to reach in each of the four villages. Finally, if we conduct a respondent-driven sample, we select one seed unit in each village, and that person recruits their four closest friends (who may or may not reside in the same village).
+Each of these three nonrandom sampling procedures -- convenience, quota, and respondent-driven -- are illustrated in Figure \~ref(fig:nonrandomsamplingquilt). Imagining that village A is easier to reach, we could obtain a convenience sample by contacting everyone we can reach in village A before moving on to village B. This process doesn't yield good coverage across villages and for that we can turn to quota sampling. Under this quota sampling scheme, we talk to the five people who are easiest to reach in each of the four villages. Finally, if we conduct a respondent-driven sample, we select one seed unit in each village, and that person recruits their four closest friends (who may or may not reside in the same village).
 
 
-```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
+```{r nonrandomsamplingquilt, fig.cap = "Three forms of non-random sampling.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 
 # convenience
 # quota (strata)
@@ -561,18 +560,14 @@ ggplot(gg_df, aes(X, Y)) +
         axis.text.y = element_blank())
 ```
 
-Thus far we have considered assignment strategies that allocate subjects to either treatment or control. All of the designs we have considered so far generalize quite nicely to multi-arm trials. Trials that have three, four, or many more arms can of course be simple, complete, blocked, clustered, or feature variable saturation. Figure XXX shows blocked versions of a three-arm trial, a factorial trial, and a four-arm trial.
+Thus far we have considered assignment strategies that allocate subjects to either treatment or control. All of the designs we have considered so far generalize quite nicely to multi-arm trials. Trials that have three, four, or many more arms can of course be simple, complete, blocked, clustered, or feature variable saturation. Figure \@ref(multiarmquilt) shows blocked versions of a three-arm trial, a factorial trial, and a four-arm trial.
 
 In the three-arm trial on the left, subjects can be assiged to a control condition or one of two treatments. This design enables three comparisons: a comparison of each treatment to the control condition, but also a comparison of the two treatment conditions to each other. In the four-arm trial on the right, subjects can be assigned to a control condition or one of three treatments. This design supports six comparisons: each of the treatments to control, and all three of the pairwise comparisons across treatments.
 
 The two-by-two factorial design in the center panel shares similarities with both the three-arm and the four-arm trials. Like the three arm, it considers two treatments T1 and T2, but it also includes a fourth condition in which both treatments are applied. Factorial designs can be analyzed like a four-arm trial, but the structure of the design also enables more subtle analyses. In particular, the factorial structures allows researchers to investigate whether the effects of one treatment depend on the level of the other treatment.
 
 
-
-
-
-
-```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
+```{r multiarmquilt, fig.cap = "Multi-arm random assignment.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
 gg_df <-
   fabricate(
@@ -616,7 +611,7 @@ gg_df %>%
         axis.text = element_blank())
 ```
 
-```{r, fig.width = 6.5, fig.height = 2.5, echo = FALSE}
+```{r stepwedgera, fig.cap = "Step-wedge random assignment.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
 gg_df <- fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
@@ -698,7 +693,7 @@ measurement bias subtracted off from T-C comparison -- but what are you really m
 
 ## Threats to implementation
 
-```{r, echo = FALSE}
+```{r threatsdag, fig.cap = "DAG with exclusion restrictions.", echo = FALSE}
 # design <-
 #   declare_population(N = 100) +
 #   declare_potential_outcomes(D ~ Z) +
@@ -821,7 +816,7 @@ The problem is not simply one of definitions: in order to define an inquiry such
 
 Excludability assumptions are required not for identification of causal and descriptive claims from data, but in order to interpret effects in the way we want to. We can often *identify* an average treatment effect but not separate (exclude!) the effects of treatment assignment from measurement.
 
-The three excludability assumptions of $S_i$, $Z_i$, and $Q_i$ are representd as gray dotted lines in Figure XX. These are strong assumptions that are often not met in practice.
+The three excludability assumptions of $S_i$, $Z_i$, and $Q_i$ are representd as gray dotted lines in Figure \@ref(fig:threatsdag), These are strong assumptions that are often not met in practice.
 
 The first excludability assumption is that there is no causal effect of sampling on $Y_^*$. This assumption will be violated if the fact of being *included in the sample* changes your attitudes. By being asked to be in a focus group, even before being assigned to treatment or being asked survey questions, if you reflect on your political beliefs and change your mind, the sampling excludability assumption may be violated.
 
