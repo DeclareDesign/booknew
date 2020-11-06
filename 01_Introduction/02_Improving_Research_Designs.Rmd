@@ -56,7 +56,7 @@ The four together, which we refer to as MIDA, represent both your suppositions a
 
 The model defines a set of units, people or neighborhoods or social groups, that we wish to study. Often, this set of units is a large population of units we cannot afford to take measurements of, but we can nevertheless define and make inferences about through sampling and studying a subset of its units. The model then includes a set of baseline characteristics that describe each unit and the probability distributions of each characteristic (i.e., are heights normally distributed, or is there skew that comes from stunting in infants). Finally, the model includes a set of endogenous outcome variables that may be functions of exogenous (pretreatment) characteristics and the effects of interventions. Each endogenous outcome variable has a function that defines the variables that affect what values it takes on. When an outcome depends on an intervention, it will be a potential outcome, where we can define what value the outcome would take on if a unit received the treatment and what outcome that unit would take on if it did not receive the treatment. Typically, endogenous outcome variables are random variables, either because it is a function of an exogenous baseline variable for which we defined a probability distributions or because whether a unit is assigned to treatment or control is randomly assigned as part of the data strategy.
 
-Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. Yet declaring a model is often unavoidable when declaring research designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section XX). Further, researchers can inform their substantive models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
+Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. Yet declaring a model is often unavoidable when declaring research designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section \@ref(p2diagnosis)). Further, researchers can inform their substantive models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
 
 The second component of a research design is the inquiry, often known as the estimand. This is a quantity that represents the true answer to the research question we are asking. Inquiries may be causal, as in the average treatment effect, or descriptive, as in the proportion of units who hold a certain characteristic. An inquiry is a function of the exogenous characteristics of units, of endogenous outcome variables, or both. It may be defined over all units in the population defined by the model, as in the average treatment effect for all units, or it may be defined over a subset of units, as in the conditional average treatment effect for women. Because we defined the distribution of the variables in the model, we can define the probability distribution of inquiries, which are a function of those variables. 
 
@@ -76,7 +76,7 @@ The *model* describes the citizens in the villages they conduct the study, and w
 
 ## Declaring a design in code
 
-You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula.^[However, we suggested in Section XX why analytical diagnoses may not be ideal for typical designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices about a data strategy and an answer strategy.] 
+You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula.^[However, we discuss in Section \@(p2diagnosis) why analytical diagnoses may not be ideal for typical designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices about a data strategy and an answer strategy.] 
 
 Social scientists use [a number of tools](https://stackoverflow.blog/2017/10/10/impressive-growth-r) for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. Stata and R are most commonly used. We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free-to-use.
 
@@ -206,7 +206,7 @@ Second, a **diagnosand** is a summary of the distribution of a diagnostic statis
 
 One especially important diagnosand is the "success rate," which is the average value of the "success" diagnostic statistic. As a researcher, *you* get to decide what would make your study a success.  What matters most in your research scenario? Is it statistical significance? If so, optimize your design with respect to power. Is what matters most in your research setting with the answer has the correct sign or not? Then diagnose how frequently your answer strategy yields an answer with the same sign as your inquiry. Diagnosis is an opportunity for you to articulate what would make your study a success and then to simulate how often you obtain that success.
 
-To diagnose the design, we first define a set of diagnosands (see Section XX), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.
+To diagnose the design, we first define a set of diagnosands (see Section \@(p2diagnosis)), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.
 
 ```{r}
 # Select diagnosands
@@ -231,8 +231,8 @@ if (do_diagnosis & !exists("do_bookdown")) {
 simple_design_diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r, echo = FALSE}
-get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable
+```{r simpledesigndiagnosis, echo = FALSE}
+get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable(digits = 3, caption = "Diagnosis of simple design.")
 ```
 
 ## Redesign

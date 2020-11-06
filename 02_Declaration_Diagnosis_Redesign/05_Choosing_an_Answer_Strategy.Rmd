@@ -223,16 +223,15 @@ We can write the same expression using potential outcomes notation:
 
 $$\Pr(Y_i(D_i = 1) = y) = \sum_x \Pr(Y_i(D_i = 1) = y \mid X_i = x) \Pr(X_i = x)$$
 
-Figure XXX shows the three DAGs with the same three variables D, X, and Y.  In all three cases, our inquiry is the average treatment effect of D on Y, and in all three cases, X, D, and Y are intercorrelated. In the first case, $X$ confounds the causal relationship between D and Y, which is to say if we simply compared units with different levels of D, our estimates of the causal effect would be prone to bias. However, if we conduct the analysis separately *within* levels of X (that is to say, we condition on X), then combine the separate analyses, our overall estimate will be unbiased. This first DAG is the setting that analysts have in mind when controlling for observables in order to estimate causal effects.
+Figure \@ref(threedags) shows the three DAGs with the same three variables D, X, and Y.  In all three cases, our inquiry is the average treatment effect of D on Y, and in all three cases, X, D, and Y are intercorrelated. In the first case, $X$ confounds the causal relationship between D and Y, which is to say if we simply compared units with different levels of D, our estimates of the causal effect would be prone to bias. However, if we conduct the analysis separately *within* levels of X (that is to say, we condition on X), then combine the separate analyses, our overall estimate will be unbiased. This first DAG is the setting that analysts have in mind when controlling for observables in order to estimate causal effects.
 
-A dangerous possibiliy, however, is represented by the second DAG. In this causal graph, X doesn't confound the relationship between D and Y -- instead, it is a downstream consequence of both variables. If an analyst mistakenly conditions on X, a noncausal confounding path opens up between D and Y, biasing estimates of average effect on D on Y. The contrast between the first and second graphs is an illustration of the general principle that our theoretical models guide analytic choices. In the first case, our estimates are unbiased if and only if we *do* control for $X$, in the second case if and only if we *do not* control for X. 
+A dangerous possibility, however, is represented by the second DAG. In this causal graph, X doesn't confound the relationship between D and Y -- instead, it is a downstream consequence of both variables. If an analyst mistakenly conditions on X, a noncausal confounding path opens up between D and Y, biasing estimates of average effect on D on Y. The contrast between the first and second graphs is an illustration of the general principle that our theoretical models guide analytic choices. In the first case, our estimates are unbiased if and only if we *do* control for $X$, in the second case if and only if we *do not* control for X. 
 
 The third case describes a setting in which D has both a direct effect on Y and an indirect effect that travels through X -- in this case, X is a mediator. If we condition on X, our estimate of the effect D on Y is biased (X is a descendant of D). Like in the collider case, the effect is identified if we *do not* control for X, but is not identified if we *do* condition. Some intuition for the problems associated with controlling for mediatiors: controlling for X "controls away" some portion of the effect.
 
 This example illustrates in a small way how your model of the world guides your answer strategy. In all three cases, we could in principle have the same dataset of D, X, and Y. If we followed some common regression advice, we would control for X in all three cases because it is correlated with both D and Y -- this approach works only if X is a confounder. If X is a collider or a mediator, then this control strategy would induce bias. Without further changes to the design, no empirical tests can distinguish between these three DAGs, so in a very real way, theoretical assumptions in the Model must be relied upon to correctly choose a control strategy.
 
-
-```{r, echo=FALSE, fig.width=6.5, fig.height=2}
+```{r threedags, fig.cap = "Three roles for a variable X.", echo=FALSE, fig.width=6.5, fig.height=2}
 dag1 <- dagitty("dag{
                 D <- X -> Y; D -> Y
                 }")
@@ -245,15 +244,14 @@ dag3 <- dagitty("dag{
                 D -> X -> Y; D -> Y
                 }")
 
-
 points_df_small <-
-  tibble(name = c("D", "X", "Y"),
-         x = c(1, 2, 3),
-         y = c(0, 1, 0))
+  tibble(name = c("D", "X", "Y", "U"),
+         x = c(0, 1, 1, 0),
+         y = c(0, 1, 0, 1))
 ends_df_small <-
-  tibble(to = c("D", "X", "Y"),
-         xend = c(1, 2, 3),
-         yend = c(0, 1, 0))
+  tibble(to = c("D", "X", "Y", "U"),
+         xend = c(0, 1, 1, 0),
+         yend = c(0, 1, 0, 1))
 
 
 gg_df_small <-
@@ -271,7 +269,7 @@ gg_df_small <-
 ggplot(gg_df_small, aes(x, y)) +
   geom_text(data = points_df_small, aes(label = name)) +
   geom_dag_edges(aes(xend = xend, yend = yend)) +
-  coord_fixed() +
+  coord_fixed(ylim = c(0, 1.1), xlim = c(-.1, 1.1)) +
   facet_wrap(~dag) +
   theme_void()
 
@@ -286,10 +284,6 @@ ggplot(gg_df_small, aes(x, y)) +
 We can only learn the answer to the inquiry when we can identify the causal effect, meaning if we had infinite data we could estimate without bias the causal effect. Identification can be obtained if the backdoor criterion is met, if the frontdoor criterion is met, or if there are no other causal relationships into both $D$ and $Y$. These conditions will be violated in several circumstances, including when an observed confounder $X$ confounds the relationship between $D$ and $Y$ and is left unadjusted or when there is an unobserved confounder $U$. 
 
 To reason about causal identification, we turn back to DAGs. We start with a simple DAG with four variables: a treatment $D$, an outcome $Y$, a observed variable $X$ (which may or may not confound the relationship between $D$ and $Y$), and an unobserved variable $U$. There are six edges between these variables, each with three possible relations: each variable may cause (e.g., $D \rightarrow Y$), be caused by (e.g., $D \leftarrow Y$), or not be causally related to every other variable. With three possible relationships and six edges, there are $3^6 = 729$ conceptually possible DAGs. We rule out DAGs in which other variables cause $U$, because we defined $U$ as an unobserved confounder. This leaves 216 possible combinations.
-
-```{r}
-# four variable dag with undirected edges between all sides
-```
 
 In the presence of possible confounding from $X$ and/or $U$, we have several options for our research design: we can estimate the causal effect of $D$ on $Y$ by controlling for the observed confounder $X$ (or not), by invoking additional conditional independence assumptions, and by randomizing the treatment. In each case, our aim is to rule out DAGs in which the causal effect is not identified. 
 
@@ -337,7 +331,7 @@ subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
-    summarize(x = 1.5, y = 1.5, n = n())
+    summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
   
   g <- 
   ggplot(data, aes(x, y)) +
@@ -407,7 +401,7 @@ subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
-    summarize(x = 1.5, y = 1.5, n = n())
+    summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
   
   g <- 
   ggplot(data, aes(x, y)) +
@@ -482,7 +476,7 @@ subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac2) %>%
-    summarize(x = 1.5, y = 1.5, n = n())
+    summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
   
   g <- 
     ggplot(data, aes(x, y)) +
@@ -547,7 +541,7 @@ fill_scale <- c(
 dag_df <-
   gg_df %>%
   group_by(var, DX_fac, DY_fac, YX_fac, ruled_out_by_sig_test, fct_rows) %>%
-  summarize(x = 1.5, y = 1.5, n = n()) 
+  summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop") 
 
 g <- 
   ggplot(gg_df, aes(x, y)) +
@@ -583,7 +577,38 @@ Using the MIDA way of thinking about designs, we discuss in the diagnosis sectio
 
 ## Following the inquiry
 
+Answering descriptive inquiries involves studying the existence of nodes and the values they take on. We might study whether a behavior exists in the world, and measure its frequency. We might also study how the frequency of the behavior varies over time and across people. Our answer strategy, following the plug-in principle, will often involve the average value of the node in the sample as an estimator of the average value in the population. 
+
+By contrast, when we target a causal inquiry with our answer strategy, we are interested in the existence (or non-existence) of an edge between two nodes. We can label the two $D$ (treatment) and $Y$ (outcome).
+
+
 ### Plug-in principle
+
+Aronow and Miller write a plug-in estimator as:
+
+For i.i.d. random variables $X_1, X_2, \ldots, X_n$ with common CDF $F$, the plug-in estimator of $\theta = T(F)$ is: $\widehat\theta = T(\widehat F)$.
+
+$$a^m = I(m)$$. 
+
+$$a^d = A(d)$$
+The plug in principle says: how should you choose $A$? If $A = I$, 
+
+
+example
+
+$I(m) = \frac{1}{N}\sum_1^N[Y_i(1) - Y_i(0)] = \frac{1}{N}\sum_1^NY_i(1) - \frac{1}{N}\sum_1^NY_i(0) = ATE$
+
+plugging in sample analogs for population quantities:
+
+$A(d) = \frac{1}{m}\sum_1^m{Y_i} - \frac{1}{N - m}\sum_{m+1}^N{Y_i}$,
+
+where units 1 though $m$ were randomly assigned to treatment.
+
+Yields a difference-in-means estimation procedure.
+
+
+
+
 
 ### Point estimation
 

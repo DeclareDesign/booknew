@@ -201,14 +201,13 @@ Among important questions, researchers can select the $I$ they think they are li
 The final criteria is that among important, probative research designs there must be a feasible $M$, $D$, and $A$ that could answer $I$. That means picking a good question $I$ does not just involve theory. You should study $M$ to understand which $I$s are worth knowing. But you should also study $D$ and $A$ in order to learn how to demonstrate $I$. A central goal of research methodologists is to expand the feasible set of $D$ and $A$ that can provide informative answers to important questions.
 
 Clearly research designs will vary how important, feasible, and probative they are, and so  these criteria do not provide an immediate answer to how to select a design. Instead, the researcher must choose a weighting of the three, and norms in a research community may guide those weightings. In some disciplines, providing a minimally probative answer to a highly important question may be preferable to a highly probative answer to a less important question. 
-
-```{r, fig.width = 4, fig.height = 4, echo = FALSE}
-ggplot() + 
-  geom_abline(intercept = 5, slope = -1) + 
-  geom_abline(intercept = 6, slope = -1, lty = "dashed") + 
-  geom_function(fun = function(x) (x-2)^2, geom = "curve") + 
-  coord_fixed(ylim = c(0, 6), xlim = c(0, 6))
-```
+<!-- ```{r, fig.width = 4, fig.height = 4, echo = FALSE} -->
+<!-- ggplot() +  -->
+<!--   geom_abline(intercept = 5, slope = -1) +  -->
+<!--   geom_abline(intercept = 6, slope = -1, lty = "dashed") +  -->
+<!--   geom_function(fun = function(x) (x-2)^2, geom = "curve") +  -->
+<!--   coord_fixed(ylim = c(0, 6), xlim = c(0, 6)) -->
+<!-- ``` -->
 
 Here's our best advice for how to get started picking a research question: Write down the $M$ and $I$ of any causal model that you think is important to get started thinking about selecting strong $D$s and $A$s. The goal is to learn how to map $I(M)$ to $A(D)$. Then return to theory to find new important inquiries, then write down a new model inquiry data strategy and answer strategy. This process is how we make progress on $M$, that is, we bring $M$ closer to $W$, thereby making $M$ truer. In each iteration, consider how informative the answers you can provide: how much will they update what we know about the world?
 
@@ -218,18 +217,20 @@ People who are looking in the forest for mushrooms often don't see a mushroom fo
 
 @Bjorkman:2009 reports the results of a cluster-randomized trial of the effects of community-based monitoring of health clinics in Uganda to improve children's health. The main inquiry was the average treatment effect on the child mortality rate. The study showed that the program was a success: in the control group, the child mortality rate was 144 per 1000 live births, compared with 97 in the treatment group, for a 33\% reduction in child mortality. 
 
-The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table XXX, which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for "Adverse") is alive if in control, but dies if in treatment. Type B ("Beneficial") is just the reverse: the child dies if untreated, but survives if treated. Type C ("Chronic") would die under either condition and Type D ("Destined") would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.
+The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table \@ref(tab:bstypes), which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for "Adverse") is alive if in control, but dies if in treatment. Type B ("Beneficial") is just the reverse: the child dies if untreated, but survives if treated. Type C ("Chronic") would die under either condition and Type D ("Destined") would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.
 
 The main trouble here is that the average treatment effect averages over all four types so the ATE itself is also undefined. Since this inquiry is undefined, we'll need to select a different one.
 
 We might want switch our inquiry to be about the average effect among D types only. However this inquiry has a different problem -- it's unanswerable. Even though this inquiry is not undefined, it's unanswerable because we won't be able to learn who the D types are. In the treatment group, we can't tell the Bs from the Ds and in the control group, we can't tell the As from the Ds. The reason we can't tell these types apart using realized data is the fundamental problem of causal inference.
 
-| Type | Alive($Z = 0$) | Alive($Z = 1$) | Weight($Z = 0$) | Weight($Z = 1$) | Estimand                                    |
-|------|-----------------|-----------------|------------------|------------------|---------------------------------------------|
-| A    | 1               | 0               | exists           | NA               | undefined                                   |
-| B    | 0               | 1               | NA               | exists           | undefined                                   |
-| C    | 0               | 0               | NA               | NA               | undefined                                   |
-| D    | 1               | 1               | exists           | exists           | $E[\mathrm{Weight}(Z=1) - \mathrm{Weight}(Z=0)]$ |
+| Type | Alive($Z = 0$) | Alive($Z = 1$) | Weight($Z = 0$) | Weight($Z = 1$) | Estimand                                         |
+|------|----------------|----------------|-----------------|-----------------|--------------------------------------------------|
+| A    | 1              | 0              | exists          | NA              | undefined                                        |
+| B    | 0              | 1              | NA              | exists          | undefined                                        |
+| C    | 0              | 0              | NA              | NA              | undefined                                        |
+| D    | 1              | 1              | exists          | exists          | $E[\mathrm{Weight}(Z=1) - \mathrm{Weight}(Z=0)]$ |
+
+Table: (\#tab:bstypes) Latent types
 
 What can be done in this situation? We might try to find a covariate $X$ that is correlated with being a D type and condition our analysis of the effect on weight on that covariate. Note that among this subgroup, the effect on mortality should be equal to zero. Finding such a covariate would be hard, though perhaps not impossible.
 
