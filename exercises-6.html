@@ -124,7 +124,7 @@ We want to know the effect of having high and medium levels of saturation versus
 <li><p><strong>D</strong>ata strategy: We assign entire groups of individual ballot stations to one of three saturations: low (0%), medium (50%), and high (75%). We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. To estimate spillovers, we run one regression comparing high and one regression comparing medium to low saturation control units. To estimate the direct effect, we run a regression of the outcome on the treatment indicatior on the full sample, controlling for saturation.</p></li>
 </ul>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_individuals</span> <span class="op">&lt;-</span> <span class="fl">60</span>
 <span class="va">N_groups</span> <span class="op">&lt;-</span> <span class="fl">15</span>
 <span class="va">G_per_saturation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span>
@@ -185,7 +185,7 @@ We want to know the effect of having high and medium levels of saturation versus
                     estimand <span class="op">=</span> <span class="st">"ate_no_spill"</span>,
                     label <span class="op">=</span> <span class="st">"main effect"</span><span class="op">)</span></code></pre></div>
 <p>Here’s what our hypothetical country looks like:</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="va">X</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
@@ -193,12 +193,12 @@ We want to know the effect of having high and medium levels of saturation versus
   <span class="fu">scale_y_continuous</span><span class="op">(</span><span class="st">"Latitude"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">scale_x_continuous</span><span class="op">(</span><span class="st">"Longitude"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">N_individuals</span>,by <span class="op">=</span> <span class="va">N_individuals</span> <span class="op">/</span> <span class="va">N_groups</span><span class="op">)</span> <span class="op">-</span> <span class="fl">.5</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-400-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-381-1.png" width="100%"></div>
 <p>Let’s diagnose</p>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>Our diagnosis shows this design does a pretty great job, under this model of spillovers:</p>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">%&gt;%</span> <span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -506,19 +506,19 @@ proportion of sample allocated to the “low” versus other conditions</p></li>
 <p>Now, we consider a model of spillovers in which fraud is displaced latitudinally,
 from one neighbor to the next. Say, because there are roads traveling north and
 fraudsters disregard boundaries (in reality, they are unlikely to do so).</p>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distal_design</span> <span class="op">&lt;-</span> <span class="fu">replace_step</span><span class="op">(</span>design <span class="op">=</span> <span class="va">design</span>, step <span class="op">=</span> <span class="st">"spillover"</span>,
                               new_step <span class="op">=</span> <span class="fu">declare_step</span><span class="op">(</span>next_neighbor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">N</span>,<span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">N</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
                                                       spillover_low <span class="op">=</span> <span class="va">Z_S_low</span><span class="op">[</span><span class="va">next_neighbor</span><span class="op">]</span>,
                                                       spillover_med <span class="op">=</span> <span class="va">Z_S_med</span><span class="op">[</span><span class="va">next_neighbor</span><span class="op">]</span>,
                                                       spillover_high <span class="op">=</span> <span class="va">Z_S_high</span><span class="op">[</span><span class="va">next_neighbor</span><span class="op">]</span>,
                                                       handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distal_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">distal_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>When there are next-neighbor spillovers that ignore boundaries, the estimator is biased again</li>
 </ul>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distal_diagnosis</span> <span class="op">%&gt;%</span> <span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>

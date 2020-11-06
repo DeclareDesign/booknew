@@ -19,7 +19,7 @@ voter_file <- fabricate(
   precinct = sample(2000:10000, N, replace = TRUE)
 )
 
-kable(head(voter_file), digits = 3)
+kable(head(voter_file), digits = 3, caption = "Example data")
 
 simple_random_assignment_step <- declare_assignment(prob = 0.6)
 
@@ -41,14 +41,14 @@ my_assignment_step <- declare_assignment(handler = custom_assignment)
 my_assignment_step(voter_file) %>% head %>% kable(caption = "Data generated using a custom function")  
 
 ## declare_population(data = voter_file)
-declare_population(data = voter_file)() %>% head %>% kable
+declare_population(data = voter_file)() %>% head %>% kable(digits = 3, caption = "Draw from a fixed population")
 
 ## declare_population(N = 100, u = rnorm(N))
 
 tab1 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab2 <- declare_population(N = 100, u = rnorm(N))() %>% head
 tab3 <- declare_population(N = 100, u = rnorm(N))() %>% head
-kable(list(tab1, tab2, tab3), booktabs = TRUE) #%>% kable_styling() # does not work with PDF
+kable(list(tab1, tab2, tab3), booktabs = TRUE, digits = 3, caption = "Three draws from the population function.")
 
 ## declare_population(
 ##   households = add_level(N = 100, individuals_per_hh = sample(1:10, N, replace = TRUE)),
@@ -72,7 +72,7 @@ kable(list(tab1, tab2, tab3), booktabs = TRUE) #%>% kable_styling() # does not w
 des <- declare_population(N = 100, u = rnorm(N)) +
   declare_potential_outcomes(Y_Z_0 = u, Y_Z_1 = Y_Z_0 + 0.25)
 
-draw_data(des) %>% head %>% kable
+draw_data(des) %>% head %>% kable(digits = 3, caption = "Adding potential outcomes to the population.")
 
 ## declare_potential_outcomes(Y ~ u + 0.25 * Z, assignment_variables = Z)
 
@@ -86,7 +86,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) 
 
-draw_data(simple_design) %>% head %>% kable
+draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Sampled data.")
 
 ## declare_assignment(prob = 0.5)
 
@@ -97,7 +97,7 @@ simple_design <-
   declare_sampling(n = 50) +
   declare_assignment(prob = 0.5)
 
-draw_data(simple_design) %>% head %>% kable
+draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Sampled data with assignment indicator.")
 
 ## declare_step(handler = fabricate, add_variable = rnorm(N))
 
@@ -116,13 +116,10 @@ simple_design <-
   declare_reveal(outcome_variables = Y, assignment_variables = Z) +
   declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 simple_design_data <- draw_data(simple_design)
-simple_design_data %>% head %>% kable
-
-## simple_design_data %>% summarize(DiM = mean(Y[Z == 1]) - mean(Y[Z == 0]))
-simple_design_data %>% summarize(DiM = mean(Y[Z == 1]) - mean(Y[Z == 0])) %>% kable
+simple_design_data %>% head %>% kable(digits = 3, caption = "Data with revealed outcomes.")
 
 ## difference_in_means(Y ~ Z, data = simple_design_data)
-difference_in_means(Y ~ Z, data = simple_design_data) %>% tidy %>% kable
+difference_in_means(Y ~ Z, data = simple_design_data) %>% tidy %>% kable(digits = 3, caption = "Difference-in-means estimate from simulated data.")
 
 ## declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 
@@ -149,32 +146,32 @@ simple_design <-
 ## population + potential_outcomes + estimand + sampling + assignment + reveal + estimator
 
 ## draw_data(simple_design)
-draw_data(simple_design) %>% head %>% kable
+draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Simulated data draw.")
 
 ## draw_estimands(simple_design)
-draw_estimands(simple_design) %>% kable
+draw_estimands(simple_design) %>% kable(digits = 3, caption = "Estimands calculated from simulated data.")
 
 ## draw_estimates(simple_design)
-draw_estimates(simple_design) %>% kable
+draw_estimates(simple_design) %>% kable(digits = 3, caption = "Estimates calculated from simulated data.")
 
 ## simulate_design(simple_design, sims = 500)
 simulations_df <- simulate_design(simple_design, sims = 5) 
 
-simulations_df %>% kable
+simulations_df %>% kable(digits = 3, caption = "Simulations data frame.")
 
 study_diagnosands <- declare_diagnosands(
   select = c(bias, rmse, power), 
   mse = mean((estimate - estimand)^2))
 
 ## diagnose_design(simulations_df, diagnosands = study_diagnosands)
-diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% get_diagnosands %>% kable
+diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% get_diagnosands %>% kable(digits = 3, caption = "Design diagnosis.")
 
 ## diagnose_design(simple_design, diagnosands = study_diagnosands)
 
 ## compare_designs(simple_design, redesigned_simple_design)
 
 ## compare_diagnoses(simple_design, redesigned_simple_design)
-## compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% kable
+## compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% kable(digits = 3, caption = "Comparison of two designs.")
 
 ## redesign(simple_design, N = c(100, 200, 300, 400, 500))
 
