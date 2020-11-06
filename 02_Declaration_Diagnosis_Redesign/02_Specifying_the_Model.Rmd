@@ -144,8 +144,8 @@ Sometimes researchers use distinct names for different nodes depending on what r
 3. **Conditioning** or **moderating** variables. Variables that might alter the effect of $X$ on $Y$. See for example $X3$ in the  figure. Note that the figure simply indicates that $X3$ is a cause of $Y$ and the graph does not indicate that there is an interaction between $X2$ and $X3$. One account for this is that as a  general matter if two variables cause an outcome it would be surprising if they did *not* interact in some way.   
 4. **Mediators.** Variables "along the path" between explanatory variables and outcomes. $M$ is an example of  a mediator in this figure. Mediators are often studied to assess "how" $X$ causes $Y$.
 5. **Confounds**. Variables that introduce a non causal correlation between $X$ and $Y$. In the figure $X1$ is an unobserved confound because it causes both $X2$ and $Y$ and could introduce a correlation between them even if $X$ did not cause $Y$. 
-6 **Instruments.** An instrumental variable is a variable that can induce an exogenous change in an explanatory very and help us to figure out the relationship between $X$ and $Y$, it is used instrumentally---not for its own sake. We give a much more detailed treatment of these variables in section XXXX. $Z$ is often reserved for instruments; see figure.
-7 **Colliders.** Colliders are variables that are caused by two other variables, they can be important because when you condition on a collider you can introduce a statistical but non causal relationship between the causes of the collider. Here $K$ is a collider that can create a correlation between $X2$ and $Y$ (via $U$) when it is held fixed. 
+6. **Instruments.** An instrumental variable is a variable that can induce an exogenous change in an explanatory very and help us to figure out the relationship between $X$ and $Y$, it is used instrumentally---not for its own sake. We give a much more detailed treatment of these variables in section XXXX. $Z$ is often reserved for instruments; see figure \@ref(fig:vartypes).
+7. **Colliders.** Colliders are variables that are caused by two other variables, they can be important because when you condition on a collider you can introduce a statistical but non causal relationship between the causes of the collider. Here $K$ is a collider that can create a correlation between $X2$ and $Y$ (via $U$) when it is held fixed. 
 
 Note that these labels reflect the researcher interest as much as their position in a model. Another researcher examining the same graph might, for instance label $M$ as their explanatory variable or $K$ as their outcome of interest.
 
@@ -193,23 +193,49 @@ g
 
 ## What do we need to specify about these variables?
 
-DAGs convey beliefs about whether *whether* two variables are causally related, but they do not encode beliefs about *how* they are related. This is no criticism of DAGs --- they just don't encode all of our causal beliefs about a system. However, in order to assess many properties of a research design we need to go further. We need to specify the scales and probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we'll need to make the leap from nonparametric models to *parametric* structural causal models. This move is not without costs -- each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!
+DAGs convey beliefs about whether *whether* two variables are causally related, but they do not encode beliefs about *how* they are related. This is no criticism of DAGs --- they just don't encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we'll need to make the leap from nonparametric models to *parametric* structural causal models. This move is not without costs -- each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!
 
-Suppose that according to our model, the effect of treatment should be larger for units with $X = 1$. We can encode this belief in a design declaration. In the `declare_population` function, we write that $U$ is normally distributed with mean 0 and standard devation 1; $X$ follows a bernoulli distribution but units have a probability of $X$ equalling one that depends on $U$ in a particular way. In the `declare_potential_outcomes` function, we describes how the average effect of treatment is 0.5 when $X = 0$ but 0.5 + 0.5 = 1 when $X = 1$.
+Consider first a very simple model in which we believe that $Y$ depends upon $X$ and $X$ is *as if* randomly assigned, with probability .5. Moreover we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this books, might be declared like this:
 
 ```{r}
-diff_in_cates <- 0.5
 design <-
-  declare_population(N = 100,
-                     U = rnorm(N),
-                     X = rbinom(N, 1, prob = pnorm(0.5 * U + rnorm(N)))) +
-  declare_potential_outcomes(Y ~ 0.5 * X +
-                               0.5 * Z +
-                               diff_in_cates * X * Z +
-                               0.5 * U)
+  declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), X = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * X + U)
 ```
 
-We could incorporate different beliefs about the causal model by changing the `diff_in_cates` parameter. However, notice that regardless of the value of the interaction (either zero or some other number), the DAG looks the same. So if you want to design your study for the difference-in-CATEs, then you'll need to go beyond the DAG to write down your beliefs about the extent of heterogeneity using another tool -- design declaration complements DAGs in this specific way.
+The model can be used to generate data, like this:
+
+```{r, realizedmodel}
+draw_data(design) %>% 
+  head %>% kable(caption = "Data from a simple model")
+```
+
+Note that the data contains potential outcomes---that is, it includes a description of how the world would work under different conditions and not simply a description of possibly obervable data.
+
+Note now that this declaration has a stochastic component. Not only is `X `randomized but so are individual level features `U` and treatment effects `tau`. How should we interpret this stochastic component. In fact there are three distinct ways to interpret this model specification.
+
+1. **Superpopulation Interpretation of M**: We have a superpopulation. On each run of the model we get to see a new sample of the superpopulation and we use the sample to learn about the superpopulation model. 
+
+2. **Multiple Worlds Interpretation of M**: A second interpretation is that each data draw is itself a (non stochastic) model and the distribution functions are just one way of generating multiple plausible models.
+
+3. **Priors Interpretation of M**: A third interpretation is that the stochastic component represents our uncertainty over a set of possible worlds. It might be, for instance, the a design performs well for some possible worlds and poorly for others, in which case the nature of this distribution is important for assessing our *expectation* that a design will perform well. 
+
+Which interpretation we have matters for who we do diagnosis. A point we retrun to in section XXX.
+
+A slightly more complex example helps demonstrate how we can use a model declaration to facilate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of treatment should be larger for units with $X = 1$. We can encode this belief in the  design declaration below. In the `declare_population` function, we write that $U$ is normally distributed with mean 0 and standard deviation 1; $X$ follows a Bernoulli distribution. In the `declare_potential_outcomes` function, we describe how the average effect of treatment depends on $X$.
+
+<!-- I removed the confounding to keep focused on one point -->
+
+```{r}
+tau_X0 <- 0.5
+tau_X1 <- 1
+
+design <-
+  declare_population(N = 100, U = rnorm(N), X = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ (X==0)*Z*tau_X0 + (X==1)*Z*tau_X1+U)
+```
+
+The design describes a model complex world in which treatment effects of $Z$ depend in a particular way on a background variable $X$. We could incorporate different beliefs about the causal model by changing the `tau_X0` and `tau_X1` parameters. However, notice that regardless of the value of the interaction (either zero or some other number), the DAG looks the same. So if you want to design your study for the difference-in-CATEs, then you'll need to go beyond the DAG to write down your beliefs about the extent of heterogeneity using another tool -- design declaration complements DAGs in this specific way. We might feel uncomfortable specifying particular values for `tau_0` and `tau_`. Fortunately however set up like this we can easily vary these values to see how a design performs over a range of models, or we could even expand the declaration to specify a distribution of values for `tau_X0` and `tau_X`. 
 
 <!-- maybe a footnote? -->
 <!-- - some of these variables will be exogenous and endogenous, in Pearl's terms. by exogenous variables, he means variables without parents, no antecendent causes. by endogenous variables, he means those with parents, that are determined in part by earlier variables. endogenous variables are distinct from the problem of endogeneity, which comes from a single variable being a parent of both the treatment variable of interest and the outcome we wish to measure the causal effect of the treatment on. we will use it in Pearl's sense. -->
