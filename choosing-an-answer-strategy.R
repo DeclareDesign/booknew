@@ -254,7 +254,13 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>% 
   map(my_fun) 
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom", legend.title = element_text(size = 25), legend.text = element_text(size = 25), legend.key.size = unit(25, "mm")) 
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(size = 28),
+    legend.text = element_text(size = 28),
+    legend.key.size = unit(25, "mm")
+  ) 
 
 gg_df <-
   gg_df %>%
@@ -288,7 +294,7 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend), 
                    edge_width = 0.4, 
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 1)) + 
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) + 
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() + 
     theme_void() +
@@ -312,7 +318,13 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>% 
   map(my_fun) 
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(size = 28),
+    legend.text = element_text(size = 28),
+    legend.key.size = unit(25, "mm")
+  ) 
 
 gg_df <-
   gg_df %>%
@@ -353,7 +365,7 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend), 
                    edge_width = 0.4, 
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Situation", values = fill_scale, drop = FALSE) + 
+    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) + 
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() + 
     theme_void() +
@@ -377,7 +389,13 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>% 
   map(my_fun) 
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(size = 28),
+    legend.text = element_text(size = 28),
+    legend.key.size = unit(25, "mm")
+  ) 
 
 gg_df <-
   gg_df %>%
@@ -397,20 +415,33 @@ dag_df <-
   group_by(var, DX_fac, DY_fac, YX_fac, ruled_out_by_sig_test, fct_rows) %>%
   summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop") 
 
-g <- 
+g <-
   ggplot(gg_df, aes(x, y)) +
-  geom_tile(data = dag_df, aes(fill = ruled_out_by_sig_test), height = 1.75, width = 1.75, alpha = 0.5) +
+  geom_tile(
+    data = dag_df,
+    aes(fill = ruled_out_by_sig_test),
+    height = 1.75,
+    width = 1.75,
+    alpha = 0.5
+  ) +
   geom_text(data = points_df, aes(label = name), size = 5) +
-  geom_dag_edges(aes(xend = xend, yend = yend), 
-                 edge_width = 0.4, 
-                 arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-  scale_fill_manual("Situation", values = fill_scale, drop = FALSE) + 
+  geom_dag_edges(
+    aes(xend = xend, yend = yend),
+    edge_width = 0.4,
+    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")
+  ) +
+  scale_fill_manual("Situation", values = fill_scale, drop = FALSE) +
   facet_grid(DY_fac ~ fct_rows) +
-  coord_fixed() + 
+  coord_fixed() +
   theme_void() +
-  theme(plot.title = element_text(hjust = 0.5), 
-        plot.subtitle = element_text(hjust = 0.5),
-        legend.position = "bottom",
-        strip.text.y = element_blank()) 
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "bottom",
+    legend.title = element_text(size = 28),
+    legend.text = element_text(size = 28),
+    legend.key.size = unit(25, "mm"),
+    strip.text.y = element_blank()
+  )
 
 g
