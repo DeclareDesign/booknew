@@ -128,7 +128,7 @@
 <p>You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;However, we suggested in Section XX why analytical diagnoses may not be ideal for typical designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices about a data strategy and an answer strategy.&lt;/p&gt;"><sup>2</sup></a></p>
 <p>Social scientists use <a href="https://stackoverflow.blog/2017/10/10/impressive-growth-r">a number of tools</a> for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. Stata and R are most commonly used. We wrote the companion software to the book, <code>DeclareDesign</code>, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free-to-use.</p>
 <p>To illustrate declaring a design in code, we declare a simplified version of the <span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020">n.d.</a>)</span> study. (In Part II we declare the complete design.)</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># we should turn this into a picture labeling MIDA</span>
 <span class="va">simple_design</span> <span class="op">&lt;-</span> 
   
@@ -207,12 +207,12 @@
 <p>Second, a <strong>diagnosand</strong> is a summary of the distribution of a diagnostic statistic. For example,  is average value of the <span class="math inline">\(e\)</span> statistic and  is is the average value of the <span class="math inline">\(s\)</span> statistic. Other diagnosands include things like root-mean-squared-error (RMSE), Type I, Type II, Type M, and Type S error rates.</p>
 <p>One especially important diagnosand is the “success rate,” which is the average value of the “success” diagnostic statistic. As a researcher, <em>you</em> get to decide what would make your study a success. What matters most in your research scenario? Is it statistical significance? If so, optimize your design with respect to power. Is what matters most in your research setting with the answer has the correct sign or not? Then diagnose how frequently your answer strategy yields an answer with the same sign as your inquiry. Diagnosis is an opportunity for you to articulate what would make your study a success and then to simulate how often you obtain that success.</p>
 <p>To diagnose the design, we first define a set of diagnosands (see Section XX), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Select diagnosands</span>
 <span class="va">simple_design_diagnosands</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bias</span>, <span class="va">rmse</span>, <span class="va">power</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We then diagnose the design, which involves simulating the design and again and again, and then calculate the diagnosands based on the simulations data.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Diagnose the design</span>
 <span class="va">simple_design_diagnosis</span> <span class="op">&lt;-</span> 
   <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simple_design</span>, diagnosands <span class="op">=</span> <span class="va">simple_design_diagnosands</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
