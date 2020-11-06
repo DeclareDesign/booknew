@@ -6,8 +6,7 @@ dd_theme <-
         axis.line = element_blank(),
         panel.border = element_blank(),
         panel.grid.major = element_line(color = '#eeeeee'),
-        strip.background = element_blank(),
-        text = element_text(family = "Palatino")
+        strip.background = element_blank()
       )
   }
 

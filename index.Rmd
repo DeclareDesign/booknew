@@ -79,8 +79,8 @@ rect_df <-
   tibble(
     xmin = c(.4, 4.9),
     xmax = c(2.6, 7.1),
-    ymin = c(1.15, 1.15),
-    ymax = c(3.85, 3.85)
+    ymin = c(1.15+.25, 1.15+.25),
+    ymax = c(3.85-.25, 3.85-.25)
   )
 
 g <-
@@ -93,7 +93,7 @@ g <-
   geom_point(color = gray(.1), fill = NA, size = 15, stroke = 0.5, pch = 1) +
   geom_dag_edges(edge_width = 0.35) +
   geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.28, edge_width = 0.35) +
-  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .7, edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .85, edge_width = 0.35) +
   geom_richtext(color = "black",
                 parse = TRUE,
                 aes(label = label),
