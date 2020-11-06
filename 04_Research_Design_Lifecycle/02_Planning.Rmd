@@ -19,7 +19,7 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-# Planning {#p4planning}
+## Planning {#p4planning}
 
 <!-- make sure to rename the section title below -->
 
@@ -36,7 +36,7 @@ b_sims <- 20
 
 In many research communities, it is becoming standard practice to publicly register a pre-analysis plan (PAP) prior to the implementation of some or all of the Data strategy. PAPs serve many functions, but most importantly, they clarify which design choices were made before data collection and which were made afterward. Sometimes -- perhaps every time! -- we conduct a research study, aspects of $M$, $I$, $D$, and $A$ shift along the way. A concern is that they shift in ways that invalidate the apparent conclusions of the study. For example, "$p$-hacking" is the shady practice of trying out many regression specifications until the $p$-value associated with an important test attains statistical significance. PAPs help researchers to credibly communicate to skeptics *when* design decisions were made: if the regression specification was detailed in a PAP posted before any data were collected, the test cannot be the result of a $p$-hack. 
 
-PAPs are sometimes misinterpreted as a binding commitment to report all pre-registered analyses and nothing but. This view is unrealistic and unnecessarily rigid. While we think that researchers should report all pre-registered analyses *somewhere* (see Section XXX on "populated PAPs"), study write-ups inevitably deviate in some way from the PAP -- and that's a good thing. Researchers learn more by conducting research; this learning can and should be reflected in the finalized Answer strategy. Even if not binding, the main point of publicly posting pre-analysis plan is to communicate at what stage in the research process choices were made.
+PAPs are sometimes misinterpreted as a binding commitment to report all pre-registered analyses and nothing but. This view is unrealistic and unnecessarily rigid. While we think that researchers should report all pre-registered analyses *somewhere* (see Section \@ref(p4populatedpap) on "populated PAPs"), study write-ups inevitably deviate in some way from the PAP -- and that's a good thing. Researchers learn more by conducting research; this learning can and should be reflected in the finalized Answer strategy. Even if not binding, the main point of publicly posting pre-analysis plan is to communicate at what stage in the research process choices were made.
 
 Our hunch is that the main consequence of actually writing a PAP is improvement to the research design itself. Just like research design declaration forces us to think through the details of our model, inquiry, data strategy, and answer strategy, describing those choices in a publicly-posted document surely causes deeper reflection about the design. In this way, the main audiencce for a PAP is the study authors themselves.
 
@@ -48,11 +48,11 @@ In addition to a design declaration, a PAP should include mock analyses conducte
 
 Strictly speaking, preanalysis plans should include design declaration, but they do not *require* design diagnosis. But since the design that is finally settled on as the design to be implemented is usually chosen as the result of a diagnosis, it can be informative to describe, in a preanalysis plan, the reasons why the particular design was chosen. For this reason, a PAP might include estimates of diagnosands like power, rmse, or bias. If a researcher writes in a PAP that the power to detect a very small effect is large, then if the study comes back null, the eventual writeup can much more credibly rule out "low power" as an explanation for the null. Moreover, ex ante design diagnosis communicates the assumptions under which they thought the design was a good one before they ran the study. These reasons are often the basis on which we convince skeptics of the value of the design, so writing them down *before* the results are known increases the faith we put in them.
 
-## Example
+### Example
 
 In this section, we provide an example of how to supplement a PAP with design declaration. We follow the actual PAP for @bonilla_tillery_2020, which was posted to the As Predicted registry here: https://aspredicted.org/q56qq.pdf. The goal of the study is to estimate the causal effects of alternative framings of the Black Lives Matter (BLM) movement on support for the movement among Black Americans overall as well as among subsets of the Black community. These study authors are models of research transparency: they prominently link to the PAP in the published article, they conduct no non-preregistered analyses except those requested during the review process, and their replication archive includes all materials required to confirm their analyses, all of which we were able to reproduce exactly with minimal effort. Our goal with this section is to show how design declaration can supplement and complement existing planning practices.
 
-### Model
+#### Model
 
 The authors write in their PAP: 
 
@@ -98,7 +98,7 @@ model <-
   )
 ```
 
-### Inquiry
+#### Inquiry
   
 The inquiries for this study naturally include the average affects of all three treatments relative to the "general" framing, as well as the differences in average effects for subgroups. When describing their planned analyses, the authors write:
 
@@ -134,7 +134,7 @@ inquiry <-
 ```
 
 
-### Data strategy
+#### Data strategy
 
 The subjects for this study are 800 Black Americans recruited by the survey firm Qualtrics using a quota sampling procedure. We elide this sampling step in our declaration -- the 800 subjects are described by the `declare_population` call. After subjects' background charcteristics are measured, they were assigned to one of four treatment conditions. Since the survey was conducted on Qualtrics, we assume that the authors used the built-in randomization tools, which typically use simple (Bernoulli) random assignment.
 
@@ -144,7 +144,7 @@ data_strategy <-
   declare_reveal(blm_support, Z) 
 ```
 
-### Answer strategy
+#### Answer strategy
 
 The authors write: 
 
@@ -198,7 +198,7 @@ answer_strategy <-
   )
 ```
 
-### Mock Analysis
+#### Mock analysis
 
 Putting it all together, we can declare the complete design and draw mock data from it. 
 
@@ -268,7 +268,7 @@ ggplot(data = NULL, aes(estimate, term)) +
   (g %+% gg_df_2) 
 ```
 
-### Design diagnosis
+#### Design diagnosis
 
 Finally, while a design diagnosis is not a necessary component of a preanalysis plan, it can be useful to show readers why a particular design was chosen over others. This diagnosis shows that the design produces unbiased estimates of all estimands, but that we are better powered from some inquires than others (under the above assumptions about effect size, which were our own and not the original authors'.) We are well-powered for the average effects, and the power increases when we include covariate controls. The design is probably too small for most of the heterogeneous effect analyses, which is a point directly conceded in the authors' original PAP. 
 
@@ -337,7 +337,7 @@ diagnosis %>%
 
 <!-- ### citations on paps -->
 
-## Further reading
+**Further reading**.
 
 - @Casey2012: early entry
 - @Olken2015: halfway skeptical
