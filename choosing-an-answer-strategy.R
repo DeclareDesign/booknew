@@ -180,7 +180,6 @@ ends_df_small <-
          xend = c(0, 1, 1, 0),
          yend = c(0, 1, 0, 1))
 
-
 gg_df_small <-
   list(dag1, dag2, dag3) %>%
   map_df( ~ as_tibble(tidy_dagitty(.)), .id = "dag") %>%
@@ -255,7 +254,7 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>% 
   map(my_fun) 
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom") 
+wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") & theme(legend.position = "bottom", legend.title = element_text(size = 25), legend.text = element_text(size = 25), legend.key.size = unit(100, "mm")) 
 
 gg_df <-
   gg_df %>%
