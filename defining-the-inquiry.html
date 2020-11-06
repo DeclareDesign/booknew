@@ -145,9 +145,9 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </tbody>
 </table></div>
 </div>
-<div id="causal-inquiries" class="section level3">
+<div id="inquiries-about-causal-effects" class="section level3">
 <h3>
-<span class="header-section-number">7.1.2</span> Causal inquiries<a class="anchor" aria-label="anchor" href="#causal-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.1.2</span> Inquiries about causal effects<a class="anchor" aria-label="anchor" href="#inquiries-about-causal-effects"><i class="fas fa-link"></i></a>
 </h3>
 <p>Causal inquiries involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0.</p>
 <p>Table ZZZ enumerates some common causal estimands.</p>
@@ -192,16 +192,45 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </table></div>
 <p>Generations of students have been told to excise words that connote causality from their empirical writing. “Affects” becomes “is associated with” and “impacts” becomes “moves with.” Being careful about causal language is of course very important (it’s really true that correlation does not imply causation!). But this change in language is not usually accompanied by a change in inquiry. Many times we are faced with drawing causal inferences from less than ideal data – but the deficiencies of the data strategy should not lead us too far away from our inferential targets. If the inquiry is a causal inquiry, then the move from “causes” to “is correlated with” might be a good description of the actual data analysis, but it doesn’t move us closer to providing an answer to the inquiry.</p>
 </div>
+<div id="causal-attribution-inquiries" class="section level3">
+<h3>
+<span class="header-section-number">7.1.3</span> Causal attribution inquiries<a class="anchor" aria-label="anchor" href="#causal-attribution-inquiries"><i class="fas fa-link"></i></a>
+</h3>
+<p>Distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units)—it is defined for every unit, irrespective of the values that the outcome takes. By contrast, causal attribution inquiries focus on conditional probabilities, such as, the “probability of the absence of the outcome in the hypothetical absence of the treatment (<span class="math inline">\(Y_i(0) = 0\)</span>) given the actual presence of both (<span class="math inline">\(X_i = Y_i = 1\)</span>)” <span class="citation">(Yamamoto <a href="references-4.html#ref-yamamoto2012understanding">2012</a>, 240–41)</span>.</p>
+<!-- JC comment: rereading Yamamoto causal attribution article, I'm thinking it doesn't make sense in our framework to think of qual inquiries as distinct from quantitative inquiries. The quant qual distinction focuses more on D and A, not on I. But it is the case that causal attribution is more the domain of qual or quasi-qual methods like QCA.  -->
+<div class="inline-table"><table class="table table-sm">
+<colgroup>
+<col width="41%">
+<col width="58%">
+</colgroup>
+<thead><tr class="header">
+<th>Inquiry</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)\)</span></td>
+<td>Probability <span class="math inline">\(X\)</span> necessary for <span class="math inline">\(Y\)</span>
+</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Pr(Y_i(0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)\)</span></td>
+<td>Complier probability of causal attribution</td>
+</tr>
+</tbody>
+</table></div>
+<!-- For example, consider the alternative causal quantity E(Yi (1) − Yi (0) | Xi = Yi = 1), which we may call the average treatment effect on the treated and successful. The probability of causal attri- bution is equal to one minus the second term in this expression. I exploit such mathematical relations in my nonparametric identifi- cation analysis below. --><p>Qualitative comparative analysis (QCA) with boolean variables (“crisp-set QCA”), for example, focuses on finding the minimal set of conditions sufficient to produce <span class="math inline">\(Y\)</span>. If <span class="math inline">\(Y\)</span> happens any time that causal factor <span class="math inline">\(A\)</span> is present or when <span class="math inline">\(A\)</span> is absent but <span class="math inline">\(B\)</span> is present, then <span class="math inline">\(a^M\)</span> is a set: <span class="math inline">\(\{A, \not A \&amp; B\}\)</span>. Process-tracing designs often focus on cause-of-effects questions like whether the presence of a strong middle class caused a revolution (<span class="citation">Goertz and Mahoney (<a href="references-4.html#ref-goertz2012tale">2012</a>)</span>). The inquiry could be written <span class="math inline">\(\Pr(Y_i(X_i=0)=0| X_i=1, Y_i(X_i=1)=1)\)</span>, which in words means the probability that <span class="math inline">\(Y\)</span> would not have happened had <span class="math inline">\(X\)</span> not happened, given that <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> both happened in fact.</p>
+</div>
 <div id="relationship-between-causal-and-descriptive-inquiries" class="section level3">
 <h3>
-<span class="header-section-number">7.1.3</span> Relationship between causal and descriptive inquiries<a class="anchor" aria-label="anchor" href="#relationship-between-causal-and-descriptive-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.1.4</span> Relationship between causal and descriptive inquiries<a class="anchor" aria-label="anchor" href="#relationship-between-causal-and-descriptive-inquiries"><i class="fas fa-link"></i></a>
 </h3>
 <p>You can think of causal inference as repeated descriptive inference: we have to describe <span class="math inline">\(Y\)</span> in multiple possible worlds.</p>
 <p>Causal inquiries like the average effect of A on B in a causal model like <span class="math inline">\(A -&gt; B &lt;- U\)</span> are helped enormously by good descriptive inference about the nodes <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, but the focus is on the edge between them. You typically can’t learn about the edge by doing descriptive inference on the nodes only. If we measure <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> and find that they covary, we can’t be sure that <span class="math inline">\(A -&gt; B\)</span> because it could be that <span class="math inline">\(A &lt;- U -&gt; B\)</span>. This problem goes by the familiar phrase that “correlation doesn’t imply causation,” which is true and is a problem that can’t be wished away. But “correlation doesn’t imply causation” also kind of misses the point. The point is that you can’t see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.</p>
 </div>
 <div id="data-dependent-inquiries" class="section level3">
 <h3>
-<span class="header-section-number">7.1.4</span> Data-dependent inquiries<a class="anchor" aria-label="anchor" href="#data-dependent-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.1.5</span> Data-dependent inquiries<a class="anchor" aria-label="anchor" href="#data-dependent-inquiries"><i class="fas fa-link"></i></a>
 </h3>
 <p>The inquiries we have introduced thus far depend on variables in the model, but not on features of the data and answer strategies. Many common inquiries do depend on realizations of the research design.</p>
 <p>The first type depend on realizations of the data <span class="math inline">\(d\)</span>: inquiries about units within a sample depend on which units enter the sample; inquiries about treated units depend on which are treated. The sample average treatment effect is a common inquiry used by experimental researchers who wish to not worry about how their effects generalize to a population but only about identifying the causal effect within the units in front of them. There is a true sample average treatment effect <span class="math inline">\(a^w\)</span> for every possible sample that we could draw. But which of those fixed values is selected as our inquiry if we define <span class="math inline">\(I\)</span> as the sample average effect depends on which sample is actually selected by our sampling procedure. The same is true when we condition inquiries on the set of treated units.</p>
@@ -209,19 +238,13 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </div>
 <div id="inquiries-with-continuous-causal-variables" class="section level3">
 <h3>
-<span class="header-section-number">7.1.5</span> Inquiries with continuous causal variables<a class="anchor" aria-label="anchor" href="#inquiries-with-continuous-causal-variables"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.1.6</span> Inquiries with continuous causal variables<a class="anchor" aria-label="anchor" href="#inquiries-with-continuous-causal-variables"><i class="fas fa-link"></i></a>
 </h3>
 <p>Inquiries that focus on a small number of potential outcomes are usually quite easy to write down: for a binary treatment in a model with no spillovers, there are only two potential outcomes the average treatment effect is defined as their average difference across units. But what about a treatment like income, for which there might be millions of potential outcomes, each one corresponding to a different dollar amount? For truly continuous treatments, there might even be an infinite number of potential outcomes.</p>
 <p>One approach is to think of the estimand as a data-dependent marginal effect. For example <span class="math inline">\(E[Y_i(X_i) - Y_i(X_i-1)]\)</span> captures the expected average difference between the observed data, in which people have income <span class="math inline">\(X_i\)</span>, and their unobservable outcome in which they have one dollar less. Another approach is to think of continuous-treatment estimands as the parameter from a regression that only an omniscient being could run. For example we might define <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> as the solutions to:
 <span class="math display">\[\min_{(\alpha,\beta)}\sum_i\int \left(Y_i(x) - \alpha - \beta x\right)^2f(x)dx\]</span>
 Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outcome for unit <span class="math inline">\(i\)</span> in condition <span class="math inline">\(x\)</span>. Estimand <span class="math inline">\(\beta\)</span> can be thought of as the coefficient one would get on <span class="math inline">\(x\)</span> if one were to able to regress all possible potential outcomes on all possible conditions for all units (given density of interest <span class="math inline">\(f(x)\)</span>). Often, the most straightforward approach can be to define the inquiry over a finite number of potential outcomes drawn from the range of the treatment variable.
 <!-- Mention here that the distribution of the treatment variable might affect the probability with which these POs are revealed? --></p>
-</div>
-<div id="formalizing-inquiries-in-qualitative-analysis" class="section level3">
-<h3>
-<span class="header-section-number">7.1.6</span> Formalizing inquiries in qualitative analysis<a class="anchor" aria-label="anchor" href="#formalizing-inquiries-in-qualitative-analysis"><i class="fas fa-link"></i></a>
-</h3>
-<p>Just because you’re using a qualitative approach doesn’t mean you can’t formalize your inquiry and learn about the properties of your approach through simulation. Qualitative comparative analysis (QCA) with boolean variables (“crisp-set QCA”), for example, focuses on finding the minimal set of conditions sufficient to produce <span class="math inline">\(Y\)</span>. If <span class="math inline">\(Y\)</span> happens any time that causal factor <span class="math inline">\(A\)</span> is present or when <span class="math inline">\(A\)</span> is absent but <span class="math inline">\(B\)</span> is present, then <span class="math inline">\(a^M\)</span> is a set: <span class="math inline">\(\{A, \not A \&amp; B\}\)</span>. Process-tracing designs often focus on cause-of-effects questions like whether the presence of a strong middle class caused a revolution (<span class="citation">Goertz and Mahoney (<a href="references-4.html#ref-goertz2012tale">2012</a>)</span>). The inquiry could be written <span class="math inline">\(\Pr(Y_i(X_i=0)=0| X_i=1, Y_i(X_i=1)=1)\)</span>, which in words means the probability that <span class="math inline">\(Y\)</span> would not have happened had <span class="math inline">\(X\)</span> not happened, given that <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> both happened in fact.</p>
 </div>
 <div id="undefined-and-unanswerable-inquiries" class="section level3">
 <h3>
@@ -335,11 +358,11 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
 <li>
 <a class="nav-link" href="#kinds-of-inquiries"><span class="header-section-number">7.1</span> Kinds of Inquiries</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#descriptive-inquiries"><span class="header-section-number">7.1.1</span> Descriptive inquiries</a></li>
-<li><a class="nav-link" href="#causal-inquiries"><span class="header-section-number">7.1.2</span> Causal inquiries</a></li>
-<li><a class="nav-link" href="#relationship-between-causal-and-descriptive-inquiries"><span class="header-section-number">7.1.3</span> Relationship between causal and descriptive inquiries</a></li>
-<li><a class="nav-link" href="#data-dependent-inquiries"><span class="header-section-number">7.1.4</span> Data-dependent inquiries</a></li>
-<li><a class="nav-link" href="#inquiries-with-continuous-causal-variables"><span class="header-section-number">7.1.5</span> Inquiries with continuous causal variables</a></li>
-<li><a class="nav-link" href="#formalizing-inquiries-in-qualitative-analysis"><span class="header-section-number">7.1.6</span> Formalizing inquiries in qualitative analysis</a></li>
+<li><a class="nav-link" href="#inquiries-about-causal-effects"><span class="header-section-number">7.1.2</span> Inquiries about causal effects</a></li>
+<li><a class="nav-link" href="#causal-attribution-inquiries"><span class="header-section-number">7.1.3</span> Causal attribution inquiries</a></li>
+<li><a class="nav-link" href="#relationship-between-causal-and-descriptive-inquiries"><span class="header-section-number">7.1.4</span> Relationship between causal and descriptive inquiries</a></li>
+<li><a class="nav-link" href="#data-dependent-inquiries"><span class="header-section-number">7.1.5</span> Data-dependent inquiries</a></li>
+<li><a class="nav-link" href="#inquiries-with-continuous-causal-variables"><span class="header-section-number">7.1.6</span> Inquiries with continuous causal variables</a></li>
 <li><a class="nav-link" href="#undefined-and-unanswerable-inquiries"><span class="header-section-number">7.1.7</span> Undefined and unanswerable inquiries</a></li>
 </ul>
 </li>
