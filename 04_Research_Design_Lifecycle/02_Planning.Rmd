@@ -19,7 +19,7 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-# Planning
+# Planning {#p4planning}
 
 <!-- make sure to rename the section title below -->
 
@@ -199,25 +199,27 @@ answer_strategy <-
 ```
 
 ### Mock Analysis
+
 Putting it all together, we can declare the complete design and draw mock data from it. 
+
 ```{r}
 design <- model + inquiry + data_strategy + answer_strategy
 mock_data <- draw_data(design)
-mock_data %>% head %>% kable()
+mock_data %>% head %>% kable(digits = 3, caption = "Mock analysis from Bonilla and Tillery design.")
 ```
 
-Table XXX shows a mock analysis average effects (estimated with and without covariate adjustment) as well as the heterogeneous effects analyses with respect to the quasicontinuous moderators.
+Table \@ref(tab:bonillatilleryregtable) shows a mock analysis average effects (estimated with and without covariate adjustment) as well as the heterogeneous effects analyses with respect to the quasicontinuous moderators.
 
-```{r, echo = FALSE, results = "asis"}
+```{r bonillatilleryregtable, echo = FALSE, results = "asis"}
 fit_1 <- lm_robust(blm_support ~ Z, data = mock_data)
 fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income + college + linked_fate + blm_familiarity, data = mock_data)
 fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = mock_data)
 fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = mock_data)
 
-bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, caption = "Mock Regression Table")
+bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, digits = 3, caption = "Mock regression table from Bonilla and Tillery design.")
 ```
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 5}
+```{r bonillatilleryresultsfig, fig.cap = "Mock coefficient plot from Bonilla and Tillery design.", echo = FALSE, fig.width = 5, fig.height = 5}
 female_df <-
   mock_data %>%
   group_by(female) %>%
@@ -263,8 +265,7 @@ ggplot(data = NULL, aes(estimate, term)) +
   theme(axis.title.y = element_blank())
 
 (g %+% gg_df_1) +
-  (g %+% gg_df_2) +
-  plot_annotation(title = 'Mock Analysis Figure')
+  (g %+% gg_df_2) 
 ```
 
 ### Design diagnosis
@@ -284,7 +285,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r, echo = FALSE}
+```{r bonillatillerydiagnosis, echo = FALSE}
 diagnosis %>% 
   get_simulations %>% 
   group_by(estimand_label, estimator_label) %>% 
@@ -294,7 +295,7 @@ diagnosis %>%
   ) %>% 
   mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
          estimator_label = str_replace_all(estimator_label, "_", " ")) %>% 
-  kable(digits = 2, col.names = c("Estimand", "Estimator", "Bias", "Power"))
+  kable(digits = 3, col.names = c("Estimand", "Estimator", "Bias", "Power"), caption = "Design diagnosis for Bonilla and Tillery design.")
 ```
 
 
@@ -337,6 +338,7 @@ diagnosis %>%
 <!-- ### citations on paps -->
 
 ## Further reading
+
 - @Casey2012: early entry
 - @Olken2015: halfway skeptical
 - @Green2015: Standard operating procedures

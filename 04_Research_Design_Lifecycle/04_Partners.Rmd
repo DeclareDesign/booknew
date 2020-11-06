@@ -43,9 +43,6 @@ Research design diagnosis can help navigate the learning-doing tradeoff. One ins
 In the absence of partners, researchers might simply ignore the proportion treated axis and select the design with the highest power. With a partner organization, the researcher might use this graph in conversation with the partner to jointly select the design that has the highest power that has a sufficiently high proportion treated to meet the partner's needs. This is represented in the "zone of agreement" in gray: in this region, the design has at least 80% power and at least 2/3 of the sample are treated. Deciding within this region involves a trade-off between power (which is decreasing in the proportion treated here) and the utility of the partner (which is increasing in proportion treated). The diagnosis surfaces the zone of the agreement and clarifies the choice between designs in the zone.
 
 ```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
-library(tidyverse)
-library(DeclareDesign)
-
 design <- 
   declare_population(N = 100, U = rnorm(N, sd = 0.2)) +
   declare_potential_outcomes(Y ~ 0.15*Z + U) +
@@ -75,7 +72,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 gg_df <- read_rds(rds_file_path)
 ```
 
-```{r, echo = FALSE, fig.width = 6.5, fig.height = 6.5}
+```{r partnersplot, echo = FALSE, fig.cap = "Navigating research partnerships.", fig.width = 6.5, fig.height = 6.5}
 rect_df <- 
   gg_df %>%
   filter(acceptable_power, acceptable_utility) %>%
@@ -84,7 +81,7 @@ rect_df <-
 
 lines_df <-
   tibble(
-    diagnosand = c("power", "utility"),
+    diagnosand = c("Power", "Utility"),
     threshold = c(0.8, 2/3)
   )
 
@@ -109,7 +106,6 @@ ggplot(gg_df) +
   dd_theme() + 
   theme(axis.title.y = element_blank())
 ```
-
 
 Choosing the proportion treated is one example of integrating partner constraints into research designs to generate feasible designs. A second common problem is that there are a set of units that *must* be treated, for ethical or political reasons (e.g., the home district of a government partner must receive the treatment), or that must not be treated. If these constraints are discovered after treatment assignment, they lead to noncompliance, which may substantially complicate analysis of the experiment and even prevent providing an answer to the original inquiry. Considerable thought has been given to avoiding this type of noncompliance. Gerber and Green recommend, before randomizing treatment, exploring possible treatment assignments with the partner organization and using this exercise to elicit the set of units that must or cannot be treated. King et al. (cite) describe a ``politically-robust'' design, which uses pair-matched block randomization and when any unit is dropped due to political constraints the pair is dropped from the study^[Note the inquiry that can be answered from such a design is complex, reflecting effects for units in pairs that would not be dropped in either possible random assignment within the pair.] 
 

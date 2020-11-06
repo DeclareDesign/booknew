@@ -46,9 +46,9 @@ In Figure XX, we display the results of a diagnosis of a 50-unit pilot study tha
 
 In the left panel is the sampling distribution of effect size estimates, i.e., a histogram of the effect estimates from the pilot. In the design, the standard deviation of the outcome is set to one, so effect estimates are in standard deviation units. The true effect size is set to 0.2. We can see that the sampling distribution has a huge range, from nearly -0.5 to nearly 0.75. The first problem with the sampling distribution is that many estimates, in fact nearly a quarter of them, are negative (the wrong sign!). This might lead us not only to choose the wrong sample size but to choose one-sided tests in the wrong direction. The second is that we have a high likelihood of guessing the effect size is *much* higher than it really is. If we obtain one of the estimates over 0.75 or even over 0.5, we would choose an $N$ too small to detect the true effect size of 0.2. In short, our estimates of the effect size from our 50-person pilot study are simple too variable to be useful in designing our main study.
 
-However, there is good news: we can learn a lot about the power of our main study from the pilot study, just not from the effect estimates. In the right panel of Figure XX, we estimate the minimum detectable effect size of a 500-unit main study, relying on the estimated standard deviation in the control group and the estimated standard deviation in the treatment group to calculate the estimated standard error of the effect estimate in the main study. We then calculate the minimum detectable effect size using the approximation from [@gelman2006data, pg. 441], 2.8 times the estimated standard error. We find that our estimates of the MDE for the full study are much more precise, tightly centered around 0.25. Since we don't know if that is larger or smaller than the true effect size, we then must make an argument based on past studies' effect sizes to justify whether that minimum size is sufficiently large or whether we should increase the sample size in order to detect even smaller effects. The reason the MDE is more precisely estimated is that the standard deviation of the control group is a much less variable estimate of the true standard deviation of the control potential outcome than the effect size estimate is of the true effect size. 
+However, there is good news: we can learn a lot about the power of our main study from the pilot study, just not from the effect estimates. In the right panel of Figure \@ref(fig:pilotingfig), we estimate the minimum detectable effect size of a 500-unit main study, relying on the estimated standard deviation in the control group and the estimated standard deviation in the treatment group to calculate the estimated standard error of the effect estimate in the main study. We then calculate the minimum detectable effect size using the approximation from [@gelman2006data, pg. 441], 2.8 times the estimated standard error. We find that our estimates of the MDE for the full study are much more precise, tightly centered around 0.25. Since we don't know if that is larger or smaller than the true effect size, we then must make an argument based on past studies' effect sizes to justify whether that minimum size is sufficiently large or whether we should increase the sample size in order to detect even smaller effects. The reason the MDE is more precisely estimated is that the standard deviation of the control group is a much less variable estimate of the true standard deviation of the control potential outcome than the effect size estimate is of the true effect size. 
 
-```{r, echo = FALSE, fig.width = 6.5, fig.height = 3}
+```{r, echo = FALSE}
 sd_estimator <- function(data){
   data.frame(sd_y_0_hat = sd(data$Y[data$Z == 0]), sd_y_1_hat = sd(data$Y[data$Z == 1]))
 }
@@ -61,7 +61,18 @@ des <-
   declare_estimator(handler = label_estimator(sd_estimator), label = "sd_estimator")
 
 sims <- simulate_design(des, sims = 1000)
+```
 
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("06_Piloting.Rmd"), "/sims.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(sims, path = rds_file_path)
+}
+sims <- read_rds(rds_file_path)
+```
+
+```{r pilotingfig, fig.cap = "Learning from pilot studies.", fig.width = 6.5, fig.height = 3}
 gg_df <- sims %>% 
   mutate(
     se_hat_full_study = sqrt( sd_y_0_hat^2 / 250  + sd_y_1_hat^2 / 250),
