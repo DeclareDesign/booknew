@@ -139,9 +139,9 @@ simple_design <-
   declare_estimator(Y ~ Z, clusters = villages, model = difference_in_means, estimand = "ATE")
 ```
 
-For each design that we declare in the book, we will also present a graphical representation of the design. Below, we visualize the simplified form of the Gulzar-Khan design:
+For each design that we declare in the book, we will also present a graphical representation of the design. In Figure \@ref(fig:gulzarkhandag), we visualize the simplified form of the Gulzar-Khan design.
 
-```{r,echo=FALSE}
+```{r gulzarkhandag, fig.cap = "Simplified DAG for Gulzar Khan study", echo = FALSE}
 
 design <-
   declare_population(N = 100,
@@ -177,7 +177,7 @@ nodes <-
   )
 ggdd_df <- make_dag_df(dag, nodes, design)
 
-base_dag_plot %+% ggdd_df
+base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon))
 ```
 
 
