@@ -149,7 +149,7 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <h3>
 <span class="header-section-number">7.1.2</span> Inquiries about causal effects<a class="anchor" aria-label="anchor" href="#inquiries-about-causal-effects"><i class="fas fa-link"></i></a>
 </h3>
-<p>Causal inquiries involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0.</p>
+<p>Inquiries about causal effects involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0.</p>
 <p>Table ZZZ enumerates some common causal estimands.</p>
 <ul>
 <li>Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over</li>
@@ -165,28 +165,30 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(E[Y_i(1) - Y_i(0)]\)</span></td>
-<td>Average treatment effect (ATE)</td>
+<td><span class="math inline">\(E[Y_i(X_i = 1) - Y_i(X_i = 0)]\)</span></td>
+<td>Average treatment effect (ATE) of <span class="math inline">\(X\)</span>
+</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | X = 1]\)</span></td>
-<td>Conditional average treatment effect (CATE)</td>
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | C_i = 1]\)</span></td>
+<td>Conditional average treatment effect (CATE) of <span class="math inline">\(X\)</span>
+</td>
 </tr>
 <tr class="odd">
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | X_i = 1]\)</span></td>
+<td>Average treatment effect on the treated (ATT)</td>
+</tr>
+<tr class="even">
 <td><span class="math inline">\(E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]\)</span></td>
 <td>Complier average causal effect (CACE) or local average treatment effect (LATE)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><span class="math inline">\(E[Y_i(1) - Y_i(0)]\)</span></td>
 <td>PATE</td>
 </tr>
-<tr class="odd">
-<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | S = 1]\)</span></td>
-<td>SATE</td>
-</tr>
 <tr class="even">
-<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | X = 1]\)</span></td>
-<td>Conditional average treatment effect (CATE)</td>
+<td><span class="math inline">\(E[Y_i(1) - Y_i(0) | S_i = 1]\)</span></td>
+<td>SATE</td>
 </tr>
 </tbody>
 </table></div>
@@ -196,8 +198,8 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <h3>
 <span class="header-section-number">7.1.3</span> Causal attribution inquiries<a class="anchor" aria-label="anchor" href="#causal-attribution-inquiries"><i class="fas fa-link"></i></a>
 </h3>
-<p>Distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units)—it is defined for every unit, irrespective of the values that the outcome takes. By contrast, causal attribution inquiries focus on conditional probabilities, such as, the “probability of the absence of the outcome in the hypothetical absence of the treatment (<span class="math inline">\(Y_i(0) = 0\)</span>) given the actual presence of both (<span class="math inline">\(X_i = Y_i = 1\)</span>)” <span class="citation">(Yamamoto <a href="references-4.html#ref-yamamoto2012understanding">2012</a>, 240–41)</span>.</p>
-<!-- JC comment: rereading Yamamoto causal attribution article, I'm thinking it doesn't make sense in our framework to think of qual inquiries as distinct from quantitative inquiries. The quant qual distinction focuses more on D and A, not on I. But it is the case that causal attribution is more the domain of qual or quasi-qual methods like QCA.  -->
+<p>Distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units)—it is defined for every unit, irrespective of the values that the outcome takes. By contrast, causal attribution inquiries focus on conditional probabilities, such as, the “probability of the absence of the outcome in the hypothetical absence of the treatment (<span class="math inline">\(Y_i(0) = 0\)</span>) given the actual presence of both (<span class="math inline">\(X_i = Y_i = 1\)</span>)” <span class="citation">(Yamamoto <a href="references-4.html#ref-yamamoto2012understanding">2012</a>, 240–41)</span>. <span class="citation">Goertz and Mahoney (<a href="references-4.html#ref-goertz2012tale">2012</a>)</span> refer to causal attribution inquiries as cause-of-effects questions because they start with an outcome (an effect) and seek to find its cause. The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest and have occupied the interest of a large number of qualitative studies. Questions like “‘Was economic crisis necessary for democratization in the Southern Cone of Latin America?’ or ‘Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?’” are examples of such inquiries <span class="citation">(Goertz and Mahoney <a href="references-4.html#ref-goertz2012tale">2012</a>)</span>. Though they bear a resemblence and <em>are</em> related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Specifically, as &lt;span class="citation"&gt;Yamamoto (&lt;a href="references-4.html#ref-yamamoto2012understanding"&gt;2012&lt;/a&gt;)&lt;/span&gt; points out, the causal attribution estimand for binary variables can be written &lt;span class="math inline"&gt;\(Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)\)&lt;/span&gt;, while the average treatment effect among those successfully treated can be written &lt;span class="math inline"&gt;\(E[Y_i(1) - Y_i(0) \mid X_i = Y_i = 1]\)&lt;/span&gt;. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written &lt;span class="math inline"&gt;\(Pr(Y_i(1)\mid X_i = Y_i = 1) - Pr(Y_i(0) \mid X_i = Y_i = 1)\)&lt;/span&gt;. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.&lt;/p&gt;'><sup>8</sup></a> it is important not to confuse the two kinds of inquiries, as often happens.</p>
+<p><span class="citation">Pearl (<a href="references-4.html#ref-pearl1999probabilities">1999</a>)</span> provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, <span class="math inline">\(Y_i = 1\)</span> and <span class="math inline">\(X_i = 1\)</span> could represent “Peace” and “Both democracies” and <span class="math inline">\(Y_i = 0\)</span> and <span class="math inline">\(X_i = 0\)</span> could represent “War” and “Not both democracies.” Then <span class="math inline">\(Pr(Pr(Y_i(X_i = 0) = 0 \mid X_i,~ Y_i))\)</span> asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies—that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, <span class="math inline">\(Pr(Y_i(X_i = 1)=1 \mid X_i = Y_i = 0)\)</span> asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies—in other words, in what proportion of cases would democracy have been sufficient to cause peace? <span class="citation">Yamamoto (<a href="references-4.html#ref-yamamoto2012understanding">2012</a>)</span> extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.</p>
 <div class="inline-table"><table class="table table-sm">
 <colgroup>
 <col width="41%">
@@ -209,17 +211,25 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)\)</span></td>
+<td><span class="math inline">\(Pr(Y_i(X_i=0)=0 \mid X_i = Y_i = 1)\)</span></td>
 <td>Probability <span class="math inline">\(X\)</span> necessary for <span class="math inline">\(Y\)</span>
 </td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(Pr(Y_i(0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)\)</span></td>
-<td>Complier probability of causal attribution</td>
+<td><span class="math inline">\(Pr(Y_i(X_i=1)=1 \mid X_i = Y_i = 0\)</span></td>
+<td>Probability <span class="math inline">\(X\)</span> sufficient for <span class="math inline">\(Y\)</span>
+</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)\)</span></td>
+<td>Complier probability <span class="math inline">\(X\)</span> necessary for <span class="math inline">\(Y\)</span>
+</td>
 </tr>
 </tbody>
 </table></div>
-<!-- For example, consider the alternative causal quantity E(Yi (1) − Yi (0) | Xi = Yi = 1), which we may call the average treatment effect on the treated and successful. The probability of causal attri- bution is equal to one minus the second term in this expression. I exploit such mathematical relations in my nonparametric identifi- cation analysis below. --><p>Qualitative comparative analysis (QCA) with boolean variables (“crisp-set QCA”), for example, focuses on finding the minimal set of conditions sufficient to produce <span class="math inline">\(Y\)</span>. If <span class="math inline">\(Y\)</span> happens any time that causal factor <span class="math inline">\(A\)</span> is present or when <span class="math inline">\(A\)</span> is absent but <span class="math inline">\(B\)</span> is present, then <span class="math inline">\(a^M\)</span> is a set: <span class="math inline">\(\{A, \not A \&amp; B\}\)</span>. Process-tracing designs often focus on cause-of-effects questions like whether the presence of a strong middle class caused a revolution (<span class="citation">Goertz and Mahoney (<a href="references-4.html#ref-goertz2012tale">2012</a>)</span>). The inquiry could be written <span class="math inline">\(\Pr(Y_i(X_i=0)=0| X_i=1, Y_i(X_i=1)=1)\)</span>, which in words means the probability that <span class="math inline">\(Y\)</span> would not have happened had <span class="math inline">\(X\)</span> not happened, given that <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> both happened in fact.</p>
+<p>These inquiries are commonly the focus of designs using qualitative measurement and answer strategies,</p>
+<p>his is not the case: across units, we can define causal attribution inquiries such as the proportion of succesful treated cases whose success would have been prevented by the hypothetical absence of the treatment.</p>
+<p>Qualitative comparative analysis (QCA) with boolean variables (“crisp-set QCA”), for example, focuses on finding the minimal set of conditions sufficient to produce <span class="math inline">\(Y\)</span>. If <span class="math inline">\(Y\)</span> happens any time that causal factor <span class="math inline">\(A\)</span> is present or when <span class="math inline">\(A\)</span> is absent but <span class="math inline">\(B\)</span> is present, then <span class="math inline">\(a^M\)</span> is a set: <span class="math inline">\(\{A, \not A \&amp; B\}\)</span>.</p>
 </div>
 <div id="relationship-between-causal-and-descriptive-inquiries" class="section level3">
 <h3>
@@ -348,6 +358,7 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
+
   <div class="chapter-nav">
 <div class="prev"><a href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></div>
 <div class="next"><a href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></div>
