@@ -199,6 +199,21 @@ ggplot(gg_df_small, aes(x, y)) +
   facet_wrap(~dag) +
   theme_void()
 
+design <-
+  declare_population(
+    N = 100,
+    X = rnorm(N),
+    U = rnorm(N)
+  ) +
+  declare_potential_outcomes(
+    Y ~ 0.1 * D + X + U, assignment_variables = D
+  ) +
+  declare_assignment(D = if_else(U > 0.5, 1, 0), handler = mutate) +
+  declare_reveal(outcome_variables = Y, assignment_variables = D)
+
+simulated_df <- draw_data(design)
+
+simulated_df %>% select(ID, X, D, Y) %>% head %>% kable(caption = "Simulated data from a DAG with varaibles $X$, $D$, $Y$, and $U$.", digits = 3)
 
 gg_df <-
   gg_df %>%
@@ -207,7 +222,7 @@ gg_df <-
     "Ruled out by acyclicity",
     as.character(id_adjustment_fac)
   ))
-  ) 
+  )
 
 fill_scale <- c(
   `Ruled out by acyclicity` = dd_light_gray,
@@ -222,20 +237,20 @@ subplot_function <- function(data) {
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
     summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
-  
-  g <- 
+
+  g <-
   ggplot(data, aes(x, y)) +
     geom_tile(data = dag_df, aes(fill = tile_fac), height = 1.75, width = 1.75, alpha = 0.5) +
     geom_text(data = points_df, aes(label = name), size = 5) +
-    geom_dag_edges(aes(xend = xend, yend = yend), 
-                   edge_width = 0.4, 
+    geom_dag_edges(aes(xend = xend, yend = yend),
+                   edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) + 
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
-    coord_fixed() + 
+    coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5), 
-          plot.subtitle = element_text(hjust = 0.5)) + 
+    theme(plot.title = element_text(hjust = 0.5),
+          plot.subtitle = element_text(hjust = 0.5)) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -245,14 +260,14 @@ subplot_function <- function(data) {
 
 my_fun <- function(data){
   data %>%
-    split(.$DY_fac) %>% 
-    map(~subplot_function(.)) %>% 
-    wrap_plots(nrow = 1) 
+    split(.$DY_fac) %>%
+    map(~subplot_function(.)) %>%
+    wrap_plots(nrow = 1)
 }
 
-gg <- gg_df %>% 
-  split(.$U_relationship_fac) %>% 
-  map(my_fun) 
+gg <- gg_df %>%
+  split(.$U_relationship_fac) %>%
+  map(my_fun)
 
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
@@ -260,7 +275,7 @@ wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
     legend.title = element_text(size = 28),
     legend.text = element_text(size = 28),
     legend.key.size = unit(25, "mm")
-  ) 
+  )
 
 gg_df <-
   gg_df %>%
@@ -268,7 +283,7 @@ gg_df <-
     case_when(
       !acyclic ~ "Ruled out by acyclicity",
       consistent_with_ignorability == 0 ~ "Ruled out by ignorability",
-      TRUE ~ as.character(id_adjustment_fac) 
+      TRUE ~ as.character(id_adjustment_fac)
     )
   ))
 
@@ -286,20 +301,20 @@ subplot_function <- function(data) {
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
     summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
-  
-  g <- 
+
+  g <-
   ggplot(data, aes(x, y)) +
     geom_tile(data = dag_df, aes(fill = tile_fac), height = 1.75, width = 1.75, alpha = 0.5) +
     geom_text(data = points_df, aes(label = name), size = 5) +
-    geom_dag_edges(aes(xend = xend, yend = yend), 
-                   edge_width = 0.4, 
+    geom_dag_edges(aes(xend = xend, yend = yend),
+                   edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) + 
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
-    coord_fixed() + 
+    coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5), 
-          plot.subtitle = element_text(hjust = 0.5)) + 
+    theme(plot.title = element_text(hjust = 0.5),
+          plot.subtitle = element_text(hjust = 0.5)) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -309,14 +324,14 @@ subplot_function <- function(data) {
 
 my_fun <- function(data){
   data %>%
-    split(.$DY_fac) %>% 
-    map(~subplot_function(.)) %>% 
-    wrap_plots(nrow = 1) 
+    split(.$DY_fac) %>%
+    map(~subplot_function(.)) %>%
+    wrap_plots(nrow = 1)
 }
 
-gg <- gg_df %>% 
-  split(.$U_relationship_fac) %>% 
-  map(my_fun) 
+gg <- gg_df %>%
+  split(.$U_relationship_fac) %>%
+  map(my_fun)
 
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
@@ -324,7 +339,7 @@ wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
     legend.title = element_text(size = 28),
     legend.text = element_text(size = 28),
     legend.key.size = unit(25, "mm")
-  ) 
+  )
 
 gg_df <-
   gg_df %>%
@@ -349,7 +364,7 @@ fill_scale <- c(
   `Ruled out by acyclicity` = dd_light_gray,
   `Ruled out by pretreatment measurement` = dd_orange,  
   `Ruled out by random assignment` = dd_dark_blue,
-  `Effect of D on Y identified` = "transparent" 
+  `Effect of D on Y identified` = "transparent"
 )
 
 subplot_function <- function(data) {
@@ -357,20 +372,20 @@ subplot_function <- function(data) {
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac2) %>%
     summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
-  
-  g <- 
+
+  g <-
     ggplot(data, aes(x, y)) +
     geom_tile(data = dag_df, aes(fill = tile_fac2), height = 1.75, width = 1.75, alpha = 0.5) +
     geom_text(data = points_df, aes(label = name), size = 5) +
-    geom_dag_edges(aes(xend = xend, yend = yend), 
-                   edge_width = 0.4, 
+    geom_dag_edges(aes(xend = xend, yend = yend),
+                   edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) + 
+    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
-    coord_fixed() + 
+    coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5), 
-          plot.subtitle = element_text(hjust = 0.5)) + 
+    theme(plot.title = element_text(hjust = 0.5),
+          plot.subtitle = element_text(hjust = 0.5)) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -380,14 +395,14 @@ subplot_function <- function(data) {
 
 my_fun <- function(data){
   data %>%
-    split(.$DY_fac) %>% 
-    map(~subplot_function(.)) %>% 
-    wrap_plots(nrow = 1) 
+    split(.$DY_fac) %>%
+    map(~subplot_function(.)) %>%
+    wrap_plots(nrow = 1)
 }
 
-gg <- gg_df %>% 
-  split(.$U_relationship_fac) %>% 
-  map(my_fun) 
+gg <- gg_df %>%
+  split(.$U_relationship_fac) %>%
+  map(my_fun)
 
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
@@ -395,11 +410,11 @@ wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
     legend.title = element_text(size = 28),
     legend.text = element_text(size = 28),
     legend.key.size = unit(25, "mm")
-  ) 
+  )
 
 gg_df <-
   gg_df %>%
-  filter(is.na(ruled_out_by)) %>% 
+  filter(is.na(ruled_out_by)) %>%
   mutate(
     ruled_out_by_sig_test = as.factor(if_else(DY_fac == "D~~~Y", "Ruled out by rejection of null hypothesis of no effect", "Cannot rule out")),
     fct_rows = paste0(YX_fac, YU_fac, XU_fac)
@@ -413,7 +428,7 @@ fill_scale <- c(
 dag_df <-
   gg_df %>%
   group_by(var, DX_fac, DY_fac, YX_fac, ruled_out_by_sig_test, fct_rows) %>%
-  summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop") 
+  summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
 
 g <-
   ggplot(gg_df, aes(x, y)) +
