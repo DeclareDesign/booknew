@@ -203,7 +203,7 @@ One draw from the simulation returns the following:
 |--------:|--------:|---------:|--------:|---------:|-------:|
 |     0.10|     0.08|      0.04|    0.003|     0.156|    0.04|
 
-Figure XXX shows the information we might obtain from a single run of the simulation. The filled point is the estimate $a^d$. The open triangle is the estimand $a^m$. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We're not sure where $a^d$ is, but if things are going according to plan, confidence intervals constructed this way will bracket $a^d$ 95\% of the time. 
+Figure \@ref(simdrawsone) shows the information we might obtain from a single run of the simulation. The filled point is the estimate $a^d$. The open triangle is the estimand $a^m$. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We're not sure where $a^d$ is, but if things are going according to plan, confidence intervals constructed this way will bracket $a^d$ 95\% of the time. 
 
 ```{r, echo=FALSE}
 design <-
@@ -253,7 +253,7 @@ gg_df <-
 ```
 
 
-```{r, fig.height = 1.5, fig.width = 5, echo = FALSE}
+```{r simdrawsone, fig.cap = "Visualization of one draw from a design diagnosis.", fig.height = 1.5, fig.width = 5, echo = FALSE}
 simulation_1 <- simulations %>% filter(sim_ID == 1)
 
 simulation_1 %>% 
@@ -330,9 +330,7 @@ To calculate the distributions of the diagnostic statistics, we have to simulate
 
 This figure visualizes just 10 runs of the simulation (obtained with `simulate_design(design)`). We can see that in each run, $a^m$ is a little different. This might seem counterintuitive -- isn't the estimand supposed to be a fixed number? Some estimands are fixed, others are stochastic, depending on the specifics of the model. Notice how in the design declaration, we drew the potential outcomes from a distribution rather then having them be fixed numbers. This choice incorportates some of our modeling uncertainty. The treatment effects for each unit are close to 0.1, but we're not sure how close for each particulat unit. We can also see that some of the draws produce statistical significant estimates (the shaded areas are small and the confidence intervals don't overlap zero), but not all. We get a sense of the *true* standard error by seeing how the point estimates bounce around. We get a feel for the difference between the estimates of the standard error and true standard error. Design diagnosis is the process of learning about all the ways the study might come out, not just the one way that it will.
 
-
-
-```{r, fig.height = 3.5, fig.width = 5, echo = FALSE}
+```{r simdrawsten, fig.cap = "Visualization of ten draws from a design diagnosis.", fig.height = 3.5, fig.width = 5, echo = FALSE}
 ggplot(simulations, aes(x = estimate, y = as.factor(sim_ID)), color = dd_light_blue) +
   # geom_rect(xmin = -10, xmax = 0, ymin = -100, ymax = 100, fill = gray(0.96), size = 0) +
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high),
@@ -465,7 +463,7 @@ As a rule of thumb, you should be multiplying the simulation standard errors by 
 
 ## How to choose among diagnosands {#diagnosands}
 
-A diagnostic statistic is a summary function of $a^m$ and $a^d$, and a diagnosand is a summary of diagnostic-statistics. As a result, there are a great many to choose from. In Table XX, we introduce a set of diagnostic statistics (far from complete!), and in Table XX a set of diagnosands including those commonly and less commonly considered.
+A diagnostic statistic is a summary function of $a^m$ and $a^d$, and a diagnosand is a summary of diagnostic-statistics. As a result, there are a great many to choose from. In Table \@ref(tab:diagnosticstatistics), we introduce a set of diagnostic statistics (far from complete!), and in Table \@ref(tab:diagnosands) a set of diagnosands including those commonly and less commonly considered.
 
 | Diagnostic-statistic                                    | Definition                                                                   |
 |---------------------------------------------------------|------------------------------------------------------------------------------|
@@ -479,6 +477,8 @@ A diagnostic statistic is a summary function of $a^m$ and $a^d$, and a diagnosan
 | Estimated standard error                                | $\widehat\sigma(A)$                                                          |
 | Cost                                                    | $\mathrm{cost}$                                                              |
 | Proportion of subjects harmed                           | $\Pr(\mathrm{harm}) \equiv \frac{1}{n} \sum_i \mathrm{harm_i}$
+
+Table: (\#tab:diagnosticstatistics) Diagnostic statistics.
 
 | Diagnosand                             | Description                                                                                                                         | Definition                                                            |
 |----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
@@ -505,6 +505,7 @@ A diagnostic statistic is a summary function of $a^m$ and $a^d$, and a diagnosan
 | Robustness                             | Joint probability of rejecting the null hypothesis across multiple tests                                                            |                                                                       |
 | Maximum proportion of subjects harmed  |                                                                                                                                     | $\min{\Pr(\mathrm{harm})}$                                            |
 
+Table: (\#tab:diagnosands) Diagnosands.
 
 Not all of these diagnosands are relevant for every study. For example, in a descriptive study whose goal is to estimate the fraction of people in France who are left-handed, statistical power is irrelevant. A hypothesis test against the null hypothesis that 0 percent of the people in France are left-handed is preposterous. We know for sure that the fraction is not zero, we just don't know its precise value. A much more important diagnosand for this study would be RMSE (root-mean-squared-error), which is a measure of how well-estimated the estimand is that incorporates both bias and variance.
 
