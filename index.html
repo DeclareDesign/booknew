@@ -88,8 +88,97 @@
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><!--bookdown:title:end--><!--bookdown:title:start--><div id="welcome" class="section level1 unnumbered">
 <h1>Welcome<a class="anchor" aria-label="anchor" href="#welcome"><i class="fas fa-link"></i></a>
 </h1>
-<p>Draft book manuscript. Comments welcomed. Please treat with caution.</p>
-<p>Copyright 2020 Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys</p>
+<p>This is the Web site for the book <em>Research Design: Declare, Diagnose, Redesign</em> by Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys, under advance contract with Princeton University Press. Please treat with caution. Your comments are very welcome.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dag</span> <span class="op">&lt;-</span>
+  <span class="fu">dagify</span><span class="op">(</span><span class="va">aw</span> <span class="op">~</span> <span class="va">w</span> <span class="op">+</span> <span class="va">I</span>,
+         <span class="va">m</span> <span class="op">~</span> <span class="va">M</span>,
+         <span class="va">am</span> <span class="op">~</span> <span class="va">m</span> <span class="op">+</span> <span class="va">I</span>,
+         <span class="va">d</span> <span class="op">~</span> <span class="va">D</span> <span class="op">+</span> <span class="va">w</span>,
+         <span class="va">ad</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">d</span>,
+         <span class="va">w</span> <span class="op">~</span> <span class="va">W</span><span class="op">)</span>
+
+<span class="va">dag_base</span> <span class="op">&lt;-</span> <span class="fu">tidy_dagitty</span><span class="op">(</span><span class="va">dag</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">name</span>, <span class="va">direction</span>, <span class="va">to</span>, <span class="va">circular</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="va">as_tibble</span>
+
+<span class="va">nodes_df</span> <span class="op">&lt;-</span>
+  <span class="fu">tibble</span><span class="op">(</span>
+    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"I"</span>, <span class="st">"D"</span>, <span class="st">"A"</span>, <span class="st">"m"</span>, <span class="st">"am"</span>, <span class="st">"aw"</span>, <span class="st">"d"</span>, <span class="st">"ad"</span>, <span class="st">"w"</span>, <span class="st">"W"</span><span class="op">)</span>,
+    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"M"</span>, <span class="st">"I"</span>, <span class="st">"D"</span>, <span class="st">"A"</span>, <span class="st">"m"</span>, <span class="st">"a&lt;sup&gt;m&lt;/sup&gt;"</span>, <span class="st">"a&lt;sup&gt;w&lt;/sup&gt;"</span>, <span class="st">"d"</span>, <span class="st">"a&lt;sup&gt;d&lt;/sup&gt;"</span>, <span class="st">"w"</span>, <span class="st">"W"</span><span class="op">)</span>,
+    long_label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Theoretical&lt;br&gt;causal model"</span>, <span class="st">"Inquiry"</span>, <span class="st">"Data&lt;br&gt;strategy"</span>, <span class="st">"Answer&lt;br&gt;strategy"</span>, <span class="st">"Model&lt;br&gt;draw"</span>, <span class="st">"Theoretical&lt;br&gt;answer"</span>, <span class="st">"True answer"</span>, <span class="st">"Realized&lt;br&gt;data"</span>, <span class="st">"Empirical&lt;br&gt;answer"</span>, <span class="st">"Real&lt;br&gt;world"</span>, <span class="st">"True&lt;br&gt;causal model"</span><span class="op">)</span>,
+    lbl_direction <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="st">"N"</span>, <span class="st">"N"</span>, <span class="st">"N"</span>, <span class="st">"S"</span>, <span class="st">"S"</span>, <span class="st">"S"</span>, <span class="st">"S"</span>, <span class="st">"S"</span>, <span class="st">"S"</span>, <span class="st">"N"</span><span class="op">)</span>,
+    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5.5</span>, <span class="fl">6.5</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4.25</span>, <span class="fl">5.5</span>, <span class="fl">6.5</span>, <span class="fl">3.25</span>, <span class="fl">3.25</span><span class="op">)</span>,
+    y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="va">endnodes_df</span> <span class="op">&lt;-</span>
+  <span class="va">nodes_df</span> <span class="op">%&gt;%</span>
+  <span class="fu">transmute</span><span class="op">(</span>to <span class="op">=</span> <span class="va">name</span>, xend <span class="op">=</span> <span class="va">x</span>, yend <span class="op">=</span> <span class="va">y</span><span class="op">)</span>
+
+<span class="va">gg_df</span> <span class="op">&lt;-</span>
+  <span class="va">dag_base</span> <span class="op">%&gt;%</span>
+  <span class="fu">left_join</span><span class="op">(</span><span class="va">nodes_df</span>, by <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">left_join</span><span class="op">(</span><span class="va">endnodes_df</span>, by <span class="op">=</span> <span class="st">"to"</span><span class="op">)</span>
+
+<span class="va">gg_df</span> <span class="op">&lt;-</span>
+  <span class="va">gg_df</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>arced1 <span class="op">=</span> <span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"w"</span> <span class="op">&amp;</span> <span class="va">to</span> <span class="op">==</span> <span class="st">"d"</span><span class="op">)</span>,
+         arced2 <span class="op">=</span> <span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"I"</span> <span class="op">&amp;</span> <span class="va">to</span> <span class="op">==</span> <span class="st">"aw"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">arrange</span><span class="op">(</span><span class="va">name</span><span class="op">)</span>
+
+<span class="va">rect_df</span> <span class="op">&lt;-</span>
+  <span class="fu">tibble</span><span class="op">(</span>
+    xmin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.4</span>, <span class="fl">4.9</span><span class="op">)</span>,
+    xmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2.6</span>, <span class="fl">7.1</span><span class="op">)</span>,
+    ymin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.15</span>, <span class="fl">1.15</span><span class="op">)</span>,
+    ymax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3.85</span>, <span class="fl">3.85</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="va">g</span> <span class="op">&lt;-</span>
+  <span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">gg_df</span>, <span class="op">!</span><span class="va">arced1</span> <span class="op">&amp;</span> <span class="op">!</span><span class="va">arced2</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span>
+    x <span class="op">=</span> <span class="va">x</span>,
+    y <span class="op">=</span> <span class="va">y</span>,
+    xend <span class="op">=</span> <span class="va">xend</span>,
+    yend <span class="op">=</span> <span class="va">yend</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_point</span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.html">gray</a></span><span class="op">(</span><span class="fl">.1</span><span class="op">)</span>, fill <span class="op">=</span> <span class="cn">NA</span>, size <span class="op">=</span> <span class="fl">15</span>, stroke <span class="op">=</span> <span class="fl">0.5</span>, pch <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_dag_edges</span><span class="op">(</span>edge_width <span class="op">=</span> <span class="fl">0.35</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_dag_edges_arc</span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">gg_df</span>, <span class="va">arced1</span><span class="op">)</span>, curvature <span class="op">=</span> <span class="op">-</span><span class="fl">0.28</span>, edge_width <span class="op">=</span> <span class="fl">0.35</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_dag_edges_arc</span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">gg_df</span>, <span class="va">arced2</span><span class="op">)</span>, curvature <span class="op">=</span> <span class="fl">.7</span>, edge_width <span class="op">=</span> <span class="fl">0.35</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_richtext</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>,
+                parse <span class="op">=</span> <span class="cn">TRUE</span>,
+                <span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span><span class="op">)</span>,
+                fill <span class="op">=</span> <span class="cn">NA</span>,
+                label.color <span class="op">=</span> <span class="cn">NA</span>,
+                label.padding <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"pt"</span><span class="op">)</span>,
+                size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_richtext</span><span class="op">(</span>
+    <span class="fu">aes</span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span> <span class="op">+</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">lbl_direction</span> <span class="op">==</span> <span class="st">"N"</span>, <span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.4</span><span class="op">)</span>,
+        vjust <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">lbl_direction</span> <span class="op">==</span> <span class="st">"N"</span>, <span class="st">"bottom"</span>, <span class="st">"top"</span><span class="op">)</span>,
+        label <span class="op">=</span> <span class="va">long_label</span><span class="op">)</span>,
+    color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/gray.html">gray</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>,
+    parse <span class="op">=</span> <span class="cn">TRUE</span>,
+    fill <span class="op">=</span> <span class="cn">NA</span>,
+    label.color <span class="op">=</span> <span class="cn">NA</span>,
+    label.padding <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"pt"</span><span class="op">)</span>,
+    size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">coord_fixed</span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.15</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">geom_rect</span><span class="op">(</span>data <span class="op">=</span> <span class="va">rect_df</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, 
+                                xend <span class="op">=</span> <span class="cn">NULL</span>, yend <span class="op">=</span> <span class="cn">NULL</span>,
+                                xmin <span class="op">=</span> <span class="va">xmin</span>, xmax <span class="op">=</span> <span class="va">xmax</span>, ymin <span class="op">=</span> <span class="va">ymin</span>, ymax <span class="op">=</span> <span class="va">ymax</span><span class="op">)</span>,
+            alpha <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">1.5</span>, y <span class="op">=</span> <span class="fl">4.05</span>, label <span class="op">=</span> <span class="st">"Theory"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">6</span>, y <span class="op">=</span> <span class="fl">4.05</span>, label <span class="op">=</span> <span class="st">"Empirics"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">annotate</span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">3.75</span>, y <span class="op">=</span> <span class="fl">4.05</span>, label <span class="op">=</span> <span class="st">"Reality"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co"># annotate("text", x = 3, y = 1.6, label = "Truth") +</span>
+  <span class="fu">theme_dag</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## Warning: Ignoring unknown parameters: parse
+
+## Warning: Ignoring unknown parameters: parse</code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">g</span></code></pre></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-3-1.png" width="100%"></div>
 <!-- mathabx -->
 
 </div>
