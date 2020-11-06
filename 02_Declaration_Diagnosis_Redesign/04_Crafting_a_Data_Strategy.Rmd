@@ -388,7 +388,7 @@ ggplot(gg_df, aes(point_X, point_Y)) +
   geom_tile(aes(fill = sampled), color = NA, width = 0.46, height = 0.46) +
   geom_smooth(method = "lm", se = FALSE, color = "black", size = .5) +
   coord_fixed() +
-  facet_wrap(~procedure, nrow = 1) +
+  facet_wrap(~procedure, nrow = 2) +
   dd_theme() +
   scale_fill_manual(values = c(gray(0.6), dd_light_blue)) +
   scale_x_continuous(name = "X", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
@@ -823,7 +823,7 @@ Excludability assumptions are required not for identification of causal and desc
 
 The three excludability assumptions of $S_i$, $Z_i$, and $Q_i$ are representd as gray dotted lines in Figure XX. These are strong assumptions that are often not met in practice.
 
-The first excludability assumption is that there is no causal effect of sampling on $Y_^*$. This assumption will be violated if the fact of being *included in the sample* changes your attitudes. By being asked to be in a focus group, even before being assigned to treatment or being asked survey questions, if you reflect on your political beliefs and change your mind, the sampling excludability assumption may be violated.
+The first excludability assumption is that there is no causal effect of sampling on $Y_i^*$. This assumption will be violated if the fact of being *included in the sample* changes your attitudes. By being asked to be in a focus group, even before being assigned to treatment or being asked survey questions, if you reflect on your political beliefs and change your mind, the sampling excludability assumption may be violated.
 
 The excludability of $Z$ on $Y^*$ is more subtle. When studying causal effects, we certainly believe that treatment assignment has an effect on the outcomes. What the treatment assignment excludability assumption says is that this effect only works through the received treatment $D$. In other words, there is no independent effect of being assigned apart from actually being treated. There are many ways in which this assumption might be violated. In observational studies using instrumental variables, the excludability of $Z$ on $Y^*$ is an assumption of no alternative channels in which the instrument affects outcomes except the endogenous variable. In studies of the effect of economic growth on civil conflict using rainfall as an instrument for economic growth, we must invoke an excludability assumption that rainfall has no independent effect on civil conflict besides through economic growth.
 
