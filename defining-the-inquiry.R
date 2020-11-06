@@ -40,9 +40,3 @@ ggplot(gg_df, aes(X, pred)) +
   facet_wrap(~complexity, nrow = 1) +
   geom_point(data = dat, aes(X, Y), stroke = 0, alpha = 0.1) +
   theme_void()
-
-ggplot() + 
-  geom_abline(intercept = 5, slope = -1) + 
-  geom_abline(intercept = 6, slope = -1, lty = "dashed") + 
-  geom_function(fun = function(x) (x-2)^2, geom = "curve") + 
-  coord_fixed(ylim = c(0, 6), xlim = c(0, 6))

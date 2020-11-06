@@ -171,15 +171,14 @@ dag3 <- dagitty("dag{
                 D -> X -> Y; D -> Y
                 }")
 
-
 points_df_small <-
-  tibble(name = c("D", "X", "Y"),
-         x = c(1, 2, 3),
-         y = c(0, 1, 0))
+  tibble(name = c("D", "X", "Y", "U"),
+         x = c(0, 1, 1, 0),
+         y = c(0, 1, 0, 1))
 ends_df_small <-
-  tibble(to = c("D", "X", "Y"),
-         xend = c(1, 2, 3),
-         yend = c(0, 1, 0))
+  tibble(to = c("D", "X", "Y", "U"),
+         xend = c(0, 1, 1, 0),
+         yend = c(0, 1, 0, 1))
 
 
 gg_df_small <-
@@ -197,12 +196,10 @@ gg_df_small <-
 ggplot(gg_df_small, aes(x, y)) +
   geom_text(data = points_df_small, aes(label = name)) +
   geom_dag_edges(aes(xend = xend, yend = yend)) +
-  coord_fixed() +
+  coord_fixed(ylim = c(0, 1.1), xlim = c(-.1, 1.1)) +
   facet_wrap(~dag) +
   theme_void()
 
-
-# four variable dag with undirected edges between all sides
 
 gg_df <-
   gg_df %>%
@@ -225,7 +222,7 @@ subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
-    summarize(x = 1.5, y = 1.5, n = n())
+    summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
   
   g <- 
   ggplot(data, aes(x, y)) +
@@ -283,7 +280,7 @@ subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
-    summarize(x = 1.5, y = 1.5, n = n())
+    summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
   
   g <- 
   ggplot(data, aes(x, y)) +
@@ -348,7 +345,7 @@ subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac2) %>%
-    summarize(x = 1.5, y = 1.5, n = n())
+    summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
   
   g <- 
     ggplot(data, aes(x, y)) +
@@ -399,7 +396,7 @@ fill_scale <- c(
 dag_df <-
   gg_df %>%
   group_by(var, DX_fac, DY_fac, YX_fac, ruled_out_by_sig_test, fct_rows) %>%
-  summarize(x = 1.5, y = 1.5, n = n()) 
+  summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop") 
 
 g <- 
   ggplot(gg_df, aes(x, y)) +

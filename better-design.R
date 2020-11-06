@@ -107,4 +107,4 @@ simple_design_diagnosands <-
 
 
 
-get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable
+get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable(digits = 3, caption = "Diagnosis of simple design.")

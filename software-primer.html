@@ -43,7 +43,7 @@
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
 <li><a class="" href="choosing-an-answer-strategy.html"><span class="header-section-number">9</span> Choosing an answer strategy</a></li>
-<li><a class="" href="diagnosis.html"><span class="header-section-number">10</span> Diagnosis</a></li>
+<li><a class="" href="p2diagnosis.html"><span class="header-section-number">10</span> Diagnosis</a></li>
 <li><a class="" href="redesign-1.html"><span class="header-section-number">11</span> Redesign</a></li>
 <li><a class="" href="part-ii-exercises.html"><span class="header-section-number">12</span> Part II Exercises</a></li>
 <li class="book-part">Design Library</li>
@@ -112,7 +112,7 @@
 <p>Almost all steps take a dataset as input and return a dataset as output. We will will imagine input data that describes a set of voters in Los Angeles. The research project we are planning involves randomly assigning voters to receive (or not receive) a knock on their door from a canvasser. Our data look like this:</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:voter_file)Example data
+<span id="tab:voterfile">Table 3.1: </span>Example data
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -247,7 +247,7 @@ REP
 <code class="sourceCode R"><span class="fu">simple_random_assignment_step</span><span class="op">(</span><span class="va">voter_file</span><span class="op">)</span> </code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:voter_file_ra)Data output following implementation of an assignment step.
+<span id="tab:voterfilera">Table 3.2: </span>Data output following implementation of an assignment step.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -439,7 +439,7 @@ REP
 <span class="fu">my_assignment_step</span><span class="op">(</span><span class="va">voter_file</span><span class="op">)</span>  </code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:voter_file_custom_function)Data generated using a custom function
+<span id="tab:voterfilecustomfunction">Table 3.3: </span>Data generated using a custom function
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -609,7 +609,7 @@ REP
 <code class="sourceCode R"><span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">voter_file</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:voter_file_population)Draw from a fixed population
+<span id="tab:voterfilepopulation">Table 3.4: </span>Draw from a fixed population
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -739,7 +739,7 @@ REP
 <p>When we run this population function, we will get a different 100-unit dataset each time:</p>
 <div class="inline-table"><table class="kable_wrapper">
 <caption>
-(#tab:three_population_draws)Three draws from the population function.
+<span id="tab:threepopulationdraws">Table 3.5: </span>Three draws from the population function.
 </caption>
 <tbody><tr>
 <td>
@@ -962,7 +962,7 @@ u
 <span class="fu">draw_data</span><span class="op">(</span><span class="va">des</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:potential_outcomes_draw)Adding potential outcomes to the population.
+<span id="tab:potentialoutcomesdraw">Table 3.6: </span>Adding potential outcomes to the population.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1089,13 +1089,13 @@ Y_Z_1
 <h4>
 <span class="header-section-number">3.3.3.1</span> Sampling<a class="anchor" aria-label="anchor" href="#sampling"><i class="fas fa-link"></i></a>
 </h4>
-<p>The sampling step relies on the <code>randomizr</code> package to conduct random sampling. See Section XX for an overview of the many kinds of sampling that are possible. We define a simple 50-unit sample from the population as follows:</p>
+<p>The sampling step relies on the <code>randomizr</code> package to conduct random sampling. See Section <a href="crafting-a-data-strategy.html#p2sampling">8.1</a> for an overview of the many kinds of sampling that are possible. We define a simple 50-unit sample from the population as follows:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></code></pre></div>
 <p>When we draw data from our simple design at this point, it will be smaller: from 100 units in the population to a data frame of 50 units representing the sample. In the data frame, we have an inclusion probability, the probability of being included in the sample. <code>randomizr</code> includes this by default. In this case, every unit in the population had an equal 0.5 probability of inclusion.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:sampled_data_draw)Sampled data.
+<span id="tab:sampleddatadraw">Table 3.7: </span>Sampled data.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1248,10 +1248,10 @@ S_inclusion_prob
 <p>Assignment also relies, by default, on the <code>randomizr</code> package for random assignment. Here, we define assignment as a 50% probability of assignment to treatment and 50% to control.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
-<p>Assignment results in a data frame with an additional indicator <code>Z</code> of the assignment as well as the probability of assignment. Again, here the assignment probabilities are constant, but in other designs described in Section XX they are not and this is crucial information for the analysis stage.</p>
+<p>Assignment results in a data frame with an additional indicator <code>Z</code> of the assignment as well as the probability of assignment. Again, here the assignment probabilities are constant, but in other designs described in Section <a href="crafting-a-data-strategy.html#p2assignment">8.2</a> they are not and this is crucial information for the analysis stage.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_assignment)Sampled data with assignment indicator.
+<span id="tab:simpledesignassignment">Table 3.8: </span>Sampled data with assignment indicator.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1442,7 +1442,7 @@ Z_cond_prob
 <p>Through our model and data strategy steps, we have simulated a dataset with two key inputs to the answer strategy: an assignment variable and an outcome. In other answer strategies, pretreatment characteristics from the model might also be relevant. The data look like this:</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_revealed_outcomes)Data with revealed outcomes.
+<span id="tab:simpledesignrevealedoutcomes">Table 3.9: </span>Data with revealed outcomes.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1634,7 +1634,7 @@ Y
 <code class="sourceCode R"><span class="fu">difference_in_means</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, data <span class="op">=</span> <span class="va">simple_design_data</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_dim_estimate)Difference-in-means estimate from simulated data.
+<span id="tab:simpledesigndimestimate">Table 3.10: </span>Difference-in-means estimate from simulated data.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1751,7 +1751,7 @@ Y
 <code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">simple_design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_data_draw)Simulated data draw.
+<span id="tab:simpledesigndatadraw">Table 3.11: </span>Simulated data draw.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1944,7 +1944,7 @@ Y
 <code class="sourceCode R"><span class="fu">draw_estimands</span><span class="op">(</span><span class="va">simple_design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_estimand_draw)Estimands calculated from simulated data.
+<span id="tab:simpledesignestimanddraw">Table 3.12: </span>Estimands calculated from simulated data.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1968,7 +1968,7 @@ PATE
 <code class="sourceCode R"><span class="fu">draw_estimates</span><span class="op">(</span><span class="va">simple_design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_estimate_draw)Estimates calculated from simulated data.
+<span id="tab:simpledesignestimatedraw">Table 3.13: </span>Estimates calculated from simulated data.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -2046,7 +2046,7 @@ PATE
 <code class="sourceCode R"><span class="fu">simulate_design</span><span class="op">(</span><span class="va">simple_design</span>, sims <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_simulations_df)Simulations data frame.
+<span id="tab:simpledesignsimulationsdf">Table 3.14: </span>Simulations data frame.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -2320,7 +2320,7 @@ Y
 <h2>
 <span class="header-section-number">3.6</span> Diagnosing a research design<a class="anchor" aria-label="anchor" href="#diagnosing-a-research-design"><i class="fas fa-link"></i></a>
 </h2>
-<p>The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can now calculate the bias, root mean-squared error, and power for each estimator-estimand pair. In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section XX).</p>
+<p>The simulations data frame we created allows us to diagnose the design (calculate summary statistics from the simulations) directly. We can now calculate the bias, root mean-squared error, and power for each estimator-estimand pair. In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands. These are functions of the simulations data. We have precoded several standard diagnosands (see Section <a href="p2diagnosis.html#p2diagnosis">10</a>).</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">study_diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
   select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bias</span>, <span class="va">rmse</span>, <span class="va">power</span><span class="op">)</span>, 
@@ -2330,7 +2330,7 @@ Y
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_df</span>, diagnosands <span class="op">=</span> <span class="va">study_diagnosands</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-(#tab:simple_design_diagnosis)Design diagnosis.
+<span id="tab:simpledesigndiagnosis2">Table 3.15: </span>Design diagnosis.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
