@@ -153,9 +153,11 @@ Figure 6.1: Simple DAG. U is unobserved.
 <li>
 <strong>Mediators.</strong> Variables “along the path” between explanatory variables and outcomes. <span class="math inline">\(M\)</span> is an example of a mediator in this figure. Mediators are often studied to assess “how” <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span>.</li>
 <li>
-<strong>Confounds</strong>. Variables that introduce a non causal correlation between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. In the figure <span class="math inline">\(X1\)</span> is an unobserved confound because it causes both <span class="math inline">\(X2\)</span> and <span class="math inline">\(Y\)</span> and could introduce a correlation between them even if <span class="math inline">\(X\)</span> did not cause <span class="math inline">\(Y\)</span>.
-6 <strong>Instruments.</strong> An instrumental variable is a variable that can induce an exogenous change in an explanatory very and help us to figure out the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, it is used instrumentally—not for its own sake. We give a much more detailed treatment of these variables in section XXXX. <span class="math inline">\(Z\)</span> is often reserved for instruments; see figure.
-7 <strong>Colliders.</strong> Colliders are variables that are caused by two other variables, they can be important because when you condition on a collider you can introduce a statistical but non causal relationship between the causes of the collider. Here <span class="math inline">\(K\)</span> is a collider that can create a correlation between <span class="math inline">\(X2\)</span> and <span class="math inline">\(Y\)</span> (via <span class="math inline">\(U\)</span>) when it is held fixed.</li>
+<strong>Confounds</strong>. Variables that introduce a non causal correlation between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. In the figure <span class="math inline">\(X1\)</span> is an unobserved confound because it causes both <span class="math inline">\(X2\)</span> and <span class="math inline">\(Y\)</span> and could introduce a correlation between them even if <span class="math inline">\(X\)</span> did not cause <span class="math inline">\(Y\)</span>.</li>
+<li>
+<strong>Instruments.</strong> An instrumental variable is a variable that can induce an exogenous change in an explanatory very and help us to figure out the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, it is used instrumentally—not for its own sake. We give a much more detailed treatment of these variables in section XXXX. <span class="math inline">\(Z\)</span> is often reserved for instruments; see figure <a href="#vartypes"><strong>??</strong></a>.</li>
+<li>
+<strong>Colliders.</strong> Colliders are variables that are caused by two other variables, they can be important because when you condition on a collider you can introduce a statistical but non causal relationship between the causes of the collider. Here <span class="math inline">\(K\)</span> is a collider that can create a correlation between <span class="math inline">\(X2\)</span> and <span class="math inline">\(Y\)</span> (via <span class="math inline">\(U\)</span>) when it is held fixed.</li>
 </ol>
 <p>Note that these labels reflect the researcher interest as much as their position in a model. Another researcher examining the same graph might, for instance label <span class="math inline">\(M\)</span> as their explanatory variable or <span class="math inline">\(K\)</span> as their outcome of interest.</p>
 <div class="figure">
@@ -169,19 +171,181 @@ Figure 6.2: A DAG with an explantory variable of interest (X2), an outcome of in
 <h2>
 <span class="header-section-number">6.4</span> What do we need to specify about these variables?<a class="anchor" aria-label="anchor" href="#what-do-we-need-to-specify-about-these-variables"><i class="fas fa-link"></i></a>
 </h2>
-<p>DAGs convey beliefs about whether <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. However, in order to assess many properties of a research design we need to go further. We need to specify the scales and probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we’ll need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
-<p>Suppose that according to our model, the effect of treatment should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in a design declaration. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard devation 1; <span class="math inline">\(X\)</span> follows a bernoulli distribution but units have a probability of <span class="math inline">\(X\)</span> equalling one that depends on <span class="math inline">\(U\)</span> in a particular way. In the <code>declare_potential_outcomes</code> function, we describes how the average effect of treatment is 0.5 when <span class="math inline">\(X = 0\)</span> but 0.5 + 0.5 = 1 when <span class="math inline">\(X = 1\)</span>.</p>
+<p>DAGs convey beliefs about whether <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we’ll need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
+<p>Consider first a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(X\)</span> and <span class="math inline">\(X\)</span> is <em>as if</em> randomly assigned, with probability .5. Moreover we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this books, might be declared like this:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diff_in_cates</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, tau <span class="op">=</span> <span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span></code></pre></div>
+<p>The model can be used to generate data, like this:</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="va">head</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Data from a simple model"</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:realizedmodel">Table 6.1: </span>Data from a simple model
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+ID
+</th>
+<th style="text-align:right;">
+U
+</th>
+<th style="text-align:right;">
+tau
+</th>
+<th style="text-align:right;">
+X
+</th>
+<th style="text-align:right;">
+Y_Z_0
+</th>
+<th style="text-align:right;">
+Y_Z_1
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:right;">
+1.3709584
+</td>
+<td style="text-align:right;">
+2.2009654
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.3709584
+</td>
+<td style="text-align:right;">
+1.3709584
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+002
+</td>
+<td style="text-align:right;">
+-0.5646982
+</td>
+<td style="text-align:right;">
+2.0447511
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-0.0646982
+</td>
+<td style="text-align:right;">
+-0.0646982
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+003
+</td>
+<td style="text-align:right;">
+0.3631284
+</td>
+<td style="text-align:right;">
+-0.0032086
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.8631284
+</td>
+<td style="text-align:right;">
+0.8631284
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+004
+</td>
+<td style="text-align:right;">
+0.6328626
+</td>
+<td style="text-align:right;">
+2.8484819
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.6328626
+</td>
+<td style="text-align:right;">
+0.6328626
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+005
+</td>
+<td style="text-align:right;">
+0.4042683
+</td>
+<td style="text-align:right;">
+0.3332266
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.9042683
+</td>
+<td style="text-align:right;">
+0.9042683
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+006
+</td>
+<td style="text-align:right;">
+-0.1061245
+</td>
+<td style="text-align:right;">
+1.1055138
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+-0.1061245
+</td>
+<td style="text-align:right;">
+-0.1061245
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Note that the data contains potential outcomes—that is, it includes a description of how the world would work under different conditions and not simply a description of possibly obervable data.</p>
+<p>Note now that this declaration has a stochastic component. Not only is <code>X</code>randomized but so are individual level features <code>U</code> and treatment effects <code>tau</code>. How should we interpret this stochastic component. In fact there are three distinct ways to interpret this model specification.</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Superpopulation Interpretation of M</strong>: We have a superpopulation. On each run of the model we get to see a new sample of the superpopulation and we use the sample to learn about the superpopulation model.</p></li>
+<li><p><strong>Multiple Worlds Interpretation of M</strong>: A second interpretation is that each data draw is itself a (non stochastic) model and the distribution functions are just one way of generating multiple plausible models.</p></li>
+<li><p><strong>Priors Interpretation of M</strong>: A third interpretation is that the stochastic component represents our uncertainty over a set of possible worlds. It might be, for instance, the a design performs well for some possible worlds and poorly for others, in which case the nature of this distribution is important for assessing our <em>expectation</em> that a design will perform well.</p></li>
+</ol>
+<p>Which interpretation we have matters for who we do diagnosis. A point we retrun to in section XXX.</p>
+<p>A slightly more complex example helps demonstrate how we can use a model declaration to facilate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of treatment should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in the design declaration below. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard deviation 1; <span class="math inline">\(X\)</span> follows a Bernoulli distribution. In the <code>declare_potential_outcomes</code> function, we describe how the average effect of treatment depends on <span class="math inline">\(X\)</span>.</p>
+<!-- I removed the confounding to keep focused on one point -->
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tau_X0</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
+<span class="va">tau_X1</span> <span class="op">&lt;-</span> <span class="fl">1</span>
+
 <span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
-                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
-                     X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">*</span> <span class="va">U</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span>
-                               <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span>
-                               <span class="va">diff_in_cates</span> <span class="op">*</span> <span class="va">X</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span>
-                               <span class="fl">0.5</span> <span class="op">*</span> <span class="va">U</span><span class="op">)</span></code></pre></div>
-<p>We could incorporate different beliefs about the causal model by changing the <code>diff_in_cates</code> parameter. However, notice that regardless of the value of the interaction (either zero or some other number), the DAG looks the same. So if you want to design your study for the difference-in-CATEs, then you’ll need to go beyond the DAG to write down your beliefs about the extent of heterogeneity using another tool – design declaration complements DAGs in this specific way.</p>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="op">(</span><span class="va">X</span><span class="op">==</span><span class="fl">0</span><span class="op">)</span><span class="op">*</span><span class="va">Z</span><span class="op">*</span><span class="va">tau_X0</span> <span class="op">+</span> <span class="op">(</span><span class="va">X</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">Z</span><span class="op">*</span><span class="va">tau_X1</span><span class="op">+</span><span class="va">U</span><span class="op">)</span></code></pre></div>
+<p>The design describes a model complex world in which treatment effects of <span class="math inline">\(Z\)</span> depend in a particular way on a background variable <span class="math inline">\(X\)</span>. We could incorporate different beliefs about the causal model by changing the <code>tau_X0</code> and <code>tau_X1</code> parameters. However, notice that regardless of the value of the interaction (either zero or some other number), the DAG looks the same. So if you want to design your study for the difference-in-CATEs, then you’ll need to go beyond the DAG to write down your beliefs about the extent of heterogeneity using another tool – design declaration complements DAGs in this specific way. We might feel uncomfortable specifying particular values for <code>tau_0</code> and <code>tau_</code>. Fortunately however set up like this we can easily vary these values to see how a design performs over a range of models, or we could even expand the declaration to specify a distribution of values for <code>tau_X0</code> and <code>tau_X</code>.</p>
 <!-- maybe a footnote? -->
 <!-- - some of these variables will be exogenous and endogenous, in Pearl's terms. by exogenous variables, he means variables without parents, no antecendent causes. by endogenous variables, he means those with parents, that are determined in part by earlier variables. endogenous variables are distinct from the problem of endogeneity, which comes from a single variable being a parent of both the treatment variable of interest and the outcome we wish to measure the causal effect of the treatment on. we will use it in Pearl's sense. -->
 </div>

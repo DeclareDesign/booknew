@@ -85,12 +85,16 @@ ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
 
 g
 
-diff_in_cates <- 0.5
 design <-
-  declare_population(N = 100,
-                     U = rnorm(N),
-                     X = rbinom(N, 1, prob = pnorm(0.5 * U + rnorm(N)))) +
-  declare_potential_outcomes(Y ~ 0.5 * X +
-                               0.5 * Z +
-                               diff_in_cates * X * Z +
-                               0.5 * U)
+  declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), X = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * X + U)
+
+draw_data(design) %>% 
+  head %>% kable(caption = "Data from a simple model")
+
+tau_X0 <- 0.5
+tau_X1 <- 1
+
+design <-
+  declare_population(N = 100, U = rnorm(N), X = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ (X==0)*Z*tau_X0 + (X==1)*Z*tau_X1+U)
