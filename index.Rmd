@@ -100,25 +100,25 @@ g <-
                 fill = NA,
                 label.color = NA,
                 label.padding = grid::unit(rep(0, 4), "pt"),
-                size = 4) +
-  geom_richtext(
-    aes(y = y + if_else(lbl_direction == "N", 0.4, -0.4),
-        vjust = if_else(lbl_direction == "N", "bottom", "top"),
-        label = long_label),
-    color = gray(0.5),
-    parse = TRUE,
-    fill = NA,
-    label.color = NA,
-    label.padding = grid::unit(rep(0, 4), "pt"),
-    size = 4) +
+                size = 6) +
+  # geom_richtext(
+  #   aes(y = y + if_else(lbl_direction == "N", 0.4, -0.4),
+  #       vjust = if_else(lbl_direction == "N", "bottom", "top"),
+  #       label = long_label),
+  #   color = gray(0.5),
+  #   parse = TRUE,
+  #   fill = NA,
+  #   label.color = NA,
+  #   label.padding = grid::unit(rep(0, 4), "pt"),
+  #   size = 4) +
   coord_fixed(ylim = c(1.15, 4)) + 
   geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
             alpha = 0.15) +
-  annotate("text", x = 1.5, y = 4.05, label = "Theory") +
-  annotate("text", x = 6, y = 4.05, label = "Empirics") +
-  annotate("text", x = 3.75, y = 4.05, label = "Reality") +
+  # annotate("text", x = 1.5, y = 4.05, label = "Theory") +
+  # annotate("text", x = 6, y = 4.05, label = "Empirics") +
+  # annotate("text", x = 3.75, y = 4.05, label = "Reality") +
   # annotate("text", x = 3, y = 1.6, label = "Truth") +
   theme_dag()
 g
