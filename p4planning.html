@@ -57,7 +57,7 @@
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">20</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">21</span> Research Design Lifecycle</a></li>
-<li><a class="active" href="planning.html"><span class="header-section-number">22</span> Planning</a></li>
+<li><a class="active" href="p4planning.html"><span class="header-section-number">22</span> Planning</a></li>
 <li><a class="" href="ethical-review.html"><span class="header-section-number">23</span> Ethical Review</a></li>
 <li><a class="" href="partners.html"><span class="header-section-number">24</span> Partners</a></li>
 <li><a class="" href="funding.html"><span class="header-section-number">25</span> Funding</a></li>
@@ -85,9 +85,9 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="planning" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="p4planning" class="section level1">
 <h1>
-<span class="header-section-number">22</span> Planning<a class="anchor" aria-label="anchor" href="#planning"><i class="fas fa-link"></i></a>
+<span class="header-section-number">22</span> Planning<a class="anchor" aria-label="anchor" href="#p4planning"><i class="fas fa-link"></i></a>
 </h1>
 <!-- make sure to rename the section title below -->
 <p>In many research communities, it is becoming standard practice to publicly register a pre-analysis plan (PAP) prior to the implementation of some or all of the Data strategy. PAPs serve many functions, but most importantly, they clarify which design choices were made before data collection and which were made afterward. Sometimes – perhaps every time! – we conduct a research study, aspects of <span class="math inline">\(M\)</span>, <span class="math inline">\(I\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span> shift along the way. A concern is that they shift in ways that invalidate the apparent conclusions of the study. For example, “<span class="math inline">\(p\)</span>-hacking” is the shady practice of trying out many regression specifications until the <span class="math inline">\(p\)</span>-value associated with an important test attains statistical significance. PAPs help researchers to credibly communicate to skeptics <em>when</em> design decisions were made: if the regression specification was detailed in a PAP posted before any data were collected, the test cannot be the result of a <span class="math inline">\(p\)</span>-hack.</p>
@@ -248,8 +248,11 @@
 <div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 <span class="va">mock_data</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span>
-<span class="va">mock_data</span> <span class="op">%&gt;%</span> <span class="va">head</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="va">mock_data</span> <span class="op">%&gt;%</span> <span class="va">head</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>, caption <span class="op">=</span> <span class="st">"Mock analysis from Bonilla and Tillery design."</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:unnamed-chunk-432">Table 22.1: </span>Mock analysis from Bonilla and Tillery design.
+</caption>
 <thead><tr>
 <th style="text-align:left;">
 ID
@@ -336,10 +339,10 @@ blm_support
 4
 </td>
 <td style="text-align:right;">
-0.9755095
+0.976
 </td>
 <td style="text-align:right;">
-0.7575338
+0.758
 </td>
 <td style="text-align:right;">
 4
@@ -392,10 +395,10 @@ nationalism
 1
 </td>
 <td style="text-align:right;">
-0.2742441
+0.274
 </td>
 <td style="text-align:right;">
-0.4292832
+0.429
 </td>
 <td style="text-align:right;">
 3
@@ -448,10 +451,10 @@ feminism
 2
 </td>
 <td style="text-align:right;">
-0.3486790
+0.349
 </td>
 <td style="text-align:right;">
-0.4912419
+0.491
 </td>
 <td style="text-align:right;">
 3
@@ -504,10 +507,10 @@ feminism
 3
 </td>
 <td style="text-align:right;">
-0.9294935
+0.929
 </td>
 <td style="text-align:right;">
-0.8407610
+0.841
 </td>
 <td style="text-align:right;">
 5
@@ -560,10 +563,10 @@ feminism
 4
 </td>
 <td style="text-align:right;">
-0.3505999
+0.351
 </td>
 <td style="text-align:right;">
-0.5396713
+0.540
 </td>
 <td style="text-align:right;">
 3
@@ -616,10 +619,10 @@ feminism
 4
 </td>
 <td style="text-align:right;">
-0.1497405
+0.150
 </td>
 <td style="text-align:right;">
-0.5141490
+0.514
 </td>
 <td style="text-align:right;">
 3
@@ -645,10 +648,10 @@ feminism
 </tr>
 </tbody>
 </table></div>
-<p>Table XXX shows a mock analysis average effects (estimated with and without covariate adjustment) as well as the heterogeneous effects analyses with respect to the quasicontinuous moderators.</p>
+<p>Table <a href="#tab:bonillatilleryregtable"><strong>??</strong></a> shows a mock analysis average effects (estimated with and without covariate adjustment) as well as the heterogeneous effects analyses with respect to the quasicontinuous moderators.</p>
 <div class="inline-table"><table class="texreg" style="margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;">
 <caption>
-Mock Regression Table
+Mock regression table from Bonilla and Tillery design.
 </caption>
 <thead><tr>
 <th style="padding-left: 5px;padding-right: 5px;">
@@ -673,16 +676,16 @@ Model 4
 (Intercept)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-3.67<sup>***</sup>
+3.667<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-1.25<sup>***</sup>
+1.248<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-1.58<sup>***</sup>
+1.578<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-3.53<sup>***</sup>
+3.530<sup>***</sup>
 </td>
 </tr>
 <tr>
@@ -690,16 +693,16 @@ Model 4
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.06)
+(0.055)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.10)
+(0.100)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.13)
+(0.127)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.14)
+(0.142)
 </td>
 </tr>
 <tr>
@@ -707,16 +710,16 @@ Model 4
 Znationalism
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.43<sup>***</sup>
+0.430<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.36<sup>***</sup>
+0.360<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.02
+0.019
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.06
+0.057
 </td>
 </tr>
 <tr>
@@ -724,16 +727,16 @@ Znationalism
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.09)
+(0.087)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.04)
+(0.045)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.19)
+(0.192)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.21)
+(0.209)
 </td>
 </tr>
 <tr>
@@ -741,16 +744,16 @@ Znationalism
 Zfeminism
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.17<sup>*</sup>
+0.174<sup>*</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.16<sup>***</sup>
+0.161<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.06
+0.059
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.19
+-0.190
 </td>
 </tr>
 <tr>
@@ -758,16 +761,16 @@ Zfeminism
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.08)
+(0.082)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
+(0.046)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.21)
+(0.207)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.20)
+(0.200)
 </td>
 </tr>
 <tr>
@@ -775,16 +778,16 @@ Zfeminism
 Zintersectional
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.14
+-0.144
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.16<sup>***</sup>
+-0.163<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.33
+-0.326
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.37
+-0.373
 </td>
 </tr>
 <tr>
@@ -792,16 +795,16 @@ Zintersectional
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.09)
+(0.088)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
+(0.049)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.20)
+(0.200)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.21)
+(0.209)
 </td>
 </tr>
 <tr>
@@ -812,7 +815,7 @@ female
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.10<sup>**</sup>
+0.104<sup>**</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -829,7 +832,7 @@ female
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.03)
+(0.034)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -846,7 +849,7 @@ lgbtq
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.37<sup>***</sup>
+0.374<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -863,7 +866,7 @@ lgbtq
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.10)
+(0.100)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -880,7 +883,7 @@ age
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.00
+0.000
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -897,7 +900,7 @@ age
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.00)
+(0.001)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -914,7 +917,7 @@ religiosity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
--0.14<sup>***</sup>
+-0.141<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -931,7 +934,7 @@ religiosity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.01)
+(0.010)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -948,7 +951,7 @@ income
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.01<sup>**</sup>
+0.013<sup>**</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -965,7 +968,7 @@ income
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.00)
+(0.005)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -982,7 +985,7 @@ college
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.16<sup>***</sup>
+0.158<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -999,7 +1002,7 @@ college
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.03)
+(0.034)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1016,10 +1019,10 @@ linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.56<sup>***</sup>
+0.564<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.52<sup>***</sup>
+0.523<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1033,10 +1036,10 @@ linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.01)
+(0.015)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.03)
+(0.032)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1050,13 +1053,13 @@ blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.17<sup>***</sup>
+0.170<sup>***</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.06
+0.055
 </td>
 </tr>
 <tr>
@@ -1067,13 +1070,13 @@ blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.01)
+(0.015)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
+(0.054)
 </td>
 </tr>
 <tr>
@@ -1087,7 +1090,7 @@ Znationalism:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.09
+0.087
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1104,7 +1107,7 @@ Znationalism:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
+(0.046)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1121,7 +1124,7 @@ Zfeminism:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.03
+0.032
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1138,7 +1141,7 @@ Zfeminism:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
+(0.051)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1155,7 +1158,7 @@ Zintersectional:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.04
+0.045
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1172,7 +1175,7 @@ Zintersectional:linked_fate
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.05)
+(0.050)
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
  
@@ -1192,7 +1195,7 @@ Znationalism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.15
+0.147
 </td>
 </tr>
 <tr>
@@ -1209,7 +1212,7 @@ Znationalism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.08)
+(0.076)
 </td>
 </tr>
 <tr>
@@ -1226,7 +1229,7 @@ Zfeminism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.15<sup>*</sup>
+0.153<sup>*</sup>
 </td>
 </tr>
 <tr>
@@ -1243,7 +1246,7 @@ Zfeminism:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.07)
+(0.075)
 </td>
 </tr>
 <tr>
@@ -1260,7 +1263,7 @@ Zintersectional:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.09
+0.089
 </td>
 </tr>
 <tr>
@@ -1277,7 +1280,7 @@ Zintersectional:blm_familiarity
  
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-(0.08)
+(0.080)
 </td>
 </tr>
 <tr style="border-top: 1px solid #000000;">
@@ -1285,16 +1288,16 @@ Zintersectional:blm_familiarity
 R<sup>2</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.05
+0.052
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.73
+0.729
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.60
+0.598
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.09
+0.092
 </td>
 </tr>
 <tr>
@@ -1302,16 +1305,16 @@ R<sup>2</sup>
 Adj. R<sup>2</sup>
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.05
+0.049
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.73
+0.726
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.59
+0.594
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.08
+0.084
 </td>
 </tr>
 <tr>
@@ -1336,16 +1339,16 @@ Num. obs.
 RMSE
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.88
+0.884
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.47
+0.475
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.58
+0.577
 </td>
 <td style="padding-left: 5px;padding-right: 5px;">
-0.87
+0.868
 </td>
 </tr>
 </tbody>
@@ -1355,7 +1358,12 @@ RMSE
 </td>
 </tr></tfoot>
 </table></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-435-1.png" width="100%"></div>
+<div class="figure">
+<span id="fig:bonillatilleryresultsfig"></span>
+<img src="book_files/figure-html/bonillatilleryresultsfig-1.png" alt="Mock coefficient plot from Bonilla and Tillery design." width="100%"><p class="caption">
+Figure 22.1: Mock coefficient plot from Bonilla and Tillery design.
+</p>
+</div>
 </div>
 <div id="design-diagnosis" class="section level3">
 <h3>
@@ -1363,6 +1371,9 @@ RMSE
 </h3>
 <p>Finally, while a design diagnosis is not a necessary component of a preanalysis plan, it can be useful to show readers why a particular design was chosen over others. This diagnosis shows that the design produces unbiased estimates of all estimands, but that we are better powered from some inquires than others (under the above assumptions about effect size, which were our own and not the original authors’.) We are well-powered for the average effects, and the power increases when we include covariate controls. The design is probably too small for most of the heterogeneous effect analyses, which is a point directly conceded in the authors’ original PAP.</p>
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:bonillatillerydiagnosis">Table 22.2: </span>Design diagnosis for Bonilla and Tillery design.
+</caption>
 <thead><tr>
 <th style="text-align:left;">
 Estimand
@@ -1386,7 +1397,7 @@ ATE feminism
 OLS
 </td>
 <td style="text-align:right;">
--0.01
+-0.015
 </td>
 <td style="text-align:right;">
 0.45
@@ -1400,7 +1411,7 @@ ATE feminism
 OLS with controls
 </td>
 <td style="text-align:right;">
-0.00
+-0.001
 </td>
 <td style="text-align:right;">
 0.81
@@ -1414,7 +1425,7 @@ ATE intersectional
 OLS
 </td>
 <td style="text-align:right;">
-0.00
+0.000
 </td>
 <td style="text-align:right;">
 0.13
@@ -1428,7 +1439,7 @@ ATE intersectional
 OLS with controls
 </td>
 <td style="text-align:right;">
-0.00
+-0.002
 </td>
 <td style="text-align:right;">
 0.33
@@ -1442,7 +1453,7 @@ ATE nationalism
 OLS
 </td>
 <td style="text-align:right;">
--0.01
+-0.006
 </td>
 <td style="text-align:right;">
 0.97
@@ -1456,7 +1467,7 @@ ATE nationalism
 OLS with controls
 </td>
 <td style="text-align:right;">
-0.00
+0.000
 </td>
 <td style="text-align:right;">
 1.00
@@ -1470,7 +1481,7 @@ DID feminism familiarity
 DID familiarity
 </td>
 <td style="text-align:right;">
-0.00
+-0.002
 </td>
 <td style="text-align:right;">
 0.05
@@ -1484,7 +1495,7 @@ DID feminism gender
 DID feminism gender
 </td>
 <td style="text-align:right;">
-0.01
+0.006
 </td>
 <td style="text-align:right;">
 0.43
@@ -1498,7 +1509,7 @@ DID intersectional familiarity
 DID familiarity
 </td>
 <td style="text-align:right;">
--0.01
+-0.008
 </td>
 <td style="text-align:right;">
 0.04
@@ -1512,7 +1523,7 @@ DID intersectional lgbtq
 DID intersectional lgbtq
 </td>
 <td style="text-align:right;">
-0.03
+0.027
 </td>
 <td style="text-align:right;">
 0.34
@@ -1526,7 +1537,7 @@ DID nationalism familiarity
 DID familiarity
 </td>
 <td style="text-align:right;">
--0.02
+-0.019
 </td>
 <td style="text-align:right;">
 0.08
@@ -1540,7 +1551,7 @@ DID nationalism linked fate
 DID nationalism linked fate
 </td>
 <td style="text-align:right;">
--0.05
+-0.053
 </td>
 <td style="text-align:right;">
 0.04
@@ -1588,7 +1599,7 @@ DID nationalism linked fate
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#planning"><span class="header-section-number">22</span> Planning</a></li>
+<li><a class="nav-link" href="#p4planning"><span class="header-section-number">22</span> Planning</a></li>
 <li>
 <a class="nav-link" href="#example-21"><span class="header-section-number">22.1</span> Example</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#model-1"><span class="header-section-number">22.1.1</span> Model</a></li>

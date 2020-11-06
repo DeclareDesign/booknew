@@ -20,6 +20,8 @@ des <-
 
 sims <- simulate_design(des, sims = 1000)
 
+
+
 gg_df <- sims %>% 
   mutate(
     se_hat_full_study = sqrt( sd_y_0_hat^2 / 250  + sd_y_1_hat^2 / 250),

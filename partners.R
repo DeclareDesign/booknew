@@ -19,7 +19,7 @@ rect_df <-
 
 lines_df <-
   tibble(
-    diagnosand = c("power", "utility"),
+    diagnosand = c("Power", "Utility"),
     threshold = c(0.8, 2/3)
   )
 

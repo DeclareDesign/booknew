@@ -112,14 +112,14 @@ answer_strategy <-
 
 design <- model + inquiry + data_strategy + answer_strategy
 mock_data <- draw_data(design)
-mock_data %>% head %>% kable()
+mock_data %>% head %>% kable(digits = 3, caption = "Mock analysis from Bonilla and Tillery design.")
 
 fit_1 <- lm_robust(blm_support ~ Z, data = mock_data)
 fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income + college + linked_fate + blm_familiarity, data = mock_data)
 fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = mock_data)
 fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = mock_data)
 
-bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, caption = "Mock Regression Table")
+bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, digits = 3, caption = "Mock regression table from Bonilla and Tillery design.")
 
 female_df <-
   mock_data %>%
@@ -166,8 +166,7 @@ ggplot(data = NULL, aes(estimate, term)) +
   theme(axis.title.y = element_blank())
 
 (g %+% gg_df_1) +
-  (g %+% gg_df_2) +
-  plot_annotation(title = 'Mock Analysis Figure')
+  (g %+% gg_df_2) 
 
 
 
@@ -182,4 +181,4 @@ diagnosis %>%
   ) %>% 
   mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
          estimator_label = str_replace_all(estimator_label, "_", " ")) %>% 
-  kable(digits = 2, col.names = c("Estimand", "Estimator", "Bias", "Power"))
+  kable(digits = 3, col.names = c("Estimand", "Estimator", "Bias", "Power"), caption = "Design diagnosis for Bonilla and Tillery design.")
