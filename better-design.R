@@ -97,7 +97,7 @@ nodes <-
   )
 ggdd_df <- make_dag_df(dag, nodes, design)
 
-base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon))
+base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon)) 
 
 # Select diagnosands
 simple_design_diagnosands <- 
