@@ -7,7 +7,6 @@ lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
-# we should turn this into a picture labeling MIDA
 simple_design <- 
   
   # M: model
@@ -22,10 +21,10 @@ simple_design <-
   ) +
   
   # two potential outcomes, Y_Z_0 and Y_Z_1
-  # Y_Z_0 is the control potential outcome (what would happen if the unit is untreated)
+  # Y_Z_0 is what would happen were the unit untreated
   #   it is equal to the unobserved shock 'u'
-  # Y_Z_1 is the treated potential outcome 
-  #   it is equal to the control potential outcome plus a treatment effect of 0.25
+  # Y_Z_1 is what would happen were the unit treated
+  #   it is equal to Y_Z_0 plus a constant treatment effect of 0.25
   declare_potential_outcomes(
     Y_Z_0 = u,
     Y_Z_1 = Y_Z_0 + 0.25) +
@@ -40,11 +39,12 @@ simple_design <-
   # sampling: we randomly sample 50 of the 100 villages in the population
   declare_sampling(n = 50, clusters = villages) +
   
-  # assignment: we randomly assign half of the 50 sampled units to treatment (half to control)
+  # assignment: we randomly assign half the sampled units to treatment
+  # (and so, half to control)
   declare_assignment(prob = 0.5, clusters = villages) +
   
-  # measurement: construct outcomes from the potential outcomes named Y depending on 
-  #   the realized value of their assignment variable named Z
+  # measurement: construct outcome Y from potential outcomes Y_Z_1,  Y_Z_0 
+  #   depending on the realized value of their assignment variable named Z
   #   we measure a binary outcome Yobs from the unobserved, latent variable Y
   declare_measurement(
     Yobs = case_when(
