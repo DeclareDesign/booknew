@@ -7,60 +7,31 @@ lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
-simple_design <- 
-  
-  # M: model
-  
-  # 50 citizens in each of 100 villages
+model <-
   declare_population(
-    # 100 villages
-    villages = add_level(N = 100, N_citizens_per_village = sample(20:100, N, replace = TRUE)),
-    
-    # 50 citizens in each village
-    citizens = add_level(N = N_citizens_per_village, u = rnorm(N))
+    villages = add_level(
+      N = 100,
+      N_citizens_per_village = sample(20:100, N, replace = TRUE)
+    ),
+    citizens = add_level(N = N_citizens_per_village, u = runif(N))
   ) +
-  
-  # two potential outcomes, Y_Z_0 and Y_Z_1
-  # Y_Z_0 is what would happen were the unit untreated
-  #   it is equal to the unobserved shock 'u'
-  # Y_Z_1 is what would happen were the unit treated
-  #   it is equal to Y_Z_0 plus a constant treatment effect of 0.25
-  declare_potential_outcomes(
-    Y_Z_0 = u,
-    Y_Z_1 = Y_Z_0 + 0.25) +
-  
-  # I: inquiry
-  
-  # we are interested in the average treatment effect in the population
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  
-  # D: data strategy
-  
-  # sampling: we randomly sample 50 of the 100 villages in the population
+  declare_potential_outcomes(Y_Z_0 = u,
+                             Y_Z_1 = pmin(1, Y_Z_0 + 0.025))
+
+inquiry <-
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+
+data_strategy <-
   declare_sampling(n = 50, clusters = villages) +
-  
-  # assignment: we randomly assign half the sampled units to treatment
-  # (and so, half to control)
-  declare_assignment(prob = 0.5, clusters = villages) +
-  
-  # measurement: construct outcome Y from potential outcomes Y_Z_1,  Y_Z_0 
-  #   depending on the realized value of their assignment variable named Z
-  #   we measure a binary outcome Yobs from the unobserved, latent variable Y
-  declare_measurement(
-    Yobs = case_when(
-      Z == 1 & Y_Z_1 > 0 ~ 1,
-      Z == 1 & Y_Z_1 <= 0 ~ 0,
-      Z == 0 & Y_Z_0 > 0 ~ 1,
-      Z == 0 & Y_Z_0 <= 0 ~ 0)
-  ) + 
-                        
+  declare_assignment(prob = 0.5, clusters = villages) + 
   declare_reveal(outcome_variables = Y, assignment_variables = Z) +
-  
-  # A: answer strategy
-  
-  # calculate the difference-in-means of Y depending on Z 
-  # we link this estimator to ATE because this is our estimate of our inquiry
-  declare_estimator(Y ~ Z, clusters = villages, model = difference_in_means, estimand = "ATE")
+  declare_measurement(Yobs = if_else(Y > 0.95, 1, 0))
+
+answer_strategy <- declare_estimator(Y ~ Z, clusters = villages, 
+                                     model = difference_in_means, 
+                                     estimand = "ATE")
+
+design <- model + inquiry + data_strategy + answer_strategy
 
 
 design <-
