@@ -167,64 +167,31 @@ Possibly the most important thing that a DAG can teach us is which research ques
 
 Sometimes researchers use distinct names for different nodes depending on what role they are playing in a model. We will often refer to nodes in this way using the following terms:
 
-1. **Outcome variables**: the variable whose level or responses we want to understand, generally referred to as $Y$, as in the figure below.  Variously described as "dependent variables", "endogeneous variables, "left hand side" variables, "Response variables." 
-2. **Explanatory variables**: variables that affect outcome variables, often referred to as $X$s though often as $Z$, $D$, or $W$.
-3. **Conditioning** or **moderating** variables. Variables that might alter the effect of $X$ on $Y$. See for example $X3$ in the  figure. Note that the figure simply indicates that $X3$ is a cause of $Y$ and the graph does not indicate that there is an interaction between $X2$ and $X3$. One account for this is that as a  general matter if two variables cause an outcome it would be surprising if they did *not* interact in some way.   
-4. **Mediators.** Variables "along the path" between explanatory variables and outcomes. $M$ is an example of  a mediator in this figure. Mediators are often studied to assess "how" $X$ causes $Y$.
-5. **Confounds**. Variables that introduce a non causal correlation between $X$ and $Y$. In the figure $X1$ is an unobserved confound because it causes both $X2$ and $Y$ and could introduce a correlation between them even if $X$ did not cause $Y$. 
-6. **Instruments.** An instrumental variable is a variable that can induce an exogenous change in an explanatory very and help us to figure out the relationship between $X$ and $Y$, it is used instrumentally---not for its own sake. We give a much more detailed treatment of these variables in section XXXX. $Z$ is often reserved for instruments; see figure \@ref(fig:vartypes).
-7. **Colliders.** Colliders are variables that are caused by two other variables, they can be important because when you condition on a collider you can introduce a statistical but non causal relationship between the causes of the collider. Here $K$ is a collider that can create a correlation between $X2$ and $Y$ (via $U$) when it is held fixed. 
+1. **Outcome variables**: the variable whose level or responses we want to understand, generally referred to as $Y$, as in the figure below. Variously described as "dependent variables", "endogenous variables, "left hand side" variables, "Response variables." 
+2. **Explanatory variables**: variables that affect outcome variables, often referred to as $X$s though often as $Z$, $D$, or $W$. We will most often use $D$ to refer to the main causal variable of interest in a particular study.
+3. **Conditioning** or **moderating** variables. Variables that might alter the effect of $D$ on $Y$. See for example $X2$ in the  figure. Note that the figure simply indicates that $X2$ is a cause of $Y$ and the graph does not indicate that there is an interaction between $X1$ and $X2$. One account for this is that as a general matter if two variables cause an outcome it would be surprising if they did *not* interact in some way.   
+4. **Mediators.** Variables "along the path" between explanatory variables and outcomes. $M$ is an example of a mediator in this figure. Mediators are often studied to assess "how" $D$ causes $Y$.
+5. **Confounders**. Variables that introduce a noncausal correlation between $D$ and $Y$. In the figure $X1$ is an unobserved confounder because it causes both $X$ and $Y$ and could introduce a correlation between them even if $D$ did not cause $Y$. 
+6. **Instruments.** An instrumental variable is a variable that can induce an exogenous change in an explanatory variable and help us to figure out the relationship between $D$ and $Y$, it is used instrumentally---not for its own sake. We give a much more detailed treatment of these variables in Section \@ref(p3iv). $Z$ is often reserved for instruments; see Figure \@ref(fig:vartypes).
+7. **Colliders.** Colliders are variables that are caused by two other variables. Colliders can be important because conditioning on a collider introduces a statistical but noncausal relationship between the causes of the collider. Here $K$ is a collider that can create a correlation between $D$ and $Y$ (via $U$) when conditioned upon.
 
-Note that these labels reflect the researcher interest as much as their position in a model. Another researcher examining the same graph might, for instance label $M$ as their explanatory variable or $K$ as their outcome of interest.
+Note that these labels reflect the researcher interest as much as their position in a model. Another researcher examining the same graph might, for instance, label $M$ as their explanatory variable or $K$ as their outcome of interest.
 
-```{r vartypes, echo = FALSE, fig.cap = "A DAG with an explantory variable of interest (X2), an outcome of interest (Y), a mediator (M), a confound (X2), a moderator (X3), an instrument (Z), and a collider (K)."}
-# a_blue <- "#0072B2"
-# a_gray <- "grey80"
-# a_red <- "red"
-# 
-# dag <-
-#   dagify(Y ~ M + X1 + X3 + U,
-#          M ~ X2,
-#          X2 ~ Z + X1,
-#          K ~ X2 + U,
-#          latent = c("U", "X1"))
-# 
-# gg_df <-
-#   tidy_dagitty(dag,
-#                layout = "manual",
-#                x = c(M = 3, U = 4, X1 = 3, X2 = 2, X3 = 4, Z = 1, Y = 4, K = 3),
-#                y = c(M = 1, U = 0, X1 = 2, X2 = 1, X3 = 2, Z = 1, Y = 1, K = 0))
-# 
-# gg_df <-
-#   gg_df %>%
-#   mutate(
-#     color = case_when(
-#       name == "U" ~ a_gray,
-#       name == "X1" ~ a_gray,
-#       name == "X2" ~ a_red,
-#       name == "Y" ~ a_blue
-#     )
-#   )
-# 
-# 
-# g <-
-# ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
-#   geom_dag_node(aes(color = color)) +
-#   scale_color_identity() +
-#   geom_dag_text(color = "black", family = "Helvetica") +
-#   geom_dag_edges() +
-#   theme_dag()
-# 
-# g
+```{r vartypes, echo = FALSE, fig.cap = "A DAG with an explantory variable of interest (D), an outcome of interest (Y), a mediator (M), a confounder (X1), a moderator (X2), an instrument (Z), and a collider (K)."}
 
 design <-
-  declare_population(N = 100, U = rbinom(N, size = 1, prob = 0.25), X1 = rbinom(N, size = 1, prob = 0.25), X3 = rbinom(N, size = 1, prob = 0.25)) +
-  declare_potential_outcomes(D ~ Z*X1) + 
-  declare_potential_outcomes(M ~ D, assignment_variables = c(D)) + 
-  declare_potential_outcomes(K ~ D*U, assignment_variables = D) +
-  declare_potential_outcomes(Y ~ X3 + X1 + M + U, assignment_variables = c(M)) +
+  declare_population(
+    N = 100,
+    U = rbinom(N, size = 1, prob = 0.25),
+    X1 = rbinom(N, size = 1, prob = 0.25),
+    X2 = rbinom(N, size = 1, prob = 0.25)
+  ) +
+  declare_potential_outcomes(D ~ Z * X1) +
+  declare_potential_outcomes(M ~ D, assignment_variables = c(D)) +
+  declare_potential_outcomes(K ~ D * U, assignment_variables = D) +
+  declare_potential_outcomes(Y ~ X2 + X1 + M + U, assignment_variables = c(M)) +
   declare_assignment(prob = 0.5) +
-  declare_reveal(D, Z) + 
+  declare_reveal(D, Z) +
   declare_reveal(M, c(D)) +
   declare_reveal(K, c(D)) +
   declare_reveal(Y, c(M))
@@ -232,7 +199,7 @@ design <-
 
 
 dag <- dagify(
-  Y ~ X3 + X1 + M + U,
+  Y ~ X2 + X1 + M + U,
   M ~ D,
   K ~ D + U,
   D ~ Z + X1
@@ -243,17 +210,17 @@ dag <- dagify(
 
 nodes <-
   tibble(
-    name = c("Z", "X1", "U", "Y", "X3", "K", "M", "D"),
-    label = c("Z", "X", "U", "Y", "X3", "K", "M", "D"),
+    name = c("Z", "X1", "U", "Y", "X2", "K", "M", "D"),
+    label = c("Z", "X1", "U", "Y", "X2", "K", "M", "D"),
     annotation = c(
-      "**Treatment assignment**",
-      "**Observed confounder**",
+      "**Instrument**",
+      "**Confounder**",
       "**Unknown heterogeneity**",
       "**Outcome**",
-      "**Observed covariate**",
+      "**Moderator**",
       "**Collider**",
       "**Mediator**",
-      "**Treatment received**"
+      "**Explanatory variable**"
     ),
     x = c(1, 3, 5, 5, 5, 3, 3, 2),
     y = c(2.5, 4, 1, 2.5, 4, 1, 2.5, 2.5), 
