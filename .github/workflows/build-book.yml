@@ -60,11 +60,8 @@ jobs:
         run: |
           mkdir ~/Dropbox
           mkdir ~/Dropbox/DeclareDesign_book_rfiles
-          wget -O ~/Dropbox/files.zip $DOWNLOAD_BOOK_RDS_URL
+          wget -O ~/Dropbox/files.zip https://www.dropbox.com/sh/fqjlu8k90sx6kv8/AADcmSxqO35f4LEvHyJjl1Dwa?dl=1
           unzip ~/Dropbox/files.zip -d ~/Dropbox/DeclareDesign_book_rfiles -x /
-          Rscript -e 'remotes::install_github("DeclareDesign/bookdown")'
-          Rscript -e 'remotes::install_github("rstudio/bslib")'
-          Rscript -e 'remotes::install_github("DeclareDesign/DeclareDesign")'
 
       - name: Build book
         run: Rscript -e 'bookdown::render_book("index.Rmd", quiet = TRUE)'
