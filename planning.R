@@ -112,6 +112,7 @@ answer_strategy <-
 
 design <- model + inquiry + data_strategy + answer_strategy
 mock_data <- draw_data(design)
+
 mock_data %>% head %>% kable(digits = 3, caption = "Mock analysis from Bonilla and Tillery design.")
 
 fit_1 <- lm_robust(blm_support ~ Z, data = mock_data)
