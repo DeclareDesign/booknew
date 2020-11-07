@@ -17,7 +17,7 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-# Partners
+## Partners
 
 <!-- make sure to rename the section title below -->
 
@@ -56,11 +56,11 @@ simulations <- simulate_designs(designs, sims = 1000)
 gg_df <-
   simulations %>%
   group_by(prob) %>% 
-  summarise(power = mean(p.value <= 0.05),
-            utility = prob,
-            acceptable_power = power >= 0.80,
-            acceptable_utility = utility >= 2/3, .groups = "drop") %>% 
-  pivot_longer(c(power, utility),names_to = "diagnosand")
+  summarise(Power = mean(p.value <= 0.05),
+            Utility = prob,
+            acceptable_power = Power >= 0.80,
+            acceptable_utility = Utility >= 2/3, .groups = "drop") %>% 
+  pivot_longer(c(Power, Utility),names_to = "diagnosand")
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
