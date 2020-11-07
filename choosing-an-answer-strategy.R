@@ -249,8 +249,9 @@ subplot_function <- function(data) {
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5),
-          plot.subtitle = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(size = 25, hjust = 0.5),
+          plot.subtitle = element_text(size = 25, hjust = 0.5),
+          plot.margin = margin(10, 10, 100, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -272,10 +273,12 @@ gg <- gg_df %>%
 wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
-    legend.title = element_text(size = 28),
-    legend.text = element_text(size = 28),
-    legend.key.size = unit(25, "mm")
-  )
+    legend.title = element_text(size = 35),
+    legend.text = element_text(size = 35),
+    legend.key.size = unit(35, "mm"),
+    legend.margin = margin(t = 20, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 25)
+    )
 
 gg_df <-
   gg_df %>%
