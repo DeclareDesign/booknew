@@ -1,0 +1,52 @@
+language: r
+pandoc_version: 2.5
+
+branches:
+  only:
+    - master
+
+cache:
+  packages: yes
+  directories:
+    - $HOME/bin
+    
+before_install:
+  - sudo apt-get install -y libgsl-dev libv8-dev libudunits2-dev libgdal-dev libgeos-dev libproj-dev
+  - mkdir ~/.R
+  - echo "CXX_STD = CXX14" > ~/.R/Makevars
+  - echo "CXX14 = g++" >> ~/.R/Makevars
+  - echo "CXX14FLAGS = -O3 -fPIC -Wno-unused-variable -Wno-unused-function -DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION" >> ~/.R/Makevars
+
+r_packages:
+  - bookdown
+  - checkpoint
+  - remotes
+  - diffobj
+
+r_github_packages: 
+  - ebenmichael/augsynth
+  - malcolmbarrett/tidymeta
+  - DeclareDesign/dddag
+
+before_script:
+  - mkdir ~/Dropbox
+  - mkdir ~/Dropbox/DeclareDesign_book_rfiles
+  - wget -O ~/Dropbox/files.zip $DOWNLOAD_BOOK_RDS_URL
+  - unzip ~/Dropbox/files.zip -d ~/Dropbox/DeclareDesign_book_rfiles -x /
+  - Rscript -e 'library(checkpoint); found_packages <- scanForPackages(".", use.knitr = TRUE)$pkgs; if(length(found_packages[!found_packages%in% installed.packages()]) > 0) install.packages(found_packages[!found_packages%in% installed.packages()])'
+  - Rscript -e 'remotes::install_github("DeclareDesign/bookdown")'
+  - Rscript -e 'remotes::install_github("rstudio/bslib")'
+  - Rscript -e 'remotes::install_github("DeclareDesign/DeclareDesign")'
+script:
+  - Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::bs4_book")'
+  - Rscript scripts/purl_R_scripts.R
+  - echo 'book.declaredesign.org' > _book/CNAME
+  
+deploy:
+  local-dir: _book
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: master
