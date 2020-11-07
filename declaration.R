@@ -1,5 +1,5 @@
 # ---
-# Formalizing MIDA
+# Declaration
 # --- 
 
 packages <- c("knitr", "tidyverse", "DeclareDesign", "DesignLibrary")

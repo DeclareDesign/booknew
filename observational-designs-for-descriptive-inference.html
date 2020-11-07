@@ -37,7 +37,7 @@
 <li><a class="" href="software-primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="formalizing-mida.html"><span class="header-section-number">5</span> Formalizing MIDA</a></li>
+<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -80,9 +80,9 @@
 <h2>
 <span class="header-section-number">14.1</span> Random sampling<a class="anchor" aria-label="anchor" href="#random-sampling"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration" class="section level3">
+<div id="declaration-1" class="section level3">
 <h3>
-<span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-1"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span>
@@ -391,9 +391,9 @@ Clustered Standard Errors
 <span class="header-section-number">14.2</span> Poststratification<a class="anchor" aria-label="anchor" href="#poststratification"><i class="fas fa-link"></i></a>
 </h2>
 <p>Poststratification is a tool for learning about a population when you have a sample whose units were drawn with unequal (and usually unknown) probabilities. In essence, if you know features of the population that you can measure in your own sample, you can reweight your sample to look like the population—at least along the dimensions you can measure. In its simplest form, poststratification just involves counting and dividing. Say you want to poststratify your sample so that, in terms of gender and age, it looks like all people in their twenties in the United States population in 2010. That gives twenty groups—one for each age and each gender—whose size you need to count in the 2010 Decennial census and in your sample. Then, simply weight each person in the sample by the size of their group in the population divided by the size of their group in the sample. As we illustrate with the declaration below, it turns out that these weights are equivalent to the inverse sampling probabilities one would obtain were one to construct the sample using groups as strata. That’s where the “stratification” in poststratification comes from—it’s “post” because the weights are constructed after the sampling has already taken place. In the online example, we illustrate how Bayesian multi-level regression poststratification (MRP) can help to deal with the fact that, as the number of group-defining features increases, the sample may contain no information at all about some of the groups defined by the combination of those features.</p>
-<div id="declaration-1" class="section level3">
+<div id="declaration-2" class="section level3">
 <h3>
-<span class="header-section-number">14.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-2"><i class="fas fa-link"></i></a>
 </h3>
 <!-- 
 JC comment: Original declaration doesn't have correlation between X and Y so this design works even if the estimator is just an intercept. Once I added the correlation, the design was biased. Don't quite understand the demeaning approach (doesn't appear to be using any population-level info?) so have just opted for a more conventional approach to poststratification that reweights to the population proportions. Have also called this poststratification since we are now only using MRP in the extended example. 
@@ -1026,9 +1026,9 @@ Y
 <h2>
 <span class="header-section-number">14.3</span> Inference about unobserved variables<a class="anchor" aria-label="anchor" href="#inference-about-unobserved-variables"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration-2" class="section level3">
+<div id="declaration-3" class="section level3">
 <h3>
-<span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-3"><i class="fas fa-link"></i></a>
 </h3>
 <!--
 JC Comment: This setup seems a bit odd to me. I don't think anyone ever has the true average amount or score of democracy in mind as their inquiry, or thinks they're getting it by averaging indicators. It seems a bit trivial to show that anyone who sets out to do so gets the answer wrong if they don't anticipate an intercept in the DGP of one of the measures or make the wrong distributional assumptions. My sense is that there are two kinds of estimands people are usually interested in with designs such as these. First, do the things I measured "load" onto the underlying thing in the way I expect; second, do the relative levels stack up as they should (e.g., if Togo is truly less democratic than Benin then I want this to show up in the ordering). I've had a go at one design below that focuses on the second kind of estimand. Not entirely sure about it but I think it may be a step in the right direction and shows off DD flexibility.
@@ -1077,9 +1077,9 @@ design <-
 <h2>
 <span class="header-section-number">14.4</span> Structural estimation<a class="anchor" aria-label="anchor" href="#structural-estimation"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration-3" class="section level3">
+<div id="declaration-4" class="section level3">
 <h3>
-<span class="header-section-number">14.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-4"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="dag-3" class="section level3">
@@ -1106,7 +1106,7 @@ design <-
 <li><a class="nav-link" href="#observational-designs-for-descriptive-inference"><span class="header-section-number">14</span> Observational designs for descriptive inference</a></li>
 <li>
 <a class="nav-link" href="#random-sampling"><span class="header-section-number">14.1</span> Random sampling</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration"><span class="header-section-number">14.1.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#declaration-1"><span class="header-section-number">14.1.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag"><span class="header-section-number">14.1.2</span> Dag</a></li>
 <li><a class="nav-link" href="#example-2"><span class="header-section-number">14.1.3</span> Example</a></li>
 <li><a class="nav-link" href="#simple-random-sampling"><span class="header-section-number">14.1.4</span> Simple random sampling</a></li>
@@ -1115,7 +1115,7 @@ design <-
 </li>
 <li>
 <a class="nav-link" href="#poststratification"><span class="header-section-number">14.2</span> Poststratification</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-1"><span class="header-section-number">14.2.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#declaration-2"><span class="header-section-number">14.2.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-1"><span class="header-section-number">14.2.2</span> Dag</a></li>
 <li><a class="nav-link" href="#exercises-1"><span class="header-section-number">14.2.3</span> Exercises</a></li>
 <li><a class="nav-link" href="#example-3"><span class="header-section-number">14.2.4</span> Example</a></li>
@@ -1124,14 +1124,14 @@ design <-
 </li>
 <li>
 <a class="nav-link" href="#inference-about-unobserved-variables"><span class="header-section-number">14.3</span> Inference about unobserved variables</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-2"><span class="header-section-number">14.3.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#declaration-3"><span class="header-section-number">14.3.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-2"><span class="header-section-number">14.3.2</span> Dag</a></li>
 <li><a class="nav-link" href="#example-5"><span class="header-section-number">14.3.3</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#structural-estimation"><span class="header-section-number">14.4</span> Structural estimation</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-3"><span class="header-section-number">14.4.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#declaration-4"><span class="header-section-number">14.4.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-3"><span class="header-section-number">14.4.2</span> Dag</a></li>
 <li><a class="nav-link" href="#example-6"><span class="header-section-number">14.4.3</span> Example</a></li>
 </ul>
