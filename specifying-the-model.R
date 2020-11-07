@@ -74,53 +74,20 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 
 base_dag_plot %+% ggdd_df
 
-# a_blue <- "#0072B2"
-# a_gray <- "grey80"
-# a_red <- "red"
-# 
-# dag <-
-#   dagify(Y ~ M + X1 + X3 + U,
-#          M ~ X2,
-#          X2 ~ Z + X1,
-#          K ~ X2 + U,
-#          latent = c("U", "X1"))
-# 
-# gg_df <-
-#   tidy_dagitty(dag,
-#                layout = "manual",
-#                x = c(M = 3, U = 4, X1 = 3, X2 = 2, X3 = 4, Z = 1, Y = 4, K = 3),
-#                y = c(M = 1, U = 0, X1 = 2, X2 = 1, X3 = 2, Z = 1, Y = 1, K = 0))
-# 
-# gg_df <-
-#   gg_df %>%
-#   mutate(
-#     color = case_when(
-#       name == "U" ~ a_gray,
-#       name == "X1" ~ a_gray,
-#       name == "X2" ~ a_red,
-#       name == "Y" ~ a_blue
-#     )
-#   )
-# 
-# 
-# g <-
-# ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
-#   geom_dag_node(aes(color = color)) +
-#   scale_color_identity() +
-#   geom_dag_text(color = "black", family = "Helvetica") +
-#   geom_dag_edges() +
-#   theme_dag()
-# 
-# g
 
 design <-
-  declare_population(N = 100, U = rbinom(N, size = 1, prob = 0.25), X1 = rbinom(N, size = 1, prob = 0.25), X3 = rbinom(N, size = 1, prob = 0.25)) +
-  declare_potential_outcomes(D ~ Z*X1) + 
-  declare_potential_outcomes(M ~ D, assignment_variables = c(D)) + 
-  declare_potential_outcomes(K ~ D*U, assignment_variables = D) +
-  declare_potential_outcomes(Y ~ X3 + X1 + M + U, assignment_variables = c(M)) +
+  declare_population(
+    N = 100,
+    U = rbinom(N, size = 1, prob = 0.25),
+    X1 = rbinom(N, size = 1, prob = 0.25),
+    X2 = rbinom(N, size = 1, prob = 0.25)
+  ) +
+  declare_potential_outcomes(D ~ Z * X1) +
+  declare_potential_outcomes(M ~ D, assignment_variables = c(D)) +
+  declare_potential_outcomes(K ~ D * U, assignment_variables = D) +
+  declare_potential_outcomes(Y ~ X2 + X1 + M + U, assignment_variables = c(M)) +
   declare_assignment(prob = 0.5) +
-  declare_reveal(D, Z) + 
+  declare_reveal(D, Z) +
   declare_reveal(M, c(D)) +
   declare_reveal(K, c(D)) +
   declare_reveal(Y, c(M))
@@ -128,7 +95,7 @@ design <-
 
 
 dag <- dagify(
-  Y ~ X3 + X1 + M + U,
+  Y ~ X2 + X1 + M + U,
   M ~ D,
   K ~ D + U,
   D ~ Z + X1
@@ -139,17 +106,17 @@ dag <- dagify(
 
 nodes <-
   tibble(
-    name = c("Z", "X1", "U", "Y", "X3", "K", "M", "D"),
-    label = c("Z", "X", "U", "Y", "X3", "K", "M", "D"),
+    name = c("Z", "X1", "U", "Y", "X2", "K", "M", "D"),
+    label = c("Z", "X1", "U", "Y", "X2", "K", "M", "D"),
     annotation = c(
-      "**Treatment assignment**",
-      "**Observed confounder**",
+      "**Instrument**",
+      "**Confounder**",
       "**Unknown heterogeneity**",
       "**Outcome**",
-      "**Observed covariate**",
+      "**Moderator**",
       "**Collider**",
       "**Mediator**",
-      "**Treatment received**"
+      "**Explanatory variable**"
     ),
     x = c(1, 3, 5, 5, 5, 3, 3, 2),
     y = c(2.5, 4, 1, 2.5, 4, 1, 2.5, 2.5), 
