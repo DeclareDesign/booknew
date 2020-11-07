@@ -87,7 +87,6 @@
 Figure 7.1: Inquiries based on different numbers of parameters
 </p>
 </div>
-<!-- These graphs are beautiful -->
 <p>And of course it need not be a number at all: the answer to your question might be “blue” or “the normal distribution.” Your inquiry could be “should I reject <span class="math inline">\(M\)</span> as a useful model of the world?” A researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries – we’re interested in the sub-inquiries only insofar as they help us understand the real inquiry – is this model of the world a good one or not.</p>
 <div id="kinds-of-inquiries" class="section level2">
 <h2>
@@ -107,8 +106,10 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </h3>
 <p>Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Measured variables are often distinct from latent variables giving rise to a problem of descriptive inference. For the most part, we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts.</p>
 <!-- MH: I am not sure that there is a fundamental problem of descriptive  inference. Sure if you stipulate that you cannot measure correctly then we have a problem; but the fundamental problem of causal inference is that this is technically impossible. It's not just a stipulation -->
-<p>Table ZZZ enumerates some common descriptive estimands.</p>
+<p>Table <a href="defining-the-inquiry.html#tab:descriptiveestimands">7.1</a> enumerates some common descriptive estimands.</p>
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:descriptiveestimands">Table 7.1: </span> Descriptive inquiries</caption>
 <thead><tr class="header">
 <th>Inquiry</th>
 <th>Description</th>
@@ -150,11 +151,11 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <span class="header-section-number">7.1.2</span> Inquiries about causal effects<a class="anchor" aria-label="anchor" href="#inquiries-about-causal-effects"><i class="fas fa-link"></i></a>
 </h3>
 <p>Inquiries about causal effects involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0.</p>
-<p>Table ZZZ enumerates some common causal estimands.</p>
-<ul>
-<li>Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over</li>
-</ul>
+<p>Table <a href="defining-the-inquiry.html#tab:causalestimands">7.2</a> enumerates some common causal estimands.</p>
+<!-- - Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over -->
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:causalestimands">Table 7.2: </span> Causal inquiries</caption>
 <colgroup>
 <col width="41%">
 <col width="58%">
@@ -193,6 +194,8 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <p>The inquiries we have introduced thus far depend on variables in the model, but not on features of the data and answer strategies. Many common inquiries do depend on realizations of the research design.</p>
 <p>The first type depend on realizations of the data <span class="math inline">\(d\)</span>: inquiries about units within a sample depend on which units enter the sample; inquiries about treated units depend on which are treated. The sample average treatment effect is a common inquiry used by experimental researchers who wish to not worry about how their effects generalize to a population but only about identifying the causal effect within the units in front of them. There is a true sample average treatment effect <span class="math inline">\(a^w\)</span> for every possible sample that we could draw. But which of those fixed values is selected as our inquiry if we define <span class="math inline">\(I\)</span> as the sample average effect depends on which sample is actually selected by our sampling procedure. The same is true when we condition inquiries on the set of treated units.</p>
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:datadependentestimands">Table 7.3: </span> Data-dependent inquiries</caption>
 <colgroup>
 <col width="41%">
 <col width="58%">
@@ -222,6 +225,8 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <p>The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like “‘Was economic crisis necessary for democratization in the Southern Cone of Latin America?’ or ‘Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?’” are examples of such inquiries <span class="citation">(Goertz and Mahoney <a href="references-4.html#ref-goertz2012tale">2012</a>)</span>. Though they bear a resemblence and <em>are</em> related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Specifically, as &lt;span class="citation"&gt;Yamamoto (&lt;a href="references-4.html#ref-yamamoto2012understanding"&gt;2012&lt;/a&gt;)&lt;/span&gt; points out, the causal attribution estimand for binary variables can be written &lt;span class="math inline"&gt;\(Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)\)&lt;/span&gt;, while the average treatment effect among those successfully treated can be written &lt;span class="math inline"&gt;\(E[Y_i(1) - Y_i(0) \mid X_i = Y_i = 1]\)&lt;/span&gt;. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written &lt;span class="math inline"&gt;\(Pr(Y_i(1)\mid X_i = Y_i = 1) - Pr(Y_i(0) \mid X_i = Y_i = 1)\)&lt;/span&gt;. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.&lt;/p&gt;'><sup>8</sup></a> it is important not to confuse the two kinds of inquiries, as often happens.</p>
 <p>While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. <span class="citation">Pearl (<a href="references-4.html#ref-pearl1999probabilities">1999</a>)</span> provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, <span class="math inline">\(Y_i = 1\)</span> and <span class="math inline">\(X_i = 1\)</span> could represent “Peace” and “Both democracies” and <span class="math inline">\(Y_i = 0\)</span> and <span class="math inline">\(X_i = 0\)</span> could represent “War” and “Not both democracies.” Then <span class="math inline">\(Pr(Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1))\)</span> asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies—that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, <span class="math inline">\(Pr(Y_i(X_i = 1)=1 \mid X_i = Y_i = 0)\)</span> asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies—in other words, in what proportion of cases would democracy have been sufficient to cause peace? <span class="citation">Yamamoto (<a href="references-4.html#ref-yamamoto2012understanding">2012</a>)</span> extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.</p>
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:attributionestimands">Table 7.4: </span> Causal attribution inquiries</caption>
 <colgroup>
 <col width="41%">
 <col width="58%">
@@ -301,12 +306,12 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
 <span class="header-section-number">7.3</span> Example<a class="anchor" aria-label="anchor" href="#example-2"><i class="fas fa-link"></i></a>
 </h2>
 <p><span class="citation">Björkman and Svensson (<a href="references-4.html#ref-Bjorkman:2009">2009</a>)</span> reports the results of a cluster-randomized trial of the effects of community-based monitoring of health clinics in Uganda to improve children’s health. The main inquiry was the average treatment effect on the child mortality rate. The study showed that the program was a success: in the control group, the child mortality rate was 144 per 1000 live births, compared with 97 in the treatment group, for a 33% reduction in child mortality.</p>
-<p>The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table <a href="defining-the-inquiry.html#tab:bstypes">7.1</a>, which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for “Adverse”) is alive if in control, but dies if in treatment. Type B (“Beneficial”) is just the reverse: the child dies if untreated, but survives if treated. Type C (“Chronic”) would die under either condition and Type D (“Destined”) would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.</p>
+<p>The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table <a href="defining-the-inquiry.html#tab:bstypes">7.5</a>, which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for “Adverse”) is alive if in control, but dies if in treatment. Type B (“Beneficial”) is just the reverse: the child dies if untreated, but survives if treated. Type C (“Chronic”) would die under either condition and Type D (“Destined”) would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.</p>
 <p>The main trouble here is that the average treatment effect averages over all four types so the ATE itself is also undefined. Since this inquiry is undefined, we’ll need to select a different one.</p>
 <p>We might want switch our inquiry to be about the average effect among D types only. However this inquiry has a different problem – it’s unanswerable. Even though this inquiry is not undefined, it’s unanswerable because we won’t be able to learn who the D types are. In the treatment group, we can’t tell the Bs from the Ds and in the control group, we can’t tell the As from the Ds. The reason we can’t tell these types apart using realized data is the fundamental problem of causal inference.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:bstypes">Table 7.1: </span> Latent types</caption>
+<span id="tab:bstypes">Table 7.5: </span> Latent types</caption>
 <thead><tr class="header">
 <th>Type</th>
 <th>Alive(<span class="math inline">\(Z = 0\)</span>)</th>

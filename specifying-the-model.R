@@ -147,7 +147,7 @@ nodes <-
       "**Unknown heterogeneity**",
       "**Outcome**",
       "**Observed covariate**",
-      "**Collier**",
+      "**Collider**",
       "**Mediator**",
       "**Treatment received**"
     ),
