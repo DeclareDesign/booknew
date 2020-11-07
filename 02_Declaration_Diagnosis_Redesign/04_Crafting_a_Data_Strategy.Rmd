@@ -333,9 +333,9 @@ John Stuart @mill1884system elaborated methods of induction that have inspired t
 
 Some qualitative case selection strategies borrow directly from the toolkit of quantitative, large-$N$ analysis. Where datasets on a large number of cases are are available, @lieberman2005nested proposes using the predicted values from a regression model---often referred to as the "regression line"---from an initial quantitative analysis in order to select cases for in-depth analysis. Again, the inquiry and answer strategy guide case selection. When the inquiry is focused on uncovering the same causal relationship sought in the quantitative analysis, @lieberman2005nested suggests selecting cases that are relatively well-predicted and that maximize variation on the causal variable. He points to @Martin1992 and @Swank2002 as examples of designs employing this strategy. However, @lieberman2005nested advocates a different case selection strategy when the goal is to expand upon the theory initially tested in the quantitative analysis. In that instance, he recommends choosing cases lying far from the regression line, which are not well-predicted and may therefore lead to insights about what alternative mechanisms were left out of the initial regression.
 
-@SeawrightGerring2008 use the regression line analogy to describe seven different sampling strategies tailored to suit different inquiries, depicted below. The horizontal axis represents some characteristic of cases, $X$, such as the degree of labor union strength. The vertical axis represents the outcome,  $Y$, such as degree of welfare state generosity. The line represents the predicted cross-case relationship, dark grey squares represent possible cases in the population, and blue squares represent the sample chosen under each strategy.
+@SeawrightGerring2008 use the regression line analogy to describe seven different sampling strategies tailored to suit different inquiries, depicted below in Figure \@ref(fig:caseselectionstrategies). The horizontal axis represents some characteristic of cases, $X$, such as the degree of labor union strength. The vertical axis represents the outcome,  $Y$, such as degree of welfare state generosity. The line represents the predicted cross-case relationship, dark grey squares represent possible cases in the population, and blue squares represent the sample chosen under each strategy.
 
-```{r,fig.width = 13, fig.height = 2.5, echo = FALSE}
+```{r caseselectionstrategies, fig.cap = "Case selection Strategies", fig.width = 7, fig.height = 4, echo = FALSE}
 points_df <- data.frame(
   X = c(.85, .85, 1.35, 1.95, 1.95, 3.05, 3.05, 3.55, 4.15, 4.65),
   Y = c(.85, 4.15, 1.35, 2.45, 3.55, 2.45, 3.55, 4.15, 1.35, 4.65))
@@ -580,7 +580,6 @@ gg_df <-
     a = block_ra(households, conditions = c("C", "T1", "T2")),
     b = block_ra(households, conditions = c("C", "T1", "T2", "T1\nT2")),
     c = if_else(b == "T1\nT2", "T3", as.character(b))
-    # c = block_ra(households, conditions = c("C", "T1", "T2", "T3"))
   )
 ) %>%
   pivot_longer(cols = letters[1:3],
@@ -592,8 +591,6 @@ gg_df <-
     labels = c("Three-arm", "Factorial", "Four-arm")
   ))
 
-sort(unique(gg_df$assignment))
-
 gg_df %>%
   ggplot(aes(X, Y)) +
   geom_tile(aes(fill = assignment), width = 0.46, height = 0.46) +
@@ -602,14 +599,15 @@ gg_df %>%
   facet_grid(~ procedure, switch = "y") +
   dd_theme() +
   scale_fill_manual(values = c(dd_light_gray, dd_pink, dd_purple , dd_light_blue, dd_orange)) +
-  # scale_fill_manual(values = c("#72B4F333", dd_orange, dd_light_blue)) +
-  # scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.title = element_blank(),
         axis.text = element_blank())
 ```
+
+
+Stepped-wedge assignment section to be written.
 
 ```{r stepwedgera, fig.cap = "Step-wedge random assignment.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
@@ -775,7 +773,7 @@ In randomized experiments, noncompliance may happen due to administrative error,
 
 Noncompliance also affects observational designs for causal inference in which nature or a non-random administrative process affects treatment such as a threshold cut-off. In instrumental variables designs, noncompliance is at the core: the instrument $Z$ causally affects treatment $D$, but other factors also affect $D$. In a regression discontinuity design, a threshold determines treatment status such that above a certain value of a scale the unit is treated and below it is not. But noncompliance can also occur, leading to fuzzy regression discontinuity designs, in which the threshold is imperfect and some units below receive treatment and some units above do not.
 
-Under two-sided noncompliance, there are four types of participants, determined by the potential outcomes $D$ as a function of which condition the unit is randomly assigned two. For a two-arm trial, there are two treatment potential outcomes: whether you would receive the treatment if you are assigned to control ($D_i(Z_i = 0)$) and whether you would receive the treatment if assigned to treatment ($D_i(Z_i = 1)$). The four types are enumerated and labeled in the table below.
+Under two-sided noncompliance, there are four types of participants, determined by the potential outcomes $D$ as a function of which condition the unit is randomly assigned two. For a two-arm trial, there are two treatment potential outcomes: whether you would receive the treatment if you are assigned to control ($D_i(Z_i = 0)$) and whether you would receive the treatment if assigned to treatment ($D_i(Z_i = 1)$). The four types are enumerated and labeled in Table \@ref(tab:compliancetypes) below.
 
 | Type          | $D_i(Z_i = 0)$   | $D_i(Z_i = 1)$   |
 |---------------|------------------|------------------|
@@ -784,7 +782,9 @@ Under two-sided noncompliance, there are four types of participants, determined 
 | Defier        | 1                | 0                |
 | Always-taker  | 1                | 1                |
 
-Never-takers are those who never take the treatment, no matter what treatment they are assigned; compliers take exactly the treatment they are assigned; defiers take exactly the opposite condition they are assigned; and always-takers receive the treatment regardless of whether the are assigned to. In one-sided noncompliance, there are only two types of participants: never-takers and compliers.
+Table: (\#tab:compliancetypes) Compliance types
+
+Never-takers are those who never take the treatment, no matter what treatment they are assigned. Compliers take exactly the treatment they are assigned. Sefiers do exactly the opposite. When assigned to treatment, they refuse it, but when assigned to control, they take treatment. Like their name suggests, always-takers take the treatment regardless of the treatment condition they are assigned to. In some settings we can rule out some types on the basis of design information. Canvassing experiments, for example, cannot feature always takers because there is no way to "take treatment" unless you are assigned treatment, but there are never-takers because subjects might not be at home when the canvassers come knocking. Such experimentsa are said to experience one-sided noncompliance.
 
 In the presence of noncompliance, a change in inquiry is inevitable. The average treatment effect cannot be estimated by comparing those assigned to treatment and those assigned to control, because the assignment differs from whether treatment was received. The average difference between those assigned to the two conditions can be relabeled the intent-to-treat effect. Comparing those who *received* treatment to those that did not is also not an option, without additional herculean assumptions, because unobserved heterogeneity now jointly affects $D$ with $Z$. The randomized experiment is broken: the treatment group is no longer comparable to the control group in expectation. Instead, a complier average treatment may be obtained using instrumental variables estimation, which implies switching to a local inquiry among complier types. This effect may differ from the average treatment effect if compliers differ systematically from other types. Estimating the complier average treatment effect requires the addition of assumptions on top of those for randomized experiments, including the ignorability of treatment assignment and, in the case of two-sided noncompliance, a monotonicity assumption that rules out defiers.
 
