@@ -11,7 +11,7 @@ design <-
   declare_population(N = 100, U = rnorm(N)) +
   declare_potential_outcomes(D ~ if_else(Z + U > 0, 1, 0), assignment_variables = Z) + 
   declare_potential_outcomes(Y ~ 0.1 * D + 0.25 + U, assignment_variables = D) +
-  declare_estimand(late = mean(Y_D_1[D_Z_1 == 1 & D_Z_0 == 0] - Y_D_0[D_Z_1 == 1 & D_Z_0 == 0])) +
+  declare_estimand(LATE = mean(Y_D_1[D_Z_1 == 1 & D_Z_0 == 0] - Y_D_0[D_Z_1 == 1 & D_Z_0 == 0])) +
   declare_assignment(prob = 0.5) +
   declare_reveal(D, Z) + 
   declare_reveal(Y, D) + 
