@@ -378,7 +378,6 @@ gg_df <-
     a = block_ra(households, conditions = c("C", "T1", "T2")),
     b = block_ra(households, conditions = c("C", "T1", "T2", "T1\nT2")),
     c = if_else(b == "T1\nT2", "T3", as.character(b))
-    # c = block_ra(households, conditions = c("C", "T1", "T2", "T3"))
   )
 ) %>%
   pivot_longer(cols = letters[1:3],
@@ -390,8 +389,6 @@ gg_df <-
     labels = c("Three-arm", "Factorial", "Four-arm")
   ))
 
-sort(unique(gg_df$assignment))
-
 gg_df %>%
   ggplot(aes(X, Y)) +
   geom_tile(aes(fill = assignment), width = 0.46, height = 0.46) +
@@ -400,8 +397,6 @@ gg_df %>%
   facet_grid(~ procedure, switch = "y") +
   dd_theme() +
   scale_fill_manual(values = c(dd_light_gray, dd_pink, dd_purple , dd_light_blue, dd_orange)) +
-  # scale_fill_manual(values = c("#72B4F333", dd_orange, dd_light_blue)) +
-  # scale_x_continuous(name = "Block (e.g., locality)", breaks = 1:4 + 1:4 * 0.1, labels = LETTERS[1:4]) +
   theme(legend.position = "none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
