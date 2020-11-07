@@ -14,7 +14,8 @@ aes_df <-
     fill = if_else(data_strategy == "unmanipulated", NA_character_, dd_light_blue),
     linetype = case_when(answer_strategy == "controlled" ~ "dashed", answer_strategy == "uncontrolled" ~ "solid"),
     size = case_when(answer_strategy == "controlled" ~ 0.2, answer_strategy == "uncontrolled" ~ 0),
-    color_manipulated = if_else(data_strategy == "unmanipulated", dd_gray, dd_gray),
+    color_manipulated = if_else(data_strategy == "unmanipulated", NA_character_, dd_gray),
+    color_controlled = if_else(answer_strategy == "uncontrolled", NA_character_, dd_gray),
     size_manipulated = if_else(data_strategy == "unmanipulated", 0, 0.3),
     sides = case_when(
       data_strategy == "sampling" ~ 3,
@@ -59,8 +60,6 @@ nudges_df <-
   pivot_wider(id_cols = c("x", "y", "nudge_direction"), names_from = "var", values_from = "value") %>% 
   rename(text_x = nudgex, 
          text_y = nudgey)
-
-
 
 make_dag_df <- 
   function(dag, nodes, design) {
@@ -126,9 +125,9 @@ base_dag_plot <-
       angle = angle,
       linetype = linetype,
       size = size,
+      color = color_controlled,
       r = r),
-    fill = NA,
-    color = dd_gray
+    fill = NA
   ) +
   
   # Letters in nodes
