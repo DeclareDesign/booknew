@@ -329,7 +329,7 @@ gulzar_khan_design <-
   )
 ```
 
-```{r p2gulzarkhandag,echo=FALSE, fig.cap = "DAG for Gulzar-Khan design."}
+```{r p2gulzarkhandag,echo=FALSE, fig.height = 3.5, fig.width = 7, fig.cap = "DAG for Gulzar-Khan design."}
 design <-
   declare_population(N = 100,
                      X = rbinom(N, 1, 0.3),
@@ -367,7 +367,7 @@ nodes <-
   )
 ggdd_df <- make_dag_df(dag, nodes, design)
 
-base_dag_plot %+% ggdd_df
+base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon)) 
 ```
 
 ## Further reading
