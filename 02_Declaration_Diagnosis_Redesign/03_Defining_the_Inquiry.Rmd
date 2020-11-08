@@ -142,7 +142,7 @@ M <- declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5), Y = Z + U)
 I <- declare_estimand(Y_given_Z1 = mean(Y[Z==1]))
 
 draw_estimands(M+I) %>% 
-  kable(caption = "Estimand is a descriptive quantity.")
+  kable(caption = "Estimand is a descriptive quantity.", digits = 2)
 
 ```
 
@@ -161,7 +161,7 @@ M <-
 I <- declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
 
 draw_estimands(M+I) %>% 
-  kable(caption = "Estimand is a treatment effect")
+  kable(caption = "Estimand is a treatment effect", digits = 2)
 
 ```
 <!-- - Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over -->
@@ -206,7 +206,7 @@ In the example below we ask an attribution data of this form but on continuous d
 I <- declare_estimand(POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0]))
 
 draw_estimands(M+I) %>% 
-  kable(caption = "Estimand is the probability of necessity for the sign of Y.")
+  kable(caption = "Estimand is the probability of necessity for the sign of Y.", digits = 2)
 
 ```
 
