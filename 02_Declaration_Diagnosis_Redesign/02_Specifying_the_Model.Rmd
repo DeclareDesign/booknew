@@ -43,11 +43,11 @@ The $M$ in MIDA refers to these reference models.
 
 <!-- Even if the model is hazy, researchers carry with them a model of the world that could in principle be expressed as a probablistic causal model. As described in the previous chapter, probabalistic causal models are described by a set of exogeneous and endogenous variables, a set of functional relationships between the variables, and a probability distribution over the exogenous variables. -->
 
-Critically, whether a design is good or bad depends on the reference model. A data and analysis strategy might fare very well under one model of the world but poorly under another.  Thus to get to the point where we can assess a design we need to make the reference model---or in many cases, the family of referecne models---explicit. This chapter is about how to go about this difficult task.
+Critically, whether a design is good or bad depends on the reference model. A data and analysis strategy might fare very well under one model of the world but poorly under another.  Thus to get to the point where we can assess a design we need to make the reference model---or in many cases, the family of reference models---explicit. This chapter is about how to go about this difficult task.
 
 We'll make use of two different formal languages for describing causal models: DAGs and potential outcomes. 
 
-The **potential outcomes** formalization emphasizes a counterfactual notion of causality. $Y_i(Z = 0)$ is the outcome for unit $i$ that *would* occur *were* the causal variable equal to zero and $Y_i(Z = 1)$ is the outcome that would occure if $Z$ were set to one. The difference between them defines the effect of the treatment on the outcome for unit $i$. Since at most only one potential outcome can ever be revealed, at least one of the two potential outcomes is necessarily counterfactual. Usually, the potential outcomes notation $Y_i(Z)$ reports how outcomes depend on one feature -- $Z$, ignoring all other determinants of outcomes.  This is not to say that these don't matter, they do, they are just not the focus. In a sense they are contained in the subscript $i$ since the units carry with them all relevant features  other than $Z$. We can, and will generalize to settings where we want to focus on more than one cause, in which case we use expressions of the form $Y(0,0)$ or $Y(0,1)$.
+The **potential outcomes** formalization emphasizes a counterfactual notion of causality. $Y_i(Z = 0)$ is the outcome for unit $i$ that *would* occur *were* the causal variable equal to zero and $Y_i(Z = 1)$ is the outcome that would occur if $Z$ were set to one. The difference between them defines the effect of the treatment on the outcome for unit $i$. Since at most only one potential outcome can ever be revealed, at least one of the two potential outcomes is necessarily counterfactual. Usually, the potential outcomes notation $Y_i(Z)$ reports how outcomes depend on one feature -- $Z$, ignoring all other determinants of outcomes.  This is not to say that these don't matter, they do, they are just not the focus. In a sense they are contained in the subscript $i$ since the units carry with them all relevant features  other than $Z$. We can, and will generalize to settings where we want to focus on more than one cause, in which case we use expressions of the form $Y(0,0)$ or $Y(0,1)$.
 
 The **graphical model** formulation approach makes use of DAGs or "directed acyclic graphs" to characterize causal relations. Each node on a graph is a variable and the edges that connect them represent possible causal effects. An arrow from a "parent" node to a "child" node indicates that the value of the parent sometimes determines the outcome of the child; more formally: the parent's value is an argument in a functional equation determining the child's outcome. Though consistent with a counterfactual notion of causality, DAGs emphasize mechanistic accounts: when the exposure variable changes, the outcome variable changes as a result---though possibly in different ways for different units. DAGs are *nonparametric*. This means that they do not encode all the beliefs about the full causal model. They don't show *how* variables are related, just *that* they are related.
 
@@ -57,7 +57,7 @@ Defining a reference model requires both defining a set of variables (their mean
 Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. We *could* use only the language of causal graphs or we *could* use only the language of potential outcomes. We choose to use both languages because they are useful for expressing different facets of research design. We use DAGs to describe the web of causal interrelations in a concise way (writing out the potential outcomes for every relationship in the model is tedious). We use potential outcomes when we want to zoom in on *particular* causal relationships and to make fine distinctions between inquiries that apply to different sets of units (it's difficult to describe effect heterogeneity with graphical models).
 
 
-We illustrate these ideas using a simple DAG to describe a model with an abstract research design in which we will collect information about $N$ units. We will  assign a treatment at random $Z$, and collect a posttreatment outcome $Y$. We know there are other determinants of the outcome beyond $Z$, but we don't need to write down our beliefs about them because our main inquiry is the average treatment effect of $Z$ on $Y$. All we'll say about those other deteriminants is that they are causally related to $Y$, but not to $Z$, since $Z$ will be randomly assigned by us. 
+We illustrate these ideas using a simple DAG to describe a model with an abstract research design in which we will collect information about $N$ units. We will  assign a treatment at random $Z$, and collect a posttreatment outcome $Y$. We know there are other determinants of the outcome beyond $Z$, but we don't need to write down our beliefs about them because our main inquiry is the average treatment effect of $Z$ on $Y$. All we'll say about those other determinants is that they are causally related to $Y$, but not to $Z$, since $Z$ will be randomly assigned by us. 
 <!-- Following the rule that we only need to make explicit the parts of our causal model that are required for the inquiry, data strategy, and answer strategy, this bare specification is sufficient. -->
 
 The nonparametric structural equation determining $Y$  can be written like this:
@@ -73,7 +73,7 @@ Y &= Z + U
 \end{align*}
 
 
-Equivalently, the potential outcomes (for) might be written as:
+Equivalently, the potential outcomes (for $Y$) might be written as:
 
 $$Y_i(0) = u_i,  Y_i(1) = 1 + u_i, i \in \{1,2,\dots, n\}.$$
 
@@ -159,20 +159,20 @@ The first choice to make in declaring $M$ is the set of units about which you wi
 
 * Superpopulation. Moving *up* you might imagine units as being draws from an infinite population. You are interested in "what happens when you shake a fizzy drink?": the set of instances is infinite and when you characterize the superpopulation you want to describe a distribution over possible cases not a finite set of cases.
 
-Which population you have in mind affects how reference populations should be modeleld but also how draws from a population should be interpreted. 
+Which population you have in mind affects how reference populations should be modeled but also how draws from a population should be interpreted. 
 
-To illustrate consider a very simple model in which we believe that $Y$ depends upon $X$ and $X$ is *as if* randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this books, might be declared like this:
+To illustrate consider a very simple model in which we believe that $Y$ depends upon $Z$ and $Z$ is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this books, might be declared like this:
 
 ```{r}
-design <-
-  declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), X = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * X + U)
+M <-
+  declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), Z = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * Z + U)
 ```
 
 The model can be used to generate data, like this:
 
 ```{r, realizedmodel}
-draw_data(design) %>% 
+draw_data(M) %>% 
   head %>% kable(caption = "Data from a simple model")
 ```
 
@@ -213,7 +213,7 @@ Note that these labels reflect the researcher's interest as much as their positi
 
 ```{r vartypes, echo = FALSE, fig.cap = "A DAG with an explantory variable of interest (D), an outcome of interest (Y), a mediator (M), a confounder (X1), a moderator (X2), an instrument (Z), and a collider (K)."}
 
-design <-
+M <-
   declare_population(
     N = 100,
     U = rbinom(N, size = 1, prob = 0.25),
@@ -262,7 +262,7 @@ nodes <-
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes, M)
 
 base_dag_plot %+% ggdd_df
 ```
@@ -271,7 +271,7 @@ base_dag_plot %+% ggdd_df
 
 When considering what variables to include in a model researchers are often torn between two conflicting goals. First, we want to learn more and more about how the world works or in other words, to fill in more and more of a large causal model. There are an infinite number of nodes and edges in this model --- from how people vote to how they save and spend money to how they find romantic partners, all of which are interrelated. Second, we generally seek simple explanations where possible. Indeed in some accounts the point of research is to generate simplified representations of the world. The analogy of a map is often used: a useful map usually should have less detail than the object it is mapping. 
 
-We are used to these considerations vying with  each other when considering which variables "of interest" to include in a model. For instance, which are the causes to examine when explaining an outcome. We highlight only here that in the MIDA framework the first consdieration -- realism--likely carries more weight than in other settings. The reason is that the model, as understood here, is not the analysis but *the benchmark against which your analysis will be assessed*. An excellent "analytic model" might ignore unimportant details about a problem, but your reference model might have to specify these details in order to establish that indeed they can be ignored without harming your inferences. 
+We are used to these considerations vying with  each other when considering which variables "of interest" to include in a model. For instance, which are the causes to examine when explaining an outcome. We highlight only here that in the MIDA framework the first consideration -- realism--likely carries more weight than in other settings. The reason is that the model, as understood here, is not the analysis but *the benchmark against which your analysis will be assessed*. An excellent "analytic model" might ignore unimportant details about a problem, but your reference model might have to specify these details in order to establish that indeed they can be ignored without harming your inferences. 
 
 In the design declaration framework the variables that we need to specify in $M$ are in general comprised of (a) those we will need in the latter three elements in our research design: our inquiry $I$, data strategy $D$, and answer strategy $A$ and (b) those that we need for diagnosis.
 
@@ -291,7 +291,7 @@ If we have all this,  do we have enough for diagnosis? We might not. When we eng
 DAGs convey beliefs about *whether* two variables are causally related, but they do not encode beliefs about *how* they are related. This is no criticism of DAGs --- they just don't encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we'll need to make the leap from nonparametric models to *parametric* structural causal models. This move is not without costs -- each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!
 
 
-A slightly more complex example helps demonstrate how we can use a model declaration to facilate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of treatment should be larger for units with $X = 1$. We can encode this belief in the  design declaration below. In the `declare_population` function, we write that $U$ is normally distributed with mean 0 and standard deviation 1; $X$ follows a Bernoulli distribution. In the `declare_potential_outcomes` function, we describe how the average effect of treatment depends on $X$.
+A slightly more complex example helps demonstrate how we can use a model declaration to facilitate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of $Z$ should be larger for units with $X = 1$. We can encode this belief in the  design declaration below. In the `declare_population` function, we write that $U$ is normally distributed with mean 0 and standard deviation 1; $X$ follows a Bernoulli distribution. In the `declare_potential_outcomes` function, we describe how the average effect of treatment depends on $X$.
 
 <!-- I removed the confounding to keep focused on one point -->
 
@@ -299,12 +299,12 @@ A slightly more complex example helps demonstrate how we can use a model declara
 tau_X0 <- 0.5
 tau_X1 <- 1
 
-design <-
+M <-
   declare_population(N = 100, U = rnorm(N), X = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ (X==0)*Z*tau_X0 + (X==1)*Z*tau_X1+U)
 ```
 
-The design describes a more complex world in which treatment effects of $Z$ depend in a particular way on a background variable $X$. We could incorporate different beliefs about the causal model by changing the `tau_X0` and `tau_X1` parameters. However, regardless of the value of the interaction (either zero or some other number), the DAG looks the same but the ability of the design to answer questions of interest will vary. This highlights the point that DAGs themselves are not enough to characterize a model---design declartaion requires functional equations also: either specific equations or families of equations.  Thus although we might feel uncomfortable specifying particular values for `tau_X0` and `tau_X1` we are not beholden to these particular values. We can easily vary them to see how a design performs over a range of models, or we could even expand the declaration to specify a distribution of values for `tau_X0` and `tau_X1`. 
+The design describes a more complex world in which treatment effects of $Z$ depend in a particular way on a background variable $X$. We could incorporate different beliefs about the causal model by changing the `tau_X0` and `tau_X1` parameters. However, regardless of the value of the interaction (either zero or some other number), the DAG looks the same but the ability of the design to answer questions of interest will vary. This highlights the point that DAGs themselves are not enough to characterize a model---design declaration requires functional equations also: either specific equations or families of equations.  Thus although we might feel uncomfortable specifying particular values for `tau_X0` and `tau_X1` we are not beholden to these particular values. We can easily vary them to see how a design performs over a range of models, or we could even expand the declaration to specify a distribution of values for `tau_X0` and `tau_X1`. 
 
 <!-- maybe a footnote? -->
 <!-- - some of these variables will be exogenous and endogenous, in Pearl's terms. by exogenous variables, he means variables without parents, no antecendent causes. by endogenous variables, he means those with parents, that are determined in part by earlier variables. endogenous variables are distinct from the problem of endogeneity, which comes from a single variable being a parent of both the treatment variable of interest and the outcome we wish to measure the causal effect of the treatment on. we will use it in Pearl's sense. -->
@@ -316,7 +316,7 @@ The design describes a more complex world in which treatment effects of $Z$ depe
 
 So far we have described formal considerations but we have not described substantive considerations for including particular variables or stipulating particular relations between them. 
 
-The justification of your choice of reference model will depend on the purpose of your design. Broadly we distinguish between reality tracking models, discurisve models, and sufficient models. 
+The justification of your choice of reference model will depend on the purpose of your design. Broadly we distinguish between reality tracking models, discursive models, and sufficient models. 
 
 
 ### Reality tracking models
@@ -342,7 +342,7 @@ In some cases, we can define many of the variables from early data collection in
 
 ### Discursive models
 
-For some purposes the reference model might be developed not to track reality but to reflect assumptions in scholarly debate. For instance the purpose might be to question whether a given conclusion is valid **under the assumptions maintained by some scholarly community**.  Indeed it is possible that a reference model is used specifically because the researcher thinks it inaccurate, allowing them to show thateven if they are wrong in some background assumptions about the world, their analysis will produce good answers. 
+For some purposes the reference model might be developed not to track reality but to reflect assumptions in scholarly debate. For instance the purpose might be to question whether a given conclusion is valid **under the assumptions maintained by some scholarly community**.  Indeed it is possible that a reference model is used specifically because the researcher thinks it inaccurate, allowing them to show what even if they are wrong in some background assumptions about the world, their analysis will produce good answers. 
 
 A particularly important class of discursive models are what might be called "agnostic models": models that make weaker assumptions about the world than the researcher in good faith holds. In a directed acyclic graph, every arrow indicates a possible relation between a cause and an outcome. The big assumptions in these models however are not seen in the arrows but in the absence of arrows: every missing arrow represents a claim that an outcome is not affected by a possible cause.  Analysis strategies often depend upon such assumptions. Even when arrows are included, functional relations might presuppose particular features important for inference. For instance a researcher using "instrumental variables" analysis will generally assume that $Z$ causes $Y$ though $D$ but not through other paths. This is an assumption about absent arrows. The same analysis might also assume that $Z$ never affects $D$ negatively. That is an assumption about functional forms. An agnostic reference model might loosen these assumptions, allow for the possibility of violations of exclusion restrictions and violations of monotonicity assumptions and use this to see how analysis fares under conditions that the researcher believes not to be true, but that a skeptic might be willing to entertain.     
 
