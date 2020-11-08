@@ -165,7 +165,7 @@ To illustrate consider a very simple model in which we believe that $Y$ depends 
 ```{r}
 M <-
   declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), Z = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * Z + U)
+  declare_potential_outcomes(Y ~ tau * Z + U)
 ```
 
 The model can be used to generate data, like this:
