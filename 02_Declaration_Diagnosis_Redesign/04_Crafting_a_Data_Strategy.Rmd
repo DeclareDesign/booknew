@@ -114,11 +114,13 @@ We illustrate above the data strategy and its three elements: sampling, assignme
 
 In the figure, we rule out threats to inference that come from implementation: failure to treat (noncompliance), failure of inclusion in the sample (attrition), and causal relationships between random sampling and assignment as well as measurement on the latent outcome (excludability). In the last section of the chapter, we discuss when these threats are realized and how we can mitigate these risks they present by design.
 
-## Sampling {#p2sampling}
+## Sampling strategies {#p2sampling}
 
-Sampling is the process by which units are selected from the population to be studied. Some sampling procedures involve randomization while others do not. Sometimes -- perhaps even usually -- randomized sampling procedures break in ways that turn them into nonrandomized designs. Whether a sampling procedure is randomized or not has large implications for the answer stratey. Randomized designs support "design-based inference," which refers to the idea that we rely on known features of the sampling process when producing population-level estimates -- much more about this in the next chapter on Answer strategies. When randomization breaks down (e.g., if the design encounters attrition) or if a nonrandomized design is used, then we have to fall back on model-based inference to generalize from the sample to the population. Model-based inference relies on researcher beliefs about the nature of the uncontrolled sampling process in order to make inferences about the population. When possible, design-based inference is preferable, because it's easier to be correct about about the features of controlled processes than uncontrolled ones. That said, when randomly sampled individuals fail to respond or when we seek to make inferences about *new* populations, we must apply model-based inference even if the data are the result of a random process.
+Sampling is the process by which units are selected from the population to be studied. Some sampling procedures involve randomization while others do not. 
+<!-- Sometimes -- perhaps even usually -- randomized sampling procedures face implementation challenges that results in them looking more like nonrandomized designs.  -->
+Whether a sampling procedure is randomized or not has large implications for the answer strategy. Randomized designs support "design-based inference," which refers to the idea that we rely on known features of the sampling process when producing population-level estimates -- much more about this in the next chapter on Answer strategies. When randomization breaks down (e.g., if the design encounters attrition) or if a nonrandomized designs are used, then we have to fall back on model-based inference to generalize from the sample to the population. Model-based inference relies on researcher beliefs about the nature of the uncontrolled sampling process in order to make inferences about the population. When possible, design-based inference has the advantage of letting you base inferences from known rather than assumed features of the data selection process. That said, when randomly sampled individuals fail to respond or when we seek to make inferences about *new* populations, we must apply model-based inference even if the data are the result of a random process.
 
-Why would we ever be content to study a sample and not the full population? The first and best explanation is cost: it's expensive and time-consuming to conduct a full census of the population. Even well-funded research projects face this problem, since money and effort spent answering one question could also be spent answering a second question. We tend to sample rather than measure every unit in the population because we face opportunity costs as well. A second reason reason to sample is the diminishing marginal returns of additional data collection. Increasing the number of sampled units from 1,000 to 2,000 will greatly increase the precision of our estimates. Moving from 100,000 to 101,000 will improve things too, but the scale of the improvement is much smaller.
+Why would we ever be content to study a sample and not the full population? For infinite populations we have no choice. For finite populations the first and best explanation is cost: it's expensive and time-consuming to conduct a full census of the population. Even well-funded research projects face this problem, since money and effort spent answering one question could also be spent answering a second question. We tend to sample rather than measure every unit in the population because we face opportunity costs as well. A second reason reason to sample is the diminishing marginal returns of additional data collection. Increasing the number of sampled units from 1,000 to 2,000 will greatly increase the precision of our estimates. Moving from 100,000 to 101,000 will improve things too, but the scale of the improvement is much smaller.
 
 ### Randomized sampling designs
 
@@ -451,11 +453,14 @@ Xbox forecasting of elections
 
 ## Treatment assignment {#p2assignment}
 
-In many studies, researchers intervene in the world to **set** the level of the causal variable of interest. The procedures used to assign units to treatment are tightly analogous to the procedures explored in the previous section on sampling. Like sampling, assignment procedures fall in to two classes, randomized and nonrandomized.
+In many studies, researchers intervene in the world to **set** the level of the causal variable of interest. The procedures used to assign units to treatment are tightly analogous to the procedures explored in the previous section on sampling. Like sampling, assignment procedures fall in to two classes, randomized and nonrandomized. Among the radnomized procedures we can distinguish between a host of two arm trial designs, multiarm designs, and a set of more designs advanced designs.
 
-The analogy between sampling and assignment runs deep. All of sampling designs discussed in the previous section have directly equivalent assignment designs. Simple random sampling is analogous to bernoulli random assignement, stratified random sampling is analogous to blocked random assignment and so on. Many of the same design tradeoffs hold as well: just like cluster sampling generates higher variance estimates than individual sampling, clustered assignment generates higher variance estimates than individual assignment. While we usually think of randomized assignment designs only, nonrandomized designs in which the research applies treatments also occur. For example, researchers sometimes treat a convenience sample, then search out a different convenience sample to serve as a control group. Within-subject designs in which subjects are measured, then treated, then measured again are a second example of nonrandomized application of treatment.
 
-The analogy between sampling and assignment runs so deep because assignment **is** sampling. Instead of sampling units in or out of the study, we sample from alternative possible worlds. The treatment group represents a sample from the alternative world in which all units are treated and the control group represents a sample from the alternative world in which all units are untreated.^[Strictly speaking, this claim only holds under a noninterference assumption; if the usual noninterference assumption is incorrect, we have to redefine potential outcomes in order to recover "stability." Assignment strategies sample from possible worlds of stable potential outcomes.] We can reencounter the fundamental problem of causal inference through this lens -- if a unit is sampled from one possible world, it can't be sampled from any other possible world. Table \@(tab:assignmenttypes) collects together common forms of random assignment.
+### Two arm trials
+
+The analogy between sampling and assignment runs deep. All of sampling designs discussed in the previous section have directly equivalent assignment designs. Simple random sampling is analogous to Bernoulli random assignement, stratified random sampling is analogous to blocked random assignment and so on. Many of the same design tradeoffs hold as well: just like cluster sampling generates higher variance estimates than individual sampling, clustered assignment generates higher variance estimates than individual assignment. While we usually think of randomized assignment designs only, nonrandomized designs in which the research applies treatments also occur. For example, researchers sometimes treat a convenience sample, then search out a different convenience sample to serve as a control group. Within-subject designs in which subjects are measured, then treated, then measured again are a second example of nonrandomized application of treatment.
+
+The analogy between sampling and assignment runs so deep because in a sense, assignment **is** sampling. Instead of sampling units in or out of the study, we sample from alternative possible worlds. The treatment group represents a sample from the alternative world in which all units are treated and the control group represents a sample from the alternative world in which all units are untreated.^[Strictly speaking, this claim only holds under a noninterference assumption; if the usual noninterference assumption is incorrect, we have to redefine potential outcomes in order to recover "stability." Assignment strategies sample from possible worlds of stable potential outcomes.] We can reencounter the fundamental problem of causal inference through this lens -- if a unit is sampled from one possible world, it can't be sampled from any other possible world. Table \@(tab:assignmenttypes) collects together common forms of random assignment.
 
 | Design | Description | Randomizr function |
 |-----------|------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
@@ -475,7 +480,7 @@ The second row of Figure \@(fig:binaryassignmentquilt) shows clustered designs i
 
 The final row of Figure \@(fig:binaryassignmentquilt) shows a series of designs that are analogous to the multi-stage sampling designs shown in Figure \@(fig:samplingquilt) -- but their purpose is subtly different in spirit. Multi-stage sampling designs are employed to reduce costs -- first clusters are sampled but not all units within a cluster are sampled. A saturation randomization design (sometimes called a "partial population design" cite Berk et al) uses a similar procedure both contain and learn about spillover effects. Some clusters are chosen for treatment, but some units *within* those clusters are not treated. Units that are untreated in treated clusters can be compared with units that are untreated in untreated clusters in order to suss out intra-cluster spillover effects. (Sinclair, McConnell, Green). The figure shows how the saturation designs comes in simple, complete, and blocked varieties.
 
-```{r binaryassignmentquilt, fig.cap="Nine kinds of random assignment", fig.width = 6.5, fig.height = 7, echo = FALSE}
+```{r binaryassignmentquilt, fig.cap="Nine kinds of random assignment. In the first row individuals are the sampling units, in the second row clusters are sampled, in the third clusters are sampled and then individuals within these clusters are sampled. In the first column units are sampled independently, in the second units are sampled to hit a target, in the third units are sampled to hit targets within strata.", fig.width = 6.5, fig.height = 7, echo = FALSE}
 set.seed(343)
 gg_df <- fabricate(
   villages = add_level(N = 4, village_num = 1:4 + 1:4 * 0.1),
@@ -560,7 +565,9 @@ ggplot(gg_df, aes(X, Y)) +
         axis.text.y = element_blank())
 ```
 
-Thus far we have considered assignment strategies that allocate subjects to either treatment or control. All of the designs we have considered so far generalize quite nicely to multi-arm trials. Trials that have three, four, or many more arms can of course be simple, complete, blocked, clustered, or feature variable saturation. Figure \@ref(multiarmquilt) shows blocked versions of a three-arm trial, a factorial trial, and a four-arm trial.
+## Multiarm and factorial trials
+
+Thus far we have considered assignment strategies that allocate subjects to either treatment or control. All of the designs we have considered so far generalize quite nicely to multiarm trials. Trials that have three, four, or many more arms can of course be simple, complete, blocked, clustered, or feature variable saturation. Figure \@ref(multiarmquilt) shows blocked versions of a three-arm trial, a factorial trial, and a four-arm trial.
 
 In the three-arm trial on the left, subjects can be assiged to a control condition or one of two treatments. This design enables three comparisons: a comparison of each treatment to the control condition, but also a comparison of the two treatment conditions to each other. In the four-arm trial on the right, subjects can be assigned to a control condition or one of three treatments. This design supports six comparisons: each of the treatments to control, and all three of the pairwise comparisons across treatments.
 
@@ -606,8 +613,11 @@ gg_df %>%
         axis.text = element_blank())
 ```
 
+### Complex designs
 
-Stepped-wedge assignment section to be written.
+* Patient preference trials
+* Stepped-wedge assignment
+* Multi arm bandits
 
 ```{r stepwedgera, fig.cap = "Step-wedge random assignment.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
@@ -646,8 +656,11 @@ gg_df %>%
 ```
 
 
+### Non randomized assignment
 
-
+* Alphabetical assignment
+* RDD
+* Bayesian optimal assignment
 
 
 ### Example: sociology natural experiment from government or official cutoff
