@@ -74,7 +74,7 @@ base_dag_plot %+% ggdd_df
 
 M <-
   declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), Z = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * Z + U)
+  declare_potential_outcomes(Y ~ tau * Z + U)
 
 draw_data(M) %>% 
   head %>% kable(caption = "Data from a simple model")

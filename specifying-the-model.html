@@ -115,7 +115,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, tau <span class="op">=</span> <span class="fl">1</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">tau</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span></code></pre></div>
 <p>The model can be used to generate data, like this:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">M</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -162,7 +162,7 @@ Y_Z_1
 2.3205075
 </td>
 <td style="text-align:right;">
-2.8205075
+3.3541283
 </td>
 </tr>
 <tr>
@@ -182,7 +182,7 @@ Y_Z_1
 -0.8425131
 </td>
 <td style="text-align:right;">
--0.3425131
+-1.0999854
 </td>
 </tr>
 <tr>
@@ -202,7 +202,7 @@ Y_Z_1
 -0.1040274
 </td>
 <td style="text-align:right;">
-0.3959726
+1.1973062
 </td>
 </tr>
 <tr>
@@ -222,7 +222,7 @@ Y_Z_1
 -0.0577536
 </td>
 <td style="text-align:right;">
-0.4422464
+0.9151801
 </td>
 </tr>
 <tr>
@@ -242,7 +242,7 @@ Y_Z_1
 -0.5828567
 </td>
 <td style="text-align:right;">
--0.0828567
+-1.7447528
 </td>
 </tr>
 <tr>
@@ -262,7 +262,7 @@ Y_Z_1
 1.7482912
 </td>
 <td style="text-align:right;">
-2.2482912
+3.1988898
 </td>
 </tr>
 </tbody>

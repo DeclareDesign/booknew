@@ -84,7 +84,7 @@
 <h3>
 <span class="header-section-number">15.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-5"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -102,7 +102,7 @@
 <h3>
 <span class="header-section-number">15.1.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-4"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-184-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-187-1.png" width="100%"></div>
 </div>
 <div id="example-7" class="section level3">
 <h3>
@@ -178,7 +178,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <p>We’ll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Model -------------------------------------------------------------------</span>
 <span class="va">population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>
   N <span class="op">=</span> <span class="fl">500</span>,
@@ -220,7 +220,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <span class="header-section-number">15.1.5</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways-2"><i class="fas fa-link"></i></a>
 </h3>
 <p>We now diagnose the design:</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -558,7 +558,7 @@ Z
 <h3>
 <span class="header-section-number">15.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-6"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -582,7 +582,7 @@ Z
 <h3>
 <span class="header-section-number">15.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-5"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-195-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-198-1.png" width="100%"></div>
 </div>
 <div id="example-8" class="section level3">
 <h3>
@@ -646,7 +646,7 @@ Z
 <li><p><strong>D</strong>ata strategy: First we sample 500 respondents from the U.S. population at random, then we randomly assign 250 of the 500 to treatment and the remainder to control. In the survey, we ask subjects both the direct question and the list experiment question.</p></li>
 <li><p><strong>A</strong>nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.</p></li>
 </ul>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Model -------------------------------------------------------------------</span>
 <span class="va">proportion_shy</span> <span class="op">&lt;-</span> <span class="fl">.06</span>
 
@@ -689,10 +689,10 @@ Z
     <span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, term <span class="op">=</span> <span class="st">"(Intercept)"</span>, estimand <span class="op">=</span> <span class="st">"proportion_truthful_trump_vote"</span>, label <span class="op">=</span> <span class="st">"direct"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">Y_list</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"proportion_truthful_trump_vote"</span>, <span class="st">"ATE"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">list_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references-4.html#ref-blair2018list">2018</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-200-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-203-1.png" width="100%"></div>
 </div>
 <div id="violations-of-identifying-assumptions" class="section level4">
 <h4>
@@ -700,7 +700,7 @@ Z
 </h4>
 <p>In our model, the definition of the treated potential outcome, <code>Y_list_Z_1 = Y_list_Z_0 + truthful_trump_vote</code>, bakes in the no design effects and no liars assumptions. The first component is the control item count <code>Y_list_Z_0</code>, which ensures the respondent’s count of control items is the same in both groups. The second is the true trump vote, which assumes no liars.</p>
 <p>What do we learn from this experimental design if these assumptions do not hold? We examine the case of “ceiling effects,” in which respondents whose control item count is the maximum (in the example, they would vote yes to all three control items) withhold their true support for Trump in the treatment group. We thus redefine the treated potential outcome to be a function of the original count, but those who would respond 4 (all control items plus Trump support) instead respond 3. These are the “liars.”</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">list_design_ceiling</span> <span class="op">&lt;-</span> <span class="fu">replace_step</span><span class="op">(</span>
   <span class="va">list_design</span>, step <span class="op">=</span> <span class="fl">2</span>, 
   new_step <span class="op">=</span> <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
@@ -708,7 +708,7 @@ Z
     Y_list_Z_1_no_liars <span class="op">=</span> <span class="va">Y_list_Z_0</span> <span class="op">+</span> <span class="va">truthful_trump_vote</span>,
     Y_list_Z_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Y_list_Z_1_no_liars</span> <span class="op">==</span> <span class="fl">4</span>, <span class="fl">3</span>, <span class="va">Y_list_Z_1_no_liars</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_list_ceiling</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">list_design_ceiling</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -822,7 +822,7 @@ proportion_truthful_trump_vote
 <h3>
 <span class="header-section-number">15.2.5</span> Randomized response technique<a class="anchor" aria-label="anchor" href="#randomized-response-technique"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>
 
 <span class="va">rr_forced_known</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
@@ -880,9 +880,9 @@ proportion_truthful_trump_vote
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, term <span class="op">=</span> <span class="st">"(Intercept)"</span>, label <span class="op">=</span> <span class="st">"direct"</span>, estimand <span class="op">=</span> <span class="st">"sensitive_item_proportion"</span><span class="op">)</span>
 
 <span class="va">rr_design</span> <span class="op">&lt;-</span> <span class="fu">set_diagnosands</span><span class="op">(</span><span class="va">rr_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">mean_estimate</span>, <span class="va">bias</span>, <span class="va">rmse</span>, <span class="va">power</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rr_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">rr_design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="va">rr_diagnosis</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -1080,7 +1080,7 @@ NA
 <h4>
 <span class="header-section-number">15.2.5.1</span> Bias-variance tradeoff<a class="anchor" aria-label="anchor" href="#bias-variance-tradeoff"><i class="fas fa-link"></i></a>
 </h4>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rr_designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">rr_design</span>, proportion_shy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">0.5</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>, N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">500</span>, to <span class="op">=</span> <span class="fl">5000</span>, by <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span>
 <span class="va">rr_tradeoff_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">rr_designs</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <!-- ```{r} -->
@@ -1124,7 +1124,7 @@ NA
 <h3>
 <span class="header-section-number">15.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># applies the function to each pair</span>
 <span class="va">Y_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">data</span> <span class="op">%&gt;%</span>
@@ -1157,7 +1157,7 @@ NA
 <h3>
 <span class="header-section-number">15.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-6"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-217-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-220-1.png" width="100%"></div>
 </div>
 <div id="example-9" class="section level3">
 <h3>
@@ -1177,7 +1177,7 @@ NA
 <h3>
 <span class="header-section-number">15.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-9"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     games <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,
@@ -1207,7 +1207,7 @@ NA
 <h3>
 <span class="header-section-number">15.4.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-224-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-227-1.png" width="100%"></div>
 </div>
 <div id="example-10" class="section level3">
 <h3>

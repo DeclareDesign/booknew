@@ -82,7 +82,7 @@
 <h3>
 <span class="header-section-number">16.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-10"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -98,7 +98,7 @@
 <h3>
 <span class="header-section-number">16.1.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-232-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-235-1.png" width="100%"></div>
 </div>
 <div id="example-11" class="section level3">
 <h3>
@@ -116,12 +116,12 @@
 <li>DIM is biased, OLS is unbiased because we happen to get the functional forms right enough.</li>
 </ul>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-234"></span>
+<span id="fig:unnamed-chunk-237"></span>
 <img src="figures/regression_dag_1.png" alt="DAG with one observed confounder" width="40%"><p class="caption">
 Figure 16.1: DAG with one observed confounder
 </p>
 </div>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design_1</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U_z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -133,7 +133,7 @@ Figure 16.1: DAG with one observed confounder
   <span class="fu">declare_assignment</span><span class="op">(</span>prob_unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="va">U_z</span> <span class="op">+</span> <span class="va">U_x</span><span class="op">)</span>, simple <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"DIM"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"OLS"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dx_1</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design_1</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span>
 <span class="va">dx_1</span></code></pre></div>
 <pre><code>## 
@@ -158,7 +158,7 @@ Figure 16.1: DAG with one observed confounder
 <li>Oh no, the functional form is wrong, so even though we’re controlling for all confounders, there’s still bias.</li>
 <li>Solution: matching might do a better job since it’s sort of a “nonparametric” form of covariate control.</li>
 </ul>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design_2</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U_z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -170,7 +170,7 @@ Figure 16.1: DAG with one observed confounder
   <span class="fu">declare_assignment</span><span class="op">(</span>prob_unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="va">U_z</span> <span class="op">+</span> <span class="va">U_x</span> <span class="op">+</span> <span class="va">U_x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, simple <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"DIM"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"OLS"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dx_2</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design_2</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span>
 <span class="va">dx_2</span></code></pre></div>
 <pre><code>## 
@@ -192,12 +192,12 @@ Figure 16.1: DAG with one observed confounder
 <span class="header-section-number">16.1.6</span> What if you have unobserved confounding?<a class="anchor" aria-label="anchor" href="#what-if-you-have-unobserved-confounding"><i class="fas fa-link"></i></a>
 </h3>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-239"></span>
+<span id="fig:unnamed-chunk-242"></span>
 <img src="figures/regression_dag_2.png" alt="DAG with unobserved confounding" width="40%"><p class="caption">
 Figure 16.2: DAG with unobserved confounding
 </p>
 </div>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design_3</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U_z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -209,7 +209,7 @@ Figure 16.2: DAG with unobserved confounding
   <span class="fu">declare_assignment</span><span class="op">(</span>prob_unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="va">U_z</span> <span class="op">+</span> <span class="va">U_x</span><span class="op">)</span>, simple <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"DIM"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"OLS"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dx_3</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design_3</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span>
 <span class="va">dx_3</span></code></pre></div>
 <pre><code>## 
@@ -231,12 +231,12 @@ Figure 16.2: DAG with unobserved confounding
 <span class="header-section-number">16.1.7</span> What if the observed covariate is post-treatment?<a class="anchor" aria-label="anchor" href="#what-if-the-observed-covariate-is-post-treatment"><i class="fas fa-link"></i></a>
 </h3>
 <div class="figure" style="text-align: center">
-<span id="fig:unnamed-chunk-242"></span>
+<span id="fig:unnamed-chunk-245"></span>
 <img src="figures/regression_dag_3.png" alt="DAG with one observed mediator" width="40%"><p class="caption">
 Figure 16.3: DAG with one observed mediator
 </p>
 </div>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design_4</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U_z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -249,7 +249,7 @@ Figure 16.3: DAG with one observed mediator
   <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"DIM"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">M</span>, model <span class="op">=</span> <span class="va">lm</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"OLS"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dx_4</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design_4</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span>
 <span class="va">dx_4</span></code></pre></div>
 <pre><code>## 
@@ -286,7 +286,7 @@ Figure 16.3: DAG with one observed mediator
 <h3>
 <span class="header-section-number">16.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-11"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">D</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> 
@@ -306,7 +306,7 @@ Figure 16.3: DAG with one observed mediator
 <h3>
 <span class="header-section-number">16.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-9"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-251-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-254-1.png" width="100%"></div>
 </div>
 <div id="redesign-2" class="section level3">
 <h3>
@@ -347,7 +347,7 @@ Figure 16.3: DAG with one observed mediator
 <h3>
 <span class="header-section-number">16.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-12"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
@@ -364,7 +364,7 @@ Figure 16.3: DAG with one observed mediator
 <h3>
 <span class="header-section-number">16.4.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-10"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-257-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-260-1.png" width="100%"></div>
 </div>
 <div id="example-13" class="section level3">
 <h3>
@@ -378,7 +378,7 @@ Figure 16.3: DAG with one observed mediator
 <ul>
 <li>Show that comparison of T and C in period 2 is biased and comparison of T between period 1 and 2 is biased, but DiD unbiased in presence of confounding in treatment assignment (unit with higher unit shock is always treated) and time trends</li>
 </ul>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_units</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 <span class="va">N_time_periods</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 
@@ -412,11 +412,11 @@ Figure 16.3: DAG with one observed mediator
   
   <span class="fu">declare_estimator</span><span class="op">(</span>estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
                     estimator_label <span class="op">=</span> <span class="st">"DiM"</span>, handler <span class="op">=</span> <span class="va">summarize</span>, label <span class="op">=</span> <span class="st">"DiM"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_two_period_two_group</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span>
   <span class="va">two_period_two_group_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="va">bias</span><span class="op">)</span>,
   sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_two_period_two_group</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -510,10 +510,10 @@ DiM
 <ul>
 <li>Introduce assumption and visual test</li>
 </ul>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># add an additional pretreatment time period in order to visually test for parallel pre-trends</span>
 <span class="va">three_period_two_group_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">two_period_two_group_design</span>, N_time_periods <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">three_period_two_group_design</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">group_by</span><span class="op">(</span><span class="va">Z</span>, <span class="va">time</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">summarize</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -522,7 +522,7 @@ DiM
   <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">scale_color_discrete</span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">scale_x_discrete</span><span class="op">(</span><span class="st">"Time"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-264-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-267-1.png" width="100%"></div>
 <ul>
 <li>Formal test (DID on T = -1 and T = 0 periods, i.e. a year backward from the DiD)</li>
 <li>There is a result that shows that the two-step procedure of the parallel trends assumption then DID if test passes that shows poor coverage of SEs in final DID (<a href="https://arxiv.org/abs/1804.01208" class="uri">https://arxiv.org/abs/1804.01208</a>). Cite here.</li>
@@ -535,7 +535,7 @@ DiM
 <ul>
 <li>Switch to regression context with 20 periods, 100 units and show same results hold with two-way FE (controlling for one period before T is insufficient to remove bias)</li>
 </ul>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_units</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">N_time_periods</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 
@@ -565,9 +565,9 @@ DiM
   
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">time</span>, fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">units</span> <span class="op">+</span> <span class="va">periods</span>, 
                     model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"twoway-fe"</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span> </code></pre></div>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_multi_period_multi_group</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">multi_period_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="va">bias</span><span class="op">)</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_multi_period_multi_group</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -631,7 +631,7 @@ Z
 <h3>
 <span class="header-section-number">16.5.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-13"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cutoff</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">control</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.7</span>, <span class="op">-</span><span class="fl">.8</span>, <span class="fl">.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
@@ -654,7 +654,7 @@ Z
 <h3>
 <span class="header-section-number">16.5.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-11"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-274-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-277-1.png" width="100%"></div>
 </div>
 <div id="example-14" class="section level3">
 <h3>
@@ -676,7 +676,7 @@ Z
 <p>A major assumption required for regression discontinuity is that the conditional expectation functions for both treatment and control potential outcomes are continuous at the cutoff.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;An alternative motivation for some designs that do not rely on continuity at the cutoff is “local randomization”.&lt;/p&gt;"><sup>22</sup></a> To satisfy this assumption, we specify two smooth conditional expectation functions, one for each potential outcome. The figure plots <span class="math inline">\(Y\)</span> (the Democratic vote margin at time <span class="math inline">\(t\)</span>) against <span class="math inline">\(X\)</span> (the margin at time <span class="math inline">\(t-1\)</span>). We’ve also plotted the true conditional expectation functions for the treated and control potential outcomes. The solid lines correspond to the observed data and the dashed lines correspond to the unobserved data.</p>
 </li>
 </ul>
-<!-- make sure to rename the section title below --><div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<!-- make sure to rename the section title below --><div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cutoff</span> <span class="op">&lt;-</span> <span class="fl">.5</span>
 <span class="va">control</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.7</span>, <span class="op">-</span><span class="fl">.8</span>, <span class="fl">.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
@@ -703,16 +703,16 @@ Z
 <span class="fu">declare_estimator</span><span class="op">(</span>formula <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="va">Z</span>,
                   model <span class="op">=</span> <span class="va">lm_robust</span>,
                   estimand <span class="op">=</span> <span class="st">"LATE"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-278-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-281-1.png" width="100%"></div>
 <ul>
 <li><p><strong>I</strong>nquiry: Our estimand is the effect of a Democratic win in an election on the Democratic vote margin of the next election, when the Democratic vote margin of the first election is zero. Formally, it is the difference in the conditional expectation functions of the control and treatment potential outcomes when the running variable is exactly zero. The black vertical line in the plot shows this difference.</p></li>
 <li><p><strong>D</strong>ata strategy: We collect data on the Democratic vote share at time <span class="math inline">\(t-1\)</span> and time <span class="math inline">\(t\)</span> for all 1,000 pairs of elections. There is no sampling or random assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises.</p></li>
 </ul>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rd_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">rd_design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">rd_diagnosis</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (20 replicates).
@@ -778,7 +778,7 @@ Z
 <li><p><span class="math inline">\(D\)</span> <em>Data Strategy</em>: The fundamental problem that the researcher faces is that of observational equivalence: different causal types can cause the same data patterns. The issue is mitigated by following a controversial sampling strategy: selecting on <span class="math inline">\(Y\)</span>. By selecting at random one case in which both <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are present, the researcher can narrow her uncertainty to two candidate types: the second and fourth causal types are incapable of producing the data <span class="math inline">\(Z = 1, Y = 1\)</span>. It cannot be that natural resources were the cause of peace (type 2), or that peace would have happened irrespective of natural resources (type 4), in a country that had a civil war and natural resources.</p></li>
 <li><p><span class="math inline">\(A\)</span> <em>Answer Strategy</em>: The researcher uses Bayes’ rule to update about the probability that <span class="math inline">\(Z\)</span> caused <span class="math inline">\(Y\)</span> given <span class="math inline">\(C\)</span>.</p></li>
 </ul>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Z_caused_Y'</span>, <span class="st">'Z_caused_not_Y'</span>, <span class="st">'always_Y'</span>, <span class="st">'always_not_Y'</span><span class="op">)</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span>
@@ -812,7 +812,7 @@ Z
 <h3>
 <span class="header-section-number">16.6.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-12"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-288-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-291-1.png" width="100%"></div>
 <!-- **Comment for JC**: a really like most of this set up. My own thinking though has changed a fair bit on this stuff however and think now it is more coherent to have a model such as `X -> Y <- C` where the position in the model is what gives C explanatory power. Plus with teh CausalQueries package it is really easy to set this up in a natural way and connect with DD. Doing like this would be not just conceptually better (I think) but a lot more flexible for the user. I'd be happy to do the work, think most of the text would remain as is but the example and some questions etc would change. What do you think? -->
 <!-- I think this is a question for Graeme, too, as we worked on this together and got it to a place we were pretty happy with. But I'd certainly be open to changing to something simpler and more accessible. If it's more complicated in spirit, then maybe it should go in the more detailed version below? -->
 </div>
@@ -833,7 +833,7 @@ Z
 </li>
 <li><p>Using the code below, diagnose the <code>design</code> and interpret the diagnosands.</p></li>
 </ol>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>,
                 diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
                   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">posterior</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
@@ -883,7 +883,7 @@ has no or a negative effect on institutions</li>
 know if economic diversification caused it. A quant study would provide no leverage.</p></li>
 <li><p>Note: joint probabilities of observing clues depend only on type, not (as before) on type and Z</p></li>
 </ul>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Z_caused_Y'</span>, <span class="st">'Z_caused_not_Y'</span>, <span class="st">'always_Y'</span>, <span class="st">'always_not_Y'</span><span class="op">)</span>
 
 
@@ -975,7 +975,7 @@ know if economic diversification caused it. A quant study would provide no lever
 <h3>
 <span class="header-section-number">16.6.5</span> Dag<a class="anchor" aria-label="anchor" href="#dag-13"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dag</span> <span class="op">&lt;-</span> <span class="fu">dagify</span><span class="op">(</span><span class="va">C1</span> <span class="op">~</span> <span class="va">type</span>,
               <span class="va">C2</span> <span class="op">~</span> <span class="va">type</span>,
               <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">type</span><span class="op">)</span>
@@ -1001,7 +1001,7 @@ know if economic diversification caused it. A quant study would provide no lever
 <span class="va">ggdd_df</span> <span class="op">&lt;-</span> <span class="fu">make_dag_df</span><span class="op">(</span><span class="va">dag</span>, <span class="va">nodes</span>, <span class="va">design</span><span class="op">)</span>
 
 <span class="va">base_dag_plot</span> <span class="op">%+%</span> <span class="va">ggdd_df</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-292-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-295-1.png" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -1015,7 +1015,7 @@ know if economic diversification caused it. A quant study would provide no lever
 <h3>
 <span class="header-section-number">16.7.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, units <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
@@ -1040,7 +1040,7 @@ know if economic diversification caused it. A quant study would provide no lever
 <h3>
 <span class="header-section-number">16.7.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-14"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulation --------------------------------------------------------------</span>
 
 <span class="co"># simulations &lt;- simulate_design(design, sims = 100)</span>
@@ -1084,7 +1084,7 @@ know if economic diversification caused it. A quant study would provide no lever
 <span class="va">ggdd_df</span> <span class="op">&lt;-</span> <span class="fu">make_dag_df</span><span class="op">(</span><span class="va">dag</span>, <span class="va">nodes</span>, <span class="va">design</span><span class="op">)</span>
 
 <span class="va">base_dag_plot</span> <span class="op">%+%</span> <span class="va">ggdd_df</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-299-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-302-1.png" width="100%"></div>
 </div>
 <div id="example-15" class="section level3">
 <h3>
@@ -1107,7 +1107,7 @@ Abstract: We test for an effect of Arizona’s 2007 Legal Arizona Workers Act (L
 (3) how to diagnose when you are outside the convex hull
 - declaration outside the convex hull and use the Abadie diagnostic demonstrating a poor match. (possibly explore power of this diagnostic)
 - show that synth is biased in this setting. augsynth is not.</p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># tidy function that takes data and just adds the synthetic control weights to it</span>
 <span class="va">synth_weights_tidy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">dataprep.out</span> <span class="op">&lt;-</span> <span class="fu">dataprep</span><span class="op">(</span>
@@ -1186,7 +1186,7 @@ Abstract: We test for an effect of Arizona’s 2007 Legal Arizona Workers Act (L
     <span class="va">prop_non_hispanic_below_hs</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html">I</a></span><span class="op">(</span><span class="va">state</span> <span class="op">==</span> <span class="st">"AZ"</span><span class="op">)</span> <span class="op">+</span> <span class="va">post_treatment_period</span> <span class="op">+</span> <span class="va">legal_worker_act</span>, term <span class="op">=</span> <span class="st">"legal_worker_act"</span>, 
     model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"unweighted_did"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">augsynth_tidy</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"augsynth"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">state_data</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span>
 
 <span class="va">state_data</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">state</span>, <span class="va">synth_weights</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">distinct</span> <span class="op">%&gt;%</span> <span class="fu">arrange</span><span class="op">(</span><span class="op">-</span><span class="va">synth_weights</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">head</span></code></pre></div>
@@ -1197,13 +1197,13 @@ Abstract: We test for an effect of Arizona’s 2007 Legal Arizona Workers Act (L
 ## 4    CA         0.001
 ## 5    AL         0.000
 ## 6    AK         0.000</code></pre>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">state_data</span> <span class="op">%&gt;%</span> 
   <span class="fu">ggplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_line</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">year</span>, <span class="va">prop_non_hispanic_below_hs</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">state</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-302-1.png" width="100%"></div>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-305-1.png" width="100%"></div>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">state_data</span> <span class="op">%&gt;%</span> 
   <span class="fu">mutate</span><span class="op">(</span>treatment_state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">state</span> <span class="op">==</span> <span class="st">"AZ"</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Synthethic Control"</span>, <span class="st">"Arizona"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">group_by</span><span class="op">(</span><span class="va">treatment_state</span>, <span class="va">year</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -1216,11 +1216,11 @@ Abstract: We test for an effect of Arizona’s 2007 Legal Arizona Workers Act (L
   <span class="fu">labs</span><span class="op">(</span>color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ylab</span><span class="op">(</span><span class="st">"Proportion Non-Hispanic Below H.S. Education"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">dd_theme</span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-303-1.png" width="100%"></div>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-306-1.png" width="100%"></div>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">synth_diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"rmse"</span>, <span class="st">"coverage"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations</span>, diagnosands <span class="op">=</span> <span class="va">synth_diagnosands</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span>
@@ -1452,7 +1452,7 @@ legal_worker_act
 <h3>
 <span class="header-section-number">16.7.4</span> When there are not good controls, standard synth will get the wrong answer<a class="anchor" aria-label="anchor" href="#when-there-are-not-good-controls-standard-synth-will-get-the-wrong-answer"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># declaration outside the convex hull</span>
 <span class="va">design_outside_hull</span> <span class="op">&lt;-</span> <span class="fu">replace_step</span><span class="op">(</span>
   <span class="va">design</span>, 
@@ -1462,10 +1462,10 @@ legal_worker_act
     assignment_variable <span class="op">=</span> <span class="va">legal_worker_act</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">state_data_outside_hull</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design_outside_hull</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_outside_hull</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design_outside_hull</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_outside_hull</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_outside_hull</span>, diagnosands <span class="op">=</span> <span class="va">synth_diagnosands</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span>
 
 <span class="fu">kable</span><span class="op">(</span><span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="va">diagnosis_outside_hull</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -1687,7 +1687,7 @@ legal_worker_act
 </tr>
 </tbody>
 </table></div>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># plot the synthetic control constructed in this way (it usually picks just texas and is highly biased)</span>
 <span class="va">state_data_outside_hull</span> <span class="op">%&gt;%</span> 
   <span class="fu">mutate</span><span class="op">(</span>treatment_state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">state</span> <span class="op">==</span> <span class="st">"AZ"</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Synthethic Control"</span>, <span class="st">"Arizona"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -1701,7 +1701,7 @@ legal_worker_act
   <span class="fu">labs</span><span class="op">(</span>color <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ylab</span><span class="op">(</span><span class="st">"Proportion Non-Hispanic Below H.S. Education"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">dd_theme</span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-311-1.png" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-314-1.png" width="100%"></div>
 </div>
 <div id="references-1" class="section level3">
 <h3>
