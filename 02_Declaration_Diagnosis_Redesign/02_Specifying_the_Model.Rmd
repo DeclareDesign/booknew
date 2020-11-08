@@ -51,7 +51,94 @@ The **potential outcomes** formalization emphasizes a counterfactual notion of c
 
 The **graphical model** formulation approach makes use of DAGs or "directed acyclic graphs" to characterize causal relations. Each node on a graph is a variable and the edges that connect them represent possible causal effects. An arrow from a "parent" node to a "child" node indicates that the value of the parent sometimes determines the outcome of the child; more formally: the parent's value is an argument in a functional equation determining the child's outcome. Though consistent with a counterfactual notion of causality, DAGs emphasize mechanistic accounts: when the exposure variable changes, the outcome variable changes as a result---though possibly in different ways for different units. DAGs are *nonparametric*. This means that they do not encode all the beliefs about the full causal model. They don't show *how* variables are related, just *that* they are related.
 
+Defining a reference model requires both defining a set of variables (their meaning and their ranges) and stipulating how they relate to each other. In the potential outcomes framework these are captured by differences in potential outcomes under different conditions. In the graphical modeling literature we define a set of nonparametric structural causal relationships, indicating which variables depend on which other variables. With these variables in hand, we can  visualize the model using a directed acyclic graph (DAG). 
+
+
 Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. We *could* use only the language of causal graphs or we *could* use only the language of potential outcomes. We choose to use both languages because they are useful for expressing different facets of research design. We use DAGs to describe the web of causal interrelations in a concise way (writing out the potential outcomes for every relationship in the model is tedious). We use potential outcomes when we want to zoom in on *particular* causal relationships and to make fine distinctions between inquiries that apply to different sets of units (it's difficult to describe effect heterogeneity with graphical models).
+
+
+We illustrate these ideas using a simple DAG to describe a model with an abstract research design in which we will collect information about $N$ units. We will  assign a treatment at random $Z$, and collect a posttreatment outcome $Y$. We know there are other determinants of the outcome beyond $Z$, but we don't need to write down our beliefs about them because our main inquiry is the average treatment effect of $Z$ on $Y$. All we'll say about those other deteriminants is that they are causally related to $Y$, but not to $Z$, since $Z$ will be randomly assigned by us. 
+<!-- Following the rule that we only need to make explicit the parts of our causal model that are required for the inquiry, data strategy, and answer strategy, this bare specification is sufficient. -->
+
+The nonparametric structure causal model can be written like this:
+
+\begin{align*}
+Y &= f_Y(Z, X, U)
+\end{align*}
+
+Equivalently the potential outcomes might be written as:
+
+$$Y_i(0) = u_i,  Y_i(1) = 1 = u_i, i \in \{1,2,\dots, n\}.$$
+
+
+This DAG encodes this model in graphical form:
+
+```{r p2simpledag, echo = FALSE, fig.height = 4, fig.width = 7, fig.cap = "Simple DAG. U is unobserved."}
+# a_blue <- "#0072B2"
+# a_gray <- "grey80"
+# 
+# dag <-
+#   dagify(Y ~ X + Z + U,
+#          X ~ U,
+#          latent = "U")
+# 
+# gg_df <-
+#   tidy_dagitty(dag,
+#                layout = "manual",
+#                x = c(1, 0, -1, 1),
+#                y = c(1, 1, 0, 0))
+# 
+# gg_df <-
+#   gg_df %>%
+#   mutate(
+#     color = case_when(
+#       name == "U" ~ a_gray,
+#       name == "Y" ~ a_blue,
+#       name == "Z" ~ a_blue
+#     )
+#   )
+# 
+# 
+# g <-
+# ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
+#   geom_dag_node(aes(color = color)) +
+#   scale_color_identity() +
+#   geom_dag_text(color = "black", family = "Helvetica") +
+#   geom_dag_edges() +
+#   theme_dag()
+# 
+# g
+
+design <-
+  declare_population(N = 100, U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ Z + U) +
+  declare_assignment(prob = 0.5) 
+
+
+dag <- dagify(Y ~ Z + U)
+
+nodes <-
+  tibble(
+    name = c("Z", "U", "Y"),
+    label = c("Z", "U", "Y"),
+    annotation = c(
+      "**Treatment assignment**",
+      "**Unknown heterogeneity**",
+      "**Outcome**"
+    ),
+    x = c(1, 5, 5),
+    y = c(1.5, 3.5,  1.5), 
+    nudge_direction = c("S", "N", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
+
+<!-- This is good text but for answer stratgy: -->
+<!-- Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting by applying the "back-door criterion," which asks whether a back-door path exists between a pair of causally-related variables. Here, the causal relationship between $X$ and $Y$ is confounded by the back-door path $X \leftarrow U \rightarrow Z$. (for much more on the back-door criterion, see XXX). Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned. There are no back door paths leading from $Z$ to $Y$, so we *can* learn more easily about average causal effects of $Z$ on $Y$. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances. -->
 
 
 
@@ -82,9 +169,9 @@ draw_data(design) %>%
   head %>% kable(caption = "Data from a simple model")
 ```
 
-Note now that this declaration has a stochastic component. Not only is `X` randomized but so are individual level features `U` and treatment effects `tau`. How should we interpret this stochastic component?  Note also that the "data" contains potential outcomes---that is, it includes a description of how the world would work under different conditions and not simply a description of possibly observable data. In other words it reports a data generating process, not just data. 
+Note first  that now that this declaration has a stochastic component. Not only is `X` randomized but so are individual level features `U` and treatment effects `tau`.  Note also that the "data" contains potential outcomes---that is, *each draw* includes a description of how the world would work under different conditions and not simply a description of possibly observable data. In other words it reports a data generating process, not just data.  
 
-What type of population have we just modelled? Have we modelled one or many populations? 
+How should we these populations and draws given this stochastic component?   What type of population have we just modeled? Have we modeled one or many populations? 
 
 In fact there are three distinct ways to interpret this model specification.
 
@@ -94,7 +181,7 @@ In fact there are three distinct ways to interpret this model specification.
 
 3. **Priors Interpretation of M**: A third interpretation is that the stochastic component represents our uncertainty over a set of possible worlds. It might be, for instance, the a design performs well for some possible worlds and poorly for others, in which case the nature of this distribution is important for assessing our *expectation* that a design will perform well. 
 
-Which interpretation we have matters for who we do diagnosis. A point we return to in section XXX.
+Which interpretation we have matters for how we do diagnosis. A point we return to in section XXX.
 
 
 ## What variables to include?
@@ -103,7 +190,7 @@ Which interpretation we have matters for who we do diagnosis. A point we return 
 
 ### Types of variables
 
-The key components in all the reference models we examine are the "variables" or "nodes"  and the ways these stand in relation to each other. Informally a variable is a quantity that can take on different values: the day of the week, the winner of an election, the height of a mountain. All variables are formally similar but they can play distinguished roles in a model.
+The key components in the model above and all the reference models we examine are the "variables" (or "nodes")  and the ways these stand in relation to each other. Informally a variable is a quantity that can take on different values: the day of the week, the winner of an election, the height of a mountain. All variables are formally similar but they can play distinguished roles in a model.
 
 Often variables are labeled according to the role they play in a causal model and in later discussions we will often refer to variables in this way using the following terms:
 
@@ -190,87 +277,6 @@ $D$: The data strategy --- sampling, treatment assignment, and measurement --- d
 $A$: Finally, answer strategies rely on collected data to provide an answer to the inquiry, and so any variable in the collected data should be defined in the model. (Any of these variables should also be defined in the measurement strategy.) Beyond outcomes and treatment variables, we may need variables to define clusters used in clustered standard errors, to construct weights for poststratification of estimates to match population characteristics, and to visualize our data.
 
 If we have all this,  do we have enough for diagnosis? We might not. When we engage in diagnosis we may want to ask about how our design fares if the world worked in a particular way. For instance, the gender of subjects might not be a primary interest for us or enter into our inquiry, our data strategy, or our analysis, but we might worry that gender confounds our inferences---for example if it affects both treatment uptake and outcomes. In this case we may include gender in the reference model in order to assess the extent to which our analysis is sensitive to it.
-
-Defining a reference model requires both defining a set of variables (their meaning and their ranges) and stipulating how they relate to each other. In the graphical modelling literture we define a set of nonparametric structural causal relationships, indicating which variables depend on which other variables. With these variables in hand, we can  visualize the model using a directed acyclic graph (DAG).
-
-We illustrate using a simple DAG to describe a model with an abstract research design in which we will collect information about $N$ units. We will measure a pretreatment covariate $X$, assign a treatment at random $Z$, and collect a posttreatment outcome $Y$. We know there are other determinants of the outcome beyond $Z$ and $X$, but we don't need to write down our beliefs about them because our main inquiry is the average treatment effect of $Z$ on $Y$. All we'll say about those other deteriminants is that they are causally related to both $X$ and $Y$, but not to $Z$, since $Z$ will be randomly assigned by us. Following the rule that we only need to make explicit the parts of our causal model that are required for the inquiry, data strategy, and answer strategy, this bare specification is sufficient.
-
-The nonparametric structure causal model can be written like this:
-
-\begin{align*}
-X &= f_X(U)\\
-Y &= f_Y(Z, X, U)
-\end{align*}
-
-This DAG encodes this model in graphical form:
-
-```{r p2simpledag, echo = FALSE, fig.height = 4, fig.width = 7, fig.cap = "Simple DAG. U is unobserved."}
-# a_blue <- "#0072B2"
-# a_gray <- "grey80"
-# 
-# dag <-
-#   dagify(Y ~ X + Z + U,
-#          X ~ U,
-#          latent = "U")
-# 
-# gg_df <-
-#   tidy_dagitty(dag,
-#                layout = "manual",
-#                x = c(1, 0, -1, 1),
-#                y = c(1, 1, 0, 0))
-# 
-# gg_df <-
-#   gg_df %>%
-#   mutate(
-#     color = case_when(
-#       name == "U" ~ a_gray,
-#       name == "X" ~ a_blue,
-#       name == "Y" ~ a_blue,
-#       name == "Z" ~ a_blue
-#     )
-#   )
-# 
-# 
-# g <-
-# ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
-#   geom_dag_node(aes(color = color)) +
-#   scale_color_identity() +
-#   geom_dag_text(color = "black", family = "Helvetica") +
-#   geom_dag_edges() +
-#   theme_dag()
-# 
-# g
-
-design <-
-  declare_population(N = 100, U = rnorm(N), X = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + X + U) +
-  declare_assignment(prob = 0.5) 
-
-
-dag <- dagify(Y ~ Z + U + X, X ~ U)
-
-nodes <-
-  tibble(
-    name = c("Z", "X", "U", "Y"),
-    label = c("Z", "X", "U", "Y"),
-    annotation = c(
-      "**Treatment assignment**",
-      "**Observed covariate**",
-      "**Unknown heterogeneity**",
-      "**Outcome**"
-    ),
-    x = c(1, 3, 5, 5),
-    y = c(1.5, 3.5, 3.5, 1.5), 
-    nudge_direction = c("S", "N", "N", "S"),
-    answer_strategy = "uncontrolled"
-  )
-
-ggdd_df <- make_dag_df(dag, nodes, design)
-
-base_dag_plot %+% ggdd_df
-```
-
-Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting by applying the "back-door criterion," which asks whether a back-door path exists between a pair of causally-related variables. Here, the causal relationship between $X$ and $Y$ is confounded by the back-door path $X \leftarrow U \rightarrow Z$. (for much more on the back-door criterion, see XXX). Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned. There are no back door paths leading from $Z$ to $Y$, so we *can* learn more easily about average causal effects of $Z$ on $Y$. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances.
 
 
 ## Specifying structural relations
