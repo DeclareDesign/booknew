@@ -10,6 +10,68 @@ library(dagitty)
 library(dddag)
 library(ggraph)
 
+# a_blue <- "#0072B2"
+# a_gray <- "grey80"
+# 
+# dag <-
+#   dagify(Y ~ X + Z + U,
+#          X ~ U,
+#          latent = "U")
+# 
+# gg_df <-
+#   tidy_dagitty(dag,
+#                layout = "manual",
+#                x = c(1, 0, -1, 1),
+#                y = c(1, 1, 0, 0))
+# 
+# gg_df <-
+#   gg_df %>%
+#   mutate(
+#     color = case_when(
+#       name == "U" ~ a_gray,
+#       name == "Y" ~ a_blue,
+#       name == "Z" ~ a_blue
+#     )
+#   )
+# 
+# 
+# g <-
+# ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
+#   geom_dag_node(aes(color = color)) +
+#   scale_color_identity() +
+#   geom_dag_text(color = "black", family = "Helvetica") +
+#   geom_dag_edges() +
+#   theme_dag()
+# 
+# g
+
+design <-
+  declare_population(N = 100, U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ Z + U) +
+  declare_assignment(prob = 0.5) 
+
+
+dag <- dagify(Y ~ Z + U)
+
+nodes <-
+  tibble(
+    name = c("Z", "U", "Y"),
+    label = c("Z", "U", "Y"),
+    annotation = c(
+      "**Treatment assignment**",
+      "**Unknown heterogeneity**",
+      "**Outcome**"
+    ),
+    x = c(1, 5, 5),
+    y = c(1.5, 3.5,  1.5), 
+    nudge_direction = c("S", "N", "S"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+
 design <-
   declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), X = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ 0.5 * X + U)
@@ -64,70 +126,6 @@ nodes <-
     x = c(1, 3, 5, 5, 5, 3, 3, 2),
     y = c(2.5, 4, 1, 2.5, 4, 1, 2.5, 2.5), 
     nudge_direction = c("N", "N", "S", "E", "N", "S", "N", "S"),
-    answer_strategy = "uncontrolled"
-  )
-
-ggdd_df <- make_dag_df(dag, nodes, design)
-
-base_dag_plot %+% ggdd_df
-
-# a_blue <- "#0072B2"
-# a_gray <- "grey80"
-# 
-# dag <-
-#   dagify(Y ~ X + Z + U,
-#          X ~ U,
-#          latent = "U")
-# 
-# gg_df <-
-#   tidy_dagitty(dag,
-#                layout = "manual",
-#                x = c(1, 0, -1, 1),
-#                y = c(1, 1, 0, 0))
-# 
-# gg_df <-
-#   gg_df %>%
-#   mutate(
-#     color = case_when(
-#       name == "U" ~ a_gray,
-#       name == "X" ~ a_blue,
-#       name == "Y" ~ a_blue,
-#       name == "Z" ~ a_blue
-#     )
-#   )
-# 
-# 
-# g <-
-# ggplot(gg_df, aes(x = x, y = y, xend = xend, yend = yend)) +
-#   geom_dag_node(aes(color = color)) +
-#   scale_color_identity() +
-#   geom_dag_text(color = "black", family = "Helvetica") +
-#   geom_dag_edges() +
-#   theme_dag()
-# 
-# g
-
-design <-
-  declare_population(N = 100, U = rnorm(N), X = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + X + U) +
-  declare_assignment(prob = 0.5) 
-
-
-dag <- dagify(Y ~ Z + U + X, X ~ U)
-
-nodes <-
-  tibble(
-    name = c("Z", "X", "U", "Y"),
-    label = c("Z", "X", "U", "Y"),
-    annotation = c(
-      "**Treatment assignment**",
-      "**Observed covariate**",
-      "**Unknown heterogeneity**",
-      "**Outcome**"
-    ),
-    x = c(1, 3, 5, 5),
-    y = c(1.5, 3.5, 3.5, 1.5), 
-    nudge_direction = c("S", "N", "N", "S"),
     answer_strategy = "uncontrolled"
   )
 
