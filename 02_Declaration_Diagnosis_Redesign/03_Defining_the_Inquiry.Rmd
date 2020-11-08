@@ -1,8 +1,9 @@
 ---
 title: "Defining the inquiry"
 output:
-  pdf_document: default
-  html_document: default
+  html_document:
+    toc: true
+    toc_depth: 2
 bibliography: ../bib/book.bib
 ---
 
@@ -136,7 +137,7 @@ Table: (\#tab:descriptiveestimands) Descriptive inquiries
 
 
 
-```{r, comment = ""}
+```{r MI1, comment = ""}
 M <- declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5), Y = Z + U) 
 
 I <- declare_estimand(Y_given_Z1 = mean(Y[Z==1]))
@@ -153,7 +154,7 @@ Inquiries about causal effects involve a comparison of at least two possible wor
 Table \@ref(tab:causalestimands) enumerates some common causal estimands. 
 
 
-```{r}
+```{r MI2}
 M <-
   declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ 0.5 * Z + U) 
@@ -162,7 +163,6 @@ I <- declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
 
 draw_estimands(M+I) %>% 
   kable(caption = "Estimand is a treatment effect", digits = 2)
-
 ```
 <!-- - Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over -->
 
@@ -200,9 +200,9 @@ Table: (\#tab:attributionestimands) Causal attribution inquiries
 
 Like all designs, those with causal attribution inquiries can be declared, simulated, and diagnosed on a computer. Something to consider, however, is that the model may produce datasets in which the effect does not occur, and so questions defined over units for whom it occurred are undefined. One way to avoid this is to construct a model such that the event occurs for at least one unit with probability one.
 
-In the example below we ask an attribution data of this form but on continuous data. Use the same reference model $M$ and ask about the share of units with positive values of $Y$ and $Z=1$ that would have had negative values of $Y$ were $Z=0$.
+In the example in Table \@(tab:MI3) we ask an attribution question of this form but on continuous data. We use the same reference model $M$ and ask about the share of units with positive values of $Y$ and $Z=1$ that would have had negative values of $Y$ were $Z=0$.
 
-```{r}
+```{r MI3}
 I <- declare_estimand(POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0]))
 
 draw_estimands(M+I) %>% 
