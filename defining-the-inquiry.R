@@ -58,7 +58,6 @@ I <- declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
 draw_estimands(M+I) %>% 
   kable(caption = "Estimand is a treatment effect", digits = 2)
 
-
 I <- declare_estimand(POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0]))
 
 draw_estimands(M+I) %>% 
