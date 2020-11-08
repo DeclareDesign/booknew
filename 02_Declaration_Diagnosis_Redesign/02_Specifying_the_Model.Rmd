@@ -39,7 +39,7 @@ library(ggraph)
 
 Any research design -- whether the research question is fundamentally causal or descriptive -- implicitly relies on models. Indeed models can enter at multiple stages, for example in guiding the research question or in the analysis stage. Here we focus on the role of models in providing a background understanding of how the world works, against which the performance of a design can be assessed. We call these "**reference models**"  (to be distinguished from analytic models later). Their role is to provide a stipulation of how the world works---for instance --- what variables are important and how do they interrelate---allowing us to ask questions such as: if the reference model were true, what would the answer to my question be and would I be able to figure out the answer?  
 
-The $M$ in MIDA refers to these reference models.
+The $M$ in MIDA refers to these reference models. As we describe below we often think of $M$ as a set of models, with typical element $m$ though in some cases the $M$ may just be a single model.
 
 <!-- Even if the model is hazy, researchers carry with them a model of the world that could in principle be expressed as a probablistic causal model. As described in the previous chapter, probabalistic causal models are described by a set of exogeneous and endogenous variables, a set of functional relationships between the variables, and a probability distribution over the exogenous variables. -->
 
@@ -52,7 +52,6 @@ The **potential outcomes** formalization emphasizes a counterfactual notion of c
 The **graphical model** formulation approach makes use of DAGs or "directed acyclic graphs" to characterize causal relations. Each node on a graph is a variable and the edges that connect them represent possible causal effects. An arrow from a "parent" node to a "child" node indicates that the value of the parent sometimes determines the outcome of the child; more formally: the parent's value is an argument in a functional equation determining the child's outcome. Though consistent with a counterfactual notion of causality, DAGs emphasize mechanistic accounts: when the exposure variable changes, the outcome variable changes as a result---though possibly in different ways for different units. DAGs are *nonparametric*. This means that they do not encode all the beliefs about the full causal model. They don't show *how* variables are related, just *that* they are related.
 
 Defining a reference model requires both defining a set of variables (their meaning and their ranges) and stipulating how they relate to each other. In the potential outcomes framework these are captured by differences in potential outcomes under different conditions. In the graphical modeling literature we define a set of nonparametric structural causal relationships, indicating which variables depend on which other variables. With these variables in hand, we can  visualize the model using a directed acyclic graph (DAG). 
-
 
 Despite what you may have inferred from the sometimes heated disagreements between scholars who prefer one formalization to the other, DAGs and potential outcomes are compatible systems for thinking about causality. We *could* use only the language of causal graphs or we *could* use only the language of potential outcomes. We choose to use both languages because they are useful for expressing different facets of research design. We use DAGs to describe the web of causal interrelations in a concise way (writing out the potential outcomes for every relationship in the model is tedious). We use potential outcomes when we want to zoom in on *particular* causal relationships and to make fine distinctions between inquiries that apply to different sets of units (it's difficult to describe effect heterogeneity with graphical models).
 
@@ -153,7 +152,7 @@ base_dag_plot %+% ggdd_df
 
 The first choice to make in declaring $M$ is the set of units about which you wish to make inferences.  This is largely determined by your inquiry ($I$). We might usefully distinguish between three types of sets of units---all of which we will refer to as your "population." 
 
-* Finite population. If your inquiry is about the population of Americans or Brazilians, your model should describe the characteristics of all Americans or Brazilians. You might only analyze data from a sample of these, but you seek nevertheless to make inferences about this (finite) population.
+* Finite population. If your inquiry is about the population of Americans or Brazilians, your reference model should describe the characteristics of all Americans or Brazilians. You might only analyze data from a sample of these, but you seek nevertheless to make inferences about this (finite) population.
 
 * Finite sample. Moving down, your inquiry might only be about a sample from a finite population. If you are interested in the sample average treatment effect, then you need only  describe only the units in your sample. For practical purposes your sample then *is* your population. Subtly however, if you are interested in a sample but do not know what your sample from the population will be then your inquiry might concern a typical sample from a population in some way and you will need to your estimand.   
 
@@ -182,11 +181,11 @@ How should we these populations and draws given this stochastic component?   Wha
 
 In fact there are three distinct ways to interpret this model specification.
 
-1. **Large Population Interpretation of M**: We have a large population---perhaps a superpopulation. On each run of the model we get to see a new sample and we use the sample to learn about the large population. 
+1. **Large Population Interpretation of M**: We have a large population---perhaps a superpopulation. On each run of the model we get to see a new sample and we use the sample to learn about the large population. In this interpretation $M$ is a singleton---we have specified only one model.
 
-2. **Multiple Worlds Interpretation of M**: A second interpretation is that each data draw is itself a (non stochastic) model and the distribution functions provide a handy way of generating multiple plausible models. We we will want to learn about design performance for each of these possible worlds.
+2. **Priors Interpretation of M**: A third interpretation is that the stochastic component represents our uncertainty over a set of possible worlds. It might be, for instance, the a design performs well for some possible worlds and poorly for others, in which case the nature of this distribution is important for assessing our *expectation* that a design will perform well. In this interpretation $M$ is again a singleton. 
 
-3. **Priors Interpretation of M**: A third interpretation is that the stochastic component represents our uncertainty over a set of possible worlds. It might be, for instance, the a design performs well for some possible worlds and poorly for others, in which case the nature of this distribution is important for assessing our *expectation* that a design will perform well. 
+2. **Multiple Worlds Interpretation of M**: A second interpretation is that each data draw is itself a (non stochastic) model and the distribution functions provide a handy way of generating multiple plausible models. We we will want to learn about design performance for each of these possible worlds. Under this interpretation *M* is a collection of models and we may be interested in performance over each $m$ in $M$. 
 
 Which interpretation we have matters for how we do diagnosis. A point we return to in section XXX.
 
