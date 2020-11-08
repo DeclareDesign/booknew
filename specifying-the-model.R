@@ -72,15 +72,15 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 
 base_dag_plot %+% ggdd_df
 
-design <-
-  declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), X = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * X + U)
+M <-
+  declare_population(N = 100, U = rnorm(N), tau = 1+rnorm(N), Z = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * Z + U)
 
-draw_data(design) %>% 
+draw_data(M) %>% 
   head %>% kable(caption = "Data from a simple model")
 
 
-design <-
+M <-
   declare_population(
     N = 100,
     U = rbinom(N, size = 1, prob = 0.25),
@@ -129,13 +129,13 @@ nodes <-
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes, M)
 
 base_dag_plot %+% ggdd_df
 
 tau_X0 <- 0.5
 tau_X1 <- 1
 
-design <-
+M <-
   declare_population(N = 100, U = rnorm(N), X = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ (X==0)*Z*tau_X0 + (X==1)*Z*tau_X1+U)
