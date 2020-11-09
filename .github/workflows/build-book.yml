@@ -49,8 +49,11 @@ jobs:
       - name: Search for rmd dependences
         run: Rscript -e 'library(checkpoint); found_packages <- scanForPackages(".", use.knitr = TRUE)$pkgs; if(length(found_packages[!found_packages%in% installed.packages()]) > 0) install.packages(found_packages[!found_packages%in% installed.packages()])'
 
-      # - name: Install PhantomJS
-      #   run: R -e 'webshot::install_phantomjs()'
+      - name: Reinstall bookdown
+        run: |
+          Rscript -e 'remotes::install_github("DeclareDesign/bookdown")'
+          Rscript -e 'remotes::install_github("rstudio/bslib")'
+          Rscript -e 'remotes::install_github("DeclareDesign/DeclareDesign")'
 
       - name: Cache bookdown results
         uses: actions/cache@v1
