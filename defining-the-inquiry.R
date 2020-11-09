@@ -41,25 +41,31 @@ ggplot(gg_df, aes(X, pred)) +
   geom_point(data = dat, aes(X, Y), stroke = 0, alpha = 0.1) +
   theme_void()
 
-M <- declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5), Y = Z + U) 
+M <-
+  declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * Z + U) +
+  declare_reveal()
 
-I <- declare_estimand(Y_given_Z1 = mean(Y[Z==1]))
+I <- declare_estimand(
+  YZ1 = mean(Y[Z==1]),
+  ATE = mean(Y_Z_1 - Y_Z_0),
+  POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0])
+  )
 
-draw_estimands(M+I) %>% 
-  kable(caption = "Estimand is a descriptive quantity.", digits = 2)
+draw_estimands(M+I)
 
 
 M <-
   declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * Z + U) 
+  declare_potential_outcomes(Y ~ 0.5 * Z + U) +
+  declare_reveal()
 
-I <- declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+I <- declare_estimand(
+  YZ1 = mean(Y[Z==1]),
+  ATE = mean(Y_Z_1 - Y_Z_0),
+  POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0])
+  )
 
 draw_estimands(M+I) %>% 
-  kable(caption = "Estimand is a treatment effect", digits = 2)
-
-I <- declare_estimand(POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0]))
-
-draw_estimands(M+I) %>% 
-  kable(caption = "Estimand is the probability of necessity for the sign of Y.", digits = 2)
+  kable(caption = "One model three estimands.", digits = 2)
 

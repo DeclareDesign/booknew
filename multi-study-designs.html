@@ -100,7 +100,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n3</span> <span class="op">&lt;-</span> <span class="fl">100</span>
@@ -128,12 +128,12 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <span class="header-section-number">18.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-21"><i class="fas fa-link"></i></a>
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-382-1.png" width="100%"></div>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ggdd_df</span> <span class="op">&lt;-</span> <span class="fu">make_dag_df</span><span class="op">(</span><span class="va">dag</span>, <span class="va">nodes</span>, <span class="va">design2</span><span class="op">)</span>
 
 <span class="va">base_dag_plot</span> <span class="op">%+%</span> <span class="va">ggdd_df</span></code></pre></div>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-383-1.png" width="100%"></div>
-<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ggdd_df</span> <span class="op">&lt;-</span> <span class="fu">make_dag_df</span><span class="op">(</span><span class="va">dag</span>, <span class="va">nodes</span>, <span class="va">design3</span><span class="op">)</span>
 
 <span class="va">base_dag_plot</span> <span class="op">%+%</span> <span class="va">ggdd_df</span></code></pre></div>
@@ -148,7 +148,7 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulate design</span>
 <span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
 <span class="co"># Simulate null design</span>
@@ -488,7 +488,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 - the design with five sites has half the RMSE of the one-site design. this is because of the variation in the proportions of types across sites.
 - interestingly there is poor coverage (anti-conservative) when you use the single site design</p>
 <p>(when you have contextual variation as well, i.e. effect differs across sites for reasons not captured by the het fx, coverage is off for all designs. will keep this point out, seems like too much and you don’t need contextual effects to get different effects across sites, those come from different proportions of types)</p>
-<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">meta_re_estimator</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
   <span class="va">site_estimates_df</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> 
     <span class="fu">group_by</span><span class="op">(</span><span class="va">site</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -529,7 +529,7 @@ the theory is correct becomes increasingly unwise.</p></li>
     <span class="fu">tibble</span><span class="op">(</span>error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="op">}</span>
 <span class="op">}</span></code></pre></div>
-<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># need to have biased sampling to get bias here</span>
 <span class="co"># two kinds of populations, one in which the study type determines the subject types and you select on study type</span>
 <span class="co">#   a second kind where study type determines study shock </span>
@@ -576,10 +576,10 @@ the theory is correct becomes increasingly unwise.</p></li>
 <span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu">multi_site_designer</span><span class="op">(</span>n_study_sites <span class="op">=</span> <span class="fl">1</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
 
 <span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu">multi_site_designer</span><span class="op">(</span>n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_small_large</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">std.error</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">statistic</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.low</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.high</span><span class="op">)</span><span class="op">)</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_small_large</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -932,7 +932,7 @@ post-strat
 </h3>
 <p>you can improve site-level effect estimates by analyzing with simple Bayesian model because of its shrinkage property, even when the Bayesian model is wrong about distribution of effects in population</p>
 <p>this is the point from the blog post; I will modify the above design so it can also make this point, switching between the normal distribution and uniform distribution for the fx distribution</p>
-<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stan_model</span> <span class="op">&lt;-</span> <span class="st">" 
 data {
   int&lt;lower=0&gt; J;         // number of sites 
@@ -978,12 +978,12 @@ model {
 </h3>
 <p>none of these designs work when you’re trying to make predictions for sites that are systematically different, i.e. are not in the same population as the sampling frame</p>
 <p>the design was set up to include several sites where researchers could not feasibly set up experiments. in the original design, effects do not depend on whether sites are feasible for the experiment. when effects do vary, there are systematic differences for those target sites. those differences might come from three sources: mean effect size differs in places that are sampled vs not sampled; individual-level het fx sizes that systematically differ in places that are sampled to study vs others; covariate profiles that do not exist in sites outside the sampling frame. I introduce effects in the first way and show there is substantial bias.</p>
-<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">small_study_five_sites_feasible_effects</span> <span class="op">&lt;-</span> <span class="fu">multi_site_designer</span><span class="op">(</span>n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span>, feasible_effect  <span class="op">=</span> <span class="op">-</span><span class="fl">0.25</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_feasible_effects</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">small_study_five_sites_feasible_effects</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_feasible_effects</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_feasible_effects</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">std.error</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">statistic</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.low</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.high</span><span class="op">)</span><span class="op">)</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_feasible_effects</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>

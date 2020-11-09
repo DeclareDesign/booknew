@@ -85,17 +85,17 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </div>
 <p>And of course it need not be a number at all: the answer to your question might be “blue” or “the normal distribution.” Or it might be a set. For instance in qualitative comparative analysis (QCA) with boolean variables (“crisp-set QCA”) a common inquiry is: what is the minimal set of conditions sufficient to produce <span class="math inline">\(Y\)</span> <span class="citation">(Ragin <a href="references-4.html#ref-ragin1987">1987</a>)</span>. For instance, if <span class="math inline">\(Y\)</span> happens any time that causal factor <span class="math inline">\(A\)</span> is present or when <span class="math inline">\(A\)</span> is absent but <span class="math inline">\(B\)</span> is present, then <span class="math inline">\(a^M\)</span> is a set: <span class="math inline">\(\{A, \neg A \&amp; B\}\)</span>.</p>
 <p>It could be a set of questions about an explanatory model. For instance, a researcher might articulate a handful of important questions about the model that all have to come out a certain way or the model itself should be rejected. These complex inquires are made up of a series of atomic inquiries – we’re interested in the sub-inquiries only insofar as they help us understand the real inquiry – is this model of the world a good one or not.</p>
-<div id="kinds-of-inquiries" class="section level2">
+<div id="kinds-of-inquiries-the-ladder-of-causation" class="section level2">
 <h2>
-<span class="header-section-number">7.1</span> Kinds of Inquiries<a class="anchor" aria-label="anchor" href="#kinds-of-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.1</span> Kinds of Inquiries: The Ladder of Causation<a class="anchor" aria-label="anchor" href="#kinds-of-inquiries-the-ladder-of-causation"><i class="fas fa-link"></i></a>
 </h2>
 <!-- MH: My vote: four types of queries: the three from Pearl (descriptive, interventionist, counterfactual) plus "model" queries in which you try to learn the model. -->
 <!-- AC: Could you say more about "interventionist"? not sure I understand the difference vs. counterfactual. Also, I was thinking here that the basic distinction between descriptive and causal is the most important, "model" queries are made up of a series of sub-inquiries that themselves are either descriptive or causal. Model queries can mix both. Would that cover it?-->
 <!-- MH: INterventionist woudl be a treatment effect; attribution is counterfactual --- imagine different to how things are. These are Pearlean usages; not a great fan since of course treatment effect requires imagining things different, though only at the population level -->
 <!-- MH: Suggest a table that gives a real broad set of inquiries that people can use as a reference; ATE, LATE, PATEs, SATEs, CDEs, lots and lots. Even better if we can define most of them off a simple DAG. -->
 <!-- AC: tough for one DAG, but We've got the table started now at least -->
-<p>Atomic inquiries <span class="math inline">\(I\)</span> about a model <span class="math inline">\(M\)</span> fall into two basic categories, descriptive and causal. Descriptive inquiries are about how the world was, is, and will be whereas causal inquiries are about how the world would have been, would be, or would be in the future if some variables were set to different levels.
-<!-- You might think of the distinction in terms of a DAG. Descriptive inquiries are about the nodes of a dag whereas causal inquires are about the edges.  --></p>
+<p><span class="citation">Pearl and Mackenzie (<a href="references-4.html#ref-pearl2018book">2018</a>)</span> usefully describe a “ladder of causation” which can be used to categorize classes of inquiries. The bottom rung of the ladder focuses on descriptive inquiries about how the world was, is, and will be. The second rung focuses on questions about the effects of interventions: what happens to <span class="math inline">\(Y\)</span> if you do something to <span class="math inline">\(X\)</span>? The third run is about counterfactuals: How would <span class="math inline">\(Y\)</span> have been different if <span class="math inline">\(X\)</span> were different. The last two runs are both causal inquiries, question about how the world would have been, would be, or would be in the future if some variables were set to different levels.</p>
+<!-- You might think of the distinction in terms of a DAG. Descriptive inquiries are about the nodes of a dag whereas causal inquires are about the edges.  -->
 <p>Descriptive and causal inference have in common the difficulty of inferring unseen things from observed data. The fundamental problem of causal inference is well known. Because a unit cannot simultaneously be both treated and untreated we can only every observe at most one potential outcome for any particular unit and so can never <em>measure</em> causal effects – we have to infer them. Similar problems confront descriptive inference. The concepts we want to measure are latent constructs. Perfect measurement is generally not possible, so our measurements of the latent constructs generally include some measurement error.
 <!-- Just like we can't know for sure how, counterfactually, a unit would have responded if the treatment had been set to a different level, we likewise can't know for sure whether our measurements accurately reflect the latent construct. --></p>
 <p>More specifically, a descriptive <em>inference</em> is a conclusion about features of a latent variable <span class="math inline">\(Y^*\)</span> for some set of units on the basis of observations of a measured variable <span class="math inline">\(Y\)</span>, with measurements possibly taken from a different set of units. The feature we seek to describe—our inquiry—is some summary of <span class="math inline">\(Y^*\)</span> such as its mean or perhaps its covariance with a second latent variable <span class="math inline">\(X^*\)</span>. When we do descriptive research, we draw inferences about features of the nodes of the latent causal model <span class="math inline">\(M\)</span>. Our measurement can be imperfect for two reasons: that we do not get to observe the quantity of interest directly for the units we study, and because the units we study are only a subset of the units of interest. It is these challenges that gives rise to the focus on descriptive <em>inference</em> rather than measurement alone.</p>
@@ -104,9 +104,9 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <h3>
 <span class="header-section-number">7.1.1</span> Descriptive inquiries<a class="anchor" aria-label="anchor" href="#descriptive-inquiries"><i class="fas fa-link"></i></a>
 </h3>
-<p>Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Measured variables are often distinct from latent variables giving rise to a problem of descriptive inference. For the most part, we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts.</p>
+<p>Descriptive inquiries are usually about latent variables since we mostly care about the true values of the variables in the models. Measured variables are often distinct from latent variables giving rise to a problem of descriptive inference. Normally we define our inquiries in terms of the true latent variables rather than in terms of their measured counterparts; making the distinction explicit in a design object is especially important when risks of measurement error loom large.</p>
 <!-- MH: I am not sure that there is a fundamental problem of descriptive  inference. Sure if you stipulate that you cannot measure correctly then we have a problem; but the fundamental problem of causal inference is that this is technically impossible. It's not just a stipulation -->
-<p>Table <a href="defining-the-inquiry.html#tab:descriptiveestimands">7.1</a> enumerates some common descriptive estimands.</p>
+<p>Table <a href="defining-the-inquiry.html#tab:descriptiveestimands">7.1</a> enumerates some common descriptive estimands. These estimands have in common that you do not need any counterfactual quantities in order to define. Note especially that the covariance (similarly, the correlation) between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> enters as a descriptive estimand, so too does the line of best fit for <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:descriptiveestimands">Table 7.1: </span> Descriptive inquiries</caption>
@@ -141,37 +141,9 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </tr>
 <tr class="odd">
 <td>Truth status of X</td>
-<td>Is X True or False</td>
+<td>Is X True or False?</td>
 </tr>
 </tbody>
-</table></div>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span>, Y <span class="op">=</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> 
-
-<span class="va">I</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>Y_given_Z1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span><span class="op">==</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">draw_estimands</span><span class="op">(</span><span class="va">M</span><span class="op">+</span><span class="va">I</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Estimand is a descriptive quantity."</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<caption>
-<span id="tab:MI1">Table 7.2: </span>Estimand is a descriptive quantity.
-</caption>
-<thead><tr>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:right;">
-estimand
-</th>
-</tr></thead>
-<tbody><tr>
-<td style="text-align:left;">
-Y_given_Z1
-</td>
-<td style="text-align:right;">
-0.83
-</td>
-</tr></tbody>
 </table></div>
 </div>
 <div id="inquiries-about-causal-effects" class="section level3">
@@ -179,40 +151,11 @@ Y_given_Z1
 <span class="header-section-number">7.1.2</span> Inquiries about causal effects<a class="anchor" aria-label="anchor" href="#inquiries-about-causal-effects"><i class="fas fa-link"></i></a>
 </h3>
 <p>Inquiries about causal effects involve a comparison of at least two possible worlds. For example, an inquiry might be the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> for a single unit. In order to infer that causal effect, we would need to know the value of <span class="math inline">\(Y\)</span> in two worlds: one world in which <span class="math inline">\(X\)</span> is set to 1 and one in which <span class="math inline">\(X\)</span> is set to 0.</p>
-<p>Table <a href="defining-the-inquiry.html#tab:causalestimands">7.4</a> enumerates some common causal estimands.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> 
-
-<span class="va">I</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">draw_estimands</span><span class="op">(</span><span class="va">M</span><span class="op">+</span><span class="va">I</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Estimand is a treatment effect"</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<p>Table <a href="defining-the-inquiry.html#tab:causalestimands">7.2</a> enumerates some common causal estimands.</p>
+<!-- - Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over -->
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:MI2">Table 7.3: </span>Estimand is a treatment effect
-</caption>
-<thead><tr>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:right;">
-estimand
-</th>
-</tr></thead>
-<tbody><tr>
-<td style="text-align:left;">
-ATE
-</td>
-<td style="text-align:right;">
-0.5
-</td>
-</tr></tbody>
-</table></div>
-<!-- - Estimand scope:What is the set of units which you want to learn the answer about? Know what ATE averages over --><div class="inline-table"><table class="table table-sm">
-<caption>
-<span id="tab:causalestimands">Table 7.4: </span> Causal inquiries</caption>
+<span id="tab:causalestimands">Table 7.2: </span> Causal inquiries</caption>
 <colgroup>
 <col width="41%">
 <col width="58%">
@@ -253,7 +196,7 @@ ATE
 <p>While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. <span class="citation">Pearl (<a href="references-4.html#ref-pearl1999probabilities">1999</a>)</span> provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, <span class="math inline">\(Y_i = 1\)</span> and <span class="math inline">\(X_i = 1\)</span> could represent “Peace” and “Both democracies” and <span class="math inline">\(Y_i = 0\)</span> and <span class="math inline">\(X_i = 0\)</span> could represent “War” and “Not both democracies.” Then <span class="math inline">\(Pr(Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1))\)</span> asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies—that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, <span class="math inline">\(Pr(Y_i(X_i = 1)=1 \mid X_i = Y_i = 0)\)</span> asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies—in other words, in what proportion of cases would democracy have been sufficient to cause peace? <span class="citation">Yamamoto (<a href="references-4.html#ref-yamamoto2012understanding">2012</a>)</span> extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:attributionestimands">Table 7.5: </span> Causal attribution inquiries</caption>
+<span id="tab:attributionestimands">Table 7.3: </span> Causal attribution inquiries</caption>
 <colgroup>
 <col width="41%">
 <col width="58%">
@@ -281,15 +224,29 @@ ATE
 </tbody>
 </table></div>
 <p>Like all designs, those with causal attribution inquiries can be declared, simulated, and diagnosed on a computer. Something to consider, however, is that the model may produce datasets in which the effect does not occur, and so questions defined over units for whom it occurred are undefined. One way to avoid this is to construct a model such that the event occurs for at least one unit with probability one.</p>
-<p>In the example in Table @(tab:MI3) we ask an attribution question of this form but on continuous data. We use the same reference model <span class="math inline">\(M\)</span> and ask about the share of units with positive values of <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z=1\)</span> that would have had negative values of <span class="math inline">\(Y\)</span> were <span class="math inline">\(Z=0\)</span>.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">I</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>POC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_Z_0</span><span class="op">&lt;</span><span class="fl">0</span><span class="op">)</span><span class="op">[</span><span class="va">Z</span><span class="op">==</span><span class="fl">1</span> <span class="op">&amp;</span> <span class="va">Y_Z_1</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+</div>
+</div>
+<div id="estimands-declared" class="section level2">
+<h2>
+<span class="header-section-number">7.2</span> Estimands declared<a class="anchor" aria-label="anchor" href="#estimands-declared"><i class="fas fa-link"></i></a>
+</h2>
+<p>Table <a href="defining-the-inquiry.html#tab:MI1b">7.4</a> shows “draws” of three estimands. We declare a simple reference model and then an inquiry—or rather a set of inquiries. The estimand draws are then implemented by drawing a particular model <span class="math inline">\(m\)</span> from <span class="math inline">\(M\)</span> and then applying <span class="math inline">\(I\)</span> to the draw.</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="op">)</span>
 
-<span class="fu">draw_estimands</span><span class="op">(</span><span class="va">M</span><span class="op">+</span><span class="va">I</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Estimand is the probability of necessity for the sign of Y."</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<span class="va">I</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>
+  YZ1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span><span class="op">==</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
+  ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>,
+  POC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_Z_0</span><span class="op">&lt;</span><span class="fl">0</span><span class="op">)</span><span class="op">[</span><span class="va">Z</span><span class="op">==</span><span class="fl">1</span> <span class="op">&amp;</span> <span class="va">Y_Z_1</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="fu">draw_estimands</span><span class="op">(</span><span class="va">M</span><span class="op">+</span><span class="va">I</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:MI3">Table 7.6: </span>Estimand is the probability of necessity for the sign of Y.
+<span id="tab:MI1b">Table 7.4: </span>One model three estimands.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -299,25 +256,52 @@ estimand_label
 estimand
 </th>
 </tr></thead>
-<tbody><tr>
+<tbody>
+<tr>
+<td style="text-align:left;">
+YZ1
+</td>
+<td style="text-align:right;">
+0.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE
+</td>
+<td style="text-align:right;">
+0.50
+</td>
+</tr>
+<tr>
 <td style="text-align:left;">
 POC
 </td>
 <td style="text-align:right;">
-0.42
+0.28
 </td>
-</tr></tbody>
+</tr>
+</tbody>
 </table></div>
+<p>The first estimand is a descriptive estimand: the average outcome for <span class="math inline">\(Y\)</span> when <span class="math inline">\(Z = 1\)</span>.
+Note that the declaration of the estimand does not make use of any counterfactual quantities.</p>
+<p>The second estimand is causal effect. The inquiry is asked of the same model but this time the inquiry takes the average difference, across individual, in two potential outcomes. Unlike the descriptive estimand, this estimand uses information about <span class="math inline">\(Y\)</span>’s potential outcomes but it does not use any information about the distribution of <span class="math inline">\(X\)</span>.</p>
+<p>The third inquiry asks an attribution question, in this case on continuous data. In this case we ask about the share of units with positive values of <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z=1\)</span> that <em>would have had</em> negative values of <span class="math inline">\(Y\)</span> were <span class="math inline">\(Z=0\)</span>. This estimand requires information about both potential outcomes and actual outcomes (for <span class="math inline">\(Z\)</span>).</p>
+<p>In this illustration each “run” of <code>M+I</code> provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution or we might think of the model, <span class="math inline">\(M\)</span>, as representing a set of possible worlds and we are interested in performance in each of them. Which approach we take will matter when we turn to diagnosis.</p>
 </div>
-<div id="other-data-dependent-inquiries" class="section level3">
+<div id="wrinkles" class="section level2">
+<h2>
+<span class="header-section-number">7.3</span> Wrinkles<a class="anchor" aria-label="anchor" href="#wrinkles"><i class="fas fa-link"></i></a>
+</h2>
+<div id="data-dependent-inquiries" class="section level3">
 <h3>
-<span class="header-section-number">7.1.4</span> Other data-dependent inquiries<a class="anchor" aria-label="anchor" href="#other-data-dependent-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.3.1</span> Data-dependent inquiries<a class="anchor" aria-label="anchor" href="#data-dependent-inquiries"><i class="fas fa-link"></i></a>
 </h3>
-<p>The inquiries we have introduced thus far depend on variables in the model, but not on features of the data and answer strategies. Many common inquiries do depend on realizations of the research design.</p>
+<p>Most of the inquiries we have introduced thus far depend on variables in the model, but not on features of the data and answer strategies. Many common inquiries do depend on realizations of the research design.</p>
 <p>The first type depend on realizations of the data <span class="math inline">\(d\)</span>: inquiries about units within a sample depend on which units enter the sample; inquiries about treated units depend on which are treated. The sample average treatment effect is a common inquiry used by experimental researchers who wish to not worry about how their effects generalize to a population but only about identifying the causal effect within the units in front of them. There is a true sample average treatment effect <span class="math inline">\(a^w\)</span> for every possible sample that we could draw. But which of those fixed values is selected as our inquiry if we define <span class="math inline">\(I\)</span> as the sample average effect depends on which sample is actually selected by our sampling procedure. The same is true when we condition inquiries on the set of treated units.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:datadependentestimands">Table 7.7: </span> Data-dependent inquiries</caption>
+<span id="tab:datadependentestimands">Table 7.5: </span> Data-dependent inquiries</caption>
 <colgroup>
 <col width="41%">
 <col width="58%">
@@ -341,20 +325,26 @@ POC
 </div>
 <div id="undefined-and-unanswerable-inquiries" class="section level3">
 <h3>
-<span class="header-section-number">7.1.5</span> Undefined and unanswerable inquiries<a class="anchor" aria-label="anchor" href="#undefined-and-unanswerable-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.3.2</span> Undefined and unanswerable inquiries<a class="anchor" aria-label="anchor" href="#undefined-and-unanswerable-inquiries"><i class="fas fa-link"></i></a>
 </h3>
 <p>Declaring your design in terms of <span class="math inline">\(MIDA\)</span> may lead you to two awkward conclusions: your inquiry <span class="math inline">\(I\)</span> returns <span class="math inline">\(I(m) = a^m = \mathrm{NA}\)</span>, i.e., the answer to your inquiry is undefined; or your answer may be (currently) unanswerable, that is, there is no feasible <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> that yield an answer to <span class="math inline">\(I\)</span>. In both cases, one option is to change your inquiry. But often we selected <span class="math inline">\(I\)</span> because of its importance, so we may want to try to find an answer. In the case of undefined inquiries, we have no option but to select a new one. In the case of unanswerable inquiries, we can work to identify a novel <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> that change the set of feasible designs and provide an answer. In some cases, however, the fact that the inquiry is unanswerable may be due to unchangeable limitations of research such as the fundamental problems of causal inference or descriptive inference.</p>
 </div>
-<div id="relationship-between-causal-and-descriptive-inquiries" class="section level3">
+<div id="model-dependent-inquiries" class="section level3">
 <h3>
-<span class="header-section-number">7.1.6</span> Relationship between causal and descriptive inquiries<a class="anchor" aria-label="anchor" href="#relationship-between-causal-and-descriptive-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.3.3</span> Model dependent inquiries<a class="anchor" aria-label="anchor" href="#model-dependent-inquiries"><i class="fas fa-link"></i></a>
 </h3>
-<p>You can think of causal inference as repeated descriptive inference: we have to describe <span class="math inline">\(Y\)</span> in multiple possible worlds.</p>
-<p>Causal inquiries like the average effect of A on B in a causal model like <span class="math inline">\(A -&gt; B &lt;- U\)</span> are helped enormously by good descriptive inference about the nodes <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, but the focus is on the edge between them. You typically can’t learn about the edge by doing descriptive inference on the nodes only. If we measure <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> and find that they covary, we can’t be sure that <span class="math inline">\(A -&gt; B\)</span> because it could be that <span class="math inline">\(A &lt;- U -&gt; B\)</span>. This problem goes by the familiar phrase that “correlation doesn’t imply causation,” which is true and is a problem that can’t be wished away. But “correlation doesn’t imply causation” also kind of misses the point. The point is that you can’t see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design.</p>
+</div>
+<div id="complex-counterfactual-inquiries" class="section level3">
+<h3>
+<span class="header-section-number">7.3.4</span> Complex counterfactual inquiries<a class="anchor" aria-label="anchor" href="#complex-counterfactual-inquiries"><i class="fas fa-link"></i></a>
+</h3>
+<!-- ### Relationship between causal and descriptive inquiries -->
+<!-- You can think of causal inference as repeated descriptive inference: we have to describe $Y$ in multiple possible worlds. -->
+<!-- Causal inquiries like the average effect of $A$ on $B$ in a causal model like $A \rightarrow B \leftarrow U$ are helped enormously by good descriptive inference about the nodes $A$ and $B$, but the focus is on the edge between them. You typically can't learn about the edge by doing descriptive inference on the nodes only. If we measure $A$ and $B$ and find that they covary, we can't be sure that $A \rightarrow B$ because it could be that $A \leftarrow U \rightarrow B$. This problem goes by the familiar phrase that "correlation doesn't imply causation," which is true and is a problem that can't be wished away. But "correlation doesn't imply causation" also kind of misses the point. The point is that you can't see causality because it involves counterfactuals, which are imaginary and unseen. You have to infer causality on the basis of design. -->
 </div>
 <div id="inquiries-with-continuous-causal-variables" class="section level3">
 <h3>
-<span class="header-section-number">7.1.7</span> Inquiries with continuous causal variables<a class="anchor" aria-label="anchor" href="#inquiries-with-continuous-causal-variables"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.3.5</span> Inquiries with continuous causal variables<a class="anchor" aria-label="anchor" href="#inquiries-with-continuous-causal-variables"><i class="fas fa-link"></i></a>
 </h3>
 <p>Inquiries that focus on a small number of potential outcomes are usually quite easy to write down: for a binary treatment in a model with no spillovers, there are only two potential outcomes the average treatment effect is defined as their average difference across units. But what about a treatment like income, for which there might be millions of potential outcomes, each one corresponding to a different dollar amount? For truly continuous treatments, there might even be an infinite number of potential outcomes.</p>
 <p>One approach is to think of the estimand as a data-dependent marginal effect. For example <span class="math inline">\(E[Y_i(X_i) - Y_i(X_i-1)]\)</span> captures the expected average difference between the observed data, in which people have income <span class="math inline">\(X_i\)</span>, and their unobservable outcome in which they have one dollar less. Another approach is to think of continuous-treatment estimands as the parameter from a regression that only an omniscient being could run. For example we might define <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> as the solutions to:
@@ -365,7 +355,7 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
 </div>
 <div id="how-should-you-select-inquiries" class="section level2">
 <h2>
-<span class="header-section-number">7.2</span> How should you select inquiries?<a class="anchor" aria-label="anchor" href="#how-should-you-select-inquiries"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.4</span> How should you select inquiries?<a class="anchor" aria-label="anchor" href="#how-should-you-select-inquiries"><i class="fas fa-link"></i></a>
 </h2>
 <p>It’s hard to know where to start when picking a research question. We want to pick one that is interesting in its own right or one that would a facilitate real-world decision. We want to pick research questions that we can learn the answer to someday, with a lot of effort. Infeasible research questions should be abandoned as soon as possible, but of course that’s hard to do. The trouble is that it’s hard to know what research questions are feasible before you start looking into it, and it’s really hard to quit research projects once you learn they are infeasible because of the sunk cost fallacy. Among feasible research questions, we want to select ones that we are likely to obtain the most informative answers, in terms of moving our priors the most. This last criteria will often help us select among related, feasible inquiries that are about the same DAG but for which we know we can learn more and less through research.</p>
 <p>Sometimes, people give advice to students to follow a “theory-first” route to picking a research question. Read the literature, find an unsolved puzzle, then start choosing among the methodological approaches that might answer the problem. Others eschew the theory-first approach: “How on earth are you going to happen to land upon an unsolved – and yet somehow solvable – puzzle just by reading!?” These advice-givers emphasize a method-first route. Master the technical data-gathering and analysis procedures first, then set off to find opportunities to apply them. The theory-first people then say: “how would you know an interesting theoretical question if it smacked you in the face!?”</p>
@@ -386,15 +376,15 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
 </div>
 <div id="example-1" class="section level2">
 <h2>
-<span class="header-section-number">7.3</span> Example<a class="anchor" aria-label="anchor" href="#example-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5</span> Example<a class="anchor" aria-label="anchor" href="#example-1"><i class="fas fa-link"></i></a>
 </h2>
 <p><span class="citation">Björkman and Svensson (<a href="references-4.html#ref-Bjorkman:2009">2009</a>)</span> reports the results of a cluster-randomized trial of the effects of community-based monitoring of health clinics in Uganda to improve children’s health. The main inquiry was the average treatment effect on the child mortality rate. The study showed that the program was a success: in the control group, the child mortality rate was 144 per 1000 live births, compared with 97 in the treatment group, for a 33% reduction in child mortality.</p>
-<p>The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table <a href="defining-the-inquiry.html#tab:bstypes">7.8</a>, which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for “Adverse”) is alive if in control, but dies if in treatment. Type B (“Beneficial”) is just the reverse: the child dies if untreated, but survives if treated. Type C (“Chronic”) would die under either condition and Type D (“Destined”) would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.</p>
+<p>The study also considered a second inquiry: the average treatment effect on the weight-for-age of children under 18 months. This inquiry is harder to think about, precisely because we know that the community-based monitoring saved the lives of many children. To see problem, consider Table <a href="defining-the-inquiry.html#tab:bstypes">7.6</a>, which shows four types of infants distinguished on the basis of their potential outcomes. Type A (for “Adverse”) is alive if in control, but dies if in treatment. Type B (“Beneficial”) is just the reverse: the child dies if untreated, but survives if treated. Type C (“Chronic”) would die under either condition and Type D (“Destined”) would live under either condition. For the first three types, the child dies under one condition, the other, or both. Since weight-for-age only exists if the child survives, the treatment effect on weight for A, B, and C types is undefined.</p>
 <p>The main trouble here is that the average treatment effect averages over all four types so the ATE itself is also undefined. Since this inquiry is undefined, we’ll need to select a different one.</p>
 <p>We might want switch our inquiry to be about the average effect among D types only. However this inquiry has a different problem – it’s unanswerable. Even though this inquiry is not undefined, it’s unanswerable because we won’t be able to learn who the D types are. In the treatment group, we can’t tell the Bs from the Ds and in the control group, we can’t tell the As from the Ds. The reason we can’t tell these types apart using realized data is the fundamental problem of causal inference.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:bstypes">Table 7.8: </span> Latent types</caption>
+<span id="tab:bstypes">Table 7.6: </span> Latent types</caption>
 <thead><tr class="header">
 <th>Type</th>
 <th>Alive(<span class="math inline">\(Z = 0\)</span>)</th>
@@ -443,7 +433,7 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
 </div>
 <div id="further-reading-2" class="section level2">
 <h2>
-<span class="header-section-number">7.4</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-2"><i class="fas fa-link"></i></a>
 </h2>
 <ul>
 <li>
@@ -467,19 +457,25 @@ Here <span class="math inline">\(Y_i(x)\)</span> is the (unknown) potential outc
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#defining-the-inquiry"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li>
-<a class="nav-link" href="#kinds-of-inquiries"><span class="header-section-number">7.1</span> Kinds of Inquiries</a><ul class="nav navbar-nav">
+<a class="nav-link" href="#kinds-of-inquiries-the-ladder-of-causation"><span class="header-section-number">7.1</span> Kinds of Inquiries: The Ladder of Causation</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#descriptive-inquiries"><span class="header-section-number">7.1.1</span> Descriptive inquiries</a></li>
 <li><a class="nav-link" href="#inquiries-about-causal-effects"><span class="header-section-number">7.1.2</span> Inquiries about causal effects</a></li>
 <li><a class="nav-link" href="#causalattribution"><span class="header-section-number">7.1.3</span> Causal attribution inquiries</a></li>
-<li><a class="nav-link" href="#other-data-dependent-inquiries"><span class="header-section-number">7.1.4</span> Other data-dependent inquiries</a></li>
-<li><a class="nav-link" href="#undefined-and-unanswerable-inquiries"><span class="header-section-number">7.1.5</span> Undefined and unanswerable inquiries</a></li>
-<li><a class="nav-link" href="#relationship-between-causal-and-descriptive-inquiries"><span class="header-section-number">7.1.6</span> Relationship between causal and descriptive inquiries</a></li>
-<li><a class="nav-link" href="#inquiries-with-continuous-causal-variables"><span class="header-section-number">7.1.7</span> Inquiries with continuous causal variables</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#how-should-you-select-inquiries"><span class="header-section-number">7.2</span> How should you select inquiries?</a></li>
-<li><a class="nav-link" href="#example-1"><span class="header-section-number">7.3</span> Example</a></li>
-<li><a class="nav-link" href="#further-reading-2"><span class="header-section-number">7.4</span> Further reading</a></li>
+<li><a class="nav-link" href="#estimands-declared"><span class="header-section-number">7.2</span> Estimands declared</a></li>
+<li>
+<a class="nav-link" href="#wrinkles"><span class="header-section-number">7.3</span> Wrinkles</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#data-dependent-inquiries"><span class="header-section-number">7.3.1</span> Data-dependent inquiries</a></li>
+<li><a class="nav-link" href="#undefined-and-unanswerable-inquiries"><span class="header-section-number">7.3.2</span> Undefined and unanswerable inquiries</a></li>
+<li><a class="nav-link" href="#model-dependent-inquiries"><span class="header-section-number">7.3.3</span> Model dependent inquiries</a></li>
+<li><a class="nav-link" href="#complex-counterfactual-inquiries"><span class="header-section-number">7.3.4</span> Complex counterfactual inquiries</a></li>
+<li><a class="nav-link" href="#inquiries-with-continuous-causal-variables"><span class="header-section-number">7.3.5</span> Inquiries with continuous causal variables</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#how-should-you-select-inquiries"><span class="header-section-number">7.4</span> How should you select inquiries?</a></li>
+<li><a class="nav-link" href="#example-1"><span class="header-section-number">7.5</span> Example</a></li>
+<li><a class="nav-link" href="#further-reading-2"><span class="header-section-number">7.6</span> Further reading</a></li>
 </ul>
 
       <div class="book-extra">
