@@ -44,6 +44,7 @@ jobs:
       - name: Install dependencies
         run: |
           pak::local_install_dev_deps(upgrade = TRUE)
+          Rscript -e 'library(checkpoint); found_packages <- scanForPackages(".", use.knitr = TRUE)$pkgs; if(length(found_packages[!found_packages%in% installed.packages()]) > 0) install.packages(found_packages[!found_packages%in% installed.packages()])'
         shell: Rscript {0}
 
       # - name: Install PhantomJS
@@ -56,7 +57,7 @@ jobs:
           key: bookdown-2-${{ hashFiles('**/*Rmd') }}
           restore-keys: bookdown-2-
 
-      - name: Prep
+      - name: Prep Dropbox files
         run: |
           mkdir ~/Dropbox
           mkdir ~/Dropbox/DeclareDesign_book_rfiles
