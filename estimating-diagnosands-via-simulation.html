@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10.2 Estimating diagnosands via simulation | Research Design: Declare, Diagnose, Redesign</title>
+  <meta name="description" content="describe the book" />
+  <meta name="generator" content="bookdown 0.21.4 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10.2 Estimating diagnosands via simulation | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="describe the book" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10.2 Estimating diagnosands via simulation | Research Design: Declare, Diagnose, Redesign" />
+  
+  <meta name="twitter:description" content="describe the book" />
+  
+
+<meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="estimating-diagnosands-analytically.html"/>
+<link rel="next" href="diagnosands.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="https://hypothes.is/embed.js" async></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="headers/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><b>Research Design</b></a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Research Design: Declaration, Diagnose, Redesign</a><ul>
+<li class="chapter" data-level="" data-path="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><a href="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><i class="fa fa-check"></i>Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys</a><ul>
+<li class="chapter" data-level="" data-path="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><a href="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html#draft.-under-advance-contract-princeton-university-press"><i class="fa fa-check"></i>Draft. Under advance contract, Princeton University Press</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>I Introduction</b></span></li>
+<li class="chapter" data-level="1" data-path="preamble.html"><a href="preamble.html"><i class="fa fa-check"></i><b>1</b> Preamble</a><ul>
+<li class="chapter" data-level="1.1" data-path="how-to-read-this-book.html"><a href="how-to-read-this-book.html"><i class="fa fa-check"></i><b>1.1</b> How to read this book</a></li>
+<li class="chapter" data-level="1.2" data-path="how-to-work-this-book.html"><a href="how-to-work-this-book.html"><i class="fa fa-check"></i><b>1.2</b> How to <strong>work</strong> this book</a></li>
+<li class="chapter" data-level="1.3" data-path="what-this-book-will-not-do.html"><a href="what-this-book-will-not-do.html"><i class="fa fa-check"></i><b>1.3</b> What this book will not do</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="improving-research-designs.html"><a href="improving-research-designs.html"><i class="fa fa-check"></i><b>2</b> Improving research designs</a><ul>
+<li class="chapter" data-level="2.1" data-path="the-four-components-of-research-design.html"><a href="the-four-components-of-research-design.html"><i class="fa fa-check"></i><b>2.1</b> The four components of research design</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="the-four-components-of-research-design.html"><a href="the-four-components-of-research-design.html#example"><i class="fa fa-check"></i><b>2.1.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="declaring-a-design-in-code.html"><a href="declaring-a-design-in-code.html"><i class="fa fa-check"></i><b>2.2</b> Declaring a design in code</a></li>
+<li class="chapter" data-level="2.3" data-path="assessing-research-design-quality-design-diagnosis.html"><a href="assessing-research-design-quality-design-diagnosis.html"><i class="fa fa-check"></i><b>2.3</b> Assessing research design quality: design diagnosis</a></li>
+<li class="chapter" data-level="2.4" data-path="redesign.html"><a href="redesign.html"><i class="fa fa-check"></i><b>2.4</b> Redesign</a></li>
+<li class="chapter" data-level="2.5" data-path="putting-designs-to-use.html"><a href="putting-designs-to-use.html"><i class="fa fa-check"></i><b>2.5</b> Putting designs to use</a></li>
+<li class="chapter" data-level="2.6" data-path="avoiding-declaration-and-diagnosis-pitfalls.html"><a href="avoiding-declaration-and-diagnosis-pitfalls.html"><i class="fa fa-check"></i><b>2.6</b> Avoiding declaration and diagnosis pitfalls</a></li>
+<li class="chapter" data-level="2.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>2.7</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="primer.html"><a href="primer.html"><i class="fa fa-check"></i><b>3</b> Software primer</a><ul>
+<li class="chapter" data-level="3.1" data-path="installing-r.html"><a href="installing-r.html"><i class="fa fa-check"></i><b>3.1</b> Installing R</a></li>
+<li class="chapter" data-level="3.2" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html"><i class="fa fa-check"></i><b>3.2</b> Building a step of a research design</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html#options-and-defaults"><i class="fa fa-check"></i><b>3.2.1</b> Options and defaults</a></li>
+<li class="chapter" data-level="3.2.2" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html#your-own-handlers"><i class="fa fa-check"></i><b>3.2.2</b> Your own handlers</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="research-design-steps.html"><a href="research-design-steps.html"><i class="fa fa-check"></i><b>3.3</b> Research design steps</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="research-design-steps.html"><a href="research-design-steps.html#model"><i class="fa fa-check"></i><b>3.3.1</b> Model</a></li>
+<li class="chapter" data-level="3.3.2" data-path="research-design-steps.html"><a href="research-design-steps.html#inquiry"><i class="fa fa-check"></i><b>3.3.2</b> Inquiry</a></li>
+<li class="chapter" data-level="3.3.3" data-path="research-design-steps.html"><a href="research-design-steps.html#data-strategy"><i class="fa fa-check"></i><b>3.3.3</b> Data strategy</a></li>
+<li class="chapter" data-level="3.3.4" data-path="research-design-steps.html"><a href="research-design-steps.html#answer-strategy"><i class="fa fa-check"></i><b>3.3.4</b> Answer strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="building-a-design-from-design-steps.html"><a href="building-a-design-from-design-steps.html"><i class="fa fa-check"></i><b>3.4</b> Building a design from design steps</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="building-a-design-from-design-steps.html"><a href="building-a-design-from-design-steps.html#order-matters"><i class="fa fa-check"></i><b>3.4.1</b> Order matters</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="simulating-a-research-design.html"><a href="simulating-a-research-design.html"><i class="fa fa-check"></i><b>3.5</b> Simulating a research design</a></li>
+<li class="chapter" data-level="3.6" data-path="diagnosing-a-research-design.html"><a href="diagnosing-a-research-design.html"><i class="fa fa-check"></i><b>3.6</b> Diagnosing a research design</a></li>
+<li class="chapter" data-level="3.7" data-path="comparing-designs.html"><a href="comparing-designs.html"><i class="fa fa-check"></i><b>3.7</b> Comparing designs</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="comparing-designs.html"><a href="comparing-designs.html#comparing-many-variants-of-a-design"><i class="fa fa-check"></i><b>3.7.1</b> Comparing many variants of a design</a></li>
+<li class="chapter" data-level="3.7.2" data-path="comparing-designs.html"><a href="comparing-designs.html#library-of-designs"><i class="fa fa-check"></i><b>3.7.2</b> Library of designs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="part-i-exercises.html"><a href="part-i-exercises.html"><i class="fa fa-check"></i><b>4</b> Part I Exercises</a></li>
+<li class="part"><span><b>II Declaration, Diagnosis, Redesign</b></span></li>
+<li class="chapter" data-level="5" data-path="declaration.html"><a href="declaration.html"><i class="fa fa-check"></i><b>5</b> Declaration</a><ul>
+<li class="chapter" data-level="5.1" data-path="p2gulzarkhanrevisited.html"><a href="p2gulzarkhanrevisited.html"><i class="fa fa-check"></i><b>5.1</b> Example</a></li>
+<li class="chapter" data-level="5.2" data-path="further-reading-1.html"><a href="further-reading-1.html"><i class="fa fa-check"></i><b>5.2</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="specifying-the-model.html"><a href="specifying-the-model.html"><i class="fa fa-check"></i><b>6</b> Specifying the model</a><ul>
+<li class="chapter" data-level="6.1" data-path="what-is-the-population.html"><a href="what-is-the-population.html"><i class="fa fa-check"></i><b>6.1</b> What is the population?</a></li>
+<li class="chapter" data-level="6.2" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html"><i class="fa fa-check"></i><b>6.2</b> What variables to include?</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html#types-of-variables"><i class="fa fa-check"></i><b>6.2.1</b> Types of variables</a></li>
+<li class="chapter" data-level="6.2.2" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html#what-variables-are-needed-for-declaration-and-diagnosis"><i class="fa fa-check"></i><b>6.2.2</b> What variables are <em>needed</em> for declaration and diagnosis?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="specifying-structural-relations.html"><a href="specifying-structural-relations.html"><i class="fa fa-check"></i><b>6.3</b> Specifying structural relations</a></li>
+<li class="chapter" data-level="6.4" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html"><i class="fa fa-check"></i><b>6.4</b> Substantive justifications for choices of nodes and equations</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#reality-tracking-models"><i class="fa fa-check"></i><b>6.4.1</b> Reality tracking models</a></li>
+<li class="chapter" data-level="6.4.2" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#discursive-models"><i class="fa fa-check"></i><b>6.4.2</b> Discursive models</a></li>
+<li class="chapter" data-level="6.4.3" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#sufficient-models"><i class="fa fa-check"></i><b>6.4.3</b> Sufficient models</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="getting-it-right.html"><a href="getting-it-right.html"><i class="fa fa-check"></i><b>6.5</b> Getting it right?</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="getting-it-right.html"><a href="getting-it-right.html#robustness-to-multiple-models"><i class="fa fa-check"></i><b>6.5.1</b> Robustness to multiple models</a></li>
+<li class="chapter" data-level="6.5.2" data-path="getting-it-right.html"><a href="getting-it-right.html#fundamental-uncertainty"><i class="fa fa-check"></i><b>6.5.2</b> Fundamental uncertainty</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
+<li class="chapter" data-level="7.1" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Three families of inquiries</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.2" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#inquiries-about-causal-effects"><i class="fa fa-check"></i><b>7.1.2</b> Inquiries about causal effects</a></li>
+<li class="chapter" data-level="7.1.3" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#causalattribution"><i class="fa fa-check"></i><b>7.1.3</b> Causal attribution inquiries</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="estimands-declared.html"><a href="estimands-declared.html"><i class="fa fa-check"></i><b>7.2</b> Estimands declared</a></li>
+<li class="chapter" data-level="7.3" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html"><i class="fa fa-check"></i><b>7.3</b> Common complexities in defining estimands</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#data-dependent-inquiries"><i class="fa fa-check"></i><b>7.3.1</b> Data-dependent inquiries</a></li>
+<li class="chapter" data-level="7.3.2" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#non-decomposable-inquiries"><i class="fa fa-check"></i><b>7.3.2</b> Non-decomposable inquiries</a></li>
+<li class="chapter" data-level="7.3.3" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#model-dependent-inquiries"><i class="fa fa-check"></i><b>7.3.3</b> Model dependent inquiries</a></li>
+<li class="chapter" data-level="7.3.4" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#complex-counterfactual-inquiries"><i class="fa fa-check"></i><b>7.3.4</b> Complex counterfactual inquiries</a></li>
+<li class="chapter" data-level="7.3.5" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#inquiries-with-continuous-causal-variables"><i class="fa fa-check"></i><b>7.3.5</b> Inquiries with continuous causal variables</a></li>
+<li class="chapter" data-level="7.3.6" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#undefined-and-unanswerable-inquiries"><i class="fa fa-check"></i><b>7.3.6</b> Undefined and unanswerable inquiries</a></li>
+<li class="chapter" data-level="7.3.7" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#example-1"><i class="fa fa-check"></i><b>7.3.7</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.4</b> How should you select inquiries?</a></li>
+<li class="chapter" data-level="7.5" data-path="further-reading-2.html"><a href="further-reading-2.html"><i class="fa fa-check"></i><b>7.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
+<li class="chapter" data-level="8.1" data-path="p2sampling.html"><a href="p2sampling.html"><i class="fa fa-check"></i><b>8.1</b> Sampling strategies</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="p2sampling.html"><a href="p2sampling.html#randomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.1</b> Randomized sampling designs</a></li>
+<li class="chapter" data-level="8.1.2" data-path="p2sampling.html"><a href="p2sampling.html#nonrandomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.2</b> Nonrandomized sampling designs</a></li>
+<li class="chapter" data-level="8.1.3" data-path="p2sampling.html"><a href="p2sampling.html#sampling-designs-for-qualitative-research"><i class="fa fa-check"></i><b>8.1.3</b> Sampling designs for qualitative research</a></li>
+<li class="chapter" data-level="8.1.4" data-path="p2sampling.html"><a href="p2sampling.html#choosing-among-sampling-designs"><i class="fa fa-check"></i><b>8.1.4</b> Choosing among sampling designs</a></li>
+<li class="chapter" data-level="8.1.5" data-path="p2sampling.html"><a href="p2sampling.html#example-wang2015forecasting"><i class="fa fa-check"></i><b>8.1.5</b> Example: <span class="citation">Wang et al. (<span>2015</span>)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="p2assignment.html"><a href="p2assignment.html"><i class="fa fa-check"></i><b>8.2</b> Treatment assignment</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="p2assignment.html"><a href="p2assignment.html#two-arm-trials"><i class="fa fa-check"></i><b>8.2.1</b> Two arm trials</a></li>
+<li class="chapter" data-level="8.2.2" data-path="p2assignment.html"><a href="p2assignment.html#multiarm-and-factorial-trials"><i class="fa fa-check"></i><b>8.2.2</b> Multiarm and factorial trials</a></li>
+<li class="chapter" data-level="8.2.3" data-path="p2assignment.html"><a href="p2assignment.html#complex-designs"><i class="fa fa-check"></i><b>8.2.3</b> Complex designs</a></li>
+<li class="chapter" data-level="8.2.4" data-path="p2assignment.html"><a href="p2assignment.html#non-randomized-assignment"><i class="fa fa-check"></i><b>8.2.4</b> Non randomized assignment</a></li>
+<li class="chapter" data-level="8.2.5" data-path="p2assignment.html"><a href="p2assignment.html#example-sociology-natural-experiment-from-government-or-official-cutoff"><i class="fa fa-check"></i><b>8.2.5</b> Example: sociology natural experiment from government or official cutoff</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="measurement.html"><a href="measurement.html"><i class="fa fa-check"></i><b>8.3</b> Measurement</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="measurement.html"><a href="measurement.html#example-weaver2019too"><i class="fa fa-check"></i><b>8.3.1</b> Example: <span class="citation">Weaver, Prowse, and Piston (<span>2019</span>)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html"><i class="fa fa-check"></i><b>8.4</b> Threats to implementation</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#noncompliance"><i class="fa fa-check"></i><b>8.4.1</b> Noncompliance</a></li>
+<li class="chapter" data-level="8.4.2" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#attrition"><i class="fa fa-check"></i><b>8.4.2</b> Attrition</a></li>
+<li class="chapter" data-level="8.4.3" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#excludability"><i class="fa fa-check"></i><b>8.4.3</b> Excludability</a></li>
+<li class="chapter" data-level="8.4.4" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#interference"><i class="fa fa-check"></i><b>8.4.4</b> Interference</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="further-reading-3.html"><a href="further-reading-3.html"><i class="fa fa-check"></i><b>8.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="choosing-an-answer-strategy.html"><a href="choosing-an-answer-strategy.html"><i class="fa fa-check"></i><b>9</b> Choosing an answer strategy</a><ul>
+<li class="chapter" data-level="9.1" data-path="following-the-model.html"><a href="following-the-model.html"><i class="fa fa-check"></i><b>9.1</b> Following the model</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="following-the-model.html"><a href="following-the-model.html#identification"><i class="fa fa-check"></i><b>9.1.1</b> Identification</a></li>
+<li class="chapter" data-level="9.1.2" data-path="following-the-model.html"><a href="following-the-model.html#estimation"><i class="fa fa-check"></i><b>9.1.2</b> Estimation</a></li>
+<li class="chapter" data-level="9.1.3" data-path="following-the-model.html"><a href="following-the-model.html#robustness"><i class="fa fa-check"></i><b>9.1.3</b> Robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html"><i class="fa fa-check"></i><b>9.2</b> Following the inquiry</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#plug-in-principle"><i class="fa fa-check"></i><b>9.2.1</b> Plug-in principle</a></li>
+<li class="chapter" data-level="9.2.2" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#point-estimation"><i class="fa fa-check"></i><b>9.2.2</b> Point estimation</a></li>
+<li class="chapter" data-level="9.2.3" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#estimating-the-variance"><i class="fa fa-check"></i><b>9.2.3</b> Estimating the variance</a></li>
+<li class="chapter" data-level="9.2.4" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#tests"><i class="fa fa-check"></i><b>9.2.4</b> Tests</a></li>
+<li class="chapter" data-level="9.2.5" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#partial-identification"><i class="fa fa-check"></i><b>9.2.5</b> Partial identification</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="p2followdatastrategy.html"><a href="p2followdatastrategy.html"><i class="fa fa-check"></i><b>9.3</b> Following the data strategy</a></li>
+<li class="chapter" data-level="9.4" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html"><i class="fa fa-check"></i><b>9.4</b> Qualitative methods of inference</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#process-tracing"><i class="fa fa-check"></i><b>9.4.1</b> Process-tracing</a></li>
+<li class="chapter" data-level="9.4.2" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#boolean-and-set-theoretic-methods"><i class="fa fa-check"></i><b>9.4.2</b> Boolean and set-theoretic methods</a></li>
+<li class="chapter" data-level="9.4.3" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#narrative-comparison"><i class="fa fa-check"></i><b>9.4.3</b> Narrative comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="answer-strategies-as-procedures.html"><a href="answer-strategies-as-procedures.html"><i class="fa fa-check"></i><b>9.5</b> Answer strategies as procedures</a></li>
+<li class="chapter" data-level="9.6" data-path="interpretation.html"><a href="interpretation.html"><i class="fa fa-check"></i><b>9.6</b> Interpretation</a></li>
+<li class="chapter" data-level="9.7" data-path="further-reading-4.html"><a href="further-reading-4.html"><i class="fa fa-check"></i><b>9.7</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="p2diagnosis.html"><a href="p2diagnosis.html"><i class="fa fa-check"></i><b>10</b> Diagnosis</a><ul>
+<li class="chapter" data-level="10.1" data-path="estimating-diagnosands-analytically.html"><a href="estimating-diagnosands-analytically.html"><i class="fa fa-check"></i><b>10.1</b> Estimating diagnosands analytically</a></li>
+<li class="chapter" data-level="10.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html"><i class="fa fa-check"></i><b>10.2</b> Estimating diagnosands via simulation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#interpreting-diagnosands"><i class="fa fa-check"></i><b>10.2.1</b> Interpreting diagnosands</a></li>
+<li class="chapter" data-level="10.2.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#how-many-simulations-to-run"><i class="fa fa-check"></i><b>10.2.2</b> How many simulations to run</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="diagnosands.html"><a href="diagnosands.html"><i class="fa fa-check"></i><b>10.3</b> How to choose among diagnosands</a></li>
+<li class="chapter" data-level="10.4" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html"><i class="fa fa-check"></i><b>10.4</b> Diagnosing with respect to variations in M</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#estimating-the-minimum-detectable-effect-size"><i class="fa fa-check"></i><b>10.4.1</b> Estimating the minimum detectable effect size</a></li>
+<li class="chapter" data-level="10.4.2" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#adjudicating-between-competing-models"><i class="fa fa-check"></i><b>10.4.2</b> Adjudicating between competing models</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="further-reading-5.html"><a href="further-reading-5.html"><i class="fa fa-check"></i><b>10.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="redesign-1.html"><a href="redesign-1.html"><i class="fa fa-check"></i><b>11</b> Redesign</a><ul>
+<li class="chapter" data-level="11.1" data-path="redesign-mountain.html"><a href="redesign-mountain.html"><i class="fa fa-check"></i><b>11.1</b> Redesign Mountain</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="part-ii-exercises.html"><a href="part-ii-exercises.html"><i class="fa fa-check"></i><b>12</b> Part II Exercises</a></li>
+<li class="part"><span><b>III Research Design Library</b></span></li>
+<li class="chapter" data-level="13" data-path="research-design-library.html"><a href="research-design-library.html"><i class="fa fa-check"></i><b>13</b> Research Design Library</a></li>
+<li class="chapter" data-level="14" data-path="observational-designs-for-descriptive-inference.html"><a href="observational-designs-for-descriptive-inference.html"><i class="fa fa-check"></i><b>14</b> Observational designs for descriptive inference</a><ul>
+<li class="chapter" data-level="14.1" data-path="random-sampling.html"><a href="random-sampling.html"><i class="fa fa-check"></i><b>14.1</b> Random sampling</a><ul>
+<li class="chapter" data-level="14.1.1" data-path="random-sampling.html"><a href="random-sampling.html#declaration-1"><i class="fa fa-check"></i><b>14.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.1.2" data-path="random-sampling.html"><a href="random-sampling.html#dag"><i class="fa fa-check"></i><b>14.1.2</b> Dag</a></li>
+<li class="chapter" data-level="14.1.3" data-path="random-sampling.html"><a href="random-sampling.html#example-2"><i class="fa fa-check"></i><b>14.1.3</b> Example</a></li>
+<li class="chapter" data-level="14.1.4" data-path="random-sampling.html"><a href="random-sampling.html#simple-random-sampling"><i class="fa fa-check"></i><b>14.1.4</b> Simple random sampling</a></li>
+<li class="chapter" data-level="14.1.5" data-path="random-sampling.html"><a href="random-sampling.html#stratified-and-clustered-random-sampling"><i class="fa fa-check"></i><b>14.1.5</b> Stratified and clustered random sampling</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="poststratification.html"><a href="poststratification.html"><i class="fa fa-check"></i><b>14.2</b> Poststratification</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="poststratification.html"><a href="poststratification.html#declaration-2"><i class="fa fa-check"></i><b>14.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.2.2" data-path="poststratification.html"><a href="poststratification.html#dag-1"><i class="fa fa-check"></i><b>14.2.2</b> Dag</a></li>
+<li class="chapter" data-level="14.2.3" data-path="poststratification.html"><a href="poststratification.html#exercises-1"><i class="fa fa-check"></i><b>14.2.3</b> Exercises</a></li>
+<li class="chapter" data-level="14.2.4" data-path="poststratification.html"><a href="poststratification.html#example-3"><i class="fa fa-check"></i><b>14.2.4</b> Example</a></li>
+<li class="chapter" data-level="14.2.5" data-path="poststratification.html"><a href="poststratification.html#example-4"><i class="fa fa-check"></i><b>14.2.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html"><i class="fa fa-check"></i><b>14.3</b> Inference about unobserved variables</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#declaration-3"><i class="fa fa-check"></i><b>14.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.3.2" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#dag-2"><i class="fa fa-check"></i><b>14.3.2</b> Dag</a></li>
+<li class="chapter" data-level="14.3.3" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#example-5"><i class="fa fa-check"></i><b>14.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="structural-estimation.html"><a href="structural-estimation.html"><i class="fa fa-check"></i><b>14.4</b> Structural estimation</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="structural-estimation.html"><a href="structural-estimation.html#declaration-4"><i class="fa fa-check"></i><b>14.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.4.2" data-path="structural-estimation.html"><a href="structural-estimation.html#dag-3"><i class="fa fa-check"></i><b>14.4.2</b> Dag</a></li>
+<li class="chapter" data-level="14.4.3" data-path="structural-estimation.html"><a href="structural-estimation.html#example-6"><i class="fa fa-check"></i><b>14.4.3</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="experimental-designs-for-descriptive-inference.html"><a href="experimental-designs-for-descriptive-inference.html"><i class="fa fa-check"></i><b>15</b> Experimental designs for descriptive inference</a><ul>
+<li class="chapter" data-level="15.1" data-path="audit-experiments.html"><a href="audit-experiments.html"><i class="fa fa-check"></i><b>15.1</b> Audit experiments</a><ul>
+<li class="chapter" data-level="15.1.1" data-path="audit-experiments.html"><a href="audit-experiments.html#declaration-5"><i class="fa fa-check"></i><b>15.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.1.2" data-path="audit-experiments.html"><a href="audit-experiments.html#dag-4"><i class="fa fa-check"></i><b>15.1.2</b> Dag</a></li>
+<li class="chapter" data-level="15.1.3" data-path="audit-experiments.html"><a href="audit-experiments.html#example-7"><i class="fa fa-check"></i><b>15.1.3</b> Example</a></li>
+<li class="chapter" data-level="15.1.4" data-path="audit-experiments.html"><a href="audit-experiments.html#design-declaration-2"><i class="fa fa-check"></i><b>15.1.4</b> Design Declaration</a></li>
+<li class="chapter" data-level="15.1.5" data-path="audit-experiments.html"><a href="audit-experiments.html#takeaways-2"><i class="fa fa-check"></i><b>15.1.5</b> Takeaways</a></li>
+<li class="chapter" data-level="15.1.6" data-path="audit-experiments.html"><a href="audit-experiments.html#applications"><i class="fa fa-check"></i><b>15.1.6</b> Applications</a></li>
+<li class="chapter" data-level="15.1.7" data-path="audit-experiments.html"><a href="audit-experiments.html#exercises-2"><i class="fa fa-check"></i><b>15.1.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="15.2" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html"><i class="fa fa-check"></i><b>15.2</b> Experiments for sensitive questions</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#declaration-6"><i class="fa fa-check"></i><b>15.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.2.2" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#dag-5"><i class="fa fa-check"></i><b>15.2.2</b> Dag</a></li>
+<li class="chapter" data-level="15.2.3" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#example-8"><i class="fa fa-check"></i><b>15.2.3</b> Example</a></li>
+<li class="chapter" data-level="15.2.4" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#list-experiments"><i class="fa fa-check"></i><b>15.2.4</b> List experiments</a></li>
+<li class="chapter" data-level="15.2.5" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#randomized-response-technique"><i class="fa fa-check"></i><b>15.2.5</b> Randomized response technique</a></li>
+<li class="chapter" data-level="15.2.6" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#references"><i class="fa fa-check"></i><b>15.2.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html"><i class="fa fa-check"></i><b>15.3</b> Conjoint experiments</a><ul>
+<li class="chapter" data-level="15.3.1" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#declaration-8"><i class="fa fa-check"></i><b>15.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.3.2" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#dag-6"><i class="fa fa-check"></i><b>15.3.2</b> Dag</a></li>
+<li class="chapter" data-level="15.3.3" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#example-9"><i class="fa fa-check"></i><b>15.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="behavioral-games.html"><a href="behavioral-games.html"><i class="fa fa-check"></i><b>15.4</b> Behavioral games</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="behavioral-games.html"><a href="behavioral-games.html#declaration-9"><i class="fa fa-check"></i><b>15.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.4.2" data-path="behavioral-games.html"><a href="behavioral-games.html#dag-7"><i class="fa fa-check"></i><b>15.4.2</b> Dag</a></li>
+<li class="chapter" data-level="15.4.3" data-path="behavioral-games.html"><a href="behavioral-games.html#example-10"><i class="fa fa-check"></i><b>15.4.3</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="observational-designs-for-causal-inference.html"><a href="observational-designs-for-causal-inference.html"><i class="fa fa-check"></i><b>16</b> Observational designs for causal inference</a><ul>
+<li class="chapter" data-level="16.1" data-path="selection-on-observables.html"><a href="selection-on-observables.html"><i class="fa fa-check"></i><b>16.1</b> Selection on observables</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="selection-on-observables.html"><a href="selection-on-observables.html#declaration-10"><i class="fa fa-check"></i><b>16.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.1.2" data-path="selection-on-observables.html"><a href="selection-on-observables.html#dag-8"><i class="fa fa-check"></i><b>16.1.2</b> Dag</a></li>
+<li class="chapter" data-level="16.1.3" data-path="selection-on-observables.html"><a href="selection-on-observables.html#example-11"><i class="fa fa-check"></i><b>16.1.3</b> Example</a></li>
+<li class="chapter" data-level="16.1.4" data-path="selection-on-observables.html"><a href="selection-on-observables.html#classic-confounding"><i class="fa fa-check"></i><b>16.1.4</b> Classic Confounding</a></li>
+<li class="chapter" data-level="16.1.5" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-the-functional-form-is-wrong"><i class="fa fa-check"></i><b>16.1.5</b> What if the functional form is wrong?</a></li>
+<li class="chapter" data-level="16.1.6" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-you-have-unobserved-confounding"><i class="fa fa-check"></i><b>16.1.6</b> What if you have unobserved confounding?</a></li>
+<li class="chapter" data-level="16.1.7" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-the-observed-covariate-is-post-treatment"><i class="fa fa-check"></i><b>16.1.7</b> What if the observed covariate is post-treatment?</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="further-reading-6.html"><a href="further-reading-6.html"><i class="fa fa-check"></i><b>16.2</b> Further reading</a></li>
+<li class="chapter" data-level="16.3" data-path="p3iv.html"><a href="p3iv.html"><i class="fa fa-check"></i><b>16.3</b> Instrumental variables</a><ul>
+<li class="chapter" data-level="16.3.1" data-path="p3iv.html"><a href="p3iv.html#declaration-11"><i class="fa fa-check"></i><b>16.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.3.2" data-path="p3iv.html"><a href="p3iv.html#dag-9"><i class="fa fa-check"></i><b>16.3.2</b> Dag</a></li>
+<li class="chapter" data-level="16.3.3" data-path="p3iv.html"><a href="p3iv.html#redesign-2"><i class="fa fa-check"></i><b>16.3.3</b> Redesign</a></li>
+<li class="chapter" data-level="16.3.4" data-path="p3iv.html"><a href="p3iv.html#suggested-readings"><i class="fa fa-check"></i><b>16.3.4</b> Suggested readings</a></li>
+<li class="chapter" data-level="16.3.5" data-path="p3iv.html"><a href="p3iv.html#example-12"><i class="fa fa-check"></i><b>16.3.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="difference-in-differences.html"><a href="difference-in-differences.html"><i class="fa fa-check"></i><b>16.4</b> Difference-in-differences</a><ul>
+<li class="chapter" data-level="16.4.1" data-path="difference-in-differences.html"><a href="difference-in-differences.html#declaration-12"><i class="fa fa-check"></i><b>16.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.4.2" data-path="difference-in-differences.html"><a href="difference-in-differences.html#dag-10"><i class="fa fa-check"></i><b>16.4.2</b> Dag</a></li>
+<li class="chapter" data-level="16.4.3" data-path="difference-in-differences.html"><a href="difference-in-differences.html#example-13"><i class="fa fa-check"></i><b>16.4.3</b> Example</a></li>
+<li class="chapter" data-level="16.4.4" data-path="difference-in-differences.html"><a href="difference-in-differences.html#two-period-two-group-setting"><i class="fa fa-check"></i><b>16.4.4</b> Two-period two-group setting</a></li>
+<li class="chapter" data-level="16.4.5" data-path="difference-in-differences.html"><a href="difference-in-differences.html#parallel-trends-assumption"><i class="fa fa-check"></i><b>16.4.5</b> Parallel trends assumption</a></li>
+<li class="chapter" data-level="16.4.6" data-path="difference-in-differences.html"><a href="difference-in-differences.html#multi-period-design"><i class="fa fa-check"></i><b>16.4.6</b> Multi-period design</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="RDD.html"><a href="RDD.html"><i class="fa fa-check"></i><b>16.5</b> Regression Discontinuity</a><ul>
+<li class="chapter" data-level="16.5.1" data-path="RDD.html"><a href="RDD.html#declaration-13"><i class="fa fa-check"></i><b>16.5.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.5.2" data-path="RDD.html"><a href="RDD.html#dag-11"><i class="fa fa-check"></i><b>16.5.2</b> Dag</a></li>
+<li class="chapter" data-level="16.5.3" data-path="RDD.html"><a href="RDD.html#example-14"><i class="fa fa-check"></i><b>16.5.3</b> Example</a></li>
+<li class="chapter" data-level="16.5.4" data-path="RDD.html"><a href="RDD.html#design-declaration-3"><i class="fa fa-check"></i><b>16.5.4</b> Design Declaration</a></li>
+<li class="chapter" data-level="16.5.5" data-path="RDD.html"><a href="RDD.html#takeaways-3"><i class="fa fa-check"></i><b>16.5.5</b> Takeaways</a></li>
+<li class="chapter" data-level="16.5.6" data-path="RDD.html"><a href="RDD.html#further-reading-7"><i class="fa fa-check"></i><b>16.5.6</b> Further Reading</a></li>
+<li class="chapter" data-level="16.5.7" data-path="RDD.html"><a href="RDD.html#exercises-3"><i class="fa fa-check"></i><b>16.5.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html"><i class="fa fa-check"></i><b>16.6</b> Bayesian process-tracing</a><ul>
+<li class="chapter" data-level="16.6.1" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#declaration-14"><i class="fa fa-check"></i><b>16.6.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.6.2" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#dag-12"><i class="fa fa-check"></i><b>16.6.2</b> Dag</a></li>
+<li class="chapter" data-level="16.6.3" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#exercises-4"><i class="fa fa-check"></i><b>16.6.3</b> Exercises</a></li>
+<li class="chapter" data-level="16.6.4" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#online-appendix-applied-example"><i class="fa fa-check"></i><b>16.6.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="16.6.5" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#dag-13"><i class="fa fa-check"></i><b>16.6.5</b> Dag</a></li>
+</ul></li>
+<li class="chapter" data-level="16.7" data-path="synthetic-controls.html"><a href="synthetic-controls.html"><i class="fa fa-check"></i><b>16.7</b> Synthetic controls</a><ul>
+<li class="chapter" data-level="16.7.1" data-path="synthetic-controls.html"><a href="synthetic-controls.html#declaration-15"><i class="fa fa-check"></i><b>16.7.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.7.2" data-path="synthetic-controls.html"><a href="synthetic-controls.html#dag-14"><i class="fa fa-check"></i><b>16.7.2</b> Dag</a></li>
+<li class="chapter" data-level="16.7.3" data-path="synthetic-controls.html"><a href="synthetic-controls.html#example-15"><i class="fa fa-check"></i><b>16.7.3</b> Example</a></li>
+<li class="chapter" data-level="16.7.4" data-path="synthetic-controls.html"><a href="synthetic-controls.html#when-there-are-not-good-controls-standard-synth-will-get-the-wrong-answer"><i class="fa fa-check"></i><b>16.7.4</b> When there are not good controls, standard synth will get the wrong answer</a></li>
+<li class="chapter" data-level="16.7.5" data-path="synthetic-controls.html"><a href="synthetic-controls.html#references-1"><i class="fa fa-check"></i><b>16.7.5</b> References</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="experimental-designs-for-causal-inference.html"><a href="experimental-designs-for-causal-inference.html"><i class="fa fa-check"></i><b>17</b> Experimental designs for causal inference</a><ul>
+<li class="chapter" data-level="17.1" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html"><i class="fa fa-check"></i><b>17.1</b> Two arm trials</a><ul>
+<li class="chapter" data-level="17.1.1" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#declaration-16"><i class="fa fa-check"></i><b>17.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.1.2" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#dag-15"><i class="fa fa-check"></i><b>17.1.2</b> Dag</a></li>
+<li class="chapter" data-level="17.1.3" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#example-16"><i class="fa fa-check"></i><b>17.1.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="blocked-trials.html"><a href="blocked-trials.html"><i class="fa fa-check"></i><b>17.2</b> Blocked trials</a><ul>
+<li class="chapter" data-level="17.2.1" data-path="blocked-trials.html"><a href="blocked-trials.html#declaration-17"><i class="fa fa-check"></i><b>17.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.2.2" data-path="blocked-trials.html"><a href="blocked-trials.html#dag-16"><i class="fa fa-check"></i><b>17.2.2</b> Dag</a></li>
+<li class="chapter" data-level="17.2.3" data-path="blocked-trials.html"><a href="blocked-trials.html#example-17"><i class="fa fa-check"></i><b>17.2.3</b> Example</a></li>
+<li class="chapter" data-level="17.2.4" data-path="blocked-trials.html"><a href="blocked-trials.html#two-arm-trials-and-designs-with-blocking-and-clustering"><i class="fa fa-check"></i><b>17.2.4</b> Two-arm trials and designs with blocking and clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="multiarm-designs.html"><a href="multiarm-designs.html"><i class="fa fa-check"></i><b>17.3</b> Multiarm Designs</a><ul>
+<li class="chapter" data-level="17.3.1" data-path="multiarm-designs.html"><a href="multiarm-designs.html#declaration-18"><i class="fa fa-check"></i><b>17.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.3.2" data-path="multiarm-designs.html"><a href="multiarm-designs.html#dag-17"><i class="fa fa-check"></i><b>17.3.2</b> Dag</a></li>
+<li class="chapter" data-level="17.3.3" data-path="multiarm-designs.html"><a href="multiarm-designs.html#example-18"><i class="fa fa-check"></i><b>17.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="encouragement-designs.html"><a href="encouragement-designs.html"><i class="fa fa-check"></i><b>17.4</b> Encouragement designs</a><ul>
+<li class="chapter" data-level="17.4.1" data-path="encouragement-designs.html"><a href="encouragement-designs.html#declaration-19"><i class="fa fa-check"></i><b>17.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.4.2" data-path="encouragement-designs.html"><a href="encouragement-designs.html#dag-18"><i class="fa fa-check"></i><b>17.4.2</b> Dag</a></li>
+<li class="chapter" data-level="17.4.3" data-path="encouragement-designs.html"><a href="encouragement-designs.html#example-19"><i class="fa fa-check"></i><b>17.4.3</b> Example</a></li>
+<li class="chapter" data-level="17.4.4" data-path="encouragement-designs.html"><a href="encouragement-designs.html#references-2"><i class="fa fa-check"></i><b>17.4.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html"><i class="fa fa-check"></i><b>17.5</b> Stepped wedge designs</a><ul>
+<li class="chapter" data-level="17.5.1" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#declaration-20"><i class="fa fa-check"></i><b>17.5.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.5.2" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#dag-19"><i class="fa fa-check"></i><b>17.5.2</b> Dag</a></li>
+<li class="chapter" data-level="17.5.3" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#exercises-5"><i class="fa fa-check"></i><b>17.5.3</b> Exercises</a></li>
+<li class="chapter" data-level="17.5.4" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#online-appendix-applied-example-1"><i class="fa fa-check"></i><b>17.5.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="17.5.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#references-3"><i class="fa fa-check"></i><b>17.5.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17.6" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html"><i class="fa fa-check"></i><b>17.6</b> Randomized Saturation Design</a><ul>
+<li class="chapter" data-level="17.6.1" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#declaration-21"><i class="fa fa-check"></i><b>17.6.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.6.2" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#dag-20"><i class="fa fa-check"></i><b>17.6.2</b> Dag</a></li>
+<li class="chapter" data-level="17.6.3" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#exercises-6"><i class="fa fa-check"></i><b>17.6.3</b> Exercises</a></li>
+<li class="chapter" data-level="17.6.4" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#online-appendix-applied-example-2"><i class="fa fa-check"></i><b>17.6.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="17.6.5" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#design-declaration-4"><i class="fa fa-check"></i><b>17.6.5</b> Design Declaration</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="multi-study-designs.html"><a href="multi-study-designs.html"><i class="fa fa-check"></i><b>18</b> Multi-study designs</a><ul>
+<li class="chapter" data-level="18.1" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html"><i class="fa fa-check"></i><b>18.1</b> Papers with multiple studies</a><ul>
+<li class="chapter" data-level="18.1.1" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#design-declaration-5"><i class="fa fa-check"></i><b>18.1.1</b> Design Declaration</a></li>
+<li class="chapter" data-level="18.1.2" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#dag-21"><i class="fa fa-check"></i><b>18.1.2</b> DAG</a></li>
+<li class="chapter" data-level="18.1.3" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#takeaways-4"><i class="fa fa-check"></i><b>18.1.3</b> Takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="18.2" data-path="multi-site-studies.html"><a href="multi-site-studies.html"><i class="fa fa-check"></i><b>18.2</b> Multi-site studies</a></li>
+<li class="chapter" data-level="18.3" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html"><i class="fa fa-check"></i><b>18.3</b> The Metaketa design</a><ul>
+<li class="chapter" data-level="18.3.1" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#unbiased-estimates-of-out-of-sample-sites-in-presence-of-heterogeneous-effects"><i class="fa fa-check"></i><b>18.3.1</b> Unbiased estimates of out-of-sample sites in presence of heterogeneous effects</a></li>
+<li class="chapter" data-level="18.3.2" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#bayesian-estimation-can-improve-estimates-of-effects-for-sampled-sites"><i class="fa fa-check"></i><b>18.3.2</b> Bayesian estimation can improve estimates of effects for sampled sites</a></li>
+<li class="chapter" data-level="18.3.3" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#when-things-break-down-confounded-sampling"><i class="fa fa-check"></i><b>18.3.3</b> when things break down: confounded sampling</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="part-iii-exercises.html"><a href="part-iii-exercises.html"><i class="fa fa-check"></i><b>19</b> Part III Exercises</a></li>
+<li class="part"><span><b>IV Research Design Lifecycle</b></span></li>
+<li class="chapter" data-level="20" data-path="research-design-lifecycle.html"><a href="research-design-lifecycle.html"><i class="fa fa-check"></i><b>20</b> Research Design Lifecycle</a><ul>
+<li class="chapter" data-level="20.1" data-path="p4planning.html"><a href="p4planning.html"><i class="fa fa-check"></i><b>20.1</b> Planning</a><ul>
+<li class="chapter" data-level="20.1.1" data-path="p4planning.html"><a href="p4planning.html#example-20"><i class="fa fa-check"></i><b>20.1.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.2" data-path="ethical-review.html"><a href="ethical-review.html"><i class="fa fa-check"></i><b>20.2</b> Ethical Review</a><ul>
+<li class="chapter" data-level="20.2.1" data-path="ethical-review.html"><a href="ethical-review.html#ethical-principles-as-diagnosands"><i class="fa fa-check"></i><b>20.2.1</b> Ethical principles as diagnosands</a></li>
+</ul></li>
+<li class="chapter" data-level="20.3" data-path="partners.html"><a href="partners.html"><i class="fa fa-check"></i><b>20.3</b> Partners</a></li>
+<li class="chapter" data-level="20.4" data-path="funding.html"><a href="funding.html"><i class="fa fa-check"></i><b>20.4</b> Funding</a></li>
+<li class="chapter" data-level="20.5" data-path="p4piloting.html"><a href="p4piloting.html"><i class="fa fa-check"></i><b>20.5</b> Piloting</a></li>
+<li class="chapter" data-level="20.6" data-path="implementation.html"><a href="implementation.html"><i class="fa fa-check"></i><b>20.6</b> Implementation</a></li>
+<li class="chapter" data-level="20.7" data-path="p4populatedpap.html"><a href="p4populatedpap.html"><i class="fa fa-check"></i><b>20.7</b> Populated Preanalysis Plan</a><ul>
+<li class="chapter" data-level="20.7.1" data-path="p4populatedpap.html"><a href="p4populatedpap.html#example-21"><i class="fa fa-check"></i><b>20.7.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.8" data-path="reconciliation.html"><a href="reconciliation.html"><i class="fa fa-check"></i><b>20.8</b> Reconciliation</a><ul>
+<li class="chapter" data-level="20.8.1" data-path="reconciliation.html"><a href="reconciliation.html#example-22"><i class="fa fa-check"></i><b>20.8.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.9" data-path="writing.html"><a href="writing.html"><i class="fa fa-check"></i><b>20.9</b> Writing</a></li>
+<li class="chapter" data-level="20.10" data-path="publication.html"><a href="publication.html"><i class="fa fa-check"></i><b>20.10</b> Publication</a><ul>
+<li class="chapter" data-level="20.10.1" data-path="publication.html"><a href="publication.html#reviewing-papers"><i class="fa fa-check"></i><b>20.10.1</b> Reviewing papers</a></li>
+<li class="chapter" data-level="20.10.2" data-path="publication.html"><a href="publication.html#responding-to-reviewers"><i class="fa fa-check"></i><b>20.10.2</b> Responding to reviewers</a></li>
+</ul></li>
+<li class="chapter" data-level="20.11" data-path="archiving.html"><a href="archiving.html"><i class="fa fa-check"></i><b>20.11</b> Archiving</a></li>
+<li class="chapter" data-level="20.12" data-path="reanalysis.html"><a href="reanalysis.html"><i class="fa fa-check"></i><b>20.12</b> Reanalysis</a></li>
+<li class="chapter" data-level="20.13" data-path="replication.html"><a href="replication.html"><i class="fa fa-check"></i><b>20.13</b> Replication</a></li>
+<li class="chapter" data-level="20.14" data-path="resolving-disputes.html"><a href="resolving-disputes.html"><i class="fa fa-check"></i><b>20.14</b> Resolving Disputes</a></li>
+<li class="chapter" data-level="20.15" data-path="synthesis.html"><a href="synthesis.html"><i class="fa fa-check"></i><b>20.15</b> Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="part-iv-exercises.html"><a href="part-iv-exercises.html"><i class="fa fa-check"></i><b>21</b> Part IV Exercises</a></li>
+<li class="chapter" data-level="22" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>22</b> Glossary</a></li>
+<li class="chapter" data-level="" data-path="references-4.html"><a href="references-4.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://declaredesign.org" target="blank">DeclareDesign</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Research Design: Declare, Diagnose, Redesign</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="estimating-diagnosands-via-simulation" class="section level2">
+<h2><span class="header-section-number">10.2</span> Estimating diagnosands via simulation</h2>
+<p>Research design diagnosis usually occurs in a two-step, simulation-based procedure. First we simulate research designs over and cover, collecting “diagnostic statistics” from each run of the simulation. Second, we summarise the distribution of the diganostic statistics in order to estimate the diagnosands.</p>
+<p>So we estimate diagnosands by summarizing the distribution of diagnostic statistics – of course this raises the question: what is a diagnostic statistic? We take a draw from the model (<span class="math inline">\(m\)</span>) and calculate the value of the inquiry <span class="math inline">\(I(m) = a^m\)</span>. We take one draw from the data strategy (<span class="math inline">\(D(m) = d\)</span>), and calculates the value of the answer strategy <span class="math inline">\(A(d) = a^d\)</span>. A diagnostic statistic is some function of <span class="math inline">\(a^m\)</span> and <span class="math inline">\(a^d\)</span>.</p>
+<p>A simple diagnostic statistic is “error,” or the difference between the estimate and the estimand: <span class="math inline">\(error = a^d - a^m\)</span>. The bias diagnosand is the expectation of the error statistic <span class="math inline">\(E[error]\)</span> over all possible ways the study could have come out.</p>
+<p>Usually, we consider many diagnostic statistics at the same time. Here’s a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.</p>
+<p>One draw of this simulation returns the following:</p>
+<p>One draw from the simulation returns the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">estimand</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.10</td>
+<td align="right">0.08</td>
+<td align="right">0.04</td>
+<td align="right">0.003</td>
+<td align="right">0.156</td>
+<td align="right">0.04</td>
+</tr>
+</tbody>
+</table>
+<p>Figure <a href="#simdrawsone"><strong>??</strong></a> shows the information we might obtain from a single run of the simulation. The filled point is the estimate <span class="math inline">\(a^d\)</span>. The open triangle is the estimand <span class="math inline">\(a^m\)</span>. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We’re not sure where <span class="math inline">\(a^d\)</span> is, but if things are going according to plan, confidence intervals constructed this way will bracket <span class="math inline">\(a^d\)</span> 95% of the time.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+estimand
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+conf.low
+</th>
+<th style="text-align:right;">
+conf.high
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.1
+</td>
+<td style="text-align:right;">
+0.091
+</td>
+<td style="text-align:right;">
+0.038
+</td>
+<td style="text-align:right;">
+0.016
+</td>
+<td style="text-align:right;">
+0.167
+</td>
+<td style="text-align:right;">
+0.018
+</td>
+</tr>
+</tbody>
+</table>
+<div class="figure"><span id="fig:simdrawsone"></span>
+<img src="book_files/figure-html/simdrawsone-1.png" alt="Visualization of one draw from a design diagnosis." width="100%" />
+<p class="caption">
+Figure 10.2: Visualization of one draw from a design diagnosis.
+</p>
+</div>
+<!-- We're interested in a few diagnosands. Bias (the expectation of the error statistics) is one, but we also want to know about RMSE (the square root of the expectation of the squared errors), power (the probability the $p$-value is below a threshold), and coverage (the probability the 95% confidence interval brackets the estimand).  -->
+<p>From this single draw, we can’t yet estimate diagnosands, but we can estimate diagnostic statistics. The estimate was higher than the estimand in this draw, so the error is 0.10 - 0.08 = 0.02. Likewise, the squared error is <code>(0.10 - 0.08)^2 = 0.0004</code>. The <span class="math inline">\(p\)</span>-value is 0.04, which is just barely lower than the threshold of 0.05, so “statistical significance” diagnostic statistic is equal to <code>TRUE</code>. The confidence interval stretches from 0.003 to 0.156, and the value of the estimand (0.10) is between those bounds, so the “covers” diagnostic statistic is equal to <code>TRUE</code> as well.</p>
+<p>Learning the <strong>distribution</strong> of diagnostic statistics is the main barrier to design diagnosis. If we could simply write down the distribution of diagnostic statistics, it would be a straightforward matter to summarize them in order to calculate diagnosands. But the distributions of diagnositic statistics depend on the complex of information in all four parts of a research design: M, I, D, and A. For example, the error statistic depends on both <span class="math inline">\(a^d\)</span> and <span class="math inline">\(a^m\)</span>, so the details of each matter greatly.</p>
+<p>To calculate the distributions of the diagnostic statistics, we have to simulate designs not just once, but many many times over. The bias diagnosand is the average error over many runs of the simulation. The statistical power diagnosand is the fraction of runs in which the estimate is significant. The coverage diagnosand is the fraction of runs in which the confidence interval covers the estimand.</p>
+<p>This figure visualizes just 10 runs of the simulation (obtained with <code>simulate_design(design)</code>). We can see that in each run, <span class="math inline">\(a^m\)</span> is a little different. This might seem counterintuitive – isn’t the estimand supposed to be a fixed number? Some estimands are fixed, others are stochastic, depending on the specifics of the model. Notice how in the design declaration, we drew the potential outcomes from a distribution rather then having them be fixed numbers. This choice incorportates some of our modeling uncertainty. The treatment effects for each unit are close to 0.1, but we’re not sure how close for each particulat unit. We can also see that some of the draws produce statistical significant estimates (the shaded areas are small and the confidence intervals don’t overlap zero), but not all. We get a sense of the <em>true</em> standard error by seeing how the point estimates bounce around. We get a feel for the difference between the estimates of the standard error and true standard error. Design diagnosis is the process of learning about all the ways the study might come out, not just the one way that it will.</p>
+<div class="figure"><span id="fig:simdrawsten"></span>
+<img src="book_files/figure-html/simdrawsten-1.png" alt="Visualization of ten draws from a design diagnosis." width="100%" />
+<p class="caption">
+Figure 10.3: Visualization of ten draws from a design diagnosis.
+</p>
+</div>
+<p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnositic satistics, then we summarise them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="estimating-diagnosands-via-simulation.html#cb51-1"></a>diagnosis &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(design, <span class="dt">sims =</span> <span class="dv">1000</span>, </span>
+<span id="cb51-2"><a href="estimating-diagnosands-via-simulation.html#cb51-2"></a>                             <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(</span>
+<span id="cb51-3"><a href="estimating-diagnosands-via-simulation.html#cb51-3"></a>                               <span class="dt">select =</span> <span class="kw">c</span>(<span class="st">&quot;bias&quot;</span>, <span class="st">&quot;sd_estimate&quot;</span>, <span class="st">&quot;rmse&quot;</span>, <span class="st">&quot;power&quot;</span>, <span class="st">&quot;coverage&quot;</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="estimating-diagnosands-via-simulation.html#cb52-1"></a>diagnosis</span></code></pre></div>
+<pre><code>## 
+## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (100 replicates).
+## 
+##  Design Label Estimand Label Estimator Label Term N Sims   Bias SD Estimate
+##        design            ATE       estimator    Z    100   0.00        0.04
+##                                                          (0.00)      (0.00)
+##    RMSE  Power Coverage
+##    0.04   0.62     0.96
+##  (0.00) (0.05)   (0.02)</code></pre>
+<!-- ## Interactive element -->
+<!-- You can have fun building up a design diagnosis run-by-run with this shiny app. Each time you run the design, it adds a new estimate to the sampling distribution so you can learn about the relationship of a single run of the design to the overall diagnosis. -->
+<!-- ```{r, echo = FALSE} -->
+<!-- knitr::include_app('https://gblair.shinyapps.io/diagnosis/', height = '400px') -->
+<!-- ``` -->
+<div id="interpreting-diagnosands" class="section level3">
+<h3><span class="header-section-number">10.2.1</span> Interpreting diagnosands</h3>
+<p>Say you decide to simulate the design 1000 times to see if it’s biased. After a few seconds, the computer spits out bias of .02. Unsure whether to be concerned, you simulate the design another 1000 times. Now the computer says the bias is .01. Since each simulation was randomly generated, you should expect to get estimates of bias that vary. Given the random variation in the simulations and how large the estimate and estimand are, maybe it was even quite likely to get .01 or .02 bias even if the true bias is zero. Or maybe your design is biased.</p>
+<p>As with frequentist statistics, we have to separate signal from noise. We have an estimate (here, of the bias diagnosand) that varies depending on how each simulation turns out. We want to quantify that variation in order to make a decision about whether the estimated bias is large enough to be significant. The simulation standard error (or, Monte Carlo standard error) is an estimate of the variation created by the simulation procedure. If that estimated variation is high relative to the estimated diagnosand, then we need to increase the number of simulations.
+<!-- Following the example from the previous paragraph, if the simulation standard error was .015, then the simulation we ran was consistent with negative, positive, and no bias given the point estimate of .01. However, if we estimate a simulation standard error of .0001, then the .01 or .02 bias estimates give real cause for concern, since they were so unlikely to arise if the true bias were zero.  --></p>
+<p><span class="citation">Morris, White, and Crowther (<a href="#ref-morrisetal2019" role="doc-biblioref">2019</a>)</span> provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define <span class="math inline">\(a^d_i\)</span> as the point estimate in the <span class="math inline">\(i\)</span>’th simulation, <span class="math inline">\(n_{sim}\)</span> as the total number of simulations, and the average of the point estimates across simulations as <span class="math inline">\(\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i\)</span>. Then, if the estimand is a constant and <span class="math inline">\(a^d_i\)</span> is independently and normally distributed, the simulation standard error for bias can be calculated as <span class="math inline">\(\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}\)</span>. Here is how you can do it in code:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="estimating-diagnosands-via-simulation.html#cb54-1"></a>simulated_estimates &lt;-<span class="st"> </span><span class="kw">with</span>(diagnosis<span class="op">$</span>simulations_df, estimate)</span>
+<span id="cb54-2"><a href="estimating-diagnosands-via-simulation.html#cb54-2"></a>mean_estimate &lt;-<span class="st"> </span><span class="kw">mean</span>(simulated_estimates)</span>
+<span id="cb54-3"><a href="estimating-diagnosands-via-simulation.html#cb54-3"></a>n_sim &lt;-<span class="st"> </span><span class="kw">length</span>(simulated_estimates)</span>
+<span id="cb54-4"><a href="estimating-diagnosands-via-simulation.html#cb54-4"></a>SE_bias &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">1</span><span class="op">/</span>(n_sim <span class="op">*</span><span class="st"> </span>(n_sim <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)) <span class="op">*</span><span class="st"> </span>(<span class="kw">sum</span>((simulated_estimates <span class="op">-</span><span class="st"> </span>mean_estimate)<span class="op">^</span><span class="dv">2</span>)))</span>
+<span id="cb54-5"><a href="estimating-diagnosands-via-simulation.html#cb54-5"></a>SE_bias</span></code></pre></div>
+<pre><code>## [1] 0.004152528</code></pre>
+<p>Of course, this estimate of the variance relies on assumptions and won’t work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don’t have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your <span class="math inline">\(n_{sims}\)</span> diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. <code>DeclareDesign</code> does nonparametric bootstrapping by default whenever the <code>diagnose_design()</code> function is called. The numbers are reported in the parentheses under the diagnosand estimates in the table above. Here’s the simulation standard error for bias calculated by bootstrap resampling 100 times:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="estimating-diagnosands-via-simulation.html#cb56-1"></a>diagnosis<span class="op">$</span>diagnosands_df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="st">&quot;se(bias)&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.003838199</code></pre>
+<p>As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics.</p>
+</div>
+<div id="how-many-simulations-to-run" class="section level3">
+<h3><span class="header-section-number">10.2.2</span> How many simulations to run</h3>
+<p>Unlike increasing sample size in the real world, increasing the precision of your diagnosand estimates is as simple as waiting a little longer while your computer runs a higher number of simulations. However, while running 100 simulations may take a matter of seconds, running 10,000,000 simulations may take a few days. So how do you know when you’ve done enough?</p>
+<p>As a rule of thumb, you should be multiplying the simulation standard errors by two in your head in order to make decisions about whether to do more simulations, since this gets you close to the upper and lower bounds of a 95% confidence interval (properly calculated by muliplying the standard error by 1.96). So, if you change your randomization strategy and the power increases from .78 to .82 with a simulation standard error of .015, you should increase the number of simulations: the upper bound on the first estimate <span class="math inline">\((.78 + 0.015*1.96 = .81)\)</span> overlaps with the lower bound on the second <span class="math inline">\((.82 - 0.015*1.96)\)</span>, so the apparent improvement in power may be an artefact of the simulation.</p>
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-morrisetal2019">
+<p>Morris, Tim P., Ian R. White, and Michael J. Crowther. 2019. “Using Simulation Studies to Evaluate Statistical Methods.” <em>Statistics in Medicine</em>.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="estimating-diagnosands-analytically.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="diagnosands.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false,
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": {},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>16.6 Bayesian process-tracing | Research Design: Declare, Diagnose, Redesign</title>
+  <meta name="description" content="describe the book" />
+  <meta name="generator" content="bookdown 0.21.4 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="16.6 Bayesian process-tracing | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="describe the book" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="16.6 Bayesian process-tracing | Research Design: Declare, Diagnose, Redesign" />
+  
+  <meta name="twitter:description" content="describe the book" />
+  
+
+<meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="RDD.html"/>
+<link rel="next" href="synthetic-controls.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="https://hypothes.is/embed.js" async></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="headers/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><b>Research Design</b></a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Research Design: Declaration, Diagnose, Redesign</a><ul>
+<li class="chapter" data-level="" data-path="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><a href="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><i class="fa fa-check"></i>Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys</a><ul>
+<li class="chapter" data-level="" data-path="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><a href="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html#draft.-under-advance-contract-princeton-university-press"><i class="fa fa-check"></i>Draft. Under advance contract, Princeton University Press</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>I Introduction</b></span></li>
+<li class="chapter" data-level="1" data-path="preamble.html"><a href="preamble.html"><i class="fa fa-check"></i><b>1</b> Preamble</a><ul>
+<li class="chapter" data-level="1.1" data-path="how-to-read-this-book.html"><a href="how-to-read-this-book.html"><i class="fa fa-check"></i><b>1.1</b> How to read this book</a></li>
+<li class="chapter" data-level="1.2" data-path="how-to-work-this-book.html"><a href="how-to-work-this-book.html"><i class="fa fa-check"></i><b>1.2</b> How to <strong>work</strong> this book</a></li>
+<li class="chapter" data-level="1.3" data-path="what-this-book-will-not-do.html"><a href="what-this-book-will-not-do.html"><i class="fa fa-check"></i><b>1.3</b> What this book will not do</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="improving-research-designs.html"><a href="improving-research-designs.html"><i class="fa fa-check"></i><b>2</b> Improving research designs</a><ul>
+<li class="chapter" data-level="2.1" data-path="the-four-components-of-research-design.html"><a href="the-four-components-of-research-design.html"><i class="fa fa-check"></i><b>2.1</b> The four components of research design</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="the-four-components-of-research-design.html"><a href="the-four-components-of-research-design.html#example"><i class="fa fa-check"></i><b>2.1.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="declaring-a-design-in-code.html"><a href="declaring-a-design-in-code.html"><i class="fa fa-check"></i><b>2.2</b> Declaring a design in code</a></li>
+<li class="chapter" data-level="2.3" data-path="assessing-research-design-quality-design-diagnosis.html"><a href="assessing-research-design-quality-design-diagnosis.html"><i class="fa fa-check"></i><b>2.3</b> Assessing research design quality: design diagnosis</a></li>
+<li class="chapter" data-level="2.4" data-path="redesign.html"><a href="redesign.html"><i class="fa fa-check"></i><b>2.4</b> Redesign</a></li>
+<li class="chapter" data-level="2.5" data-path="putting-designs-to-use.html"><a href="putting-designs-to-use.html"><i class="fa fa-check"></i><b>2.5</b> Putting designs to use</a></li>
+<li class="chapter" data-level="2.6" data-path="avoiding-declaration-and-diagnosis-pitfalls.html"><a href="avoiding-declaration-and-diagnosis-pitfalls.html"><i class="fa fa-check"></i><b>2.6</b> Avoiding declaration and diagnosis pitfalls</a></li>
+<li class="chapter" data-level="2.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>2.7</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="primer.html"><a href="primer.html"><i class="fa fa-check"></i><b>3</b> Software primer</a><ul>
+<li class="chapter" data-level="3.1" data-path="installing-r.html"><a href="installing-r.html"><i class="fa fa-check"></i><b>3.1</b> Installing R</a></li>
+<li class="chapter" data-level="3.2" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html"><i class="fa fa-check"></i><b>3.2</b> Building a step of a research design</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html#options-and-defaults"><i class="fa fa-check"></i><b>3.2.1</b> Options and defaults</a></li>
+<li class="chapter" data-level="3.2.2" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html#your-own-handlers"><i class="fa fa-check"></i><b>3.2.2</b> Your own handlers</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="research-design-steps.html"><a href="research-design-steps.html"><i class="fa fa-check"></i><b>3.3</b> Research design steps</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="research-design-steps.html"><a href="research-design-steps.html#model"><i class="fa fa-check"></i><b>3.3.1</b> Model</a></li>
+<li class="chapter" data-level="3.3.2" data-path="research-design-steps.html"><a href="research-design-steps.html#inquiry"><i class="fa fa-check"></i><b>3.3.2</b> Inquiry</a></li>
+<li class="chapter" data-level="3.3.3" data-path="research-design-steps.html"><a href="research-design-steps.html#data-strategy"><i class="fa fa-check"></i><b>3.3.3</b> Data strategy</a></li>
+<li class="chapter" data-level="3.3.4" data-path="research-design-steps.html"><a href="research-design-steps.html#answer-strategy"><i class="fa fa-check"></i><b>3.3.4</b> Answer strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="building-a-design-from-design-steps.html"><a href="building-a-design-from-design-steps.html"><i class="fa fa-check"></i><b>3.4</b> Building a design from design steps</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="building-a-design-from-design-steps.html"><a href="building-a-design-from-design-steps.html#order-matters"><i class="fa fa-check"></i><b>3.4.1</b> Order matters</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="simulating-a-research-design.html"><a href="simulating-a-research-design.html"><i class="fa fa-check"></i><b>3.5</b> Simulating a research design</a></li>
+<li class="chapter" data-level="3.6" data-path="diagnosing-a-research-design.html"><a href="diagnosing-a-research-design.html"><i class="fa fa-check"></i><b>3.6</b> Diagnosing a research design</a></li>
+<li class="chapter" data-level="3.7" data-path="comparing-designs.html"><a href="comparing-designs.html"><i class="fa fa-check"></i><b>3.7</b> Comparing designs</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="comparing-designs.html"><a href="comparing-designs.html#comparing-many-variants-of-a-design"><i class="fa fa-check"></i><b>3.7.1</b> Comparing many variants of a design</a></li>
+<li class="chapter" data-level="3.7.2" data-path="comparing-designs.html"><a href="comparing-designs.html#library-of-designs"><i class="fa fa-check"></i><b>3.7.2</b> Library of designs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="part-i-exercises.html"><a href="part-i-exercises.html"><i class="fa fa-check"></i><b>4</b> Part I Exercises</a></li>
+<li class="part"><span><b>II Declaration, Diagnosis, Redesign</b></span></li>
+<li class="chapter" data-level="5" data-path="declaration.html"><a href="declaration.html"><i class="fa fa-check"></i><b>5</b> Declaration</a><ul>
+<li class="chapter" data-level="5.1" data-path="p2gulzarkhanrevisited.html"><a href="p2gulzarkhanrevisited.html"><i class="fa fa-check"></i><b>5.1</b> Example</a></li>
+<li class="chapter" data-level="5.2" data-path="further-reading-1.html"><a href="further-reading-1.html"><i class="fa fa-check"></i><b>5.2</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="specifying-the-model.html"><a href="specifying-the-model.html"><i class="fa fa-check"></i><b>6</b> Specifying the model</a><ul>
+<li class="chapter" data-level="6.1" data-path="what-is-the-population.html"><a href="what-is-the-population.html"><i class="fa fa-check"></i><b>6.1</b> What is the population?</a></li>
+<li class="chapter" data-level="6.2" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html"><i class="fa fa-check"></i><b>6.2</b> What variables to include?</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html#types-of-variables"><i class="fa fa-check"></i><b>6.2.1</b> Types of variables</a></li>
+<li class="chapter" data-level="6.2.2" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html#what-variables-are-needed-for-declaration-and-diagnosis"><i class="fa fa-check"></i><b>6.2.2</b> What variables are <em>needed</em> for declaration and diagnosis?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="specifying-structural-relations.html"><a href="specifying-structural-relations.html"><i class="fa fa-check"></i><b>6.3</b> Specifying structural relations</a></li>
+<li class="chapter" data-level="6.4" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html"><i class="fa fa-check"></i><b>6.4</b> Substantive justifications for choices of nodes and equations</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#reality-tracking-models"><i class="fa fa-check"></i><b>6.4.1</b> Reality tracking models</a></li>
+<li class="chapter" data-level="6.4.2" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#discursive-models"><i class="fa fa-check"></i><b>6.4.2</b> Discursive models</a></li>
+<li class="chapter" data-level="6.4.3" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#sufficient-models"><i class="fa fa-check"></i><b>6.4.3</b> Sufficient models</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="getting-it-right.html"><a href="getting-it-right.html"><i class="fa fa-check"></i><b>6.5</b> Getting it right?</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="getting-it-right.html"><a href="getting-it-right.html#robustness-to-multiple-models"><i class="fa fa-check"></i><b>6.5.1</b> Robustness to multiple models</a></li>
+<li class="chapter" data-level="6.5.2" data-path="getting-it-right.html"><a href="getting-it-right.html#fundamental-uncertainty"><i class="fa fa-check"></i><b>6.5.2</b> Fundamental uncertainty</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
+<li class="chapter" data-level="7.1" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Three families of inquiries</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.2" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#inquiries-about-causal-effects"><i class="fa fa-check"></i><b>7.1.2</b> Inquiries about causal effects</a></li>
+<li class="chapter" data-level="7.1.3" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#causalattribution"><i class="fa fa-check"></i><b>7.1.3</b> Causal attribution inquiries</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="estimands-declared.html"><a href="estimands-declared.html"><i class="fa fa-check"></i><b>7.2</b> Estimands declared</a></li>
+<li class="chapter" data-level="7.3" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html"><i class="fa fa-check"></i><b>7.3</b> Common complexities in defining estimands</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#data-dependent-inquiries"><i class="fa fa-check"></i><b>7.3.1</b> Data-dependent inquiries</a></li>
+<li class="chapter" data-level="7.3.2" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#non-decomposable-inquiries"><i class="fa fa-check"></i><b>7.3.2</b> Non-decomposable inquiries</a></li>
+<li class="chapter" data-level="7.3.3" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#model-dependent-inquiries"><i class="fa fa-check"></i><b>7.3.3</b> Model dependent inquiries</a></li>
+<li class="chapter" data-level="7.3.4" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#complex-counterfactual-inquiries"><i class="fa fa-check"></i><b>7.3.4</b> Complex counterfactual inquiries</a></li>
+<li class="chapter" data-level="7.3.5" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#inquiries-with-continuous-causal-variables"><i class="fa fa-check"></i><b>7.3.5</b> Inquiries with continuous causal variables</a></li>
+<li class="chapter" data-level="7.3.6" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#undefined-and-unanswerable-inquiries"><i class="fa fa-check"></i><b>7.3.6</b> Undefined and unanswerable inquiries</a></li>
+<li class="chapter" data-level="7.3.7" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#example-1"><i class="fa fa-check"></i><b>7.3.7</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.4</b> How should you select inquiries?</a></li>
+<li class="chapter" data-level="7.5" data-path="further-reading-2.html"><a href="further-reading-2.html"><i class="fa fa-check"></i><b>7.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
+<li class="chapter" data-level="8.1" data-path="p2sampling.html"><a href="p2sampling.html"><i class="fa fa-check"></i><b>8.1</b> Sampling strategies</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="p2sampling.html"><a href="p2sampling.html#randomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.1</b> Randomized sampling designs</a></li>
+<li class="chapter" data-level="8.1.2" data-path="p2sampling.html"><a href="p2sampling.html#nonrandomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.2</b> Nonrandomized sampling designs</a></li>
+<li class="chapter" data-level="8.1.3" data-path="p2sampling.html"><a href="p2sampling.html#sampling-designs-for-qualitative-research"><i class="fa fa-check"></i><b>8.1.3</b> Sampling designs for qualitative research</a></li>
+<li class="chapter" data-level="8.1.4" data-path="p2sampling.html"><a href="p2sampling.html#choosing-among-sampling-designs"><i class="fa fa-check"></i><b>8.1.4</b> Choosing among sampling designs</a></li>
+<li class="chapter" data-level="8.1.5" data-path="p2sampling.html"><a href="p2sampling.html#example-wang2015forecasting"><i class="fa fa-check"></i><b>8.1.5</b> Example: <span class="citation">Wang et al. (<span>2015</span>)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="p2assignment.html"><a href="p2assignment.html"><i class="fa fa-check"></i><b>8.2</b> Treatment assignment</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="p2assignment.html"><a href="p2assignment.html#two-arm-trials"><i class="fa fa-check"></i><b>8.2.1</b> Two arm trials</a></li>
+<li class="chapter" data-level="8.2.2" data-path="p2assignment.html"><a href="p2assignment.html#multiarm-and-factorial-trials"><i class="fa fa-check"></i><b>8.2.2</b> Multiarm and factorial trials</a></li>
+<li class="chapter" data-level="8.2.3" data-path="p2assignment.html"><a href="p2assignment.html#complex-designs"><i class="fa fa-check"></i><b>8.2.3</b> Complex designs</a></li>
+<li class="chapter" data-level="8.2.4" data-path="p2assignment.html"><a href="p2assignment.html#non-randomized-assignment"><i class="fa fa-check"></i><b>8.2.4</b> Non randomized assignment</a></li>
+<li class="chapter" data-level="8.2.5" data-path="p2assignment.html"><a href="p2assignment.html#example-sociology-natural-experiment-from-government-or-official-cutoff"><i class="fa fa-check"></i><b>8.2.5</b> Example: sociology natural experiment from government or official cutoff</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="measurement.html"><a href="measurement.html"><i class="fa fa-check"></i><b>8.3</b> Measurement</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="measurement.html"><a href="measurement.html#example-weaver2019too"><i class="fa fa-check"></i><b>8.3.1</b> Example: <span class="citation">Weaver, Prowse, and Piston (<span>2019</span>)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html"><i class="fa fa-check"></i><b>8.4</b> Threats to implementation</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#noncompliance"><i class="fa fa-check"></i><b>8.4.1</b> Noncompliance</a></li>
+<li class="chapter" data-level="8.4.2" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#attrition"><i class="fa fa-check"></i><b>8.4.2</b> Attrition</a></li>
+<li class="chapter" data-level="8.4.3" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#excludability"><i class="fa fa-check"></i><b>8.4.3</b> Excludability</a></li>
+<li class="chapter" data-level="8.4.4" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#interference"><i class="fa fa-check"></i><b>8.4.4</b> Interference</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="further-reading-3.html"><a href="further-reading-3.html"><i class="fa fa-check"></i><b>8.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="choosing-an-answer-strategy.html"><a href="choosing-an-answer-strategy.html"><i class="fa fa-check"></i><b>9</b> Choosing an answer strategy</a><ul>
+<li class="chapter" data-level="9.1" data-path="following-the-model.html"><a href="following-the-model.html"><i class="fa fa-check"></i><b>9.1</b> Following the model</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="following-the-model.html"><a href="following-the-model.html#identification"><i class="fa fa-check"></i><b>9.1.1</b> Identification</a></li>
+<li class="chapter" data-level="9.1.2" data-path="following-the-model.html"><a href="following-the-model.html#estimation"><i class="fa fa-check"></i><b>9.1.2</b> Estimation</a></li>
+<li class="chapter" data-level="9.1.3" data-path="following-the-model.html"><a href="following-the-model.html#robustness"><i class="fa fa-check"></i><b>9.1.3</b> Robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html"><i class="fa fa-check"></i><b>9.2</b> Following the inquiry</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#plug-in-principle"><i class="fa fa-check"></i><b>9.2.1</b> Plug-in principle</a></li>
+<li class="chapter" data-level="9.2.2" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#point-estimation"><i class="fa fa-check"></i><b>9.2.2</b> Point estimation</a></li>
+<li class="chapter" data-level="9.2.3" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#estimating-the-variance"><i class="fa fa-check"></i><b>9.2.3</b> Estimating the variance</a></li>
+<li class="chapter" data-level="9.2.4" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#tests"><i class="fa fa-check"></i><b>9.2.4</b> Tests</a></li>
+<li class="chapter" data-level="9.2.5" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#partial-identification"><i class="fa fa-check"></i><b>9.2.5</b> Partial identification</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="p2followdatastrategy.html"><a href="p2followdatastrategy.html"><i class="fa fa-check"></i><b>9.3</b> Following the data strategy</a></li>
+<li class="chapter" data-level="9.4" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html"><i class="fa fa-check"></i><b>9.4</b> Qualitative methods of inference</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#process-tracing"><i class="fa fa-check"></i><b>9.4.1</b> Process-tracing</a></li>
+<li class="chapter" data-level="9.4.2" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#boolean-and-set-theoretic-methods"><i class="fa fa-check"></i><b>9.4.2</b> Boolean and set-theoretic methods</a></li>
+<li class="chapter" data-level="9.4.3" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#narrative-comparison"><i class="fa fa-check"></i><b>9.4.3</b> Narrative comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="answer-strategies-as-procedures.html"><a href="answer-strategies-as-procedures.html"><i class="fa fa-check"></i><b>9.5</b> Answer strategies as procedures</a></li>
+<li class="chapter" data-level="9.6" data-path="interpretation.html"><a href="interpretation.html"><i class="fa fa-check"></i><b>9.6</b> Interpretation</a></li>
+<li class="chapter" data-level="9.7" data-path="further-reading-4.html"><a href="further-reading-4.html"><i class="fa fa-check"></i><b>9.7</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="p2diagnosis.html"><a href="p2diagnosis.html"><i class="fa fa-check"></i><b>10</b> Diagnosis</a><ul>
+<li class="chapter" data-level="10.1" data-path="estimating-diagnosands-analytically.html"><a href="estimating-diagnosands-analytically.html"><i class="fa fa-check"></i><b>10.1</b> Estimating diagnosands analytically</a></li>
+<li class="chapter" data-level="10.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html"><i class="fa fa-check"></i><b>10.2</b> Estimating diagnosands via simulation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#interpreting-diagnosands"><i class="fa fa-check"></i><b>10.2.1</b> Interpreting diagnosands</a></li>
+<li class="chapter" data-level="10.2.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#how-many-simulations-to-run"><i class="fa fa-check"></i><b>10.2.2</b> How many simulations to run</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="diagnosands.html"><a href="diagnosands.html"><i class="fa fa-check"></i><b>10.3</b> How to choose among diagnosands</a></li>
+<li class="chapter" data-level="10.4" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html"><i class="fa fa-check"></i><b>10.4</b> Diagnosing with respect to variations in M</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#estimating-the-minimum-detectable-effect-size"><i class="fa fa-check"></i><b>10.4.1</b> Estimating the minimum detectable effect size</a></li>
+<li class="chapter" data-level="10.4.2" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#adjudicating-between-competing-models"><i class="fa fa-check"></i><b>10.4.2</b> Adjudicating between competing models</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="further-reading-5.html"><a href="further-reading-5.html"><i class="fa fa-check"></i><b>10.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="redesign-1.html"><a href="redesign-1.html"><i class="fa fa-check"></i><b>11</b> Redesign</a><ul>
+<li class="chapter" data-level="11.1" data-path="redesign-mountain.html"><a href="redesign-mountain.html"><i class="fa fa-check"></i><b>11.1</b> Redesign Mountain</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="part-ii-exercises.html"><a href="part-ii-exercises.html"><i class="fa fa-check"></i><b>12</b> Part II Exercises</a></li>
+<li class="part"><span><b>III Research Design Library</b></span></li>
+<li class="chapter" data-level="13" data-path="research-design-library.html"><a href="research-design-library.html"><i class="fa fa-check"></i><b>13</b> Research Design Library</a></li>
+<li class="chapter" data-level="14" data-path="observational-designs-for-descriptive-inference.html"><a href="observational-designs-for-descriptive-inference.html"><i class="fa fa-check"></i><b>14</b> Observational designs for descriptive inference</a><ul>
+<li class="chapter" data-level="14.1" data-path="random-sampling.html"><a href="random-sampling.html"><i class="fa fa-check"></i><b>14.1</b> Random sampling</a><ul>
+<li class="chapter" data-level="14.1.1" data-path="random-sampling.html"><a href="random-sampling.html#declaration-1"><i class="fa fa-check"></i><b>14.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.1.2" data-path="random-sampling.html"><a href="random-sampling.html#dag"><i class="fa fa-check"></i><b>14.1.2</b> Dag</a></li>
+<li class="chapter" data-level="14.1.3" data-path="random-sampling.html"><a href="random-sampling.html#example-2"><i class="fa fa-check"></i><b>14.1.3</b> Example</a></li>
+<li class="chapter" data-level="14.1.4" data-path="random-sampling.html"><a href="random-sampling.html#simple-random-sampling"><i class="fa fa-check"></i><b>14.1.4</b> Simple random sampling</a></li>
+<li class="chapter" data-level="14.1.5" data-path="random-sampling.html"><a href="random-sampling.html#stratified-and-clustered-random-sampling"><i class="fa fa-check"></i><b>14.1.5</b> Stratified and clustered random sampling</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="poststratification.html"><a href="poststratification.html"><i class="fa fa-check"></i><b>14.2</b> Poststratification</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="poststratification.html"><a href="poststratification.html#declaration-2"><i class="fa fa-check"></i><b>14.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.2.2" data-path="poststratification.html"><a href="poststratification.html#dag-1"><i class="fa fa-check"></i><b>14.2.2</b> Dag</a></li>
+<li class="chapter" data-level="14.2.3" data-path="poststratification.html"><a href="poststratification.html#exercises-1"><i class="fa fa-check"></i><b>14.2.3</b> Exercises</a></li>
+<li class="chapter" data-level="14.2.4" data-path="poststratification.html"><a href="poststratification.html#example-3"><i class="fa fa-check"></i><b>14.2.4</b> Example</a></li>
+<li class="chapter" data-level="14.2.5" data-path="poststratification.html"><a href="poststratification.html#example-4"><i class="fa fa-check"></i><b>14.2.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html"><i class="fa fa-check"></i><b>14.3</b> Inference about unobserved variables</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#declaration-3"><i class="fa fa-check"></i><b>14.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.3.2" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#dag-2"><i class="fa fa-check"></i><b>14.3.2</b> Dag</a></li>
+<li class="chapter" data-level="14.3.3" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#example-5"><i class="fa fa-check"></i><b>14.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="structural-estimation.html"><a href="structural-estimation.html"><i class="fa fa-check"></i><b>14.4</b> Structural estimation</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="structural-estimation.html"><a href="structural-estimation.html#declaration-4"><i class="fa fa-check"></i><b>14.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.4.2" data-path="structural-estimation.html"><a href="structural-estimation.html#dag-3"><i class="fa fa-check"></i><b>14.4.2</b> Dag</a></li>
+<li class="chapter" data-level="14.4.3" data-path="structural-estimation.html"><a href="structural-estimation.html#example-6"><i class="fa fa-check"></i><b>14.4.3</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="experimental-designs-for-descriptive-inference.html"><a href="experimental-designs-for-descriptive-inference.html"><i class="fa fa-check"></i><b>15</b> Experimental designs for descriptive inference</a><ul>
+<li class="chapter" data-level="15.1" data-path="audit-experiments.html"><a href="audit-experiments.html"><i class="fa fa-check"></i><b>15.1</b> Audit experiments</a><ul>
+<li class="chapter" data-level="15.1.1" data-path="audit-experiments.html"><a href="audit-experiments.html#declaration-5"><i class="fa fa-check"></i><b>15.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.1.2" data-path="audit-experiments.html"><a href="audit-experiments.html#dag-4"><i class="fa fa-check"></i><b>15.1.2</b> Dag</a></li>
+<li class="chapter" data-level="15.1.3" data-path="audit-experiments.html"><a href="audit-experiments.html#example-7"><i class="fa fa-check"></i><b>15.1.3</b> Example</a></li>
+<li class="chapter" data-level="15.1.4" data-path="audit-experiments.html"><a href="audit-experiments.html#design-declaration-2"><i class="fa fa-check"></i><b>15.1.4</b> Design Declaration</a></li>
+<li class="chapter" data-level="15.1.5" data-path="audit-experiments.html"><a href="audit-experiments.html#takeaways-2"><i class="fa fa-check"></i><b>15.1.5</b> Takeaways</a></li>
+<li class="chapter" data-level="15.1.6" data-path="audit-experiments.html"><a href="audit-experiments.html#applications"><i class="fa fa-check"></i><b>15.1.6</b> Applications</a></li>
+<li class="chapter" data-level="15.1.7" data-path="audit-experiments.html"><a href="audit-experiments.html#exercises-2"><i class="fa fa-check"></i><b>15.1.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="15.2" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html"><i class="fa fa-check"></i><b>15.2</b> Experiments for sensitive questions</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#declaration-6"><i class="fa fa-check"></i><b>15.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.2.2" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#dag-5"><i class="fa fa-check"></i><b>15.2.2</b> Dag</a></li>
+<li class="chapter" data-level="15.2.3" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#example-8"><i class="fa fa-check"></i><b>15.2.3</b> Example</a></li>
+<li class="chapter" data-level="15.2.4" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#list-experiments"><i class="fa fa-check"></i><b>15.2.4</b> List experiments</a></li>
+<li class="chapter" data-level="15.2.5" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#randomized-response-technique"><i class="fa fa-check"></i><b>15.2.5</b> Randomized response technique</a></li>
+<li class="chapter" data-level="15.2.6" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#references"><i class="fa fa-check"></i><b>15.2.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html"><i class="fa fa-check"></i><b>15.3</b> Conjoint experiments</a><ul>
+<li class="chapter" data-level="15.3.1" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#declaration-8"><i class="fa fa-check"></i><b>15.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.3.2" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#dag-6"><i class="fa fa-check"></i><b>15.3.2</b> Dag</a></li>
+<li class="chapter" data-level="15.3.3" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#example-9"><i class="fa fa-check"></i><b>15.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="behavioral-games.html"><a href="behavioral-games.html"><i class="fa fa-check"></i><b>15.4</b> Behavioral games</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="behavioral-games.html"><a href="behavioral-games.html#declaration-9"><i class="fa fa-check"></i><b>15.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.4.2" data-path="behavioral-games.html"><a href="behavioral-games.html#dag-7"><i class="fa fa-check"></i><b>15.4.2</b> Dag</a></li>
+<li class="chapter" data-level="15.4.3" data-path="behavioral-games.html"><a href="behavioral-games.html#example-10"><i class="fa fa-check"></i><b>15.4.3</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="observational-designs-for-causal-inference.html"><a href="observational-designs-for-causal-inference.html"><i class="fa fa-check"></i><b>16</b> Observational designs for causal inference</a><ul>
+<li class="chapter" data-level="16.1" data-path="selection-on-observables.html"><a href="selection-on-observables.html"><i class="fa fa-check"></i><b>16.1</b> Selection on observables</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="selection-on-observables.html"><a href="selection-on-observables.html#declaration-10"><i class="fa fa-check"></i><b>16.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.1.2" data-path="selection-on-observables.html"><a href="selection-on-observables.html#dag-8"><i class="fa fa-check"></i><b>16.1.2</b> Dag</a></li>
+<li class="chapter" data-level="16.1.3" data-path="selection-on-observables.html"><a href="selection-on-observables.html#example-11"><i class="fa fa-check"></i><b>16.1.3</b> Example</a></li>
+<li class="chapter" data-level="16.1.4" data-path="selection-on-observables.html"><a href="selection-on-observables.html#classic-confounding"><i class="fa fa-check"></i><b>16.1.4</b> Classic Confounding</a></li>
+<li class="chapter" data-level="16.1.5" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-the-functional-form-is-wrong"><i class="fa fa-check"></i><b>16.1.5</b> What if the functional form is wrong?</a></li>
+<li class="chapter" data-level="16.1.6" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-you-have-unobserved-confounding"><i class="fa fa-check"></i><b>16.1.6</b> What if you have unobserved confounding?</a></li>
+<li class="chapter" data-level="16.1.7" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-the-observed-covariate-is-post-treatment"><i class="fa fa-check"></i><b>16.1.7</b> What if the observed covariate is post-treatment?</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="further-reading-6.html"><a href="further-reading-6.html"><i class="fa fa-check"></i><b>16.2</b> Further reading</a></li>
+<li class="chapter" data-level="16.3" data-path="p3iv.html"><a href="p3iv.html"><i class="fa fa-check"></i><b>16.3</b> Instrumental variables</a><ul>
+<li class="chapter" data-level="16.3.1" data-path="p3iv.html"><a href="p3iv.html#declaration-11"><i class="fa fa-check"></i><b>16.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.3.2" data-path="p3iv.html"><a href="p3iv.html#dag-9"><i class="fa fa-check"></i><b>16.3.2</b> Dag</a></li>
+<li class="chapter" data-level="16.3.3" data-path="p3iv.html"><a href="p3iv.html#redesign-2"><i class="fa fa-check"></i><b>16.3.3</b> Redesign</a></li>
+<li class="chapter" data-level="16.3.4" data-path="p3iv.html"><a href="p3iv.html#suggested-readings"><i class="fa fa-check"></i><b>16.3.4</b> Suggested readings</a></li>
+<li class="chapter" data-level="16.3.5" data-path="p3iv.html"><a href="p3iv.html#example-12"><i class="fa fa-check"></i><b>16.3.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="difference-in-differences.html"><a href="difference-in-differences.html"><i class="fa fa-check"></i><b>16.4</b> Difference-in-differences</a><ul>
+<li class="chapter" data-level="16.4.1" data-path="difference-in-differences.html"><a href="difference-in-differences.html#declaration-12"><i class="fa fa-check"></i><b>16.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.4.2" data-path="difference-in-differences.html"><a href="difference-in-differences.html#dag-10"><i class="fa fa-check"></i><b>16.4.2</b> Dag</a></li>
+<li class="chapter" data-level="16.4.3" data-path="difference-in-differences.html"><a href="difference-in-differences.html#example-13"><i class="fa fa-check"></i><b>16.4.3</b> Example</a></li>
+<li class="chapter" data-level="16.4.4" data-path="difference-in-differences.html"><a href="difference-in-differences.html#two-period-two-group-setting"><i class="fa fa-check"></i><b>16.4.4</b> Two-period two-group setting</a></li>
+<li class="chapter" data-level="16.4.5" data-path="difference-in-differences.html"><a href="difference-in-differences.html#parallel-trends-assumption"><i class="fa fa-check"></i><b>16.4.5</b> Parallel trends assumption</a></li>
+<li class="chapter" data-level="16.4.6" data-path="difference-in-differences.html"><a href="difference-in-differences.html#multi-period-design"><i class="fa fa-check"></i><b>16.4.6</b> Multi-period design</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="RDD.html"><a href="RDD.html"><i class="fa fa-check"></i><b>16.5</b> Regression Discontinuity</a><ul>
+<li class="chapter" data-level="16.5.1" data-path="RDD.html"><a href="RDD.html#declaration-13"><i class="fa fa-check"></i><b>16.5.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.5.2" data-path="RDD.html"><a href="RDD.html#dag-11"><i class="fa fa-check"></i><b>16.5.2</b> Dag</a></li>
+<li class="chapter" data-level="16.5.3" data-path="RDD.html"><a href="RDD.html#example-14"><i class="fa fa-check"></i><b>16.5.3</b> Example</a></li>
+<li class="chapter" data-level="16.5.4" data-path="RDD.html"><a href="RDD.html#design-declaration-3"><i class="fa fa-check"></i><b>16.5.4</b> Design Declaration</a></li>
+<li class="chapter" data-level="16.5.5" data-path="RDD.html"><a href="RDD.html#takeaways-3"><i class="fa fa-check"></i><b>16.5.5</b> Takeaways</a></li>
+<li class="chapter" data-level="16.5.6" data-path="RDD.html"><a href="RDD.html#further-reading-7"><i class="fa fa-check"></i><b>16.5.6</b> Further Reading</a></li>
+<li class="chapter" data-level="16.5.7" data-path="RDD.html"><a href="RDD.html#exercises-3"><i class="fa fa-check"></i><b>16.5.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html"><i class="fa fa-check"></i><b>16.6</b> Bayesian process-tracing</a><ul>
+<li class="chapter" data-level="16.6.1" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#declaration-14"><i class="fa fa-check"></i><b>16.6.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.6.2" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#dag-12"><i class="fa fa-check"></i><b>16.6.2</b> Dag</a></li>
+<li class="chapter" data-level="16.6.3" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#exercises-4"><i class="fa fa-check"></i><b>16.6.3</b> Exercises</a></li>
+<li class="chapter" data-level="16.6.4" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#online-appendix-applied-example"><i class="fa fa-check"></i><b>16.6.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="16.6.5" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#dag-13"><i class="fa fa-check"></i><b>16.6.5</b> Dag</a></li>
+</ul></li>
+<li class="chapter" data-level="16.7" data-path="synthetic-controls.html"><a href="synthetic-controls.html"><i class="fa fa-check"></i><b>16.7</b> Synthetic controls</a><ul>
+<li class="chapter" data-level="16.7.1" data-path="synthetic-controls.html"><a href="synthetic-controls.html#declaration-15"><i class="fa fa-check"></i><b>16.7.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.7.2" data-path="synthetic-controls.html"><a href="synthetic-controls.html#dag-14"><i class="fa fa-check"></i><b>16.7.2</b> Dag</a></li>
+<li class="chapter" data-level="16.7.3" data-path="synthetic-controls.html"><a href="synthetic-controls.html#example-15"><i class="fa fa-check"></i><b>16.7.3</b> Example</a></li>
+<li class="chapter" data-level="16.7.4" data-path="synthetic-controls.html"><a href="synthetic-controls.html#when-there-are-not-good-controls-standard-synth-will-get-the-wrong-answer"><i class="fa fa-check"></i><b>16.7.4</b> When there are not good controls, standard synth will get the wrong answer</a></li>
+<li class="chapter" data-level="16.7.5" data-path="synthetic-controls.html"><a href="synthetic-controls.html#references-1"><i class="fa fa-check"></i><b>16.7.5</b> References</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="experimental-designs-for-causal-inference.html"><a href="experimental-designs-for-causal-inference.html"><i class="fa fa-check"></i><b>17</b> Experimental designs for causal inference</a><ul>
+<li class="chapter" data-level="17.1" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html"><i class="fa fa-check"></i><b>17.1</b> Two arm trials</a><ul>
+<li class="chapter" data-level="17.1.1" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#declaration-16"><i class="fa fa-check"></i><b>17.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.1.2" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#dag-15"><i class="fa fa-check"></i><b>17.1.2</b> Dag</a></li>
+<li class="chapter" data-level="17.1.3" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#example-16"><i class="fa fa-check"></i><b>17.1.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="blocked-trials.html"><a href="blocked-trials.html"><i class="fa fa-check"></i><b>17.2</b> Blocked trials</a><ul>
+<li class="chapter" data-level="17.2.1" data-path="blocked-trials.html"><a href="blocked-trials.html#declaration-17"><i class="fa fa-check"></i><b>17.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.2.2" data-path="blocked-trials.html"><a href="blocked-trials.html#dag-16"><i class="fa fa-check"></i><b>17.2.2</b> Dag</a></li>
+<li class="chapter" data-level="17.2.3" data-path="blocked-trials.html"><a href="blocked-trials.html#example-17"><i class="fa fa-check"></i><b>17.2.3</b> Example</a></li>
+<li class="chapter" data-level="17.2.4" data-path="blocked-trials.html"><a href="blocked-trials.html#two-arm-trials-and-designs-with-blocking-and-clustering"><i class="fa fa-check"></i><b>17.2.4</b> Two-arm trials and designs with blocking and clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="multiarm-designs.html"><a href="multiarm-designs.html"><i class="fa fa-check"></i><b>17.3</b> Multiarm Designs</a><ul>
+<li class="chapter" data-level="17.3.1" data-path="multiarm-designs.html"><a href="multiarm-designs.html#declaration-18"><i class="fa fa-check"></i><b>17.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.3.2" data-path="multiarm-designs.html"><a href="multiarm-designs.html#dag-17"><i class="fa fa-check"></i><b>17.3.2</b> Dag</a></li>
+<li class="chapter" data-level="17.3.3" data-path="multiarm-designs.html"><a href="multiarm-designs.html#example-18"><i class="fa fa-check"></i><b>17.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="encouragement-designs.html"><a href="encouragement-designs.html"><i class="fa fa-check"></i><b>17.4</b> Encouragement designs</a><ul>
+<li class="chapter" data-level="17.4.1" data-path="encouragement-designs.html"><a href="encouragement-designs.html#declaration-19"><i class="fa fa-check"></i><b>17.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.4.2" data-path="encouragement-designs.html"><a href="encouragement-designs.html#dag-18"><i class="fa fa-check"></i><b>17.4.2</b> Dag</a></li>
+<li class="chapter" data-level="17.4.3" data-path="encouragement-designs.html"><a href="encouragement-designs.html#example-19"><i class="fa fa-check"></i><b>17.4.3</b> Example</a></li>
+<li class="chapter" data-level="17.4.4" data-path="encouragement-designs.html"><a href="encouragement-designs.html#references-2"><i class="fa fa-check"></i><b>17.4.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html"><i class="fa fa-check"></i><b>17.5</b> Stepped wedge designs</a><ul>
+<li class="chapter" data-level="17.5.1" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#declaration-20"><i class="fa fa-check"></i><b>17.5.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.5.2" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#dag-19"><i class="fa fa-check"></i><b>17.5.2</b> Dag</a></li>
+<li class="chapter" data-level="17.5.3" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#exercises-5"><i class="fa fa-check"></i><b>17.5.3</b> Exercises</a></li>
+<li class="chapter" data-level="17.5.4" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#online-appendix-applied-example-1"><i class="fa fa-check"></i><b>17.5.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="17.5.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#references-3"><i class="fa fa-check"></i><b>17.5.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17.6" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html"><i class="fa fa-check"></i><b>17.6</b> Randomized Saturation Design</a><ul>
+<li class="chapter" data-level="17.6.1" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#declaration-21"><i class="fa fa-check"></i><b>17.6.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.6.2" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#dag-20"><i class="fa fa-check"></i><b>17.6.2</b> Dag</a></li>
+<li class="chapter" data-level="17.6.3" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#exercises-6"><i class="fa fa-check"></i><b>17.6.3</b> Exercises</a></li>
+<li class="chapter" data-level="17.6.4" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#online-appendix-applied-example-2"><i class="fa fa-check"></i><b>17.6.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="17.6.5" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#design-declaration-4"><i class="fa fa-check"></i><b>17.6.5</b> Design Declaration</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="multi-study-designs.html"><a href="multi-study-designs.html"><i class="fa fa-check"></i><b>18</b> Multi-study designs</a><ul>
+<li class="chapter" data-level="18.1" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html"><i class="fa fa-check"></i><b>18.1</b> Papers with multiple studies</a><ul>
+<li class="chapter" data-level="18.1.1" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#design-declaration-5"><i class="fa fa-check"></i><b>18.1.1</b> Design Declaration</a></li>
+<li class="chapter" data-level="18.1.2" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#dag-21"><i class="fa fa-check"></i><b>18.1.2</b> DAG</a></li>
+<li class="chapter" data-level="18.1.3" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#takeaways-4"><i class="fa fa-check"></i><b>18.1.3</b> Takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="18.2" data-path="multi-site-studies.html"><a href="multi-site-studies.html"><i class="fa fa-check"></i><b>18.2</b> Multi-site studies</a></li>
+<li class="chapter" data-level="18.3" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html"><i class="fa fa-check"></i><b>18.3</b> The Metaketa design</a><ul>
+<li class="chapter" data-level="18.3.1" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#unbiased-estimates-of-out-of-sample-sites-in-presence-of-heterogeneous-effects"><i class="fa fa-check"></i><b>18.3.1</b> Unbiased estimates of out-of-sample sites in presence of heterogeneous effects</a></li>
+<li class="chapter" data-level="18.3.2" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#bayesian-estimation-can-improve-estimates-of-effects-for-sampled-sites"><i class="fa fa-check"></i><b>18.3.2</b> Bayesian estimation can improve estimates of effects for sampled sites</a></li>
+<li class="chapter" data-level="18.3.3" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#when-things-break-down-confounded-sampling"><i class="fa fa-check"></i><b>18.3.3</b> when things break down: confounded sampling</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="part-iii-exercises.html"><a href="part-iii-exercises.html"><i class="fa fa-check"></i><b>19</b> Part III Exercises</a></li>
+<li class="part"><span><b>IV Research Design Lifecycle</b></span></li>
+<li class="chapter" data-level="20" data-path="research-design-lifecycle.html"><a href="research-design-lifecycle.html"><i class="fa fa-check"></i><b>20</b> Research Design Lifecycle</a><ul>
+<li class="chapter" data-level="20.1" data-path="p4planning.html"><a href="p4planning.html"><i class="fa fa-check"></i><b>20.1</b> Planning</a><ul>
+<li class="chapter" data-level="20.1.1" data-path="p4planning.html"><a href="p4planning.html#example-20"><i class="fa fa-check"></i><b>20.1.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.2" data-path="ethical-review.html"><a href="ethical-review.html"><i class="fa fa-check"></i><b>20.2</b> Ethical Review</a><ul>
+<li class="chapter" data-level="20.2.1" data-path="ethical-review.html"><a href="ethical-review.html#ethical-principles-as-diagnosands"><i class="fa fa-check"></i><b>20.2.1</b> Ethical principles as diagnosands</a></li>
+</ul></li>
+<li class="chapter" data-level="20.3" data-path="partners.html"><a href="partners.html"><i class="fa fa-check"></i><b>20.3</b> Partners</a></li>
+<li class="chapter" data-level="20.4" data-path="funding.html"><a href="funding.html"><i class="fa fa-check"></i><b>20.4</b> Funding</a></li>
+<li class="chapter" data-level="20.5" data-path="p4piloting.html"><a href="p4piloting.html"><i class="fa fa-check"></i><b>20.5</b> Piloting</a></li>
+<li class="chapter" data-level="20.6" data-path="implementation.html"><a href="implementation.html"><i class="fa fa-check"></i><b>20.6</b> Implementation</a></li>
+<li class="chapter" data-level="20.7" data-path="p4populatedpap.html"><a href="p4populatedpap.html"><i class="fa fa-check"></i><b>20.7</b> Populated Preanalysis Plan</a><ul>
+<li class="chapter" data-level="20.7.1" data-path="p4populatedpap.html"><a href="p4populatedpap.html#example-21"><i class="fa fa-check"></i><b>20.7.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.8" data-path="reconciliation.html"><a href="reconciliation.html"><i class="fa fa-check"></i><b>20.8</b> Reconciliation</a><ul>
+<li class="chapter" data-level="20.8.1" data-path="reconciliation.html"><a href="reconciliation.html#example-22"><i class="fa fa-check"></i><b>20.8.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.9" data-path="writing.html"><a href="writing.html"><i class="fa fa-check"></i><b>20.9</b> Writing</a></li>
+<li class="chapter" data-level="20.10" data-path="publication.html"><a href="publication.html"><i class="fa fa-check"></i><b>20.10</b> Publication</a><ul>
+<li class="chapter" data-level="20.10.1" data-path="publication.html"><a href="publication.html#reviewing-papers"><i class="fa fa-check"></i><b>20.10.1</b> Reviewing papers</a></li>
+<li class="chapter" data-level="20.10.2" data-path="publication.html"><a href="publication.html#responding-to-reviewers"><i class="fa fa-check"></i><b>20.10.2</b> Responding to reviewers</a></li>
+</ul></li>
+<li class="chapter" data-level="20.11" data-path="archiving.html"><a href="archiving.html"><i class="fa fa-check"></i><b>20.11</b> Archiving</a></li>
+<li class="chapter" data-level="20.12" data-path="reanalysis.html"><a href="reanalysis.html"><i class="fa fa-check"></i><b>20.12</b> Reanalysis</a></li>
+<li class="chapter" data-level="20.13" data-path="replication.html"><a href="replication.html"><i class="fa fa-check"></i><b>20.13</b> Replication</a></li>
+<li class="chapter" data-level="20.14" data-path="resolving-disputes.html"><a href="resolving-disputes.html"><i class="fa fa-check"></i><b>20.14</b> Resolving Disputes</a></li>
+<li class="chapter" data-level="20.15" data-path="synthesis.html"><a href="synthesis.html"><i class="fa fa-check"></i><b>20.15</b> Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="part-iv-exercises.html"><a href="part-iv-exercises.html"><i class="fa fa-check"></i><b>21</b> Part IV Exercises</a></li>
+<li class="chapter" data-level="22" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>22</b> Glossary</a></li>
+<li class="chapter" data-level="" data-path="references-4.html"><a href="references-4.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://declaredesign.org" target="blank">DeclareDesign</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Research Design: Declare, Diagnose, Redesign</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bayesianprocesstracing" class="section level2">
+<h2><span class="header-section-number">16.6</span> Bayesian process-tracing</h2>
+<p>Process-tracing is a qualitative method that uses evidence from in-depth interviews and written records to test causal theories. Process-tracing designs often focus on “causes-of-effects” inquiries (e.g., did the presence of a strong middle class cause a revolution?), rather than on “effects-of-causes” inquiries (e.g., what is the average effect of a strong middle class on the probability of a revolution happening?) <span class="citation">Goertz and Mahoney (<a href="#ref-goertz2012tale" role="doc-biblioref">2012</a>)</span>.</p>
+<p>Causes-of-effects inquiries imply a hypothesis – “the strong middle class caused the revolution,” say. One widely-promoted answer strategy suggests evaluating whether such hypotheses are correct given the presence or absence of different “clues” found in the archives or interviews [<span class="citation">Collier, Brady, and Seawright (<a href="#ref-collier2004sources" role="doc-biblioref">2004</a>)</span>; <span class="citation">Mahoney (<a href="#ref-Mahony:Logic:2012" role="doc-biblioref">2012</a>)</span>; <span class="citation">Bennett and Checkel (<a href="#ref-bennett2014process" role="doc-biblioref">2015</a>)</span>; fairfield2013going]. <span class="citation">Van Evera (<a href="#ref-VanEvera1997" role="doc-biblioref">1997</a>)</span> categorizes different kinds of clues according to whether one would only believe the hypothesis if one observed the clue (necessity) and whether observing the clue would suffice to infer the hypothesis was correct (sufficiency).<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a></p>
+<p>Of course, it is rare to have such certainty—we typically attach varying degrees of belief to statements of truth. Bayesian process-tracing uses probability theory to form a posterior belief about a hypothesis, given our <em>beliefs</em> about whether we would observe different pieces of evidence if we are right or wrong~. Extending <span class="citation">Van Evera (<a href="#ref-VanEvera1997" role="doc-biblioref">1997</a>)</span>, “hoop tests”" are clues that are nearly certain to be seen if the hypothesis is true, but likely either way, “smoking-guns” are unlikely to be seen in general but are extremely unlikely if a hypothesis is false, “straws-in-the-wind” are more likely when the hypothesis is true but still somewhat likely when it is not, and ``doubly-decisive’’ clues are very likely to be seen if a hypothesis is true and very unlikely if it is false.</p>
+<div id="declaration-14" class="section level3">
+<h3><span class="header-section-number">16.6.1</span> Declaration</h3>
+<ul>
+<li><p><span class="math inline">\(M\)</span> <em>Model</em>: We posit a population of 195 cases, each of which does or does not exhibit the presence of an outcome, <span class="math inline">\(Y \in \{0,1\}\)</span>. For the sake of illustration, we will suppose that <span class="math inline">\(Y\)</span> represents the presence or absence of a civil war. Each case also exhibits the presence or absence of a potential cause, <span class="math inline">\(Z \in \{0,1\}\)</span>. For example, we might suppose that <span class="math inline">\(Z\)</span> represents the presence or absence of natural resources. At random, 30% of the cases get <span class="math inline">\(Z=1\)</span>. We also assume researchers observe a clue, <span class="math inline">\(C\)</span>, that is informative for whether <span class="math inline">\(Z\)</span> does or does not have a causal relationship with <span class="math inline">\(Y\)</span>.</p>
+<p>The potential outcomes of <span class="math inline">\(Y\)</span> depend both on whether the cause, <span class="math inline">\(Z\)</span>, is present in a case and what “type” of causal relation the case exhibits. Conceptually, there are exactly four distinct types of causal relations. First, the presence of <span class="math inline">\(Z\)</span> might cause <span class="math inline">\(Y\)</span>: if <span class="math inline">\(Z = 0\)</span>, then <span class="math inline">\(Y = 0\)</span> and if <span class="math inline">\(Z = 1\)</span> then <span class="math inline">\(Y = 1\)</span>. In other words, civil wars happen in such cases <em>because</em> the country has natural resources. Second, the absence of <span class="math inline">\(Z\)</span> might cause <span class="math inline">\(Y\)</span>: if <span class="math inline">\(Z = 0\)</span> then <span class="math inline">\(Y = 1\)</span> and if <span class="math inline">\(Z = 1\)</span> then <span class="math inline">\(Y = 0\)</span>. In such cases, civil war breaks out <em>because</em> the country does not have natural resources, and would not break out if the country had natural resources. Finally, <span class="math inline">\(Y\)</span> might be present irrespective of <span class="math inline">\(Z\)</span> or <span class="math inline">\(Y\)</span> might be absent irrespective of <span class="math inline">\(Z\)</span>. Continuing our analogy, such countries would have had civil war or peace, irrespective of whether they also had natural resources (i.e., because war is related to some other causal process). We specify a model in which civil war is governed by causal pathway 1 (<span class="math inline">\(Z\)</span> causes <span class="math inline">\(Y\)</span>) in roughly 20% of cases, by pathway 2 (<span class="math inline">\(\neg Z\)</span> causes <span class="math inline">\(Y\)</span>) in only 10% of cases, by pathway 3 (<span class="math inline">\(Y\)</span> irrespective of <span class="math inline">\(z\)</span>) in 20% of countries, and by pathway 4 (<span class="math inline">\(\neg Y\)</span> irrespective of <span class="math inline">\(Z\)</span>) in half of all countries.</p>
+<p>There are also potential outcomes for the clue, <span class="math inline">\(C\)</span>. These depend on the case’s causal type. Specifically, the clue appears with .25 probability if the case is one in which <span class="math inline">\(Z\)</span> causes <span class="math inline">\(Y\)</span>, and with probability .005 if it is one where <span class="math inline">\(Y\)</span> occurs regardless. The clue does not appear in the other types of cases. Crucially, while the outcome, cause, and clue are observable to the researcher, the type is not.</p></li>
+<li><p><span class="math inline">\(I\)</span> <em>Inquiry</em>: We wish to know the answer to a sample-specific “cause of effects” question: given the specific case we sampled, what is the probability that <span class="math inline">\(Z\)</span> caused <span class="math inline">\(Y\)</span>? More formally, we want to know <span class="math inline">\(\Pr(Y_i(Z_i=0)=0| Z_i=1, Y_i(Z_i=1)=1)\)</span>—that is, what are the chances that <span class="math inline">\(Y\)</span> would have been 0 if <span class="math inline">\(Z\)</span> were 0 for a unit <span class="math inline">\(i\)</span> for which <span class="math inline">\(Z\)</span> was 1 and <span class="math inline">\(Y\)</span> was 1. This is equivalent to asking the probability that the case is of type 1. The inquiry thus takes the value 0 or 1 depending on the type of case.</p></li>
+<li><p><span class="math inline">\(D\)</span> <em>Data Strategy</em>: The fundamental problem that the researcher faces is that of observational equivalence: different causal types can cause the same data patterns. The issue is mitigated by following a controversial sampling strategy: selecting on <span class="math inline">\(Y\)</span>. By selecting at random one case in which both <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are present, the researcher can narrow her uncertainty to two candidate types: the second and fourth causal types are incapable of producing the data <span class="math inline">\(Z = 1, Y = 1\)</span>. It cannot be that natural resources were the cause of peace (type 2), or that peace would have happened irrespective of natural resources (type 4), in a country that had a civil war and natural resources.</p></li>
+<li><p><span class="math inline">\(A\)</span> <em>Answer Strategy</em>: The researcher uses Bayes’ rule to update about the probability that <span class="math inline">\(Z\)</span> caused <span class="math inline">\(Y\)</span> given <span class="math inline">\(C\)</span>.</p></li>
+</ul>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="bayesianprocesstracing.html#cb113-1"></a>types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Z_caused_Y&#39;</span>, <span class="st">&#39;Z_caused_not_Y&#39;</span>, <span class="st">&#39;always_Y&#39;</span>, <span class="st">&#39;always_not_Y&#39;</span>)</span>
+<span id="cb113-2"><a href="bayesianprocesstracing.html#cb113-2"></a></span>
+<span id="cb113-3"><a href="bayesianprocesstracing.html#cb113-3"></a>design &lt;-</span>
+<span id="cb113-4"><a href="bayesianprocesstracing.html#cb113-4"></a><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">195</span>,</span>
+<span id="cb113-5"><a href="bayesianprocesstracing.html#cb113-5"></a>                     <span class="dt">Z =</span> <span class="kw">draw_binary</span>(<span class="dt">prob =</span> <span class="fl">.3</span>, <span class="dt">N =</span> N),</span>
+<span id="cb113-6"><a href="bayesianprocesstracing.html#cb113-6"></a>                     <span class="dt">type =</span> <span class="kw">sample</span>(<span class="dt">x =</span> types, <span class="dt">size =</span> N, </span>
+<span id="cb113-7"><a href="bayesianprocesstracing.html#cb113-7"></a>                                   <span class="dt">replace =</span> <span class="ot">TRUE</span>, <span class="dt">prob =</span> <span class="kw">c</span>(.<span class="dv">2</span>, <span class="fl">.1</span>, <span class="fl">.2</span>, <span class="fl">.5</span>)))  <span class="op">+</span></span>
+<span id="cb113-8"><a href="bayesianprocesstracing.html#cb113-8"></a><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb113-9"><a href="bayesianprocesstracing.html#cb113-9"></a>    Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_not_Y&quot;</span>) <span class="op">+</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>),</span>
+<span id="cb113-10"><a href="bayesianprocesstracing.html#cb113-10"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb113-11"><a href="bayesianprocesstracing.html#cb113-11"></a><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb113-12"><a href="bayesianprocesstracing.html#cb113-12"></a>    pr_C_<span class="dv">1</span> <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>(.<span class="dv">25</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="fl">.005</span> <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>)),</span>
+<span id="cb113-13"><a href="bayesianprocesstracing.html#cb113-13"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb113-14"><a href="bayesianprocesstracing.html#cb113-14"></a><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="kw">c</span>(Y, pr_C_<span class="dv">1</span>), <span class="kw">c</span>(Z, type)) <span class="op">+</span></span>
+<span id="cb113-15"><a href="bayesianprocesstracing.html#cb113-15"></a><span class="st">  </span><span class="kw">declare_measurement</span>(<span class="dt">C =</span> <span class="kw">draw_binary</span>(<span class="dt">prob =</span> pr_C_<span class="dv">1</span>)) <span class="op">+</span></span>
+<span id="cb113-16"><a href="bayesianprocesstracing.html#cb113-16"></a><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">handler =</span> <span class="cf">function</span>(data) data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Z<span class="op">==</span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>Y<span class="op">==</span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sample_n</span>(<span class="dt">size =</span> <span class="dv">1</span>)) <span class="op">+</span></span>
+<span id="cb113-17"><a href="bayesianprocesstracing.html#cb113-17"></a><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">did_Z_cause_Y =</span> type <span class="op">==</span><span class="st"> &#39;Z_caused_Y&#39;</span>) <span class="op">+</span></span>
+<span id="cb113-18"><a href="bayesianprocesstracing.html#cb113-18"></a><span class="st">  </span><span class="kw">declare_estimator</span>(</span>
+<span id="cb113-19"><a href="bayesianprocesstracing.html#cb113-19"></a>    <span class="dt">pr_type_Z_caused_Y =</span> <span class="fl">.5</span>,</span>
+<span id="cb113-20"><a href="bayesianprocesstracing.html#cb113-20"></a>    <span class="dt">pr_C_1_type_Z_caused_Y =</span> <span class="fl">.25</span>,</span>
+<span id="cb113-21"><a href="bayesianprocesstracing.html#cb113-21"></a>    <span class="dt">pr_C_1_type_always_Y =</span> <span class="fl">.005</span>,</span>
+<span id="cb113-22"><a href="bayesianprocesstracing.html#cb113-22"></a>    <span class="dt">pr_C_type_Z_caused_Y =</span> C <span class="op">*</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>C) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_Z_caused_Y),</span>
+<span id="cb113-23"><a href="bayesianprocesstracing.html#cb113-23"></a>    <span class="dt">pr_C_type_always_Y =</span> C <span class="op">*</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_always_Y <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>C) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_always_Y),</span>
+<span id="cb113-24"><a href="bayesianprocesstracing.html#cb113-24"></a>    <span class="dt">posterior =</span></span>
+<span id="cb113-25"><a href="bayesianprocesstracing.html#cb113-25"></a>      pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">/</span><span class="st"> </span>(pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>pr_C_type_always_Y <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_type_Z_caused_Y)),</span>
+<span id="cb113-26"><a href="bayesianprocesstracing.html#cb113-26"></a>    <span class="dt">estimator_label =</span> <span class="st">&quot;Smoking Gun&quot;</span>,</span>
+<span id="cb113-27"><a href="bayesianprocesstracing.html#cb113-27"></a>    <span class="dt">estimand_label =</span> <span class="st">&quot;did_Z_cause_Y&quot;</span>,</span>
+<span id="cb113-28"><a href="bayesianprocesstracing.html#cb113-28"></a>    <span class="dt">handler =</span> summarize) </span></code></pre></div>
+</div>
+<div id="dag-12" class="section level3">
+<h3><span class="header-section-number">16.6.2</span> Dag</h3>
+<p><img src="book_files/figure-html/unnamed-chunk-289-1.png" width="100%" /></p>
+<!-- **Comment for JC**: a really like most of this set up. My own thinking though has changed a fair bit on this stuff however and think now it is more coherent to have a model such as `X -> Y <- C` where the position in the model is what gives C explanatory power. Plus with teh CausalQueries package it is really easy to set this up in a natural way and connect with DD. Doing like this would be not just conceptually better (I think) but a lot more flexible for the user. I'd be happy to do the work, think most of the text would remain as is but the example and some questions etc would change. What do you think? -->
+<!-- I think this is a question for Graeme, too, as we worked on this together and got it to a place we were pretty happy with. But I'd certainly be open to changing to something simpler and more accessible. If it's more complicated in spirit, then maybe it should go in the more detailed version below? -->
+</div>
+<div id="exercises-4" class="section level3">
+<h3><span class="header-section-number">16.6.3</span> Exercises</h3>
+<ol style="list-style-type: decimal">
+<li><p>Inspect the DAG. How would removing the arrow pointing from type to C affect the inferences a researcher could draw?</p></li>
+<li><p>Run <code>draw_data(design)</code>.</p>
+<ol style="list-style-type: lower-roman">
+<li><p>Interpret the value of the <code>type</code> variable.</p></li>
+<li><p>Look at the values of Z and Y. Explain which types could produce these values and why.</p></li>
+<li><p>The variable <code>pr_C_1_Z_1_type_Z_caused_Y</code> indicates “The potential outcome of the clue probability, given the case is the type in which Z causes Y,” while <code>pr_C_1_Z_1_type_always_Y</code> gives the corresponding potential outcome for cases whose causal type is one in which Y always happens regardless of Z. Why do these potential outcomes make the clue a smoking gun?</p></li>
+<li><p>Explain why the potential outcome <code>Y_Z_0_type_always_Y</code> takes the value 1 whereas the potential outcome <code>Y_Z_0_type_Z_caused_Y</code> takes the value 0.</p></li>
+</ol></li>
+<li><p>Using the code below, diagnose the <code>design</code> and interpret the diagnosands.</p></li>
+</ol>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="bayesianprocesstracing.html#cb114-1"></a><span class="kw">diagnose_design</span>(design,</span>
+<span id="cb114-2"><a href="bayesianprocesstracing.html#cb114-2"></a>                <span class="dt">diagnosands =</span> <span class="kw">declare_diagnosands</span>(</span>
+<span id="cb114-3"><a href="bayesianprocesstracing.html#cb114-3"></a>                  <span class="dt">bias =</span> <span class="kw">mean</span>(posterior <span class="op">-</span><span class="st"> </span>estimand),</span>
+<span id="cb114-4"><a href="bayesianprocesstracing.html#cb114-4"></a>                  <span class="dt">rmse =</span> <span class="kw">sqrt</span>(<span class="kw">mean</span>((posterior <span class="op">-</span><span class="st"> </span>estimand) <span class="op">^</span><span class="st"> </span><span class="dv">2</span>)),</span>
+<span id="cb114-5"><a href="bayesianprocesstracing.html#cb114-5"></a>                  <span class="dt">mean_estimand =</span> <span class="kw">mean</span>(estimand),</span>
+<span id="cb114-6"><a href="bayesianprocesstracing.html#cb114-6"></a>                  <span class="dt">mean_posterior =</span> <span class="kw">mean</span>(posterior),</span>
+<span id="cb114-7"><a href="bayesianprocesstracing.html#cb114-7"></a>                  <span class="dt">keep_defaults =</span> <span class="ot">FALSE</span>), </span>
+<span id="cb114-8"><a href="bayesianprocesstracing.html#cb114-8"></a>                <span class="dt">sims =</span> <span class="dv">1000</span>)</span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Look at the estimator declaration.</p>
+<ol style="list-style-type: lower-roman">
+<li><p>What prior beliefs do <code>pr_C_1_type_Z_caused_Y</code> and <code>pr_C_1_type_always_Y</code> represent?</p></li>
+<li><p>How would setting these beliefs to the same value affect the design, and why?</p></li>
+<li><p>What is the implication for clue selection in Bayesian Process Tracing designs?</p></li>
+</ol></li>
+<li><p>Declare a <code>new_design</code> in which you modify the prior belief that the case belongs to the first causal type by changing <code>pr_type_Z_caused_Y</code> to a different value (say, .7).</p>
+<ol style="list-style-type: lower-roman">
+<li><p>Diagnose <code>new_design</code>. How does the bias parameter change, and why?</p></li>
+<li><p>Keeping the modification you just made, modify the code for <code>new_design</code> further so that the clue potential outcomes function is <code>pr_C_1 ~ Z * (.9999 * (type == "Z_caused_Y") + .0001 * (type == "always_Y"</code> and the clue priors are <code>pr_C_1_type_Z_caused_Y = .9999</code> and <code>pr_C_1_type_always_Y = .0001</code>. What kind of clue does the researcher have now?</p></li>
+<li><p>Diagnose <code>new_design</code>. Why do these changes to the clue reduce bias?</p></li>
+</ol></li>
+</ol>
+</div>
+<div id="online-appendix-applied-example" class="section level3">
+<h3><span class="header-section-number">16.6.4</span> Online Appendix Applied Example</h3>
+<ul>
+<li><p>Point here is to explore cases where you look at multiple sources of
+evidence</p></li>
+<li><p>In many parts of the world, people rely on non-state institutions to construct social order. Sometimes, those institutions persist for a long time [e.g., mourides], whereas sometimes they break down. Why do non-state institutions fail? Some scholars of African societies think that traditional institutions declined in the 1960s and 1970s due to the forceful efforts of post-independence leaders who saw these alternative authorities as a threat to the young state. Other scholars such as <span class="citation">Ensminger (<a href="#ref-ensminger1990" role="doc-biblioref">1990</a>)</span> point instead to the internal political economy of rural societies, and emphasize the role of economic interests in the decline of traditional institutions.</p></li>
+<li><p><span class="citation">Ensminger (<a href="#ref-ensminger1990" role="doc-biblioref">1990</a>)</span> is an economic anthropologist who does a bunch of cool work with the Orma in Kenya, a nomadic pastoralist group. She points out that, whereas the Orma were able to avoid a tragedy of the commons by policing access to scarce water resources by competing somali pastoralists throughout the 1960s and 1970s, by the 1980s the power of the council of elders was weakened, as evidenced by frequent defection of individual orma who sold their water to somalis, thus hurting the interests of the group.</p></li>
+<li><p>Her study presents a case of causal process tracing in which the scholar presents evidence from rich fieldwork to support the inference that some effect was produced by a specific cause. It is useful to formalize as it provides lessons about what kinds of clues qualitative researchers might seek in order to maximize the probative value of their answer strategy.</p></li>
+<li><p>The key pieces are the outcome (breakdown of council of elders – measured through defections by orma selling their water to somalis), its potential cause (economic diversification – measured as a move away from cattle-based pastoralism towards sendentary economic activity – teaching, shops – by some Orma), and the pieces of evidence or “clues” that support the notion that the relationship between the outcome and the cause is causal.</p></li>
+<li><p>We set up an imaginary study inspired by <span class="citation">Ensminger (<a href="#ref-ensminger1990" role="doc-biblioref">1990</a>)</span></p></li>
+<li><p>The researcher seeks to test the claim that economic diversification leads to the breakdown of informal institutions. They look for a group in Kenya that has experienced diversification and whose institutions of managing the commons have failed. [think of cool empirical implications]. They want to test this claim against the idea that informal institutions failed due to a deliberate attempt by state authorities to supplant traditional leaders.</p></li>
+<li><p>Their answer strategy diverges from the one in the book insofar as they seek not one but two clues to test their prior explanation.</p></li>
+<li><p>This time the researcher needs to think not only about the typology of their clues in terms of Van Evera stuff, but also the joint probability distribution of the clues.</p></li>
+<li><p>We make use of the <code>joint_prob</code> function from the book R package, which calculates the joint probability distribution of two correlated events, given their marginal probabilities and correlation</p></li>
+<li><p>Researcher imposes monotonicity (no <code>Z_caused_not_Y</code> types) – economic diversity either
+has no or a negative effect on institutions</p></li>
+<li><p>Note: no variation in outcome. All informal institutions have declined, we just want to
+know if economic diversification caused it. A quant study would provide no leverage.</p></li>
+<li><p>Note: joint probabilities of observing clues depend only on type, not (as before) on type and Z</p></li>
+</ul>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="bayesianprocesstracing.html#cb115-1"></a>types &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Z_caused_Y&#39;</span>, <span class="st">&#39;Z_caused_not_Y&#39;</span>, <span class="st">&#39;always_Y&#39;</span>, <span class="st">&#39;always_not_Y&#39;</span>)</span>
+<span id="cb115-2"><a href="bayesianprocesstracing.html#cb115-2"></a></span>
+<span id="cb115-3"><a href="bayesianprocesstracing.html#cb115-3"></a></span>
+<span id="cb115-4"><a href="bayesianprocesstracing.html#cb115-4"></a></span>
+<span id="cb115-5"><a href="bayesianprocesstracing.html#cb115-5"></a></span>
+<span id="cb115-6"><a href="bayesianprocesstracing.html#cb115-6"></a>design &lt;-</span>
+<span id="cb115-7"><a href="bayesianprocesstracing.html#cb115-7"></a><span class="st">  </span><span class="kw">declare_population</span>(<span class="dt">N =</span> <span class="dv">20</span>,</span>
+<span id="cb115-8"><a href="bayesianprocesstracing.html#cb115-8"></a>                     <span class="dt">Z =</span> <span class="kw">draw_binary</span>(<span class="dt">prob =</span> <span class="fl">.5</span>, <span class="dt">N =</span> N),</span>
+<span id="cb115-9"><a href="bayesianprocesstracing.html#cb115-9"></a>                     <span class="dt">type =</span> <span class="kw">sample</span>(<span class="dt">x =</span> types, <span class="dt">size =</span> N, <span class="dt">replace =</span> <span class="ot">TRUE</span>, <span class="dt">prob =</span> <span class="kw">c</span>(.<span class="dv">5</span>, <span class="dv">0</span>, <span class="fl">.5</span>, <span class="dv">0</span>)))  <span class="op">+</span></span>
+<span id="cb115-10"><a href="bayesianprocesstracing.html#cb115-10"></a><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb115-11"><a href="bayesianprocesstracing.html#cb115-11"></a>    Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Z) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_not_Y&quot;</span>) <span class="op">+</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>),</span>
+<span id="cb115-12"><a href="bayesianprocesstracing.html#cb115-12"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb115-13"><a href="bayesianprocesstracing.html#cb115-13"></a><span class="st">  </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb115-14"><a href="bayesianprocesstracing.html#cb115-14"></a>    pr_C1C2_<span class="dv">00</span> <span class="op">~</span><span class="st"> </span>(<span class="kw">joint_prob</span>(.<span class="dv">75</span>,.<span class="dv">3</span>,<span class="dv">0</span>,<span class="st">&quot;00&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">joint_prob</span>(.<span class="dv">25</span>,.<span class="dv">005</span>,<span class="dv">0</span>,<span class="st">&quot;00&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>)),</span>
+<span id="cb115-15"><a href="bayesianprocesstracing.html#cb115-15"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb115-16"><a href="bayesianprocesstracing.html#cb115-16"></a><span class="st">    </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb115-17"><a href="bayesianprocesstracing.html#cb115-17"></a>    pr_C1C2_<span class="dv">01</span> <span class="op">~</span><span class="st"> </span>(<span class="kw">joint_prob</span>(.<span class="dv">75</span>,.<span class="dv">3</span>,<span class="dv">0</span>,<span class="st">&quot;01&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">joint_prob</span>(.<span class="dv">25</span>,.<span class="dv">005</span>,<span class="dv">0</span>,<span class="st">&quot;01&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>)),</span>
+<span id="cb115-18"><a href="bayesianprocesstracing.html#cb115-18"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb115-19"><a href="bayesianprocesstracing.html#cb115-19"></a><span class="st">    </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb115-20"><a href="bayesianprocesstracing.html#cb115-20"></a>    pr_C1C2_<span class="dv">10</span> <span class="op">~</span><span class="st"> </span>(<span class="kw">joint_prob</span>(.<span class="dv">75</span>,.<span class="dv">3</span>,<span class="dv">0</span>,<span class="st">&quot;10&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">joint_prob</span>(.<span class="dv">25</span>,.<span class="dv">005</span>,<span class="dv">0</span>,<span class="st">&quot;10&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>)),</span>
+<span id="cb115-21"><a href="bayesianprocesstracing.html#cb115-21"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb115-22"><a href="bayesianprocesstracing.html#cb115-22"></a><span class="st">    </span><span class="kw">declare_potential_outcomes</span>(</span>
+<span id="cb115-23"><a href="bayesianprocesstracing.html#cb115-23"></a>    pr_C1C2_<span class="dv">11</span> <span class="op">~</span><span class="st"> </span>(<span class="kw">joint_prob</span>(.<span class="dv">75</span>,.<span class="dv">3</span>,<span class="dv">0</span>,<span class="st">&quot;11&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;Z_caused_Y&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">joint_prob</span>(.<span class="dv">25</span>,.<span class="dv">005</span>,<span class="dv">0</span>,<span class="st">&quot;11&quot;</span>) <span class="op">*</span><span class="st"> </span>(type <span class="op">==</span><span class="st"> &quot;always_Y&quot;</span>)),</span>
+<span id="cb115-24"><a href="bayesianprocesstracing.html#cb115-24"></a>    <span class="dt">conditions =</span> <span class="kw">list</span>(<span class="dt">Z =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">type =</span> types)) <span class="op">+</span></span>
+<span id="cb115-25"><a href="bayesianprocesstracing.html#cb115-25"></a><span class="st">  </span><span class="kw">declare_reveal</span>(<span class="kw">c</span>(Y, pr_C1C2_<span class="dv">00</span>,pr_C1C2_<span class="dv">01</span>,pr_C1C2_<span class="dv">10</span>,pr_C1C2_<span class="dv">11</span>), <span class="kw">c</span>(Z, type)) <span class="op">+</span></span>
+<span id="cb115-26"><a href="bayesianprocesstracing.html#cb115-26"></a><span class="st">  </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> ID, <span class="dt">block_prob_each =</span> <span class="kw">cbind</span>(pr_C1C2_<span class="dv">00</span>,pr_C1C2_<span class="dv">01</span>,pr_C1C2_<span class="dv">10</span>,pr_C1C2_<span class="dv">11</span>),</span>
+<span id="cb115-27"><a href="bayesianprocesstracing.html#cb115-27"></a>                     <span class="dt">conditions =</span> <span class="kw">c</span>(<span class="st">&quot;00&quot;</span>,<span class="st">&quot;01&quot;</span>,<span class="st">&quot;10&quot;</span>,<span class="st">&quot;11&quot;</span>), </span>
+<span id="cb115-28"><a href="bayesianprocesstracing.html#cb115-28"></a>                     <span class="dt">assignment_variable =</span> <span class="st">&quot;C1C2&quot;</span>) <span class="op">+</span><span class="st">  </span></span>
+<span id="cb115-29"><a href="bayesianprocesstracing.html#cb115-29"></a><span class="st">  </span><span class="kw">declare_sampling</span>(<span class="dt">handler =</span> <span class="cf">function</span>(data) data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Z<span class="op">==</span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>Y<span class="op">==</span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sample_n</span>(<span class="dt">size =</span> <span class="dv">1</span>)) <span class="op">+</span></span>
+<span id="cb115-30"><a href="bayesianprocesstracing.html#cb115-30"></a><span class="st">  </span><span class="kw">declare_estimand</span>(<span class="dt">did_Z_cause_Y =</span> type <span class="op">==</span><span class="st"> &#39;Z_caused_Y&#39;</span>) <span class="op">+</span></span>
+<span id="cb115-31"><a href="bayesianprocesstracing.html#cb115-31"></a><span class="st">  </span><span class="kw">declare_measurement</span>(</span>
+<span id="cb115-32"><a href="bayesianprocesstracing.html#cb115-32"></a>  <span class="dt">C1 =</span> <span class="kw">ifelse</span>(C1C2 <span class="op">==</span><span class="st"> &quot;10&quot;</span> <span class="op">|</span><span class="st"> </span>C1C2 <span class="op">==</span><span class="st"> &quot;11&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb115-33"><a href="bayesianprocesstracing.html#cb115-33"></a>  <span class="dt">C2 =</span> <span class="kw">ifelse</span>(C1C2 <span class="op">==</span><span class="st"> &quot;01&quot;</span> <span class="op">|</span><span class="st"> </span>C1C2 <span class="op">==</span><span class="st"> &quot;11&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb115-34"><a href="bayesianprocesstracing.html#cb115-34"></a>  <span class="dt">handler =</span> fabricate) <span class="op">+</span></span>
+<span id="cb115-35"><a href="bayesianprocesstracing.html#cb115-35"></a><span class="st">  </span><span class="kw">declare_estimator</span>(</span>
+<span id="cb115-36"><a href="bayesianprocesstracing.html#cb115-36"></a>    <span class="dt">pr_type_Z_caused_Y =</span> <span class="fl">.5</span>,</span>
+<span id="cb115-37"><a href="bayesianprocesstracing.html#cb115-37"></a>    <span class="dt">pr_C_1_type_Z_caused_Y =</span> <span class="fl">.75</span>,</span>
+<span id="cb115-38"><a href="bayesianprocesstracing.html#cb115-38"></a>    <span class="dt">pr_C_1_type_always_Y =</span> <span class="fl">.25</span>,</span>
+<span id="cb115-39"><a href="bayesianprocesstracing.html#cb115-39"></a>    <span class="dt">C =</span> C1,</span>
+<span id="cb115-40"><a href="bayesianprocesstracing.html#cb115-40"></a>    <span class="dt">pr_C_type_Z_caused_Y =</span> C <span class="op">*</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>C) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_Z_caused_Y),</span>
+<span id="cb115-41"><a href="bayesianprocesstracing.html#cb115-41"></a>    <span class="dt">pr_C_type_always_Y =</span> C <span class="op">*</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_always_Y <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>C) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_always_Y),</span>
+<span id="cb115-42"><a href="bayesianprocesstracing.html#cb115-42"></a>    <span class="dt">posterior =</span></span>
+<span id="cb115-43"><a href="bayesianprocesstracing.html#cb115-43"></a>      pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">/</span><span class="st"> </span>(pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>pr_C_type_always_Y <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_type_Z_caused_Y)),</span>
+<span id="cb115-44"><a href="bayesianprocesstracing.html#cb115-44"></a>    <span class="dt">label =</span> <span class="st">&quot;Straw in the Wind&quot;</span>,</span>
+<span id="cb115-45"><a href="bayesianprocesstracing.html#cb115-45"></a>    <span class="dt">estimand_label =</span> <span class="st">&quot;did_Z_cause_Y&quot;</span>,</span>
+<span id="cb115-46"><a href="bayesianprocesstracing.html#cb115-46"></a>    <span class="dt">handler =</span> summarize) <span class="op">+</span></span>
+<span id="cb115-47"><a href="bayesianprocesstracing.html#cb115-47"></a><span class="st">  </span><span class="kw">declare_estimator</span>(</span>
+<span id="cb115-48"><a href="bayesianprocesstracing.html#cb115-48"></a>    <span class="dt">pr_type_Z_caused_Y =</span> <span class="fl">.5</span>,</span>
+<span id="cb115-49"><a href="bayesianprocesstracing.html#cb115-49"></a>    <span class="dt">pr_C_1_type_Z_caused_Y =</span> <span class="fl">.30</span>,</span>
+<span id="cb115-50"><a href="bayesianprocesstracing.html#cb115-50"></a>    <span class="dt">pr_C_1_type_always_Y =</span> <span class="fl">.005</span>,</span>
+<span id="cb115-51"><a href="bayesianprocesstracing.html#cb115-51"></a>    <span class="dt">C =</span> C2,</span>
+<span id="cb115-52"><a href="bayesianprocesstracing.html#cb115-52"></a>    <span class="dt">pr_C_type_Z_caused_Y =</span> C <span class="op">*</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>C) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_Z_caused_Y),</span>
+<span id="cb115-53"><a href="bayesianprocesstracing.html#cb115-53"></a>    <span class="dt">pr_C_type_always_Y =</span> C <span class="op">*</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_always_Y <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>C) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_C_<span class="dv">1</span>_type_always_Y),</span>
+<span id="cb115-54"><a href="bayesianprocesstracing.html#cb115-54"></a>    <span class="dt">posterior =</span></span>
+<span id="cb115-55"><a href="bayesianprocesstracing.html#cb115-55"></a>      pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">/</span><span class="st"> </span>(pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>pr_C_type_always_Y <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_type_Z_caused_Y)),</span>
+<span id="cb115-56"><a href="bayesianprocesstracing.html#cb115-56"></a>    <span class="dt">label =</span> <span class="st">&quot;Smoking Gun&quot;</span>,</span>
+<span id="cb115-57"><a href="bayesianprocesstracing.html#cb115-57"></a>    <span class="dt">estimand_label =</span> <span class="st">&quot;did_Z_cause_Y&quot;</span>,</span>
+<span id="cb115-58"><a href="bayesianprocesstracing.html#cb115-58"></a>    <span class="dt">handler =</span> summarize) <span class="op">+</span></span>
+<span id="cb115-59"><a href="bayesianprocesstracing.html#cb115-59"></a><span class="st">  </span><span class="kw">declare_estimator</span>(</span>
+<span id="cb115-60"><a href="bayesianprocesstracing.html#cb115-60"></a>    <span class="dt">pr_type_Z_caused_Y =</span> <span class="fl">.5</span>,</span>
+<span id="cb115-61"><a href="bayesianprocesstracing.html#cb115-61"></a>    <span class="dt">pr_C1_1_type_Z_caused_Y =</span> <span class="fl">.30</span>,</span>
+<span id="cb115-62"><a href="bayesianprocesstracing.html#cb115-62"></a>    <span class="dt">pr_C1_1_type_always_Y =</span> <span class="fl">.005</span>,</span>
+<span id="cb115-63"><a href="bayesianprocesstracing.html#cb115-63"></a>    <span class="dt">pr_C2_1_type_Z_caused_Y =</span> <span class="fl">.75</span>,</span>
+<span id="cb115-64"><a href="bayesianprocesstracing.html#cb115-64"></a>    <span class="dt">pr_C2_1_type_always_Y =</span> <span class="fl">.25</span>,</span>
+<span id="cb115-65"><a href="bayesianprocesstracing.html#cb115-65"></a>    <span class="dt">rho =</span> <span class="dv">0</span>,</span>
+<span id="cb115-66"><a href="bayesianprocesstracing.html#cb115-66"></a>    <span class="dt">pr_C_type_Z_caused_Y =</span> <span class="kw">joint_prob</span>(pr_C1_<span class="dv">1</span>_type_Z_caused_Y, pr_C2_<span class="dv">1</span>_type_Z_caused_Y, </span>
+<span id="cb115-67"><a href="bayesianprocesstracing.html#cb115-67"></a>                                      rho, <span class="dt">which_prob =</span> C1C2),</span>
+<span id="cb115-68"><a href="bayesianprocesstracing.html#cb115-68"></a>    <span class="dt">pr_C_type_always_Y =</span> <span class="kw">joint_prob</span>(pr_C1_<span class="dv">1</span>_type_always_Y, pr_C2_<span class="dv">1</span>_type_always_Y, </span>
+<span id="cb115-69"><a href="bayesianprocesstracing.html#cb115-69"></a>                                      rho, <span class="dt">which_prob =</span> C1C2),</span>
+<span id="cb115-70"><a href="bayesianprocesstracing.html#cb115-70"></a>    <span class="dt">posterior =</span></span>
+<span id="cb115-71"><a href="bayesianprocesstracing.html#cb115-71"></a>      pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">/</span><span class="st"> </span>(pr_type_Z_caused_Y <span class="op">*</span><span class="st"> </span>pr_C_type_Z_caused_Y <span class="op">+</span><span class="st"> </span>pr_C_type_always_Y <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>pr_type_Z_caused_Y)),</span>
+<span id="cb115-72"><a href="bayesianprocesstracing.html#cb115-72"></a>    <span class="dt">label =</span> <span class="st">&quot;Joint Updating&quot;</span>,</span>
+<span id="cb115-73"><a href="bayesianprocesstracing.html#cb115-73"></a>    <span class="dt">estimand_label =</span> <span class="st">&quot;did_Z_cause_Y&quot;</span>,</span>
+<span id="cb115-74"><a href="bayesianprocesstracing.html#cb115-74"></a>    <span class="dt">handler =</span> summarize) </span>
+<span id="cb115-75"><a href="bayesianprocesstracing.html#cb115-75"></a></span>
+<span id="cb115-76"><a href="bayesianprocesstracing.html#cb115-76"></a></span>
+<span id="cb115-77"><a href="bayesianprocesstracing.html#cb115-77"></a><span class="co"># diagnose_design(design,</span></span>
+<span id="cb115-78"><a href="bayesianprocesstracing.html#cb115-78"></a><span class="co">#                 diagnosands = declare_diagnosands(</span></span>
+<span id="cb115-79"><a href="bayesianprocesstracing.html#cb115-79"></a><span class="co">#                   bias = mean(posterior - estimand),</span></span>
+<span id="cb115-80"><a href="bayesianprocesstracing.html#cb115-80"></a><span class="co">#                   rmse = sqrt(mean((posterior - estimand) ^ 2)),</span></span>
+<span id="cb115-81"><a href="bayesianprocesstracing.html#cb115-81"></a><span class="co">#                   mean_estimand = mean(estimand),</span></span>
+<span id="cb115-82"><a href="bayesianprocesstracing.html#cb115-82"></a><span class="co">#                   mean_posterior = mean(posterior),</span></span>
+<span id="cb115-83"><a href="bayesianprocesstracing.html#cb115-83"></a><span class="co">#                   keep_defaults = FALSE), </span></span>
+<span id="cb115-84"><a href="bayesianprocesstracing.html#cb115-84"></a><span class="co">#                 sims = 500)</span></span>
+<span id="cb115-85"><a href="bayesianprocesstracing.html#cb115-85"></a></span>
+<span id="cb115-86"><a href="bayesianprocesstracing.html#cb115-86"></a><span class="co"># design_sims &lt;- simulate_design(design, sims = 500)</span></span></code></pre></div>
+</div>
+<div id="dag-13" class="section level3">
+<h3><span class="header-section-number">16.6.5</span> Dag</h3>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="bayesianprocesstracing.html#cb116-1"></a>dag &lt;-<span class="st"> </span><span class="kw">dagify</span>(C1 <span class="op">~</span><span class="st"> </span>type,</span>
+<span id="cb116-2"><a href="bayesianprocesstracing.html#cb116-2"></a>              C2 <span class="op">~</span><span class="st"> </span>type,</span>
+<span id="cb116-3"><a href="bayesianprocesstracing.html#cb116-3"></a>              Y <span class="op">~</span><span class="st"> </span>Z <span class="op">+</span><span class="st"> </span>type)</span>
+<span id="cb116-4"><a href="bayesianprocesstracing.html#cb116-4"></a></span>
+<span id="cb116-5"><a href="bayesianprocesstracing.html#cb116-5"></a></span>
+<span id="cb116-6"><a href="bayesianprocesstracing.html#cb116-6"></a>nodes &lt;-</span>
+<span id="cb116-7"><a href="bayesianprocesstracing.html#cb116-7"></a><span class="st">  </span><span class="kw">tibble</span>(</span>
+<span id="cb116-8"><a href="bayesianprocesstracing.html#cb116-8"></a>    <span class="dt">name =</span> <span class="kw">c</span>( <span class="st">&quot;type&quot;</span>,<span class="st">&quot;Z&quot;</span>,<span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;Y&quot;</span>),</span>
+<span id="cb116-9"><a href="bayesianprocesstracing.html#cb116-9"></a>    <span class="dt">label =</span> name,</span>
+<span id="cb116-10"><a href="bayesianprocesstracing.html#cb116-10"></a>    <span class="dt">annotation =</span> <span class="kw">c</span>(</span>
+<span id="cb116-11"><a href="bayesianprocesstracing.html#cb116-11"></a>      <span class="st">&quot;**Type**&lt;br&gt;Causal relationship&lt;br&gt;between economic diversification&lt;br&gt;and breakdown of institutions&quot;</span>,</span>
+<span id="cb116-12"><a href="bayesianprocesstracing.html#cb116-12"></a>      <span class="st">&quot;**Cause**&lt;br&gt;Economic Diversification&quot;</span>,</span>
+<span id="cb116-13"><a href="bayesianprocesstracing.html#cb116-13"></a>      <span class="st">&quot;**Clue 1**&lt;br&gt;Smoking gun interview evidence&quot;</span>,</span>
+<span id="cb116-14"><a href="bayesianprocesstracing.html#cb116-14"></a>      <span class="st">&quot;**Clue 2**&lt;br&gt;Straw-in-the-wind archival evidence&quot;</span>,</span>
+<span id="cb116-15"><a href="bayesianprocesstracing.html#cb116-15"></a>      <span class="st">&quot;**Outcome**&lt;br&gt;Breakdown of traditional&lt;br&gt;institutions&quot;</span>),</span>
+<span id="cb116-16"><a href="bayesianprocesstracing.html#cb116-16"></a>    <span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">5</span>),</span>
+<span id="cb116-17"><a href="bayesianprocesstracing.html#cb116-17"></a>    <span class="dt">y =</span> <span class="kw">c</span>(<span class="fl">1.5</span>,<span class="fl">3.5</span>,<span class="dv">2</span>,<span class="fl">1.5</span>,<span class="fl">3.5</span>),</span>
+<span id="cb116-18"><a href="bayesianprocesstracing.html#cb116-18"></a>    <span class="dt">nudge_direction =</span> <span class="kw">c</span>(<span class="st">&quot;S&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;N&quot;</span>, <span class="st">&quot;S&quot;</span>,<span class="st">&quot;N&quot;</span>),</span>
+<span id="cb116-19"><a href="bayesianprocesstracing.html#cb116-19"></a>    <span class="dt">answer_strategy =</span> <span class="st">&quot;uncontrolled&quot;</span></span>
+<span id="cb116-20"><a href="bayesianprocesstracing.html#cb116-20"></a>  )</span>
+<span id="cb116-21"><a href="bayesianprocesstracing.html#cb116-21"></a></span>
+<span id="cb116-22"><a href="bayesianprocesstracing.html#cb116-22"></a></span>
+<span id="cb116-23"><a href="bayesianprocesstracing.html#cb116-23"></a>ggdd_df &lt;-<span class="st"> </span><span class="kw">make_dag_df</span>(dag, nodes, design)</span>
+<span id="cb116-24"><a href="bayesianprocesstracing.html#cb116-24"></a></span>
+<span id="cb116-25"><a href="bayesianprocesstracing.html#cb116-25"></a>base_dag_plot <span class="op">%+%</span><span class="st"> </span>ggdd_df</span></code></pre></div>
+<p><img src="book_files/figure-html/unnamed-chunk-293-1.png" width="100%" /></p>
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-bennett2014process">
+<p>Bennett, Andrew, and Jeffrey T Checkel. 2015. <em>Process Tracing</em>. New York: Cambridge University Press.</p>
+</div>
+<div id="ref-collier2004sources">
+<p>Collier, David, Henry E. Brady, and Jason Seawright. 2004. “Sources of Leverage in Causal Inference: Toward an Alternative View of Methodology.” In <em>Rethinking Social Inquiry: Diverse Tools, Shared Standards</em>, edited by David Collier and Henry E. Brady. Lanham, Maryland: Rowman; Littlefield.</p>
+</div>
+<div id="ref-ensminger1990">
+<p>Ensminger, Jean. 1990. “Co-Opting the Elders: The Political Economy of State Incorporation in Africa.” <em>American Anthropologist</em> 92 (3): 662–75. <a href="http://www.jstor.org/stable/680341">http://www.jstor.org/stable/680341</a>.</p>
+</div>
+<div id="ref-goertz2012tale">
+<p>Goertz, Gary, and James Mahoney. 2012. <em>A Tale of Two Cultures: Qualitative and Quantitative Research in the Social Sciences</em>. Princeton: Princeton University Press.</p>
+</div>
+<div id="ref-Mahony:Logic:2012">
+<p>Mahoney, James. 2012. “The Logic of Process Tracing Tests in the Social Sciences.” <em>Sociological Methods and Research</em> 41 (4): 570–97.</p>
+</div>
+<div id="ref-VanEvera1997">
+<p>Van Evera, Stephen. 1997. <em>Guide to Methods for Students of Political Science</em>. Ithaca: Cornell University Press.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="23">
+<li id="fn23"><p>“Smoking guns” are well-known: observing them is sufficient to infer the hypothesis is true, but not necessary (as they are quite rare). “Hoop tests,” on the other hand, are pieces of evidence that one would expect to find if the hypothesis is correct (necessary), but do not necessarily prove it (not sufficient). “Straw-in-the-wind” tests are neither necessary nor sufficient, while “doubly-decisive” pieces of evidence are fully informative: you should expect to find them if you are correct and if you do, you have proven your theory.<a href="bayesianprocesstracing.html#fnref23" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="RDD.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="synthetic-controls.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false,
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": {},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
