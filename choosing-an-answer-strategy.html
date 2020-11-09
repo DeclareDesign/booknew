@@ -367,62 +367,40 @@ Figure 9.4: Consequences of randomizing Z and measuring X before treatment for a
 <p>This way of thinking provides a framework for poststratification on nonrandom samples. Suppose a researcher comes across our dataset of 20 people. They don’t know anything about the sampling strategy—to them, it’s a non-random sample. However, they do know that there are 10 people from group 1 and 20 people from group 2 in the population, so they are able to construct estimates of the sampling probabilities using <span class="math inline">\(\hat{p_1} = n_1/N_1\)</span> and <span class="math inline">\(\hat{p_2} = n_2/N_2\)</span>. From there, they can construct weights using <span class="math inline">\(1/p_1\)</span> and <span class="math inline">\(1/p_2\)</span> that will reweight their data so that it is representative. That’s the basic intuition behind stratification: you use known population counts to reverse engineer the probability weights that a hypothetical stratified random sampling strategy would have given you. See entry X in the design library for more on this.</p>
 <p>The analogy extends even further when we consider that all random treatment assignment procedures are also sampling procedures. Rather than sampling entire units, however, treatment assignments randomly sample from different potential outcomes. If you assign 5/15 people to treatment and the rest to control, for example, then the five treated potential outcomes need to “represent” <span class="math inline">\(1/(5/15) = 3\)</span> people’s treated potential outcomes and the ten people assigned to control represent <span class="math inline">\(1/(10/15) = 1.5\)</span> people’s control potential outcomes. If you tried to pool different experiments to get the average treatment effect across all people in all experiments, you would need to take account of the fact that different experiments might over or underrepresent treatment or control potential outcomes, and weight accordingly. This issue arises in block randomized designs where treatment assignment probabilities vary by block (see entry X in the design library), in designs with spillovers where spatial networks induce differential assignment probabilities for spillovers (see entry X in the design library), and in stepped wedge designs where earlier waves overrepresent control potential outcomes and later waves overrepresent treatment potential outcomes (see entry X in the design library). Finally, in the same way that poststratification uses covariates to construct sample weights corresponding to a hypothetical random  procedure, matching and selection observable designs use covariates to reverse engineer probabilities of sampling treatment and control potential outcomes in order to reweight the data to account for the systematic selection of certain kinds of units into or out of treatment (confounding).</p>
 </div>
-<div id="qualitative-methods-of-inference" class="section level2">
+<div id="formalizing-qualitative-modes-of-inference" class="section level2">
 <h2>
-<span class="header-section-number">9.4</span> Qualitative methods of inference<a class="anchor" aria-label="anchor" href="#qualitative-methods-of-inference"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4</span> Formalizing qualitative modes of inference<a class="anchor" aria-label="anchor" href="#formalizing-qualitative-modes-of-inference"><i class="fas fa-link"></i></a>
 </h2>
-<p>When seeking to answer causal attribution inquiries about whether a postulated cause was really necessary or sufficient to produce an outcome (Section <a href="defining-the-inquiry.html#causalattribution">7.1.3</a>), most scholars turn toward qualitative answer strategies [mahoneygoertz2004]. So it is no surprise that many qualitative methods focus on tools to explore necessity and sufficiency through probabilistic and deterministic logic. However, it is important to distinguish between answer strategies and inquiries. Just as there are quantitative strategies that target causal attribution inquiries <span class="citation">(Yamamoto <a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref">2012</a>)</span>, there are qualitative answer strategies that can be used to understand inquiries about causal effects.</p>
-<div id="process-tracing" class="section level3">
+<p>Most researchers don’t implement qualitative answer strategies by writing and executing code on a computer. Instead, they use logic and common sense to arrive at an answer, weighing very different sources of evidence that might include arguments made by other researchers, transcripts or impressions from interviews and participant observation, and various kinds of archival records. Since so much of the inferential work resides in the mind of the researcher, formalizing qualitative modes of inference for design diagnosis presents a more formidable task than formalizing quantitative methods that are already available in code.</p>
+<p>Yet it is possible and often simpler than you might think to represent qualitative modes of inference using code. The task is also becoming easier due to the increasing use of formal notation and software to represent qualitative inference that we describe below. Of course, any representation of an answer strategy in code will involve unrealistic simplifications. But unrealistically simplistic representations of the researcher’s process still shed light on what is at stake in the often bewildering set of design choices that there are to make.</p>
+<div id="boolean-formalizations" class="section level3">
 <h3>
-<span class="header-section-number">9.4.1</span> Process-tracing<a class="anchor" aria-label="anchor" href="#process-tracing"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.1</span> Boolean formalizations<a class="anchor" aria-label="anchor" href="#boolean-formalizations"><i class="fas fa-link"></i></a>
 </h3>
-<p>Process-tracing is a term that has been used to describe approaches to descriptive inference and theory-building exercises <span class="citation">(Beach and Pedersen <a href="references-4.html#ref-beachpedersen2013process" role="doc-biblioref">2013</a>, 13)</span>, but it is increasingly prominent as an approach to causal inference <span class="citation">(Collier <a href="references-4.html#ref-collier2011understanding" role="doc-biblioref">2011</a>, 824)</span>.
-<!-- Reference design lib and move on? --></p>
-<!-- Bayesian and non-bayesian -->
-<!-- As part of an initiative to establish process tracing as a rigorous method, the literature -->
-<!-- has moved from informal analogies to Bayesianism (McKeown 1999, Bennett 2008, Beach and -->
-<!-- Pedersen 2013) toward e↵orts to more formally apply Bayesian analysis in qualitative research -->
-<!-- (Rohlfing 2013, Bennett 2015, Humphreys and Jacobs 2015, Fairfield and Charman 2017). But -->
-<!-- whereas Bayesian statistical techniques have been successfully elaborated for large-N quantita- -->
-<!-- tive research, e↵orts to apply Bayesian probability in qualitative case research are still in their -->
-<!-- intellectual infancy. -->
-<!-- Giovanni Capoccia and Daniel Keleman, “The Study of Critical Junctures: Theory, Narrative, and Counterfactuals in Historical Institutionalism,” World Politics 59 (2007): 341-369 here. -->
+<p>One of the simplest ways to formalize a qualitative strategy is by constructing “if-then” statements, which computers do very well. For example, in <span class="citation">Blair et al. (<a href="references-4.html#ref-bccmapsr" role="doc-biblioref">2020</a>)</span>, we simulate a researcher employing a nested mixed methods analysis <span class="citation">(Lieberman <a href="references-4.html#ref-lieberman2005nested" role="doc-biblioref">2005</a>)</span> to understand an average causal effect. Formalizing this procedure in even the simplest syntax revealed the many different choices facing the simulated researcher: what share of qualitative cases need to validate the large-N theory, for example, for the latter to be determined valid? How much effort to allocate to put into building versus testing theories? Moreover, it revealed that these choices mattered a lot to the likelihood of getting a good answer.</p>
 </div>
-<div id="boolean-and-set-theoretic-methods" class="section level3">
+<div id="bayesian-formalizations" class="section level3">
 <h3>
-<span class="header-section-number">9.4.2</span> Boolean and set-theoretic methods<a class="anchor" aria-label="anchor" href="#boolean-and-set-theoretic-methods"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.2</span> Bayesian formalizations<a class="anchor" aria-label="anchor" href="#bayesian-formalizations"><i class="fas fa-link"></i></a>
 </h3>
-<!-- Deterministic vs. probabalistic debate -->
-<!-- DIscuss process-tracing, QCA, and deterministic / probabilistic case comparison. Summarize Sekhon on Geddes + Skocpol. Ragin. Lijphart on problems with case comparison. Elman on explanatory typologies. -->
-<!-- Skocpol clearly believes she is relying on Mill’s methods. -->
-<!-- She states that “[c]omparative historical analysis has a long -->
-<!-- and distinguished pedigree in social science” and that “[i]ts -->
-<!-- logic was explicitly laid out by John Stuart Mill in his A System -->
-<!-- of Logic.”9 Further, she asserts that she is using both the Method -->
-<!-- of Agreement and the more powerful Method of Difference.10 -->
-<!-- For these methods to lead to valid inferences, though, there -->
-<!-- must be only one possible cause of the effect of interest, the -->
-<!-- relationship between cause and effect must be deterministic, -->
-<!-- and there must be no measurement error. If these assumptions -->
-<!-- are to be relaxed, random factors must be accounted for. And -->
-<!-- because of these random factors, statistical and probabilistic -->
-<!-- methods of inference are necessary. -->
+<p>Recent developments in qualitative methods have sought to take Bayes’ rule “from metaphor to analytic tool” <span class="citation">(Bennett <a href="references-4.html#ref-BennettAppendix" role="doc-biblioref">2015</a>)</span>. This approach characterizes qualitative inference as one in which prior beliefs about the world can be specified numerically and then are updated on the basis of evidence observed. At minimum, writing down such an answer strategy on a computer requires specifying beliefs, expressed as probabilities, about the likelihood of seeing certain kinds of evidence under different hypotheses. We provide a simple example of such a strategy in the design library. <span class="citation">Michael C Herron and Quinn (<a href="references-4.html#ref-HerronQuinn" role="doc-biblioref">2016</a>)</span> provide one approach to formalizing a qualitative answer strategy that focuses on understanding an average treatment effect.
+<span class="citation">Humphreys and Jacobs (<a href="references-4.html#ref-humphreys2015mixing" role="doc-biblioref">2015</a>)</span> provide an approach that can be used to formalize answer strategies targeting both causal effect and causal attribution inquiries, while <span class="citation">Fairfield and Charman (<a href="references-4.html#ref-fairfield2017explicit" role="doc-biblioref">2017</a>)</span> formalize a Bayesian approach that approaches causal attribution as a problem of attaching posterior probability to competing alternative hypotheses.
+<span class="citation">(<span class="citeproc-not-found" data-reference-id="abell2019subjective"><strong>???</strong></span>)</span> suggest the use of “Supra-Bayesian” methods to aggregate multiple participant-provided narratives in ethnographic studies targeting causal attribution estimands.</p>
 </div>
-<div id="narrative-comparison" class="section level3">
+<div id="set-theoretic-formalizations" class="section level3">
 <h3>
-<span class="header-section-number">9.4.3</span> Narrative comparison<a class="anchor" aria-label="anchor" href="#narrative-comparison"><i class="fas fa-link"></i></a>
+<span class="header-section-number">9.4.3</span> Set-theoretic formalizations<a class="anchor" aria-label="anchor" href="#set-theoretic-formalizations"><i class="fas fa-link"></i></a>
 </h3>
-<!-- Example of debate between Moore 1966 (democracy emerges from lord and peasant relationship) vs.  -->
-<!-- For example, in Social Origins o f Dictatorship and Democracy (1966), Moore attributes the ultimate choice between dictatorship and democracy to the kind of relationship that had developed through history between lords and peasant village communities. Although Moore's argument takes the reader through a series of historical turning points to explain the rise of commercial agricul- ture and resulting changes in landlord-peasant relationships in different situations, he concludes with a series of causal generaliza- tions, including: -->
-<!-- [T]he most important causes of peasant revolutions have been the absence of a commercial revolution in agricul- ture led by the landed upper classes and the concomitant survival of peasant social institutions into the modern era. (477) -->
-<!-- Focus on path dependency and critical junctures  -->
-<!-- One tradition that has sought to  -->
-<!-- "We identify the actors, the decision points they -->
-<!-- faced, the choices they made, the paths taken and -->
-<!-- shunned, and the manner in which their choices generated events and outcomes" (Bates et al. 1998, 13-4), -->
-<!-- Weingast uses the empirics to update the formal model, and thereby makes a causal inference based on counterfactuals -->
-<!-- These games demonstrate how the suppression of sectional issues depended -->
-<!-- on more than just the behavior of parties and American political culture under the second-party system. Had the veto not been engineered to prevent Northern assaults on slavery, there would have been more assaults then actually observed, and some might have succeeded. TheSouthern veto in the senate made assaults on slavery relatively rare. p176 -->
+<p>Set-theoretic approaches to formalize qualitative reasoning focus on deterministic concepts of causal necessity and sufficiency. Variants of qualitative comparative analysis (QCA), which typically seeks to understand the minimal set of combinations of factors sufficient to produce an outcome, have been implemented on computers, and are therefore straightforward to declare and diagnose. We provide an example in <span class="citation">Blair et al. (<a href="references-4.html#ref-bccmapsr" role="doc-biblioref">2020</a>)</span>. QCA has been the subject of numerous simulation studies: (ADD HERE).</p>
+</div>
+<div id="games-as-formal-narratives" class="section level3">
+<h3>
+<span class="header-section-number">9.4.4</span> Games as formal narratives<a class="anchor" aria-label="anchor" href="#games-as-formal-narratives"><i class="fas fa-link"></i></a>
+</h3>
+<p>In counterfactual accounts of causality <span class="citation">(see Dawid <a href="references-4.html#ref-dawid2000causal" role="doc-biblioref">2000</a> for an alternative)</span>, causal inferences often rely on speculations about a counterfactual state of affairs. The average outcome of the control group in an experiment, for example, represents the counterfactual average outcome of the treatment group had they not been assigned to the treatment. In comparative historical analyses, these conjectures often focus on the case level. Speaking of the “balance rule” introduced into the United States senate under the Missouri Compromise of 1820, and which provided a veto power to coalitions of Northern and Southern states over policy, <span class="citation">Weingast (<a href="references-4.html#ref-weingast1998political" role="doc-biblioref">1998</a>)</span> (p.176) speculates that
+&gt; Had the veto not been engineered to prevent Northern assaults on slavery, there would have been more assaults then actually observed, and some might have succeeded. The Southern veto in the senate made assaults on slavery relatively rare.</p>
+<p>He reaches this conclusion through the analysis of a formal model in extensive form.</p>
+<!-- Say more here about simulation of counterfactuals provided by formalized narratives as method for diagnosing different case comparison / critical juncture strategies.  -->
 <!-- ### randomization inference -->
 </div>
 </div>
@@ -489,10 +467,11 @@ Figure 9.4: Consequences of randomizing Z and measuring X before treatment for a
 </li>
 <li><a class="nav-link" href="#p2followdatastrategy"><span class="header-section-number">9.3</span> Following the data strategy</a></li>
 <li>
-<a class="nav-link" href="#qualitative-methods-of-inference"><span class="header-section-number">9.4</span> Qualitative methods of inference</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#process-tracing"><span class="header-section-number">9.4.1</span> Process-tracing</a></li>
-<li><a class="nav-link" href="#boolean-and-set-theoretic-methods"><span class="header-section-number">9.4.2</span> Boolean and set-theoretic methods</a></li>
-<li><a class="nav-link" href="#narrative-comparison"><span class="header-section-number">9.4.3</span> Narrative comparison</a></li>
+<a class="nav-link" href="#formalizing-qualitative-modes-of-inference"><span class="header-section-number">9.4</span> Formalizing qualitative modes of inference</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#boolean-formalizations"><span class="header-section-number">9.4.1</span> Boolean formalizations</a></li>
+<li><a class="nav-link" href="#bayesian-formalizations"><span class="header-section-number">9.4.2</span> Bayesian formalizations</a></li>
+<li><a class="nav-link" href="#set-theoretic-formalizations"><span class="header-section-number">9.4.3</span> Set-theoretic formalizations</a></li>
+<li><a class="nav-link" href="#games-as-formal-narratives"><span class="header-section-number">9.4.4</span> Games as formal narratives</a></li>
 </ul>
 </li>
 <li><a class="nav-link" href="#answer-strategies-as-procedures"><span class="header-section-number">9.5</span> Answer strategies as procedures</a></li>
