@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>18.3 The Metaketa design | Research Design: Declare, Diagnose, Redesign</title>
+  <meta name="description" content="describe the book" />
+  <meta name="generator" content="bookdown 0.21.4 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="18.3 The Metaketa design | Research Design: Declare, Diagnose, Redesign" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="describe the book" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="18.3 The Metaketa design | Research Design: Declare, Diagnose, Redesign" />
+  
+  <meta name="twitter:description" content="describe the book" />
+  
+
+<meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="multi-site-studies.html"/>
+<link rel="next" href="part-iii-exercises.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="https://hypothes.is/embed.js" async></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="headers/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><b>Research Design</b></a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Research Design: Declaration, Diagnose, Redesign</a><ul>
+<li class="chapter" data-level="" data-path="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><a href="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><i class="fa fa-check"></i>Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys</a><ul>
+<li class="chapter" data-level="" data-path="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html"><a href="graeme-blair-jasper-cooper-alexander-coppock-and-macartan-humphreys.html#draft-manuscript-under-advance-contract-princeton-university-press"><i class="fa fa-check"></i>Draft manuscript under advance contract, Princeton University Press</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>I Introduction</b></span></li>
+<li class="chapter" data-level="1" data-path="preamble.html"><a href="preamble.html"><i class="fa fa-check"></i><b>1</b> Preamble</a><ul>
+<li class="chapter" data-level="1.1" data-path="how-to-read-this-book.html"><a href="how-to-read-this-book.html"><i class="fa fa-check"></i><b>1.1</b> How to read this book</a></li>
+<li class="chapter" data-level="1.2" data-path="how-to-work-this-book.html"><a href="how-to-work-this-book.html"><i class="fa fa-check"></i><b>1.2</b> How to <strong>work</strong> this book</a></li>
+<li class="chapter" data-level="1.3" data-path="what-this-book-will-not-do.html"><a href="what-this-book-will-not-do.html"><i class="fa fa-check"></i><b>1.3</b> What this book will not do</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="improving-research-designs.html"><a href="improving-research-designs.html"><i class="fa fa-check"></i><b>2</b> Improving research designs</a><ul>
+<li class="chapter" data-level="2.1" data-path="the-four-components-of-research-design.html"><a href="the-four-components-of-research-design.html"><i class="fa fa-check"></i><b>2.1</b> The four components of research design</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="the-four-components-of-research-design.html"><a href="the-four-components-of-research-design.html#example"><i class="fa fa-check"></i><b>2.1.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="declaring-a-design-in-code.html"><a href="declaring-a-design-in-code.html"><i class="fa fa-check"></i><b>2.2</b> Declaring a design in code</a></li>
+<li class="chapter" data-level="2.3" data-path="assessing-research-design-quality-design-diagnosis.html"><a href="assessing-research-design-quality-design-diagnosis.html"><i class="fa fa-check"></i><b>2.3</b> Assessing research design quality: design diagnosis</a></li>
+<li class="chapter" data-level="2.4" data-path="redesign.html"><a href="redesign.html"><i class="fa fa-check"></i><b>2.4</b> Redesign</a></li>
+<li class="chapter" data-level="2.5" data-path="putting-designs-to-use.html"><a href="putting-designs-to-use.html"><i class="fa fa-check"></i><b>2.5</b> Putting designs to use</a></li>
+<li class="chapter" data-level="2.6" data-path="avoiding-declaration-and-diagnosis-pitfalls.html"><a href="avoiding-declaration-and-diagnosis-pitfalls.html"><i class="fa fa-check"></i><b>2.6</b> Avoiding declaration and diagnosis pitfalls</a></li>
+<li class="chapter" data-level="2.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>2.7</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="primer.html"><a href="primer.html"><i class="fa fa-check"></i><b>3</b> Software primer</a><ul>
+<li class="chapter" data-level="3.1" data-path="installing-r.html"><a href="installing-r.html"><i class="fa fa-check"></i><b>3.1</b> Installing R</a></li>
+<li class="chapter" data-level="3.2" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html"><i class="fa fa-check"></i><b>3.2</b> Building a step of a research design</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html#options-and-defaults"><i class="fa fa-check"></i><b>3.2.1</b> Options and defaults</a></li>
+<li class="chapter" data-level="3.2.2" data-path="building-a-step-of-a-research-design.html"><a href="building-a-step-of-a-research-design.html#your-own-handlers"><i class="fa fa-check"></i><b>3.2.2</b> Your own handlers</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="research-design-steps.html"><a href="research-design-steps.html"><i class="fa fa-check"></i><b>3.3</b> Research design steps</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="research-design-steps.html"><a href="research-design-steps.html#model"><i class="fa fa-check"></i><b>3.3.1</b> Model</a></li>
+<li class="chapter" data-level="3.3.2" data-path="research-design-steps.html"><a href="research-design-steps.html#inquiry"><i class="fa fa-check"></i><b>3.3.2</b> Inquiry</a></li>
+<li class="chapter" data-level="3.3.3" data-path="research-design-steps.html"><a href="research-design-steps.html#data-strategy"><i class="fa fa-check"></i><b>3.3.3</b> Data strategy</a></li>
+<li class="chapter" data-level="3.3.4" data-path="research-design-steps.html"><a href="research-design-steps.html#answer-strategy"><i class="fa fa-check"></i><b>3.3.4</b> Answer strategy</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="building-a-design-from-design-steps.html"><a href="building-a-design-from-design-steps.html"><i class="fa fa-check"></i><b>3.4</b> Building a design from design steps</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="building-a-design-from-design-steps.html"><a href="building-a-design-from-design-steps.html#order-matters"><i class="fa fa-check"></i><b>3.4.1</b> Order matters</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="simulating-a-research-design.html"><a href="simulating-a-research-design.html"><i class="fa fa-check"></i><b>3.5</b> Simulating a research design</a></li>
+<li class="chapter" data-level="3.6" data-path="diagnosing-a-research-design.html"><a href="diagnosing-a-research-design.html"><i class="fa fa-check"></i><b>3.6</b> Diagnosing a research design</a></li>
+<li class="chapter" data-level="3.7" data-path="comparing-designs.html"><a href="comparing-designs.html"><i class="fa fa-check"></i><b>3.7</b> Comparing designs</a><ul>
+<li class="chapter" data-level="3.7.1" data-path="comparing-designs.html"><a href="comparing-designs.html#comparing-many-variants-of-a-design"><i class="fa fa-check"></i><b>3.7.1</b> Comparing many variants of a design</a></li>
+<li class="chapter" data-level="3.7.2" data-path="comparing-designs.html"><a href="comparing-designs.html#library-of-designs"><i class="fa fa-check"></i><b>3.7.2</b> Library of designs</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="part-i-exercises.html"><a href="part-i-exercises.html"><i class="fa fa-check"></i><b>4</b> Part I Exercises</a></li>
+<li class="part"><span><b>II Declaration, Diagnosis, Redesign</b></span></li>
+<li class="chapter" data-level="5" data-path="declaration.html"><a href="declaration.html"><i class="fa fa-check"></i><b>5</b> Declaration</a><ul>
+<li class="chapter" data-level="5.1" data-path="p2gulzarkhanrevisited.html"><a href="p2gulzarkhanrevisited.html"><i class="fa fa-check"></i><b>5.1</b> Example</a></li>
+<li class="chapter" data-level="5.2" data-path="further-reading-1.html"><a href="further-reading-1.html"><i class="fa fa-check"></i><b>5.2</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="specifying-the-model.html"><a href="specifying-the-model.html"><i class="fa fa-check"></i><b>6</b> Specifying the model</a><ul>
+<li class="chapter" data-level="6.1" data-path="what-is-the-population.html"><a href="what-is-the-population.html"><i class="fa fa-check"></i><b>6.1</b> What is the population?</a></li>
+<li class="chapter" data-level="6.2" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html"><i class="fa fa-check"></i><b>6.2</b> What variables to include?</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html#types-of-variables"><i class="fa fa-check"></i><b>6.2.1</b> Types of variables</a></li>
+<li class="chapter" data-level="6.2.2" data-path="what-variables-to-include.html"><a href="what-variables-to-include.html#what-variables-are-needed-for-declaration-and-diagnosis"><i class="fa fa-check"></i><b>6.2.2</b> What variables are <em>needed</em> for declaration and diagnosis?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="specifying-structural-relations.html"><a href="specifying-structural-relations.html"><i class="fa fa-check"></i><b>6.3</b> Specifying structural relations</a></li>
+<li class="chapter" data-level="6.4" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html"><i class="fa fa-check"></i><b>6.4</b> Substantive justifications for choices of nodes and equations</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#reality-tracking-models"><i class="fa fa-check"></i><b>6.4.1</b> Reality tracking models</a></li>
+<li class="chapter" data-level="6.4.2" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#discursive-models"><i class="fa fa-check"></i><b>6.4.2</b> Discursive models</a></li>
+<li class="chapter" data-level="6.4.3" data-path="substantive-justifications-for-choices-of-nodes-and-equations.html"><a href="substantive-justifications-for-choices-of-nodes-and-equations.html#sufficient-models"><i class="fa fa-check"></i><b>6.4.3</b> Sufficient models</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="getting-it-right.html"><a href="getting-it-right.html"><i class="fa fa-check"></i><b>6.5</b> Getting it right?</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="getting-it-right.html"><a href="getting-it-right.html#robustness-to-multiple-models"><i class="fa fa-check"></i><b>6.5.1</b> Robustness to multiple models</a></li>
+<li class="chapter" data-level="6.5.2" data-path="getting-it-right.html"><a href="getting-it-right.html#fundamental-uncertainty"><i class="fa fa-check"></i><b>6.5.2</b> Fundamental uncertainty</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="defining-the-inquiry.html"><a href="defining-the-inquiry.html"><i class="fa fa-check"></i><b>7</b> Defining the inquiry</a><ul>
+<li class="chapter" data-level="7.1" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html"><i class="fa fa-check"></i><b>7.1</b> Three families of inquiries</a><ul>
+<li class="chapter" data-level="7.1.1" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#descriptive-inquiries"><i class="fa fa-check"></i><b>7.1.1</b> Descriptive inquiries</a></li>
+<li class="chapter" data-level="7.1.2" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#inquiries-about-causal-effects"><i class="fa fa-check"></i><b>7.1.2</b> Inquiries about causal effects</a></li>
+<li class="chapter" data-level="7.1.3" data-path="three-families-of-inquiries.html"><a href="three-families-of-inquiries.html#causalattribution"><i class="fa fa-check"></i><b>7.1.3</b> Causal attribution inquiries</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="estimands-declared.html"><a href="estimands-declared.html"><i class="fa fa-check"></i><b>7.2</b> Estimands declared</a></li>
+<li class="chapter" data-level="7.3" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html"><i class="fa fa-check"></i><b>7.3</b> Common complexities in defining estimands</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#data-dependent-inquiries"><i class="fa fa-check"></i><b>7.3.1</b> Data-dependent inquiries</a></li>
+<li class="chapter" data-level="7.3.2" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#non-decomposable-inquiries"><i class="fa fa-check"></i><b>7.3.2</b> Non-decomposable inquiries</a></li>
+<li class="chapter" data-level="7.3.3" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#model-dependent-inquiries"><i class="fa fa-check"></i><b>7.3.3</b> Model dependent inquiries</a></li>
+<li class="chapter" data-level="7.3.4" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#complex-counterfactual-inquiries"><i class="fa fa-check"></i><b>7.3.4</b> Complex counterfactual inquiries</a></li>
+<li class="chapter" data-level="7.3.5" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#inquiries-with-continuous-causal-variables"><i class="fa fa-check"></i><b>7.3.5</b> Inquiries with continuous causal variables</a></li>
+<li class="chapter" data-level="7.3.6" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#undefined-and-unanswerable-inquiries"><i class="fa fa-check"></i><b>7.3.6</b> Undefined and unanswerable inquiries</a></li>
+<li class="chapter" data-level="7.3.7" data-path="common-complexities-in-defining-estimands.html"><a href="common-complexities-in-defining-estimands.html#example-1"><i class="fa fa-check"></i><b>7.3.7</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="how-should-you-select-inquiries.html"><a href="how-should-you-select-inquiries.html"><i class="fa fa-check"></i><b>7.4</b> How should you select inquiries?</a></li>
+<li class="chapter" data-level="7.5" data-path="further-reading-2.html"><a href="further-reading-2.html"><i class="fa fa-check"></i><b>7.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="crafting-a-data-strategy.html"><a href="crafting-a-data-strategy.html"><i class="fa fa-check"></i><b>8</b> Crafting a data strategy</a><ul>
+<li class="chapter" data-level="8.1" data-path="p2sampling.html"><a href="p2sampling.html"><i class="fa fa-check"></i><b>8.1</b> Sampling strategies</a><ul>
+<li class="chapter" data-level="8.1.1" data-path="p2sampling.html"><a href="p2sampling.html#randomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.1</b> Randomized sampling designs</a></li>
+<li class="chapter" data-level="8.1.2" data-path="p2sampling.html"><a href="p2sampling.html#nonrandomized-sampling-designs"><i class="fa fa-check"></i><b>8.1.2</b> Nonrandomized sampling designs</a></li>
+<li class="chapter" data-level="8.1.3" data-path="p2sampling.html"><a href="p2sampling.html#sampling-designs-for-qualitative-research"><i class="fa fa-check"></i><b>8.1.3</b> Sampling designs for qualitative research</a></li>
+<li class="chapter" data-level="8.1.4" data-path="p2sampling.html"><a href="p2sampling.html#choosing-among-sampling-designs"><i class="fa fa-check"></i><b>8.1.4</b> Choosing among sampling designs</a></li>
+<li class="chapter" data-level="8.1.5" data-path="p2sampling.html"><a href="p2sampling.html#example-wang2015forecasting"><i class="fa fa-check"></i><b>8.1.5</b> Example: <span class="citation">Wang et al. (<span>2015</span>)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="p2assignment.html"><a href="p2assignment.html"><i class="fa fa-check"></i><b>8.2</b> Treatment assignment</a><ul>
+<li class="chapter" data-level="8.2.1" data-path="p2assignment.html"><a href="p2assignment.html#two-arm-trials"><i class="fa fa-check"></i><b>8.2.1</b> Two arm trials</a></li>
+<li class="chapter" data-level="8.2.2" data-path="p2assignment.html"><a href="p2assignment.html#multiarm-and-factorial-trials"><i class="fa fa-check"></i><b>8.2.2</b> Multiarm and factorial trials</a></li>
+<li class="chapter" data-level="8.2.3" data-path="p2assignment.html"><a href="p2assignment.html#complex-designs"><i class="fa fa-check"></i><b>8.2.3</b> Complex designs</a></li>
+<li class="chapter" data-level="8.2.4" data-path="p2assignment.html"><a href="p2assignment.html#non-randomized-assignment"><i class="fa fa-check"></i><b>8.2.4</b> Non randomized assignment</a></li>
+<li class="chapter" data-level="8.2.5" data-path="p2assignment.html"><a href="p2assignment.html#example-sociology-natural-experiment-from-government-or-official-cutoff"><i class="fa fa-check"></i><b>8.2.5</b> Example: sociology natural experiment from government or official cutoff</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="measurement.html"><a href="measurement.html"><i class="fa fa-check"></i><b>8.3</b> Measurement</a><ul>
+<li class="chapter" data-level="8.3.1" data-path="measurement.html"><a href="measurement.html#example-weaver2019too"><i class="fa fa-check"></i><b>8.3.1</b> Example: <span class="citation">Weaver, Prowse, and Piston (<span>2019</span>)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html"><i class="fa fa-check"></i><b>8.4</b> Threats to implementation</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#noncompliance"><i class="fa fa-check"></i><b>8.4.1</b> Noncompliance</a></li>
+<li class="chapter" data-level="8.4.2" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#attrition"><i class="fa fa-check"></i><b>8.4.2</b> Attrition</a></li>
+<li class="chapter" data-level="8.4.3" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#excludability"><i class="fa fa-check"></i><b>8.4.3</b> Excludability</a></li>
+<li class="chapter" data-level="8.4.4" data-path="threats-to-implementation.html"><a href="threats-to-implementation.html#interference"><i class="fa fa-check"></i><b>8.4.4</b> Interference</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="further-reading-3.html"><a href="further-reading-3.html"><i class="fa fa-check"></i><b>8.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="choosing-an-answer-strategy.html"><a href="choosing-an-answer-strategy.html"><i class="fa fa-check"></i><b>9</b> Choosing an answer strategy</a><ul>
+<li class="chapter" data-level="9.1" data-path="following-the-model.html"><a href="following-the-model.html"><i class="fa fa-check"></i><b>9.1</b> Following the model</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="following-the-model.html"><a href="following-the-model.html#identification"><i class="fa fa-check"></i><b>9.1.1</b> Identification</a></li>
+<li class="chapter" data-level="9.1.2" data-path="following-the-model.html"><a href="following-the-model.html#estimation"><i class="fa fa-check"></i><b>9.1.2</b> Estimation</a></li>
+<li class="chapter" data-level="9.1.3" data-path="following-the-model.html"><a href="following-the-model.html#robustness"><i class="fa fa-check"></i><b>9.1.3</b> Robustness</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html"><i class="fa fa-check"></i><b>9.2</b> Following the inquiry</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#plug-in-principle"><i class="fa fa-check"></i><b>9.2.1</b> Plug-in principle</a></li>
+<li class="chapter" data-level="9.2.2" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#point-estimation"><i class="fa fa-check"></i><b>9.2.2</b> Point estimation</a></li>
+<li class="chapter" data-level="9.2.3" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#estimating-the-variance"><i class="fa fa-check"></i><b>9.2.3</b> Estimating the variance</a></li>
+<li class="chapter" data-level="9.2.4" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#tests"><i class="fa fa-check"></i><b>9.2.4</b> Tests</a></li>
+<li class="chapter" data-level="9.2.5" data-path="following-the-inquiry.html"><a href="following-the-inquiry.html#partial-identification"><i class="fa fa-check"></i><b>9.2.5</b> Partial identification</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="p2followdatastrategy.html"><a href="p2followdatastrategy.html"><i class="fa fa-check"></i><b>9.3</b> Following the data strategy</a></li>
+<li class="chapter" data-level="9.4" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html"><i class="fa fa-check"></i><b>9.4</b> Qualitative methods of inference</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#process-tracing"><i class="fa fa-check"></i><b>9.4.1</b> Process-tracing</a></li>
+<li class="chapter" data-level="9.4.2" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#boolean-and-set-theoretic-methods"><i class="fa fa-check"></i><b>9.4.2</b> Boolean and set-theoretic methods</a></li>
+<li class="chapter" data-level="9.4.3" data-path="qualitative-methods-of-inference.html"><a href="qualitative-methods-of-inference.html#narrative-comparison"><i class="fa fa-check"></i><b>9.4.3</b> Narrative comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="answer-strategies-as-procedures.html"><a href="answer-strategies-as-procedures.html"><i class="fa fa-check"></i><b>9.5</b> Answer strategies as procedures</a></li>
+<li class="chapter" data-level="9.6" data-path="interpretation.html"><a href="interpretation.html"><i class="fa fa-check"></i><b>9.6</b> Interpretation</a></li>
+<li class="chapter" data-level="9.7" data-path="further-reading-4.html"><a href="further-reading-4.html"><i class="fa fa-check"></i><b>9.7</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="p2diagnosis.html"><a href="p2diagnosis.html"><i class="fa fa-check"></i><b>10</b> Diagnosis</a><ul>
+<li class="chapter" data-level="10.1" data-path="estimating-diagnosands-analytically.html"><a href="estimating-diagnosands-analytically.html"><i class="fa fa-check"></i><b>10.1</b> Estimating diagnosands analytically</a></li>
+<li class="chapter" data-level="10.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html"><i class="fa fa-check"></i><b>10.2</b> Estimating diagnosands via simulation</a><ul>
+<li class="chapter" data-level="10.2.1" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#interpreting-diagnosands"><i class="fa fa-check"></i><b>10.2.1</b> Interpreting diagnosands</a></li>
+<li class="chapter" data-level="10.2.2" data-path="estimating-diagnosands-via-simulation.html"><a href="estimating-diagnosands-via-simulation.html#how-many-simulations-to-run"><i class="fa fa-check"></i><b>10.2.2</b> How many simulations to run</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="diagnosands.html"><a href="diagnosands.html"><i class="fa fa-check"></i><b>10.3</b> How to choose among diagnosands</a></li>
+<li class="chapter" data-level="10.4" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html"><i class="fa fa-check"></i><b>10.4</b> Diagnosing with respect to variations in M</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#estimating-the-minimum-detectable-effect-size"><i class="fa fa-check"></i><b>10.4.1</b> Estimating the minimum detectable effect size</a></li>
+<li class="chapter" data-level="10.4.2" data-path="diagnosing-with-respect-to-variations-in-m.html"><a href="diagnosing-with-respect-to-variations-in-m.html#adjudicating-between-competing-models"><i class="fa fa-check"></i><b>10.4.2</b> Adjudicating between competing models</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="further-reading-5.html"><a href="further-reading-5.html"><i class="fa fa-check"></i><b>10.5</b> Further reading</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="redesign-1.html"><a href="redesign-1.html"><i class="fa fa-check"></i><b>11</b> Redesign</a><ul>
+<li class="chapter" data-level="11.1" data-path="redesign-mountain.html"><a href="redesign-mountain.html"><i class="fa fa-check"></i><b>11.1</b> Redesign Mountain</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="part-ii-exercises.html"><a href="part-ii-exercises.html"><i class="fa fa-check"></i><b>12</b> Part II Exercises</a></li>
+<li class="part"><span><b>III Research Design Library</b></span></li>
+<li class="chapter" data-level="13" data-path="research-design-library.html"><a href="research-design-library.html"><i class="fa fa-check"></i><b>13</b> Research Design Library</a></li>
+<li class="chapter" data-level="14" data-path="observational-designs-for-descriptive-inference.html"><a href="observational-designs-for-descriptive-inference.html"><i class="fa fa-check"></i><b>14</b> Observational designs for descriptive inference</a><ul>
+<li class="chapter" data-level="14.1" data-path="random-sampling.html"><a href="random-sampling.html"><i class="fa fa-check"></i><b>14.1</b> Random sampling</a><ul>
+<li class="chapter" data-level="14.1.1" data-path="random-sampling.html"><a href="random-sampling.html#declaration-1"><i class="fa fa-check"></i><b>14.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.1.2" data-path="random-sampling.html"><a href="random-sampling.html#dag"><i class="fa fa-check"></i><b>14.1.2</b> Dag</a></li>
+<li class="chapter" data-level="14.1.3" data-path="random-sampling.html"><a href="random-sampling.html#example-2"><i class="fa fa-check"></i><b>14.1.3</b> Example</a></li>
+<li class="chapter" data-level="14.1.4" data-path="random-sampling.html"><a href="random-sampling.html#simple-random-sampling"><i class="fa fa-check"></i><b>14.1.4</b> Simple random sampling</a></li>
+<li class="chapter" data-level="14.1.5" data-path="random-sampling.html"><a href="random-sampling.html#stratified-and-clustered-random-sampling"><i class="fa fa-check"></i><b>14.1.5</b> Stratified and clustered random sampling</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="poststratification.html"><a href="poststratification.html"><i class="fa fa-check"></i><b>14.2</b> Poststratification</a><ul>
+<li class="chapter" data-level="14.2.1" data-path="poststratification.html"><a href="poststratification.html#declaration-2"><i class="fa fa-check"></i><b>14.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.2.2" data-path="poststratification.html"><a href="poststratification.html#dag-1"><i class="fa fa-check"></i><b>14.2.2</b> Dag</a></li>
+<li class="chapter" data-level="14.2.3" data-path="poststratification.html"><a href="poststratification.html#exercises-1"><i class="fa fa-check"></i><b>14.2.3</b> Exercises</a></li>
+<li class="chapter" data-level="14.2.4" data-path="poststratification.html"><a href="poststratification.html#example-3"><i class="fa fa-check"></i><b>14.2.4</b> Example</a></li>
+<li class="chapter" data-level="14.2.5" data-path="poststratification.html"><a href="poststratification.html#example-4"><i class="fa fa-check"></i><b>14.2.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html"><i class="fa fa-check"></i><b>14.3</b> Inference about unobserved variables</a><ul>
+<li class="chapter" data-level="14.3.1" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#declaration-3"><i class="fa fa-check"></i><b>14.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.3.2" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#dag-2"><i class="fa fa-check"></i><b>14.3.2</b> Dag</a></li>
+<li class="chapter" data-level="14.3.3" data-path="inference-about-unobserved-variables.html"><a href="inference-about-unobserved-variables.html#example-5"><i class="fa fa-check"></i><b>14.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="structural-estimation.html"><a href="structural-estimation.html"><i class="fa fa-check"></i><b>14.4</b> Structural estimation</a><ul>
+<li class="chapter" data-level="14.4.1" data-path="structural-estimation.html"><a href="structural-estimation.html#declaration-4"><i class="fa fa-check"></i><b>14.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="14.4.2" data-path="structural-estimation.html"><a href="structural-estimation.html#dag-3"><i class="fa fa-check"></i><b>14.4.2</b> Dag</a></li>
+<li class="chapter" data-level="14.4.3" data-path="structural-estimation.html"><a href="structural-estimation.html#example-6"><i class="fa fa-check"></i><b>14.4.3</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="experimental-designs-for-descriptive-inference.html"><a href="experimental-designs-for-descriptive-inference.html"><i class="fa fa-check"></i><b>15</b> Experimental designs for descriptive inference</a><ul>
+<li class="chapter" data-level="15.1" data-path="audit-experiments.html"><a href="audit-experiments.html"><i class="fa fa-check"></i><b>15.1</b> Audit experiments</a><ul>
+<li class="chapter" data-level="15.1.1" data-path="audit-experiments.html"><a href="audit-experiments.html#declaration-5"><i class="fa fa-check"></i><b>15.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.1.2" data-path="audit-experiments.html"><a href="audit-experiments.html#dag-4"><i class="fa fa-check"></i><b>15.1.2</b> Dag</a></li>
+<li class="chapter" data-level="15.1.3" data-path="audit-experiments.html"><a href="audit-experiments.html#example-7"><i class="fa fa-check"></i><b>15.1.3</b> Example</a></li>
+<li class="chapter" data-level="15.1.4" data-path="audit-experiments.html"><a href="audit-experiments.html#design-declaration-2"><i class="fa fa-check"></i><b>15.1.4</b> Design Declaration</a></li>
+<li class="chapter" data-level="15.1.5" data-path="audit-experiments.html"><a href="audit-experiments.html#takeaways-2"><i class="fa fa-check"></i><b>15.1.5</b> Takeaways</a></li>
+<li class="chapter" data-level="15.1.6" data-path="audit-experiments.html"><a href="audit-experiments.html#applications"><i class="fa fa-check"></i><b>15.1.6</b> Applications</a></li>
+<li class="chapter" data-level="15.1.7" data-path="audit-experiments.html"><a href="audit-experiments.html#exercises-2"><i class="fa fa-check"></i><b>15.1.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="15.2" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html"><i class="fa fa-check"></i><b>15.2</b> Experiments for sensitive questions</a><ul>
+<li class="chapter" data-level="15.2.1" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#declaration-6"><i class="fa fa-check"></i><b>15.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.2.2" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#dag-5"><i class="fa fa-check"></i><b>15.2.2</b> Dag</a></li>
+<li class="chapter" data-level="15.2.3" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#example-8"><i class="fa fa-check"></i><b>15.2.3</b> Example</a></li>
+<li class="chapter" data-level="15.2.4" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#list-experiments"><i class="fa fa-check"></i><b>15.2.4</b> List experiments</a></li>
+<li class="chapter" data-level="15.2.5" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#randomized-response-technique"><i class="fa fa-check"></i><b>15.2.5</b> Randomized response technique</a></li>
+<li class="chapter" data-level="15.2.6" data-path="experiments-for-sensitive-questions.html"><a href="experiments-for-sensitive-questions.html#references"><i class="fa fa-check"></i><b>15.2.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="15.3" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html"><i class="fa fa-check"></i><b>15.3</b> Conjoint experiments</a><ul>
+<li class="chapter" data-level="15.3.1" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#declaration-8"><i class="fa fa-check"></i><b>15.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.3.2" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#dag-6"><i class="fa fa-check"></i><b>15.3.2</b> Dag</a></li>
+<li class="chapter" data-level="15.3.3" data-path="conjoint-experiments.html"><a href="conjoint-experiments.html#example-9"><i class="fa fa-check"></i><b>15.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="behavioral-games.html"><a href="behavioral-games.html"><i class="fa fa-check"></i><b>15.4</b> Behavioral games</a><ul>
+<li class="chapter" data-level="15.4.1" data-path="behavioral-games.html"><a href="behavioral-games.html#declaration-9"><i class="fa fa-check"></i><b>15.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="15.4.2" data-path="behavioral-games.html"><a href="behavioral-games.html#dag-7"><i class="fa fa-check"></i><b>15.4.2</b> Dag</a></li>
+<li class="chapter" data-level="15.4.3" data-path="behavioral-games.html"><a href="behavioral-games.html#example-10"><i class="fa fa-check"></i><b>15.4.3</b> Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="observational-designs-for-causal-inference.html"><a href="observational-designs-for-causal-inference.html"><i class="fa fa-check"></i><b>16</b> Observational designs for causal inference</a><ul>
+<li class="chapter" data-level="16.1" data-path="selection-on-observables.html"><a href="selection-on-observables.html"><i class="fa fa-check"></i><b>16.1</b> Selection on observables</a><ul>
+<li class="chapter" data-level="16.1.1" data-path="selection-on-observables.html"><a href="selection-on-observables.html#declaration-10"><i class="fa fa-check"></i><b>16.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.1.2" data-path="selection-on-observables.html"><a href="selection-on-observables.html#dag-8"><i class="fa fa-check"></i><b>16.1.2</b> Dag</a></li>
+<li class="chapter" data-level="16.1.3" data-path="selection-on-observables.html"><a href="selection-on-observables.html#example-11"><i class="fa fa-check"></i><b>16.1.3</b> Example</a></li>
+<li class="chapter" data-level="16.1.4" data-path="selection-on-observables.html"><a href="selection-on-observables.html#classic-confounding"><i class="fa fa-check"></i><b>16.1.4</b> Classic Confounding</a></li>
+<li class="chapter" data-level="16.1.5" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-the-functional-form-is-wrong"><i class="fa fa-check"></i><b>16.1.5</b> What if the functional form is wrong?</a></li>
+<li class="chapter" data-level="16.1.6" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-you-have-unobserved-confounding"><i class="fa fa-check"></i><b>16.1.6</b> What if you have unobserved confounding?</a></li>
+<li class="chapter" data-level="16.1.7" data-path="selection-on-observables.html"><a href="selection-on-observables.html#what-if-the-observed-covariate-is-post-treatment"><i class="fa fa-check"></i><b>16.1.7</b> What if the observed covariate is post-treatment?</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="further-reading-6.html"><a href="further-reading-6.html"><i class="fa fa-check"></i><b>16.2</b> Further reading</a></li>
+<li class="chapter" data-level="16.3" data-path="p3iv.html"><a href="p3iv.html"><i class="fa fa-check"></i><b>16.3</b> Instrumental variables</a><ul>
+<li class="chapter" data-level="16.3.1" data-path="p3iv.html"><a href="p3iv.html#declaration-11"><i class="fa fa-check"></i><b>16.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.3.2" data-path="p3iv.html"><a href="p3iv.html#dag-9"><i class="fa fa-check"></i><b>16.3.2</b> Dag</a></li>
+<li class="chapter" data-level="16.3.3" data-path="p3iv.html"><a href="p3iv.html#redesign-2"><i class="fa fa-check"></i><b>16.3.3</b> Redesign</a></li>
+<li class="chapter" data-level="16.3.4" data-path="p3iv.html"><a href="p3iv.html#suggested-readings"><i class="fa fa-check"></i><b>16.3.4</b> Suggested readings</a></li>
+<li class="chapter" data-level="16.3.5" data-path="p3iv.html"><a href="p3iv.html#example-12"><i class="fa fa-check"></i><b>16.3.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="difference-in-differences.html"><a href="difference-in-differences.html"><i class="fa fa-check"></i><b>16.4</b> Difference-in-differences</a><ul>
+<li class="chapter" data-level="16.4.1" data-path="difference-in-differences.html"><a href="difference-in-differences.html#declaration-12"><i class="fa fa-check"></i><b>16.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.4.2" data-path="difference-in-differences.html"><a href="difference-in-differences.html#dag-10"><i class="fa fa-check"></i><b>16.4.2</b> Dag</a></li>
+<li class="chapter" data-level="16.4.3" data-path="difference-in-differences.html"><a href="difference-in-differences.html#example-13"><i class="fa fa-check"></i><b>16.4.3</b> Example</a></li>
+<li class="chapter" data-level="16.4.4" data-path="difference-in-differences.html"><a href="difference-in-differences.html#two-period-two-group-setting"><i class="fa fa-check"></i><b>16.4.4</b> Two-period two-group setting</a></li>
+<li class="chapter" data-level="16.4.5" data-path="difference-in-differences.html"><a href="difference-in-differences.html#parallel-trends-assumption"><i class="fa fa-check"></i><b>16.4.5</b> Parallel trends assumption</a></li>
+<li class="chapter" data-level="16.4.6" data-path="difference-in-differences.html"><a href="difference-in-differences.html#multi-period-design"><i class="fa fa-check"></i><b>16.4.6</b> Multi-period design</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="RDD.html"><a href="RDD.html"><i class="fa fa-check"></i><b>16.5</b> Regression Discontinuity</a><ul>
+<li class="chapter" data-level="16.5.1" data-path="RDD.html"><a href="RDD.html#declaration-13"><i class="fa fa-check"></i><b>16.5.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.5.2" data-path="RDD.html"><a href="RDD.html#dag-11"><i class="fa fa-check"></i><b>16.5.2</b> Dag</a></li>
+<li class="chapter" data-level="16.5.3" data-path="RDD.html"><a href="RDD.html#example-14"><i class="fa fa-check"></i><b>16.5.3</b> Example</a></li>
+<li class="chapter" data-level="16.5.4" data-path="RDD.html"><a href="RDD.html#design-declaration-3"><i class="fa fa-check"></i><b>16.5.4</b> Design Declaration</a></li>
+<li class="chapter" data-level="16.5.5" data-path="RDD.html"><a href="RDD.html#takeaways-3"><i class="fa fa-check"></i><b>16.5.5</b> Takeaways</a></li>
+<li class="chapter" data-level="16.5.6" data-path="RDD.html"><a href="RDD.html#further-reading-7"><i class="fa fa-check"></i><b>16.5.6</b> Further Reading</a></li>
+<li class="chapter" data-level="16.5.7" data-path="RDD.html"><a href="RDD.html#exercises-3"><i class="fa fa-check"></i><b>16.5.7</b> Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html"><i class="fa fa-check"></i><b>16.6</b> Bayesian process-tracing</a><ul>
+<li class="chapter" data-level="16.6.1" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#declaration-14"><i class="fa fa-check"></i><b>16.6.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.6.2" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#dag-12"><i class="fa fa-check"></i><b>16.6.2</b> Dag</a></li>
+<li class="chapter" data-level="16.6.3" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#exercises-4"><i class="fa fa-check"></i><b>16.6.3</b> Exercises</a></li>
+<li class="chapter" data-level="16.6.4" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#online-appendix-applied-example"><i class="fa fa-check"></i><b>16.6.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="16.6.5" data-path="bayesianprocesstracing.html"><a href="bayesianprocesstracing.html#dag-13"><i class="fa fa-check"></i><b>16.6.5</b> Dag</a></li>
+</ul></li>
+<li class="chapter" data-level="16.7" data-path="synthetic-controls.html"><a href="synthetic-controls.html"><i class="fa fa-check"></i><b>16.7</b> Synthetic controls</a><ul>
+<li class="chapter" data-level="16.7.1" data-path="synthetic-controls.html"><a href="synthetic-controls.html#declaration-15"><i class="fa fa-check"></i><b>16.7.1</b> Declaration</a></li>
+<li class="chapter" data-level="16.7.2" data-path="synthetic-controls.html"><a href="synthetic-controls.html#dag-14"><i class="fa fa-check"></i><b>16.7.2</b> Dag</a></li>
+<li class="chapter" data-level="16.7.3" data-path="synthetic-controls.html"><a href="synthetic-controls.html#example-15"><i class="fa fa-check"></i><b>16.7.3</b> Example</a></li>
+<li class="chapter" data-level="16.7.4" data-path="synthetic-controls.html"><a href="synthetic-controls.html#when-there-are-not-good-controls-standard-synth-will-get-the-wrong-answer"><i class="fa fa-check"></i><b>16.7.4</b> When there are not good controls, standard synth will get the wrong answer</a></li>
+<li class="chapter" data-level="16.7.5" data-path="synthetic-controls.html"><a href="synthetic-controls.html#references-1"><i class="fa fa-check"></i><b>16.7.5</b> References</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="experimental-designs-for-causal-inference.html"><a href="experimental-designs-for-causal-inference.html"><i class="fa fa-check"></i><b>17</b> Experimental designs for causal inference</a><ul>
+<li class="chapter" data-level="17.1" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html"><i class="fa fa-check"></i><b>17.1</b> Two arm trials</a><ul>
+<li class="chapter" data-level="17.1.1" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#declaration-16"><i class="fa fa-check"></i><b>17.1.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.1.2" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#dag-15"><i class="fa fa-check"></i><b>17.1.2</b> Dag</a></li>
+<li class="chapter" data-level="17.1.3" data-path="two-arm-trials-1.html"><a href="two-arm-trials-1.html#example-16"><i class="fa fa-check"></i><b>17.1.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="blocked-trials.html"><a href="blocked-trials.html"><i class="fa fa-check"></i><b>17.2</b> Blocked trials</a><ul>
+<li class="chapter" data-level="17.2.1" data-path="blocked-trials.html"><a href="blocked-trials.html#declaration-17"><i class="fa fa-check"></i><b>17.2.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.2.2" data-path="blocked-trials.html"><a href="blocked-trials.html#dag-16"><i class="fa fa-check"></i><b>17.2.2</b> Dag</a></li>
+<li class="chapter" data-level="17.2.3" data-path="blocked-trials.html"><a href="blocked-trials.html#example-17"><i class="fa fa-check"></i><b>17.2.3</b> Example</a></li>
+<li class="chapter" data-level="17.2.4" data-path="blocked-trials.html"><a href="blocked-trials.html#two-arm-trials-and-designs-with-blocking-and-clustering"><i class="fa fa-check"></i><b>17.2.4</b> Two-arm trials and designs with blocking and clustering</a></li>
+</ul></li>
+<li class="chapter" data-level="17.3" data-path="multiarm-designs.html"><a href="multiarm-designs.html"><i class="fa fa-check"></i><b>17.3</b> Multiarm Designs</a><ul>
+<li class="chapter" data-level="17.3.1" data-path="multiarm-designs.html"><a href="multiarm-designs.html#declaration-18"><i class="fa fa-check"></i><b>17.3.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.3.2" data-path="multiarm-designs.html"><a href="multiarm-designs.html#dag-17"><i class="fa fa-check"></i><b>17.3.2</b> Dag</a></li>
+<li class="chapter" data-level="17.3.3" data-path="multiarm-designs.html"><a href="multiarm-designs.html#example-18"><i class="fa fa-check"></i><b>17.3.3</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="encouragement-designs.html"><a href="encouragement-designs.html"><i class="fa fa-check"></i><b>17.4</b> Encouragement designs</a><ul>
+<li class="chapter" data-level="17.4.1" data-path="encouragement-designs.html"><a href="encouragement-designs.html#declaration-19"><i class="fa fa-check"></i><b>17.4.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.4.2" data-path="encouragement-designs.html"><a href="encouragement-designs.html#dag-18"><i class="fa fa-check"></i><b>17.4.2</b> Dag</a></li>
+<li class="chapter" data-level="17.4.3" data-path="encouragement-designs.html"><a href="encouragement-designs.html#example-19"><i class="fa fa-check"></i><b>17.4.3</b> Example</a></li>
+<li class="chapter" data-level="17.4.4" data-path="encouragement-designs.html"><a href="encouragement-designs.html#references-2"><i class="fa fa-check"></i><b>17.4.4</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html"><i class="fa fa-check"></i><b>17.5</b> Stepped wedge designs</a><ul>
+<li class="chapter" data-level="17.5.1" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#declaration-20"><i class="fa fa-check"></i><b>17.5.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.5.2" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#dag-19"><i class="fa fa-check"></i><b>17.5.2</b> Dag</a></li>
+<li class="chapter" data-level="17.5.3" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#exercises-5"><i class="fa fa-check"></i><b>17.5.3</b> Exercises</a></li>
+<li class="chapter" data-level="17.5.4" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#online-appendix-applied-example-1"><i class="fa fa-check"></i><b>17.5.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="17.5.5" data-path="stepped-wedge-designs.html"><a href="stepped-wedge-designs.html#references-3"><i class="fa fa-check"></i><b>17.5.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17.6" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html"><i class="fa fa-check"></i><b>17.6</b> Randomized Saturation Design</a><ul>
+<li class="chapter" data-level="17.6.1" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#declaration-21"><i class="fa fa-check"></i><b>17.6.1</b> Declaration</a></li>
+<li class="chapter" data-level="17.6.2" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#dag-20"><i class="fa fa-check"></i><b>17.6.2</b> Dag</a></li>
+<li class="chapter" data-level="17.6.3" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#exercises-6"><i class="fa fa-check"></i><b>17.6.3</b> Exercises</a></li>
+<li class="chapter" data-level="17.6.4" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#online-appendix-applied-example-2"><i class="fa fa-check"></i><b>17.6.4</b> Online Appendix Applied Example</a></li>
+<li class="chapter" data-level="17.6.5" data-path="randomized-saturation-design.html"><a href="randomized-saturation-design.html#design-declaration-4"><i class="fa fa-check"></i><b>17.6.5</b> Design Declaration</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="multi-study-designs.html"><a href="multi-study-designs.html"><i class="fa fa-check"></i><b>18</b> Multi-study designs</a><ul>
+<li class="chapter" data-level="18.1" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html"><i class="fa fa-check"></i><b>18.1</b> Papers with multiple studies</a><ul>
+<li class="chapter" data-level="18.1.1" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#design-declaration-5"><i class="fa fa-check"></i><b>18.1.1</b> Design Declaration</a></li>
+<li class="chapter" data-level="18.1.2" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#dag-21"><i class="fa fa-check"></i><b>18.1.2</b> DAG</a></li>
+<li class="chapter" data-level="18.1.3" data-path="papers-with-multiple-studies.html"><a href="papers-with-multiple-studies.html#takeaways-4"><i class="fa fa-check"></i><b>18.1.3</b> Takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="18.2" data-path="multi-site-studies.html"><a href="multi-site-studies.html"><i class="fa fa-check"></i><b>18.2</b> Multi-site studies</a></li>
+<li class="chapter" data-level="18.3" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html"><i class="fa fa-check"></i><b>18.3</b> The Metaketa design</a><ul>
+<li class="chapter" data-level="18.3.1" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#unbiased-estimates-of-out-of-sample-sites-in-presence-of-heterogeneous-effects"><i class="fa fa-check"></i><b>18.3.1</b> Unbiased estimates of out-of-sample sites in presence of heterogeneous effects</a></li>
+<li class="chapter" data-level="18.3.2" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#bayesian-estimation-can-improve-estimates-of-effects-for-sampled-sites"><i class="fa fa-check"></i><b>18.3.2</b> Bayesian estimation can improve estimates of effects for sampled sites</a></li>
+<li class="chapter" data-level="18.3.3" data-path="the-metaketa-design.html"><a href="the-metaketa-design.html#when-things-break-down-confounded-sampling"><i class="fa fa-check"></i><b>18.3.3</b> when things break down: confounded sampling</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="part-iii-exercises.html"><a href="part-iii-exercises.html"><i class="fa fa-check"></i><b>19</b> Part III Exercises</a></li>
+<li class="part"><span><b>IV Research Design Lifecycle</b></span></li>
+<li class="chapter" data-level="20" data-path="research-design-lifecycle.html"><a href="research-design-lifecycle.html"><i class="fa fa-check"></i><b>20</b> Research Design Lifecycle</a><ul>
+<li class="chapter" data-level="20.1" data-path="p4planning.html"><a href="p4planning.html"><i class="fa fa-check"></i><b>20.1</b> Planning</a><ul>
+<li class="chapter" data-level="20.1.1" data-path="p4planning.html"><a href="p4planning.html#example-20"><i class="fa fa-check"></i><b>20.1.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.2" data-path="ethical-review.html"><a href="ethical-review.html"><i class="fa fa-check"></i><b>20.2</b> Ethical Review</a><ul>
+<li class="chapter" data-level="20.2.1" data-path="ethical-review.html"><a href="ethical-review.html#ethical-principles-as-diagnosands"><i class="fa fa-check"></i><b>20.2.1</b> Ethical principles as diagnosands</a></li>
+</ul></li>
+<li class="chapter" data-level="20.3" data-path="partners.html"><a href="partners.html"><i class="fa fa-check"></i><b>20.3</b> Partners</a></li>
+<li class="chapter" data-level="20.4" data-path="funding.html"><a href="funding.html"><i class="fa fa-check"></i><b>20.4</b> Funding</a></li>
+<li class="chapter" data-level="20.5" data-path="p4piloting.html"><a href="p4piloting.html"><i class="fa fa-check"></i><b>20.5</b> Piloting</a></li>
+<li class="chapter" data-level="20.6" data-path="implementation.html"><a href="implementation.html"><i class="fa fa-check"></i><b>20.6</b> Implementation</a></li>
+<li class="chapter" data-level="20.7" data-path="p4populatedpap.html"><a href="p4populatedpap.html"><i class="fa fa-check"></i><b>20.7</b> Populated Preanalysis Plan</a><ul>
+<li class="chapter" data-level="20.7.1" data-path="p4populatedpap.html"><a href="p4populatedpap.html#example-21"><i class="fa fa-check"></i><b>20.7.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.8" data-path="reconciliation.html"><a href="reconciliation.html"><i class="fa fa-check"></i><b>20.8</b> Reconciliation</a><ul>
+<li class="chapter" data-level="20.8.1" data-path="reconciliation.html"><a href="reconciliation.html#example-22"><i class="fa fa-check"></i><b>20.8.1</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="20.9" data-path="writing.html"><a href="writing.html"><i class="fa fa-check"></i><b>20.9</b> Writing</a></li>
+<li class="chapter" data-level="20.10" data-path="publication.html"><a href="publication.html"><i class="fa fa-check"></i><b>20.10</b> Publication</a><ul>
+<li class="chapter" data-level="20.10.1" data-path="publication.html"><a href="publication.html#reviewing-papers"><i class="fa fa-check"></i><b>20.10.1</b> Reviewing papers</a></li>
+<li class="chapter" data-level="20.10.2" data-path="publication.html"><a href="publication.html#responding-to-reviewers"><i class="fa fa-check"></i><b>20.10.2</b> Responding to reviewers</a></li>
+</ul></li>
+<li class="chapter" data-level="20.11" data-path="archiving.html"><a href="archiving.html"><i class="fa fa-check"></i><b>20.11</b> Archiving</a></li>
+<li class="chapter" data-level="20.12" data-path="reanalysis.html"><a href="reanalysis.html"><i class="fa fa-check"></i><b>20.12</b> Reanalysis</a></li>
+<li class="chapter" data-level="20.13" data-path="replication.html"><a href="replication.html"><i class="fa fa-check"></i><b>20.13</b> Replication</a></li>
+<li class="chapter" data-level="20.14" data-path="resolving-disputes.html"><a href="resolving-disputes.html"><i class="fa fa-check"></i><b>20.14</b> Resolving Disputes</a></li>
+<li class="chapter" data-level="20.15" data-path="synthesis.html"><a href="synthesis.html"><i class="fa fa-check"></i><b>20.15</b> Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="part-iv-exercises.html"><a href="part-iv-exercises.html"><i class="fa fa-check"></i><b>21</b> Part IV Exercises</a></li>
+<li class="chapter" data-level="22" data-path="glossary.html"><a href="glossary.html"><i class="fa fa-check"></i><b>22</b> Glossary</a></li>
+<li class="chapter" data-level="" data-path="references-4.html"><a href="references-4.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://declaredesign.org" target="blank">DeclareDesign</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Research Design: Declare, Diagnose, Redesign</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="the-metaketa-design" class="section level2">
+<h2><span class="header-section-number">18.3</span> The Metaketa design</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Study Number</th>
+<th>Place</th>
+<th>What Works</th>
+<th>Design Implemented</th>
+<th>Success?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td><span class="math inline">\(Y_A ~ Z_A\)</span></td>
+<td><span class="math inline">\(MIDA_A\)</span></td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>B</td>
+<td><span class="math inline">\(Y_B ~ Z_B\)</span></td>
+<td><span class="math inline">\(MIDA_B\)</span></td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>C</td>
+<td><span class="math inline">\(Y_C ~ Z_C\)</span></td>
+<td><span class="math inline">\(MIDA_C\)</span></td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>D</td>
+<td><span class="math inline">\(Y_D ~ Z_D\)</span></td>
+<td><span class="math inline">\(MIDA_D\)</span></td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>E</td>
+<td><span class="math inline">\(Y_E ~ Z_E\)</span></td>
+<td><span class="math inline">\(MIDA_E\)</span></td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>The worry is that <span class="math inline">\(I_A\)</span> and <span class="math inline">\(I_B\)</span> etc are fundamentally different inquiries about different dags</p>
+<p>[faceted figure of 5 different DAGs with nodes in different languages roman, greek, numeric, windings]. The purpose of <em>theory</em> is to tell us when the <span class="math inline">\(I\)</span>’s across context are different, but that is HARD and that is how research has gone for YEARS.</p>
+<p>The metaketa design says WAIT – LET’S agree on a <span class="math inline">\(MIDA_{MK}\)</span> that we will implement in all 5 places, mutatis mutandis. That is, everyone “localizes” their design because things work slightly differently in different places, but if we try hard, we can implement the same “important” treatment on the same “important” outcome, even though the details (like the language of the treatment materials, the specifics of the measurement strategies.) will differ from place to place.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Study Number</th>
+<th>Place</th>
+<th>What Works</th>
+<th>Design Implemented</th>
+<th>Success?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td><span class="math inline">\(Y_A ~ Z_A\)</span></td>
+<td><span class="math inline">\(\delta_A * MIDA_{MK} - (1 - \delta_A) * MIDA_A\)</span></td>
+<td>?</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>B</td>
+<td><span class="math inline">\(Y_B ~ Z_B\)</span></td>
+<td><span class="math inline">\(\delta_B * MIDA_{MK} - (1 - \delta_B) * MIDA_B\)</span></td>
+<td>?</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>C</td>
+<td><span class="math inline">\(Y_C ~ Z_C\)</span></td>
+<td><span class="math inline">\(\delta_C * MIDA_{MK} - (1 - \delta_C) * MIDA_C\)</span></td>
+<td>?</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>D</td>
+<td><span class="math inline">\(Y_D ~ Z_D\)</span></td>
+<td><span class="math inline">\(\delta_D * MIDA_{MK} - (1 - \delta_D) * MIDA_D\)</span></td>
+<td>?</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>E</td>
+<td><span class="math inline">\(Y_E ~ Z_E\)</span></td>
+<td><span class="math inline">\(\delta_E * MIDA_{MK} - (1 - \delta_E) * MIDA_E\)</span></td>
+<td>?</td>
+</tr>
+</tbody>
+</table>
+<p>Coordinating trials like the metaketa design means causing teams to implement designs that they otherwise would not have. Collaboration can bring many benefits and shared struggle, but fundamentally, it pulls all the designs towards the common <span class="math inline">\(MIDA_{MK}\)</span> design. The strength of the pull is given by the <span class="math inline">\(\delta\)</span> parameters.</p>
+<p>Will the metaketa design be a success? Only if (1) the <span class="math inline">\(MIDA_{MK}\)</span> design is a strong one and it is correct about how <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> relate. If the <span class="math inline">\(MIDA_{MK}\)</span> design is poor, however, then all the studies will be a failure. Instead of learning <span class="math inline">\(I_A\)</span> in place <span class="math inline">\(A\)</span> and learning <span class="math inline">\(I_B\)</span> in place <span class="math inline">\(B\)</span>, we learn nothing anywhere.</p>
+<p>The trouble with the standard approach (separate teams investigating phenomena that later theory tries to label as instances of the same thing) is that theory is hard and we can never really be sure if <span class="math inline">\(I_A\)</span> means the same thing for <span class="math inline">\(M_A\)</span> as <span class="math inline">\(I_B\)</span> means for <span class="math inline">\(M_B\)</span>. The metaketa design tries to solve this theoretical problem on the front end – let’s agree on what the <span class="math inline">\(M\)</span> we all have in mind is (with local variations), then run a study. This approach works well if the <span class="math inline">\(M\)</span> we all agree on is approximately correct, and it works <em>worse</em> than the standard approach if we’re wrong.</p>
+<div id="unbiased-estimates-of-out-of-sample-sites-in-presence-of-heterogeneous-effects" class="section level3">
+<h3><span class="header-section-number">18.3.1</span> Unbiased estimates of out-of-sample sites in presence of heterogeneous effects</h3>
+<p>starting point is fixed budget and you’re thinking about two possible designs: (1) a single large study in one context or (2) a set of five studies in five different contexts with the same intervention and outcome measures</p>
+<p>When there are heterogeneous effects, you can get good predictions out of sample even when average effects differ substantially (and you do better with multiple sites when sites in the the population have different proportions of subject types that are correlated with het fx)</p>
+<p>Two notable features of the design:
+- there must be het fx for this to work (otherwise our estimates get biased toward zero because of overfitting to the het variables)
+- we have to have information about the covariate in the population and the sample (here we used the proportion of people in each het type)</p>
+<p>Findings:
+- these two strategies are both unbiased
+- the design with five sites has half the RMSE of the one-site design. this is because of the variation in the proportions of types across sites.
+- interestingly there is poor coverage (anti-conservative) when you use the single site design</p>
+<p>(when you have contextual variation as well, i.e. effect differs across sites for reasons not captured by the het fx, coverage is off for all designs. will keep this point out, seems like too much and you don’t need contextual effects to get different effects across sites, those come from different proportions of types)</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="the-metaketa-design.html#cb156-1"></a>meta_re_estimator &lt;-<span class="st"> </span><span class="cf">function</span>(data){</span>
+<span id="cb156-2"><a href="the-metaketa-design.html#cb156-2"></a>  site_estimates_df &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb156-3"><a href="the-metaketa-design.html#cb156-3"></a><span class="st">    </span><span class="kw">group_by</span>(site) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb156-4"><a href="the-metaketa-design.html#cb156-4"></a><span class="st">    </span><span class="kw">do</span>(<span class="kw">tidy</span>(<span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">data =</span> .))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb156-5"><a href="the-metaketa-design.html#cb156-5"></a><span class="st">    </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb156-6"><a href="the-metaketa-design.html#cb156-6"></a><span class="st">    </span>ungroup </span>
+<span id="cb156-7"><a href="the-metaketa-design.html#cb156-7"></a>  </span>
+<span id="cb156-8"><a href="the-metaketa-design.html#cb156-8"></a>  meta_fit &lt;-<span class="st"> </span><span class="kw">rma</span>(estimate, std.error, <span class="dt">data =</span> site_estimates_df, <span class="dt">method =</span> <span class="st">&quot;REML&quot;</span>)</span>
+<span id="cb156-9"><a href="the-metaketa-design.html#cb156-9"></a>  </span>
+<span id="cb156-10"><a href="the-metaketa-design.html#cb156-10"></a>  <span class="kw">with</span>(meta_fit, <span class="kw">tibble</span>(</span>
+<span id="cb156-11"><a href="the-metaketa-design.html#cb156-11"></a>    <span class="dt">estimate =</span> <span class="kw">as.vector</span>(beta), <span class="dt">std.error =</span> se, <span class="dt">p.value =</span> pval, <span class="dt">conf.low =</span> ci.lb, <span class="dt">conf.high =</span> ci.ub))</span>
+<span id="cb156-12"><a href="the-metaketa-design.html#cb156-12"></a>}</span>
+<span id="cb156-13"><a href="the-metaketa-design.html#cb156-13"></a></span>
+<span id="cb156-14"><a href="the-metaketa-design.html#cb156-14"></a>post_strat_estimator &lt;-<span class="st"> </span><span class="cf">function</span>(data, pr_types_population) {</span>
+<span id="cb156-15"><a href="the-metaketa-design.html#cb156-15"></a>  <span class="cf">if</span>(<span class="kw">length</span>(<span class="kw">unique</span>(data<span class="op">$</span>site)) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>) {</span>
+<span id="cb156-16"><a href="the-metaketa-design.html#cb156-16"></a>    fit &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z<span class="op">*</span><span class="kw">as.factor</span>(subject_type) <span class="op">+</span><span class="st"> </span><span class="kw">as.factor</span>(site), <span class="dt">data =</span> data)</span>
+<span id="cb156-17"><a href="the-metaketa-design.html#cb156-17"></a>    <span class="kw">tidy</span>(fit)</span>
+<span id="cb156-18"><a href="the-metaketa-design.html#cb156-18"></a>  } <span class="cf">else</span> {</span>
+<span id="cb156-19"><a href="the-metaketa-design.html#cb156-19"></a>    fit &lt;-<span class="st"> </span><span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z<span class="op">*</span><span class="kw">as.factor</span>(subject_type), <span class="dt">data =</span> data)</span>
+<span id="cb156-20"><a href="the-metaketa-design.html#cb156-20"></a>  }</span>
+<span id="cb156-21"><a href="the-metaketa-design.html#cb156-21"></a>  </span>
+<span id="cb156-22"><a href="the-metaketa-design.html#cb156-22"></a>  alpha &lt;-<span class="st"> </span><span class="fl">.05</span></span>
+<span id="cb156-23"><a href="the-metaketa-design.html#cb156-23"></a>  </span>
+<span id="cb156-24"><a href="the-metaketa-design.html#cb156-24"></a>  lh_fit &lt;-<span class="st"> </span><span class="kw">try</span>({ <span class="kw">linearHypothesis</span>(</span>
+<span id="cb156-25"><a href="the-metaketa-design.html#cb156-25"></a>    fit, </span>
+<span id="cb156-26"><a href="the-metaketa-design.html#cb156-26"></a>    <span class="dt">hypothesis.matrix =</span> <span class="kw">paste</span>(<span class="kw">paste</span>(<span class="kw">paste</span>(pr_types_population[<span class="dv">91</span><span class="op">:</span><span class="dv">100</span>][<span class="op">-</span><span class="dv">1</span>], <span class="st">&quot;*&quot;</span>, <span class="kw">matchCoefs</span>(fit, <span class="st">&quot;Z&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>), <span class="dt">collapse =</span> <span class="st">&quot; + &quot;</span>), <span class="st">&quot; = 0&quot;</span>), </span>
+<span id="cb156-27"><a href="the-metaketa-design.html#cb156-27"></a>    <span class="dt">level =</span> <span class="dv">1</span> <span class="op">-</span><span class="st"> </span>alpha) })</span>
+<span id="cb156-28"><a href="the-metaketa-design.html#cb156-28"></a>  </span>
+<span id="cb156-29"><a href="the-metaketa-design.html#cb156-29"></a>  <span class="cf">if</span>(<span class="op">!</span><span class="kw">inherits</span>(lh_fit, <span class="st">&quot;try-error&quot;</span>)) {</span>
+<span id="cb156-30"><a href="the-metaketa-design.html#cb156-30"></a>    <span class="kw">tibble</span>(<span class="dt">estimate =</span> <span class="kw">drop</span>(<span class="kw">attr</span>(lh_fit, <span class="st">&quot;value&quot;</span>)), </span>
+<span id="cb156-31"><a href="the-metaketa-design.html#cb156-31"></a>           <span class="dt">std.error =</span> <span class="kw">sqrt</span>(<span class="kw">diag</span>(<span class="kw">attr</span>(lh_fit, <span class="st">&quot;vcov&quot;</span>))),</span>
+<span id="cb156-32"><a href="the-metaketa-design.html#cb156-32"></a>           <span class="dt">df =</span> fit<span class="op">$</span>df.residual, </span>
+<span id="cb156-33"><a href="the-metaketa-design.html#cb156-33"></a>           <span class="dt">statistic =</span> estimate <span class="op">/</span><span class="st"> </span>std.error, </span>
+<span id="cb156-34"><a href="the-metaketa-design.html#cb156-34"></a>           <span class="dt">p.value =</span> <span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">pt</span>(<span class="kw">abs</span>(statistic), df, <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb156-35"><a href="the-metaketa-design.html#cb156-35"></a>           <span class="dt">conf.low =</span> estimate <span class="op">+</span><span class="st"> </span>std.error <span class="op">*</span><span class="st"> </span><span class="kw">qt</span>(alpha <span class="op">/</span><span class="st"> </span><span class="dv">2</span>, df),</span>
+<span id="cb156-36"><a href="the-metaketa-design.html#cb156-36"></a>           <span class="dt">conf.high =</span> estimate <span class="op">+</span><span class="st"> </span>std.error <span class="op">*</span><span class="st"> </span><span class="kw">qt</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>alpha <span class="op">/</span><span class="st"> </span><span class="dv">2</span>, df))</span>
+<span id="cb156-37"><a href="the-metaketa-design.html#cb156-37"></a>  } <span class="cf">else</span> {</span>
+<span id="cb156-38"><a href="the-metaketa-design.html#cb156-38"></a>    <span class="kw">tibble</span>(<span class="dt">error =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb156-39"><a href="the-metaketa-design.html#cb156-39"></a>  }</span>
+<span id="cb156-40"><a href="the-metaketa-design.html#cb156-40"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="the-metaketa-design.html#cb157-1"></a><span class="co"># need to have biased sampling to get bias here</span></span>
+<span id="cb157-2"><a href="the-metaketa-design.html#cb157-2"></a><span class="co"># two kinds of populations, one in which the study type determines the subject types and you select on study type</span></span>
+<span id="cb157-3"><a href="the-metaketa-design.html#cb157-3"></a><span class="co">#   a second kind where study type determines study shock </span></span>
+<span id="cb157-4"><a href="the-metaketa-design.html#cb157-4"></a><span class="co">#   in second type if you adjust for subject type then you will be able to unbiased recover global</span></span>
+<span id="cb157-5"><a href="the-metaketa-design.html#cb157-5"></a></span>
+<span id="cb157-6"><a href="the-metaketa-design.html#cb157-6"></a>multi_site_designer &lt;-<span class="st"> </span><span class="cf">function</span>(</span>
+<span id="cb157-7"><a href="the-metaketa-design.html#cb157-7"></a>  <span class="dt">N_sites =</span> <span class="dv">10</span>,</span>
+<span id="cb157-8"><a href="the-metaketa-design.html#cb157-8"></a>  <span class="dt">n_study_sites =</span> <span class="dv">5</span>,</span>
+<span id="cb157-9"><a href="the-metaketa-design.html#cb157-9"></a>  <span class="dt">n_subjects_per_site =</span> <span class="dv">1000</span>,</span>
+<span id="cb157-10"><a href="the-metaketa-design.html#cb157-10"></a>  <span class="dt">feasible_effect =</span> <span class="dv">0</span>,</span>
+<span id="cb157-11"><a href="the-metaketa-design.html#cb157-11"></a>  <span class="dt">subject_type_effects =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="fl">-0.1</span>, <span class="dt">to =</span> <span class="fl">0.1</span>, <span class="dt">length.out =</span> <span class="dv">10</span>),</span>
+<span id="cb157-12"><a href="the-metaketa-design.html#cb157-12"></a>  <span class="dt">pr_types =</span> <span class="kw">c</span>( <span class="co"># rows are sites, columns are types</span></span>
+<span id="cb157-13"><a href="the-metaketa-design.html#cb157-13"></a>    <span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.09</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>,</span>
+<span id="cb157-14"><a href="the-metaketa-design.html#cb157-14"></a>    <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.005</span>, <span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.09</span>, <span class="fl">0.005</span>,</span>
+<span id="cb157-15"><a href="the-metaketa-design.html#cb157-15"></a>    <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.09</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>,</span>
+<span id="cb157-16"><a href="the-metaketa-design.html#cb157-16"></a>    <span class="dv">0</span>, <span class="fl">0.15</span>, <span class="fl">0.005</span>, <span class="fl">0.09</span>, <span class="fl">0.005</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>,</span>
+<span id="cb157-17"><a href="the-metaketa-design.html#cb157-17"></a>    <span class="fl">0.005</span>, <span class="fl">0.1</span>, <span class="fl">0.09</span>, <span class="fl">0.25</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.005</span>, <span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>,</span>
+<span id="cb157-18"><a href="the-metaketa-design.html#cb157-18"></a>    <span class="fl">0.005</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.005</span>, <span class="fl">0.15</span>, <span class="fl">0.09</span>, <span class="fl">0.15</span>,</span>
+<span id="cb157-19"><a href="the-metaketa-design.html#cb157-19"></a>    <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.005</span>, <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.09</span>, <span class="fl">0.005</span>, <span class="fl">0.1</span>, <span class="dv">0</span>,</span>
+<span id="cb157-20"><a href="the-metaketa-design.html#cb157-20"></a>    <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="dv">0</span>, <span class="fl">0.005</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span>, <span class="fl">0.005</span>, <span class="fl">0.09</span>,</span>
+<span id="cb157-21"><a href="the-metaketa-design.html#cb157-21"></a>    <span class="fl">0.005</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.15</span>, <span class="fl">0.09</span>, <span class="fl">0.005</span>, <span class="fl">0.15</span>,</span>
+<span id="cb157-22"><a href="the-metaketa-design.html#cb157-22"></a>    <span class="fl">0.005</span>, <span class="fl">0.09</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.15</span>, <span class="fl">0.005</span>, <span class="fl">0.25</span>, <span class="fl">0.15</span>)</span>
+<span id="cb157-23"><a href="the-metaketa-design.html#cb157-23"></a>) {</span>
+<span id="cb157-24"><a href="the-metaketa-design.html#cb157-24"></a>  <span class="kw">declare_population</span>(</span>
+<span id="cb157-25"><a href="the-metaketa-design.html#cb157-25"></a>    <span class="dt">site =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_sites, <span class="dt">feasible_site =</span> <span class="kw">sample</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">8</span>), <span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>)), N, <span class="dt">replace =</span> <span class="ot">FALSE</span>)),</span>
+<span id="cb157-26"><a href="the-metaketa-design.html#cb157-26"></a>    <span class="dt">subject_types =</span> <span class="kw">add_level</span>(</span>
+<span id="cb157-27"><a href="the-metaketa-design.html#cb157-27"></a>      <span class="dt">N =</span> <span class="dv">10</span>,</span>
+<span id="cb157-28"><a href="the-metaketa-design.html#cb157-28"></a>      <span class="dt">subject_type =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,</span>
+<span id="cb157-29"><a href="the-metaketa-design.html#cb157-29"></a>      <span class="dt">subject_type_effect =</span> subject_type_effects,</span>
+<span id="cb157-30"><a href="the-metaketa-design.html#cb157-30"></a>      <span class="dt">type_proportion =</span> pr_types,</span>
+<span id="cb157-31"><a href="the-metaketa-design.html#cb157-31"></a>      <span class="dt">N_subjects =</span> <span class="kw">ceiling</span>(<span class="dv">2500</span> <span class="op">*</span><span class="st"> </span>type_proportion)</span>
+<span id="cb157-32"><a href="the-metaketa-design.html#cb157-32"></a>    ),</span>
+<span id="cb157-33"><a href="the-metaketa-design.html#cb157-33"></a>    <span class="dt">subjects =</span> <span class="kw">add_level</span>(<span class="dt">N =</span> N_subjects, <span class="dt">noise =</span> <span class="kw">rnorm</span>(N))</span>
+<span id="cb157-34"><a href="the-metaketa-design.html#cb157-34"></a>  ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb157-35"><a href="the-metaketa-design.html#cb157-35"></a><span class="st">    </span><span class="kw">declare_potential_outcomes</span>(Y <span class="op">~</span><span class="st"> </span>Z <span class="op">*</span><span class="st"> </span>(<span class="fl">0.1</span> <span class="op">+</span><span class="st"> </span>subject_type_effect <span class="op">+</span><span class="st"> </span>feasible_effect <span class="op">*</span><span class="st"> </span>feasible_site) <span class="op">+</span><span class="st"> </span>noise) <span class="op">+</span></span>
+<span id="cb157-36"><a href="the-metaketa-design.html#cb157-36"></a><span class="st">    </span><span class="kw">declare_estimand</span>(<span class="dt">ATE_feasible =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>), <span class="dt">subset =</span> feasible_site <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="co"># true effect for feasible sites</span></span>
+<span id="cb157-37"><a href="the-metaketa-design.html#cb157-37"></a><span class="st">    </span><span class="kw">declare_sampling</span>(<span class="dt">clusters =</span> site, <span class="dt">strata =</span> feasible_site, <span class="dt">strata_n =</span> <span class="kw">c</span>(<span class="dv">0</span>, n_study_sites)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb157-38"><a href="the-metaketa-design.html#cb157-38"></a><span class="st">    </span><span class="kw">declare_sampling</span>(<span class="dt">strata =</span> site, <span class="dt">n =</span> n_subjects_per_site) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb157-39"><a href="the-metaketa-design.html#cb157-39"></a><span class="st">    </span><span class="kw">declare_assignment</span>(<span class="dt">blocks =</span> site, <span class="dt">prob =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb157-40"><a href="the-metaketa-design.html#cb157-40"></a><span class="st">    </span><span class="kw">declare_estimand</span>(<span class="dt">study_site_ATE =</span> <span class="kw">mean</span>(Y_Z_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>Y_Z_<span class="dv">0</span>)) <span class="op">+</span></span>
+<span id="cb157-41"><a href="the-metaketa-design.html#cb157-41"></a><span class="st">    </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> <span class="kw">tidy_estimator</span>(post_strat_estimator), <span class="dt">pr_types_population =</span> pr_types, <span class="dt">label =</span> <span class="st">&quot;post-strat&quot;</span>)</span>
+<span id="cb157-42"><a href="the-metaketa-design.html#cb157-42"></a>}</span>
+<span id="cb157-43"><a href="the-metaketa-design.html#cb157-43"></a></span>
+<span id="cb157-44"><a href="the-metaketa-design.html#cb157-44"></a>single_site_large_design &lt;-<span class="st"> </span><span class="kw">multi_site_designer</span>(<span class="dt">n_study_sites =</span> <span class="dv">1</span>, <span class="dt">n_subjects_per_site =</span> <span class="dv">2500</span>)</span>
+<span id="cb157-45"><a href="the-metaketa-design.html#cb157-45"></a></span>
+<span id="cb157-46"><a href="the-metaketa-design.html#cb157-46"></a>small_study_five_sites &lt;-<span class="st"> </span><span class="kw">multi_site_designer</span>(<span class="dt">n_study_sites =</span> <span class="dv">5</span>, <span class="dt">n_subjects_per_site =</span> <span class="dv">500</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="the-metaketa-design.html#cb158-1"></a>simulations_small_large &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(single_site_large_design, small_study_five_sites, <span class="dt">sims =</span> sims)</span>
+<span id="cb158-2"><a href="the-metaketa-design.html#cb158-2"></a>diagnosis_small_large &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(simulations_small_large <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(estimate) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(std.error) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(statistic) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(p.value) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(conf.low) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(conf.high)), <span class="dt">bootstrap_sims =</span> b_sims)</span></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="the-metaketa-design.html#cb159-1"></a><span class="kw">kable</span>(<span class="kw">get_diagnosands</span>(diagnosis_small_large))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+design_label
+</th>
+<th style="text-align:left;">
+estimand_label
+</th>
+<th style="text-align:left;">
+estimator_label
+</th>
+<th style="text-align:right;">
+bias
+</th>
+<th style="text-align:right;">
+se(bias)
+</th>
+<th style="text-align:right;">
+rmse
+</th>
+<th style="text-align:right;">
+se(rmse)
+</th>
+<th style="text-align:right;">
+power
+</th>
+<th style="text-align:right;">
+se(power)
+</th>
+<th style="text-align:right;">
+coverage
+</th>
+<th style="text-align:right;">
+se(coverage)
+</th>
+<th style="text-align:right;">
+mean_estimate
+</th>
+<th style="text-align:right;">
+se(mean_estimate)
+</th>
+<th style="text-align:right;">
+sd_estimate
+</th>
+<th style="text-align:right;">
+se(sd_estimate)
+</th>
+<th style="text-align:right;">
+mean_se
+</th>
+<th style="text-align:right;">
+se(mean_se)
+</th>
+<th style="text-align:right;">
+type_s_rate
+</th>
+<th style="text-align:right;">
+se(type_s_rate)
+</th>
+<th style="text-align:right;">
+mean_estimand
+</th>
+<th style="text-align:right;">
+se(mean_estimand)
+</th>
+<th style="text-align:right;">
+n_sims
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+single_site_large_design
+</td>
+<td style="text-align:left;">
+ATE_feasible
+</td>
+<td style="text-align:left;">
+post-strat
+</td>
+<td style="text-align:right;">
+0.0031475
+</td>
+<td style="text-align:right;">
+0.0119653
+</td>
+<td style="text-align:right;">
+0.3629044
+</td>
+<td style="text-align:right;">
+0.0129728
+</td>
+<td style="text-align:right;">
+0.1025126
+</td>
+<td style="text-align:right;">
+0.009576
+</td>
+<td style="text-align:right;">
+0.9356784
+</td>
+<td style="text-align:right;">
+0.0077135
+</td>
+<td style="text-align:right;">
+0.1040090
+</td>
+<td style="text-align:right;">
+0.0119606
+</td>
+<td style="text-align:right;">
+0.3633932
+</td>
+<td style="text-align:right;">
+0.0130575
+</td>
+<td style="text-align:right;">
+0.3182932
+</td>
+<td style="text-align:right;">
+0.0065550
+</td>
+<td style="text-align:right;">
+0.1666667
+</td>
+<td style="text-align:right;">
+0.0371110
+</td>
+<td style="text-align:right;">
+0.1008615
+</td>
+<td style="text-align:right;">
+0.0003499
+</td>
+<td style="text-align:right;">
+995
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+single_site_large_design
+</td>
+<td style="text-align:left;">
+study_site_ATE
+</td>
+<td style="text-align:left;">
+post-strat
+</td>
+<td style="text-align:right;">
+0.0036542
+</td>
+<td style="text-align:right;">
+0.0119708
+</td>
+<td style="text-align:right;">
+0.3636432
+</td>
+<td style="text-align:right;">
+0.0131462
+</td>
+<td style="text-align:right;">
+0.1025126
+</td>
+<td style="text-align:right;">
+0.009576
+</td>
+<td style="text-align:right;">
+0.9356784
+</td>
+<td style="text-align:right;">
+0.0076497
+</td>
+<td style="text-align:right;">
+0.1040090
+</td>
+<td style="text-align:right;">
+0.0119606
+</td>
+<td style="text-align:right;">
+0.3633932
+</td>
+<td style="text-align:right;">
+0.0130575
+</td>
+<td style="text-align:right;">
+0.3182932
+</td>
+<td style="text-align:right;">
+0.0065550
+</td>
+<td style="text-align:right;">
+0.1666667
+</td>
+<td style="text-align:right;">
+0.0371110
+</td>
+<td style="text-align:right;">
+0.1003548
+</td>
+<td style="text-align:right;">
+0.0005471
+</td>
+<td style="text-align:right;">
+995
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+small_study_five_sites
+</td>
+<td style="text-align:left;">
+ATE_feasible
+</td>
+<td style="text-align:left;">
+post-strat
+</td>
+<td style="text-align:right;">
+0.0156817
+</td>
+<td style="text-align:right;">
+0.0058686
+</td>
+<td style="text-align:right;">
+0.1857540
+</td>
+<td style="text-align:right;">
+0.0064505
+</td>
+<td style="text-align:right;">
+0.1419940
+</td>
+<td style="text-align:right;">
+0.010929
+</td>
+<td style="text-align:right;">
+0.9385700
+</td>
+<td style="text-align:right;">
+0.0076310
+</td>
+<td style="text-align:right;">
+0.1160789
+</td>
+<td style="text-align:right;">
+0.0058907
+</td>
+<td style="text-align:right;">
+0.1857092
+</td>
+<td style="text-align:right;">
+0.0065791
+</td>
+<td style="text-align:right;">
+0.1689084
+</td>
+<td style="text-align:right;">
+0.0021306
+</td>
+<td style="text-align:right;">
+0.0212766
+</td>
+<td style="text-align:right;">
+0.0124541
+</td>
+<td style="text-align:right;">
+0.1003972
+</td>
+<td style="text-align:right;">
+0.0003763
+</td>
+<td style="text-align:right;">
+993
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+small_study_five_sites
+</td>
+<td style="text-align:left;">
+study_site_ATE
+</td>
+<td style="text-align:left;">
+post-strat
+</td>
+<td style="text-align:right;">
+0.0151117
+</td>
+<td style="text-align:right;">
+0.0058942
+</td>
+<td style="text-align:right;">
+0.1864589
+</td>
+<td style="text-align:right;">
+0.0065325
+</td>
+<td style="text-align:right;">
+0.1419940
+</td>
+<td style="text-align:right;">
+0.010929
+</td>
+<td style="text-align:right;">
+0.9395770
+</td>
+<td style="text-align:right;">
+0.0076094
+</td>
+<td style="text-align:right;">
+0.1160789
+</td>
+<td style="text-align:right;">
+0.0058907
+</td>
+<td style="text-align:right;">
+0.1857092
+</td>
+<td style="text-align:right;">
+0.0065791
+</td>
+<td style="text-align:right;">
+0.1689084
+</td>
+<td style="text-align:right;">
+0.0021306
+</td>
+<td style="text-align:right;">
+0.0212766
+</td>
+<td style="text-align:right;">
+0.0124541
+</td>
+<td style="text-align:right;">
+0.1009671
+</td>
+<td style="text-align:right;">
+0.0001825
+</td>
+<td style="text-align:right;">
+993
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="bayesian-estimation-can-improve-estimates-of-effects-for-sampled-sites" class="section level3">
+<h3><span class="header-section-number">18.3.2</span> Bayesian estimation can improve estimates of effects for sampled sites</h3>
+<p>you can improve site-level effect estimates by analyzing with simple Bayesian model because of its shrinkage property, even when the Bayesian model is wrong about distribution of effects in population</p>
+<p>this is the point from the blog post; I will modify the above design so it can also make this point, switching between the normal distribution and uniform distribution for the fx distribution</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="the-metaketa-design.html#cb160-1"></a>stan_model &lt;-<span class="st"> &quot; </span></span>
+<span id="cb160-2"><a href="the-metaketa-design.html#cb160-2"></a><span class="st">data {</span></span>
+<span id="cb160-3"><a href="the-metaketa-design.html#cb160-3"></a><span class="st">  int&lt;lower=0&gt; J;         // number of sites </span></span>
+<span id="cb160-4"><a href="the-metaketa-design.html#cb160-4"></a><span class="st">  real y[J];              // estimated effects</span></span>
+<span id="cb160-5"><a href="the-metaketa-design.html#cb160-5"></a><span class="st">  real&lt;lower=0&gt; sigma[J]; // s.e. of effect estimates </span></span>
+<span id="cb160-6"><a href="the-metaketa-design.html#cb160-6"></a><span class="st">}</span></span>
+<span id="cb160-7"><a href="the-metaketa-design.html#cb160-7"></a><span class="st">parameters {</span></span>
+<span id="cb160-8"><a href="the-metaketa-design.html#cb160-8"></a><span class="st">  real mu; </span></span>
+<span id="cb160-9"><a href="the-metaketa-design.html#cb160-9"></a><span class="st">  real&lt;lower=0&gt; tau;</span></span>
+<span id="cb160-10"><a href="the-metaketa-design.html#cb160-10"></a><span class="st">  real eta[J];</span></span>
+<span id="cb160-11"><a href="the-metaketa-design.html#cb160-11"></a><span class="st">}</span></span>
+<span id="cb160-12"><a href="the-metaketa-design.html#cb160-12"></a><span class="st">transformed parameters {</span></span>
+<span id="cb160-13"><a href="the-metaketa-design.html#cb160-13"></a><span class="st">  real theta[J];</span></span>
+<span id="cb160-14"><a href="the-metaketa-design.html#cb160-14"></a><span class="st">  real tau_sq = tau^2;</span></span>
+<span id="cb160-15"><a href="the-metaketa-design.html#cb160-15"></a><span class="st">  for (j in 1:J)</span></span>
+<span id="cb160-16"><a href="the-metaketa-design.html#cb160-16"></a><span class="st">    theta[j] = mu + tau * eta[j];</span></span>
+<span id="cb160-17"><a href="the-metaketa-design.html#cb160-17"></a><span class="st">}</span></span>
+<span id="cb160-18"><a href="the-metaketa-design.html#cb160-18"></a><span class="st">model {</span></span>
+<span id="cb160-19"><a href="the-metaketa-design.html#cb160-19"></a><span class="st">  target += normal_lpdf(eta | 0, 1);</span></span>
+<span id="cb160-20"><a href="the-metaketa-design.html#cb160-20"></a><span class="st">  target += normal_lpdf(y | theta, sigma);</span></span>
+<span id="cb160-21"><a href="the-metaketa-design.html#cb160-21"></a><span class="st">}</span></span>
+<span id="cb160-22"><a href="the-metaketa-design.html#cb160-22"></a><span class="st">&quot;</span></span>
+<span id="cb160-23"><a href="the-metaketa-design.html#cb160-23"></a></span>
+<span id="cb160-24"><a href="the-metaketa-design.html#cb160-24"></a>stan_re_estimator &lt;-<span class="st"> </span><span class="cf">function</span>(data) {</span>
+<span id="cb160-25"><a href="the-metaketa-design.html#cb160-25"></a>  site_estimates_df &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb160-26"><a href="the-metaketa-design.html#cb160-26"></a><span class="st">    </span><span class="kw">group_by</span>(site) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb160-27"><a href="the-metaketa-design.html#cb160-27"></a><span class="st">    </span><span class="kw">do</span>(<span class="kw">tidy</span>(<span class="kw">lm_robust</span>(Y <span class="op">~</span><span class="st"> </span>Z, <span class="dt">data =</span> .))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb160-28"><a href="the-metaketa-design.html#cb160-28"></a><span class="st">    </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;Z&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb160-29"><a href="the-metaketa-design.html#cb160-29"></a><span class="st">    </span>ungroup </span>
+<span id="cb160-30"><a href="the-metaketa-design.html#cb160-30"></a>  </span>
+<span id="cb160-31"><a href="the-metaketa-design.html#cb160-31"></a>  J      &lt;-<span class="st"> </span><span class="kw">nrow</span>(site_estimates_df)</span>
+<span id="cb160-32"><a href="the-metaketa-design.html#cb160-32"></a>  df     &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">J =</span> J, <span class="dt">y =</span> site_estimates_df<span class="op">$</span>estimate, <span class="dt">sigma =</span> site_estimates_df<span class="op">$</span>std.error)</span>
+<span id="cb160-33"><a href="the-metaketa-design.html#cb160-33"></a>  fit    &lt;-<span class="st"> </span><span class="kw">stan</span>(<span class="dt">model_code =</span> stan_model, <span class="dt">data =</span> site_estimates_df)</span>
+<span id="cb160-34"><a href="the-metaketa-design.html#cb160-34"></a>  fit_sm &lt;-<span class="st"> </span><span class="kw">summary</span>(fit)<span class="op">$</span>summary</span>
+<span id="cb160-35"><a href="the-metaketa-design.html#cb160-35"></a>  <span class="kw">data.frame</span>(<span class="dt">estimate =</span> fit_sm[,<span class="dv">1</span>][<span class="kw">c</span>(<span class="st">&quot;mu&quot;</span>, <span class="st">&quot;tau&quot;</span>, <span class="st">&quot;theta[1]&quot;</span>, <span class="st">&quot;prob_pos&quot;</span>)])</span>
+<span id="cb160-36"><a href="the-metaketa-design.html#cb160-36"></a>}</span>
+<span id="cb160-37"><a href="the-metaketa-design.html#cb160-37"></a></span>
+<span id="cb160-38"><a href="the-metaketa-design.html#cb160-38"></a>bayes_estimator &lt;-<span class="st"> </span><span class="kw">declare_estimator</span>(<span class="dt">handler =</span> stan_re_estimator)</span></code></pre></div>
+</div>
+<div id="when-things-break-down-confounded-sampling" class="section level3">
+<h3><span class="header-section-number">18.3.3</span> when things break down: confounded sampling</h3>
+<p>none of these designs work when you’re trying to make predictions for sites that are systematically different, i.e. are not in the same population as the sampling frame</p>
+<p>the design was set up to include several sites where researchers could not feasibly set up experiments. in the original design, effects do not depend on whether sites are feasible for the experiment. when effects do vary, there are systematic differences for those target sites. those differences might come from three sources: mean effect size differs in places that are sampled vs not sampled; individual-level het fx sizes that systematically differ in places that are sampled to study vs others; covariate profiles that do not exist in sites outside the sampling frame. I introduce effects in the first way and show there is substantial bias.</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="the-metaketa-design.html#cb161-1"></a>small_study_five_sites_feasible_effects &lt;-<span class="st"> </span><span class="kw">multi_site_designer</span>(<span class="dt">n_study_sites =</span> <span class="dv">5</span>, <span class="dt">n_subjects_per_site =</span> <span class="dv">500</span>, <span class="dt">feasible_effect  =</span> <span class="fl">-0.25</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="the-metaketa-design.html#cb162-1"></a>simulations_feasible_effects &lt;-<span class="st"> </span><span class="kw">simulate_design</span>(small_study_five_sites_feasible_effects, <span class="dt">sims =</span> sims)</span>
+<span id="cb162-2"><a href="the-metaketa-design.html#cb162-2"></a>diagnosis_feasible_effects &lt;-<span class="st"> </span><span class="kw">diagnose_design</span>(simulations_feasible_effects <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(estimate) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(std.error) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(statistic) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(p.value) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(conf.low) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(conf.high)), <span class="dt">bootstrap_sims =</span> b_sims)</span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="the-metaketa-design.html#cb163-1"></a><span class="kw">kable</span>(<span class="kw">get_diagnosands</span>(diagnosis_feasible_effects))</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+design_label
+</th>
+<th style="text-align:left;">
+estimand_label
+</th>
+<th style="text-align:left;">
+estimator_label
+</th>
+<th style="text-align:right;">
+bias
+</th>
+<th style="text-align:right;">
+se(bias)
+</th>
+<th style="text-align:right;">
+rmse
+</th>
+<th style="text-align:right;">
+se(rmse)
+</th>
+<th style="text-align:right;">
+power
+</th>
+<th style="text-align:right;">
+se(power)
+</th>
+<th style="text-align:right;">
+coverage
+</th>
+<th style="text-align:right;">
+se(coverage)
+</th>
+<th style="text-align:right;">
+mean_estimate
+</th>
+<th style="text-align:right;">
+se(mean_estimate)
+</th>
+<th style="text-align:right;">
+sd_estimate
+</th>
+<th style="text-align:right;">
+se(sd_estimate)
+</th>
+<th style="text-align:right;">
+mean_se
+</th>
+<th style="text-align:right;">
+se(mean_se)
+</th>
+<th style="text-align:right;">
+type_s_rate
+</th>
+<th style="text-align:right;">
+se(type_s_rate)
+</th>
+<th style="text-align:right;">
+mean_estimand
+</th>
+<th style="text-align:right;">
+se(mean_estimand)
+</th>
+<th style="text-align:right;">
+n_sims
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+small_study_five_sites_feasible_effects
+</td>
+<td style="text-align:left;">
+ATE_feasible
+</td>
+<td style="text-align:left;">
+post-strat
+</td>
+<td style="text-align:right;">
+-0.0203957
+</td>
+<td style="text-align:right;">
+0.0053320
+</td>
+<td style="text-align:right;">
+0.1680045
+</td>
+<td style="text-align:right;">
+0.0051913
+</td>
+<td style="text-align:right;">
+0.0804829
+</td>
+<td style="text-align:right;">
+0.008917
+</td>
+<td style="text-align:right;">
+0.9557344
+</td>
+<td style="text-align:right;">
+0.0064813
+</td>
+<td style="text-align:right;">
+0.0803788
+</td>
+<td style="text-align:right;">
+0.0053339
+</td>
+<td style="text-align:right;">
+0.1667939
+</td>
+<td style="text-align:right;">
+0.0052236
+</td>
+<td style="text-align:right;">
+0.163637
+</td>
+<td style="text-align:right;">
+0.00196
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+0.0315973
+</td>
+<td style="text-align:right;">
+0.1007745
+</td>
+<td style="text-align:right;">
+0.0003584
+</td>
+<td style="text-align:right;">
+994
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+small_study_five_sites_feasible_effects
+</td>
+<td style="text-align:left;">
+study_site_ATE
+</td>
+<td style="text-align:left;">
+post-strat
+</td>
+<td style="text-align:right;">
+0.2299906
+</td>
+<td style="text-align:right;">
+0.0053397
+</td>
+<td style="text-align:right;">
+0.2842747
+</td>
+<td style="text-align:right;">
+0.0048958
+</td>
+<td style="text-align:right;">
+0.0804829
+</td>
+<td style="text-align:right;">
+0.008917
+</td>
+<td style="text-align:right;">
+0.6549296
+</td>
+<td style="text-align:right;">
+0.0155612
+</td>
+<td style="text-align:right;">
+0.0803788
+</td>
+<td style="text-align:right;">
+0.0053339
+</td>
+<td style="text-align:right;">
+0.1667939
+</td>
+<td style="text-align:right;">
+0.0052236
+</td>
+<td style="text-align:right;">
+0.163637
+</td>
+<td style="text-align:right;">
+0.00196
+</td>
+<td style="text-align:right;">
+0.925
+</td>
+<td style="text-align:right;">
+0.0315973
+</td>
+<td style="text-align:right;">
+-0.1496118
+</td>
+<td style="text-align:right;">
+0.0002008
+</td>
+<td style="text-align:right;">
+994
+</td>
+</tr>
+</tbody>
+</table>
+<p>Other points I decided to abandon to keep this simple:
+- tradeoff: context-specific interventions and comparability of intervention effects
+- tradeoff: comparability and fidelity to context in outcome measurement</p>
+
+<!-- bibliography: ../../bib/book.bib  -->
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
+</div>
+</div>
+<!-- </div> -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="multi-site-studies.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="part-iii-exercises.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": false,
+"twitter": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": false,
+"google": false,
+"instapper": false
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": {},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
