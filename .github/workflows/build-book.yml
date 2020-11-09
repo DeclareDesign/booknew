@@ -70,7 +70,7 @@ jobs:
           unzip ~/Dropbox/files.zip -d ~/Dropbox/DeclareDesign_book_rfiles -x /
 
       - name: Build book
-        run: Rscript -e 'bookdown::render_book("index.Rmd", quiet = TRUE)'
+        run: Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::bs4_book")'
 
       - name: Push to gh-pages
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
