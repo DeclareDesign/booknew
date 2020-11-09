@@ -466,6 +466,16 @@ dual_estimands <- ggplot() +
   )
 dual_estimands
 
+## model <- declare_population(
+##   case_level = add_level(N = 1, b = rnorm(N, 1, 1)),
+##   unit_level = add_level(N = 20, Z = rep(0:1, N/2), Y = b*Z + rnorm(N))) +
+##   declare_estimand(super_b = 1, case_b = b[1]) +
+##   declare_estimator(Y~Z, estimand = c("super_b", "case_b"))
+## 
+## diagnose_design(model, sims = 100)
+## 
+## 
+
 ## robustness_checks_design <-
 ##   robustness_checks_design +
 ##   declare_estimator(handler = label_estimator(interacted_correlation_decision), label = "interacted")
