@@ -10,3 +10,9 @@
       $('.zoomDiv').css({opacity: '0', width: '0%'});
     });
   });
+
+  $(document).keyup(function(e) {
+     if (e.key === "Escape") { // escape key maps to keycode `27`
+        $('.zoomDiv').css({opacity: '0', width: '0%'});
+    }
+  });
