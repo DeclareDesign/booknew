@@ -8,7 +8,7 @@
 <meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys">
 <!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.1.9000/tabs.js"></script><script src="libs/bs3compat-0.2.1.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.2.9000/tabs.js"></script><script src="libs/bs3compat-0.2.2.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
 </head>
@@ -93,14 +93,13 @@
 </h3>
 <p>We illustrate the application of the MIDA framework to a study of the motivations of political office-seekers in Pakistan. <span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020" role="doc-biblioref">n.d.</a>)</span> conducted a experiment to test whether prosocial or personal benefits were more important motivations for running for office. They randomly-assigned villages to receive different encouragements to run and measured how this affected the rate of running for office, the types of people who chose to run, and the congruence of their policy positions with the general population.</p>
 <p>The <em>model</em> describes the citizens in the villages they conduct the study, and which village they live in. It describes both their individual characteristics and their potential outcomes in response to the possible treatment assignments. The <em>inquiry</em> is the average treatment effect between receiving and not receiving an encouragement to run for office. The <em>data strategy</em> is (1) randomly sampling 50 citizens per village; (2) random assignment of villages into either an encouragement to run for office (treatment) or no encouragement (control); and (3) measurement via a posttreatment survey. The <em>answer strategy</em> is calculating the difference-in-means, with standard errors accounting for the clustering of the treatment assignment by village.</p>
-<!-- MIDA captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived, how interventions are implemented, or even, qualitatively, how outcomes are measured. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, if treatment effects decay, logistical details of data collection (such as the duration of time between a treatment being administered and endline data collection) may enter into the model. Similarly, if a researcher anticipates noncompliance, substantive knowledge of how treatments are taken up can be included in many parts of the design. -->
 </div>
 </div>
 <div id="declaring-a-design-in-code" class="section level2">
 <h2>
 <span class="header-section-number">2.2</span> Declaring a design in code<a class="anchor" aria-label="anchor" href="#declaring-a-design-in-code"><i class="fas fa-link"></i></a>
 </h2>
-<p>You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula. We discuss in Section @(p2diagnosis) why analytical diagnoses are challenging for the majority of designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices made in the model, inquiry, data strategy, and answer strategy.</p>
+<p>You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula. We discuss in Section <a href="p2diagnosis.html#p2diagnosis">10</a> why analytical diagnoses are challenging for the majority of designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices made in the model, inquiry, data strategy, and answer strategy.</p>
 <p>Social scientists use a number of tools for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. At the time of writing, Stata and R are most commonly used platforms for academic work, though this may change in the future. We wrote the companion software to the book, <code>DeclareDesign</code>, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free, open-source, and high-quality.</p>
 <p>To illustrate declaring a design in code, we declare a simplified version of the <span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020" role="doc-biblioref">n.d.</a>)</span> study – we declare the complete design in Section <a href="declaration.html#p2gulzarkhanrevisited">5.1</a>.</p>
 <!-- # we should turn this into a picture labeling MIDA -->
@@ -109,36 +108,33 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
-    villages <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
-      N <span class="op">=</span> <span class="fl">100</span>,
-      N_citizens_per_village <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">20</span><span class="op">:</span><span class="fl">100</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-    <span class="op">)</span>,
-    citizens <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_citizens_per_village</span>, u <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
+    villages <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">192</span><span class="op">)</span>,
+    citizens <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">48</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>Y_Z_0 <span class="op">=</span> <span class="va">u</span>,
-                             Y_Z_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">Y_Z_0</span> <span class="op">+</span> <span class="fl">0.025</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>Y_Z_neutral <span class="op">=</span> <span class="va">U</span>,
+                             Y_Z_personal <span class="op">=</span> <span class="va">Y_Z_neutral</span> <span class="op">+</span> <span class="fl">0.02</span>,
+                             Y_Z_social <span class="op">=</span> <span class="va">Y_Z_neutral</span> <span class="op">+</span> <span class="fl">0.03</span><span class="op">)</span></code></pre></div>
 <p>Our inquiry is the average treatment effect in the population, defined as the average difference in potential outcomes:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>ATE_personal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_personal</span> <span class="op">-</span> <span class="va">Y_Z_neutral</span><span class="op">)</span>,
+                            ATE_social <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_social</span> <span class="op">-</span> <span class="va">Y_Z_neutral</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The data strategy consists of 4 steps:</p>
 <ul>
-<li>sampling: we randomly sample 50 of the 100 villages in the population</li>
-<li>assignment: we randomly assign half the sampled units to treatment and half to control</li>
-<li>assignment: the assignment implies that treated units reveal their treated potential outcome and that untreated units reveal their untreated potential outcome.</li>
+<li>assignment: We randomly assign one third to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal.</li>
+<li>reveal outcomes: Subjects reveal outcomes (i.e., their probability of running for office) according to their randomly-assigned condition.</li>
 <li>measurement: We measure a binary outcome <code>Yobs</code> from the unobserved, latent variable <code>Y</code>: units that have a latent outcome above 0.95 have <code>Yobs</code> of 1 and 0 otherwise.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span>, clusters <span class="op">=</span> <span class="va">villages</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span>, clusters <span class="op">=</span> <span class="va">villages</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">villages</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"neutral"</span>, <span class="st">"personal"</span>, <span class="st">"social"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_reveal</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_measurement</span><span class="op">(</span>Yobs <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Y</span> <span class="op">&gt;</span> <span class="fl">0.95</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_measurement</span><span class="op">(</span>Yobs <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Y</span> <span class="op">&gt;</span> <span class="fl">0.97</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The answer strategy consists of the difference-in-means of Y depending on Z, with standard errors clustered at the village level in order to respect the clustering of the assignment in the data stategy. We link this estimator to ATE to explicitly link the answer strategy to the inquiry.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, clusters <span class="op">=</span> <span class="va">villages</span>, 
-                                     model <span class="op">=</span> <span class="va">difference_in_means</span>, 
-                                     estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Zpersonal"</span>, <span class="st">"Zsocial"</span><span class="op">)</span>, clusters <span class="op">=</span> <span class="va">villages</span>, 
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_personal"</span>, <span class="st">"ATE_social"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We concatenate all four aspects to declare it as a complete design:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
@@ -174,16 +170,19 @@ Figure 2.1: Simplified DAG for Gulzar Khan study
 <p>To diagnose the design, we first define a set of diagnosands (see Section <a href="p2diagnosis.html#p2diagnosis">10</a>), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Select diagnosands</span>
-<span class="va">simple_design_diagnosands</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bias</span>, <span class="va">rmse</span>, <span class="va">power</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
+  bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
+  rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
+  power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>,
+  keep_defaults <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 <p>We then diagnose the design, which involves simulating the design and again and again, and then calculate the diagnosands based on the simulations data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Diagnose the design</span>
-<span class="va">simple_design_diagnosis</span> <span class="op">&lt;-</span> 
-  <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simple_design</span>, diagnosands <span class="op">=</span> <span class="va">simple_design_diagnosands</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
+<span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:simpledesigndiagnosis">Table 2.1: </span>Diagnosis of simple design.
+<span id="tab:simpledesigndiagnosis">Table 2.1: </span>Diagnosis of the simplified Gulzar-Khan design.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
