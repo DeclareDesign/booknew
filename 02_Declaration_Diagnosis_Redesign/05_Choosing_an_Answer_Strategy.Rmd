@@ -297,7 +297,7 @@ design <-
 
 simulated_df <- draw_data(design)
 
-simulated_df %>% select(ID, X, D, Y) %>% head %>% kable(caption = "Simulated data from a DAG with varaibles $X$, $D$, $Y$, and $U$.", digits = 3)
+simulated_df %>% select(ID, X, D, Y) %>% head %>% kable(caption = "Simulated data from a DAG with varaibles $X$, $D$, and $Y$.", digits = 3)
 ```
 
 #### Consequences of conditioning
@@ -351,13 +351,14 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend),
                    edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, 
+                      guide = guide_legend(nrow = 2, override.aes = list(color = c(rep("white", 4), gray(0.4))))) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(size = 25, hjust = 0.5),
-          plot.subtitle = element_text(size = 25, hjust = 0.5),
-          plot.margin = margin(10, 10, 100, 10, unit = "pt")) +
+    theme(plot.title = element_text(size = 30, hjust = 0.5),
+          plot.subtitle = element_text(size = 30, hjust = 0.5),
+          plot.margin = margin(10, 10, 25, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -376,15 +377,18 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>%
   map(my_fun)
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
     legend.title = element_text(size = 35),
     legend.text = element_text(size = 35),
     legend.key.size = unit(35, "mm"),
-    legend.margin = margin(t = 20, r = 0, b = 0, l = 0, unit = "mm"),
-    strip.text = element_text(size = 25)
+    legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 30)
     )
+
+ggsave(filename = "~/desktop/myshit.pdf", wgg, width = 40, height = 35)
+system("open ~/desktop/myshit.pdf")
 ```
 
 #### Adding model-based assumptions
@@ -430,12 +434,14 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend),
                    edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, 
+                      guide = guide_legend(nrow = 2, override.aes = list(color = c(rep("white", 5), gray(0.4))))) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5),
-          plot.subtitle = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(size = 30, hjust = 0.5),
+          plot.subtitle = element_text(size = 30, hjust = 0.5),
+          plot.margin = margin(10, 10, 25, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -454,13 +460,19 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>%
   map(my_fun)
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
-    legend.title = element_text(size = 28),
-    legend.text = element_text(size = 28),
-    legend.key.size = unit(25, "mm")
-  )
+    legend.title = element_text(size = 35),
+    legend.text = element_text(size = 35),
+    legend.key.size = unit(35, "mm"),
+    legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 30)
+    )
+
+
+ggsave(filename = "~/desktop/myshit.pdf", wgg, width = 40, height = 35)
+system("open ~/desktop/myshit.pdf")
 ```
 
 #### Design-based identification
@@ -479,7 +491,6 @@ gg_df <-
     "Ruled out by acyclicity",
     as.character(id_adjustment_fac)
   )))
-
 gg_df <-
   gg_df %>%
   mutate(
@@ -490,20 +501,17 @@ gg_df <-
       is.na(ruled_out_by) ~ "Effect of D on Y identified"
     ))
   )
-
 fill_scale <- c(
   `Ruled out by acyclicity` = dd_light_gray,
   `Ruled out by pretreatment measurement` = dd_orange,  
   `Ruled out by random assignment` = dd_dark_blue,
   `Effect of D on Y identified` = "transparent"
 )
-
 subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac2) %>%
     summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
-
   g <-
     ggplot(data, aes(x, y)) +
     geom_tile(data = dag_df, aes(fill = tile_fac2), height = 1.75, width = 1.75, alpha = 0.5) +
@@ -511,37 +519,41 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend),
                    edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
+    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2, override.aes = list(color = c(gray(0.4), rep("white", 3))))) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5),
-          plot.subtitle = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(size = 30, hjust = 0.5),
+          plot.subtitle = element_text(size = 30, hjust = 0.5),
+          plot.margin = margin(10, 10, 25, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
   }
   g
 }
-
 my_fun <- function(data){
   data %>%
     split(.$DY_fac) %>%
     map(~subplot_function(.)) %>%
     wrap_plots(nrow = 1)
 }
-
 gg <- gg_df %>%
   split(.$U_relationship_fac) %>%
   map(my_fun)
-
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
-    legend.title = element_text(size = 28),
-    legend.text = element_text(size = 28),
-    legend.key.size = unit(25, "mm")
-  )
+    legend.title = element_text(size = 35),
+    legend.text = element_text(size = 35),
+    legend.key.size = unit(35, "mm"),
+    legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 30)
+    )
+
+
+ggsave(filename = "~/desktop/myshit.pdf", wgg, width = 40, height = 35)
+system("open ~/desktop/myshit.pdf")
 ```
 
 In short, what we do by controlling the timing of measurement of $X$ and randomizing $D$ is to move our assumptions about conditional independence from $M$ our assumed (but possibly incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.
