@@ -10,7 +10,8 @@
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.2.9000/tabs.js"></script><script src="libs/bs3compat-0.2.2.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -116,8 +117,10 @@
                              Y_Z_social <span class="op">=</span> <span class="va">Y_Z_neutral</span> <span class="op">+</span> <span class="fl">0.03</span><span class="op">)</span></code></pre></div>
 <p>Our inquiry is the average treatment effect in the population, defined as the average difference in potential outcomes:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>ATE_personal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_personal</span> <span class="op">-</span> <span class="va">Y_Z_neutral</span><span class="op">)</span>,
-                            ATE_social <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_social</span> <span class="op">-</span> <span class="va">Y_Z_neutral</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>
+  ATE_personal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_personal</span> <span class="op">-</span> <span class="va">Y_Z_neutral</span><span class="op">)</span>,
+  ATE_social <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_social</span> <span class="op">-</span> <span class="va">Y_Z_neutral</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p>The data strategy consists of 4 steps:</p>
 <ul>
 <li>assignment: We randomly assign one third to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal.</li>
@@ -126,13 +129,17 @@
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">villages</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"neutral"</span>, <span class="st">"personal"</span>, <span class="st">"social"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>
+    clusters <span class="op">=</span> <span class="va">villages</span>, 
+    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"neutral"</span>, <span class="st">"personal"</span>, <span class="st">"social"</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span> 
   <span class="fu">reveal_outcomes</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_measurement</span><span class="op">(</span>Yobs <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Y</span> <span class="op">&gt;</span> <span class="fl">0.97</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The answer strategy consists of the difference-in-means of Y depending on Z, with standard errors clustered at the village level in order to respect the clustering of the assignment in the data stategy. We link this estimator to ATE to explicitly link the answer strategy to the inquiry.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Zpersonal"</span>, <span class="st">"Zsocial"</span><span class="op">)</span>, clusters <span class="op">=</span> <span class="va">villages</span>, 
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Zpersonal"</span>, <span class="st">"Zsocial"</span><span class="op">)</span>, 
+                    clusters <span class="op">=</span> <span class="va">villages</span>, 
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_personal"</span>, <span class="st">"ATE_social"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We concatenate all four aspects to declare it as a complete design:</p>
@@ -169,8 +176,7 @@ Figure 2.1: Simplified DAG for Gulzar Khan study
 <p>One especially important diagnosand is the “success rate,” which is the average value of the “success” diagnostic statistic. As a researcher, <em>you</em> get to decide what would make your study a success. What matters most in your research scenario? Is it statistical significance? If so, optimize your design with respect to power. Is what matters most in your research setting with the answer has the correct sign or not? Then diagnose how frequently your answer strategy yields an answer with the same sign as your inquiry. Diagnosis is an opportunity for you to articulate what would make your study a success and then to simulate how often you obtain that success. Often, success is a multidimensional aggregation of multiple diagnosands.</p>
 <p>To diagnose the design, we first define a set of diagnosands (see Section <a href="p2diagnosis.html#p2diagnosis">10</a>), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Select diagnosands</span>
-<span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
   rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
   power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>,
@@ -178,8 +184,7 @@ Figure 2.1: Simplified DAG for Gulzar Khan study
 <span class="op">)</span></code></pre></div>
 <p>We then diagnose the design, which involves simulating the design and again and again, and then calculate the diagnosands based on the simulations data.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Diagnose the design</span>
-<span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:simpledesigndiagnosis">Table 2.1: </span>Diagnosis of the simplified Gulzar-Khan design.
