@@ -89,8 +89,11 @@ Y &amp;= f_Y(Z, U)
 <p><span class="math display">\[\begin{align*}
 Y &amp;= Z + U
 \end{align*}\]</span></p>
-<p>Equivalently, the potential outcomes (for <span class="math inline">\(Y\)</span>) might be written as:</p>
-<p><span class="math display">\[Y_i(0) = u_i,  Y_i(1) = 1 + u_i, i \in \{1,2,\dots, n\}.\]</span></p>
+<p>Equivalently, the potential outcomes (for <span class="math inline">\(Y\)</span>) might be written, for <span class="math inline">\(i \in \{1,2,\dots, n\}\)</span> as:</p>
+<p><span class="math display">\[\begin{align*}
+Y_i(0) &amp;=&amp; u_i  \\
+Y_i(1) &amp;=&amp; 1 + u_i 
+\end{align*}\]</span></p>
 <p>This DAG encodes this model in graphical form:</p>
 <div class="figure">
 <span id="fig:p2simpledag"></span>
@@ -111,7 +114,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 <li><p>Superpopulation. Moving <em>up</em> you might imagine units as being draws from an infinite population. You are interested in “what happens when you shake a fizzy drink?”: the set of instances is infinite and when you characterize the superpopulation you want to describe a distribution over possible cases not a finite set of cases.</p></li>
 </ul>
 <p>Which population you have in mind affects how reference populations should be modeled but also how draws from a population should be interpreted.</p>
-<p>To illustrate consider a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z\)</span> is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this books, might be declared like this:</p>
+<p>To illustrate consider a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z\)</span> is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this book, might be declared like this:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
@@ -339,8 +342,14 @@ Figure 6.2: A DAG with an explantory variable of interest (D), an outcome of int
 <span class="va">tau_X1</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 
 <span class="va">M</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="op">(</span><span class="va">X</span><span class="op">==</span><span class="fl">0</span><span class="op">)</span><span class="op">*</span><span class="va">Z</span><span class="op">*</span><span class="va">tau_X0</span> <span class="op">+</span> <span class="op">(</span><span class="va">X</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">Z</span><span class="op">*</span><span class="va">tau_X1</span><span class="op">+</span><span class="va">U</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_population</span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">100</span>, 
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
+    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+    <span class="va">Y</span> <span class="op">~</span> <span class="op">(</span><span class="va">X</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">tau_X0</span> <span class="op">+</span> <span class="op">(</span><span class="va">X</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">tau_X1</span> <span class="op">+</span> <span class="va">U</span>
+  <span class="op">)</span></code></pre></div>
 <p>The design describes a more complex world in which treatment effects of <span class="math inline">\(Z\)</span> depend in a particular way on a background variable <span class="math inline">\(X\)</span>. We could incorporate different beliefs about the causal model by changing the <code>tau_X0</code> and <code>tau_X1</code> parameters. However, regardless of the value of the interaction (either zero or some other number), the DAG looks the same but the ability of the design to answer questions of interest will vary. This highlights the point that DAGs themselves are not enough to characterize a model—design declaration requires functional equations also: either specific equations or families of equations. Thus although we might feel uncomfortable specifying particular values for <code>tau_X0</code> and <code>tau_X1</code> we are not beholden to these particular values. We can easily vary them to see how a design performs over a range of models, or we could even expand the declaration to specify a distribution of values for <code>tau_X0</code> and <code>tau_X1</code>.</p>
 <!-- maybe a footnote? -->
 <!-- - some of these variables will be exogenous and endogenous, in Pearl's terms. by exogenous variables, he means variables without parents, no antecendent causes. by endogenous variables, he means those with parents, that are determined in part by earlier variables. endogenous variables are distinct from the problem of endogeneity, which comes from a single variable being a parent of both the treatment variable of interest and the outcome we wish to measure the causal effect of the treatment on. we will use it in Pearl's sense. -->
