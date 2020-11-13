@@ -81,7 +81,7 @@
 <h3>
 <span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span> 
@@ -94,7 +94,7 @@
 <h3>
 <span class="header-section-number">14.1.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-141-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-140-1.svg" width="100%"></div>
 </div>
 <div id="example-2" class="section level3">
 <h3>
@@ -129,7 +129,7 @@
 <p>We estimate the population mean with the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>. Even though our inquiry implies our answer should be a single number, an answer strategy typically also provides statistics that help us assess the uncertainty around that single number. To construct a 95% confidence interval around our estimate, we calculate the standard error of the sample mean, then approximate the sampling distribution of the sample mean estimator using a formula that includes a finite population correction. In particular, we approximate the estimated sampling distribution by a <span class="math inline">\(t\)</span> distribution with <span class="math inline">\(n - 1\)</span> degrees of freedom. In the code for our answer strategy, we spell out each step in turn.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span>
 
 <span class="va">random_sampling_design</span> <span class="op">&lt;-</span> 
@@ -137,7 +137,7 @@
   <span class="fu">declare_estimand</span><span class="op">(</span>Ybar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Ybar"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">random_sampling_design</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="takeaways" class="section level4">
@@ -145,7 +145,7 @@
 <span class="header-section-number">14.1.4.2</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways"><i class="fas fa-link"></i></a>
 </h4>
 <p>With the design declared we can run a diagnosis and plot results from Monte Carlo simulations of the design:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span>
   <span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span> </code></pre></div>
 <p>The diagnosis indicates that under simple random sampling, the sample mean estimator of the population mean is unbiased. The graph on the left shows the sampling distribution of the estimator: it’s centered directly on the true value of the inquiry. Confidence intervals <strong>also</strong> have a sampling distribution – they change depending on the idiosyncrasies of each sample we happen to draw. The figure on the right shows that the 95% of the time the confidence intervals cover the true value of the estimand, as they should. As sample size grows, the sampling distribution of the estimator gets tighter, but the coverage of the confidence intervals stays at 95% – just the properties we would want out of our answer strategy.</p>
@@ -183,7 +183,7 @@
 <strong>A</strong>nswer strategy:</li>
 </ul>
 <p>We estimate the population mean with the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>, and estimate standard errors under the assumption of independent and heteroskedastic errors as well as cluster-robust standard errors to take into account correlation of errors within clusters. Below we demonstrate the the imprecision of our estimated <span class="math inline">\(\widehat{\overline{Y}}\)</span> when we cluster standard errors and when we do not in the presence of an intracluster correlation coefficient (ICC) of 0.402.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_blocks</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 <span class="va">N_clusters_in_block</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 <span class="va">N_i_in_cluster</span> <span class="op">&lt;-</span> <span class="fl">50</span>
@@ -226,7 +226,7 @@
 <h4>
 <span class="header-section-number">14.1.5.2</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways-1"><i class="fas fa-link"></i></a>
 </h4>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">cluster_sampling_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -360,12 +360,12 @@ Clustered Standard Errors
 </tbody>
 </table></div>
 <p>To appreciate the role of clustering better we also plot simulated values of our estimand with standard errors not clustered and with clustered standard errors. To do this we first add an additional estimator to the design that does not take account of clusters.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">new_design</span> <span class="op">&lt;-</span> <span class="va">cluster_sampling_design</span> <span class="op">+</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>,
                                                           model <span class="op">=</span> <span class="va">lm_robust</span>,
                                                           estimand <span class="op">=</span> <span class="st">"Ybar"</span>,
                                                           label <span class="op">=</span> <span class="st">"Naive Standard Errors"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">new_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="book_files/figure-html/plot-1.svg" width="100%"></div>
 <p>The figure above may give us the impression that our estimate with clustered standard errors is less precise, when in fact, it correctly accounts for the uncertainty surrounding our estimates. The blue lines in the graph demonstrate the estimates from simulations which contain our estimand. As our table and graphs show, the share of these simulations over the total number of simulations, also known as coverage, is (correctly) close to 95% in estimations with clustered standard errors and 54% in estimations without clustered standard errors. As expected, the mean estimate itself and the bias is the same in both specifications.</p>
@@ -417,7 +417,7 @@ design <-
 <li><p><strong>D</strong>ata strategy: Ten individuals from each group are included in the sample. Thus, whereas 2/3 of the population belong to the <span class="math inline">\(X = 0\)</span> group, only 1/2 of the sample does. Conversely, while only 1/3 of the population belongs to the <span class="math inline">\(X = 1\)</span> group, 1/2 of the sample does.</p></li>
 <li><p><strong>A</strong>nswer strategy: The answer strategy involves taking a weighted average of <span class="math inline">\(Y\)</span> in the sample, where each unit’s weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, <span class="math inline">\(X = 0\)</span>, get a weight of 100/10 = 10, while the overrepresented group, <span class="math inline">\(X = 1\)</span>, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents.</p></li>
 </ul>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>
   group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, population_n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>,<span class="fl">50</span><span class="op">)</span><span class="op">)</span>,
   individual <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">population_n</span>, Y <span class="op">=</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span>
@@ -436,7 +436,7 @@ design <-
 <h3>
 <span class="header-section-number">14.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-157-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-156-1.svg" width="100%"></div>
 </div>
 <div id="exercises-1" class="section level3">
 <h3>
@@ -651,7 +651,7 @@ prop_republican
 </tr>
 </tbody>
 </table></div>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># US population</span>
 <span class="va">delaware_population_df</span> <span class="op">&lt;-</span> <span class="fu">fabricate</span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">delaware_senate_districts_df</span>,
@@ -740,11 +740,11 @@ prop_republican
 
 <span class="va">diag</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="fl">100</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>select <span class="op">=</span> <span class="va">bias</span><span class="op">)</span>, add_grouping_variables <span class="op">=</span> <span class="st">"state"</span><span class="op">)</span></code></pre></div>
 <p>This chunk is set to <code>echo = TRUE</code> and <code>eval = do_diagnosis</code></p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_pilot</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>Right after you do simulations, you want to save the simulations rds.</p>
 <p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">simulations_pilot</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -1042,7 +1042,7 @@ design <-
   declare_estimator(Y_idx ~ 1, model = lm_robust, estimand = "Y_bar")
 ```
 -->
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, true_rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rank.html">rank</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_measurement</span><span class="op">(</span>Y_1 <span class="op">=</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
@@ -1058,7 +1058,7 @@ design <-
 <h3>
 <span class="header-section-number">14.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-2"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-170-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-169-1.svg" width="100%"></div>
 </div>
 <div id="example-5" class="section level3">
 <h3>
