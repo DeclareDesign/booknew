@@ -48,11 +48,11 @@ nudges_df <-
   mutate(
     nudgex_N = x,
     nudgey_N = y + 0.5,
-    nudgex_E = x + 0.5,
+    nudgex_E = x + 0.75,
     nudgey_E = y,
     nudgex_S = x,
     nudgey_S = y - 0.5,
-    nudgex_W = x - 0.5,
+    nudgex_W = x - 0.75,
     nudgey_W = y
   ) %>%
   pivot_longer(cols = nudgex_N:nudgey_W) %>% 
