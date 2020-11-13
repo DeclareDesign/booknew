@@ -61,7 +61,7 @@ design <-
   declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + Z + U) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 3) + 
   declare_step(handler = mutate, Z = unit == "01") + 
-  declare_reveal(Y = if_else(Z == 0 | period < 3, Y_Z_0, Y_Z_1), handler = mutate) +
+  reveal_outcomes(Y = if_else(Z == 0 | period < 3, Y_Z_0, Y_Z_1), handler = mutate) +
   declare_step(predictors = "X",
                time.predictors.prior = 1:2,
                dependent = "Y",
@@ -235,7 +235,7 @@ design <-
     ATE_AZ = mean(prop_non_hispanic_below_hs_legal_worker_act_1 - 
                     prop_non_hispanic_below_hs_legal_worker_act_0), 
     subset = legal_worker_act == TRUE) +
-  declare_reveal(prop_non_hispanic_below_hs, legal_worker_act) +
+  reveal_outcomes(prop_non_hispanic_below_hs, legal_worker_act) +
   declare_step(handler = synth_weights_tidy) +
   declare_estimator(
     prop_non_hispanic_below_hs ~ legal_worker_act, 

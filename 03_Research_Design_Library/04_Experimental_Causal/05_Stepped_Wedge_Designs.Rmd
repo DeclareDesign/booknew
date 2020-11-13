@@ -45,7 +45,7 @@ design <-
   declare_potential_outcomes(Y ~ X + U + Z * time) +
   declare_assignment(clusters = unit, conditions = 1:4, assignment_variable = "wave") + 
   declare_assignment(Z = as.numeric(time >= wave), ipw = 1 / (Z * p + (1 - Z) * (1 - p)), handler = fabricate) + 
-  declare_reveal(Y, Z) + 
+  reveal_outcomes(Y, Z) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "1: Stepped Wedge", weights = ipw, clusters = unit) +
   declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE", label = "2: Wave 2 Only", subset = period == 2) 

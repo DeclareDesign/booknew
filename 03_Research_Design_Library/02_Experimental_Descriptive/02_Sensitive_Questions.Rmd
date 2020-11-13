@@ -177,7 +177,7 @@ list_design <-
   # Data Strategy
   declare_sampling(n = 500) +
   declare_assignment(prob = .5) +
-  declare_reveal(Y_list) +
+  reveal_outcomes(Y_list) +
   
   # Answer Strategy
   declare_estimator(
@@ -357,8 +357,8 @@ rr_design <-
   declare_assignment(prob_each = rep(1/6, 6), conditions = 1:6, assignment_variable = "dice") +
   declare_assignment(prob_each = c(2/3, 1/3), conditions = c("heads", "tails"), assignment_variable = "coin") +
   
-  declare_reveal(Y_forced_known, dice) +
-  declare_reveal(Y_mirrored, coin) +
+  reveal_outcomes(Y_forced_known, dice) +
+  reveal_outcomes(Y_mirrored, coin) +
   
   declare_estimator(handler = tidy_estimator(rr_forced_known), label = "forced_known", estimand = "sensitive_item_proportion") +
   declare_estimator(handler = tidy_estimator(rr_mirrored), label = "mirrored", estimand = "sensitive_item_proportion") +

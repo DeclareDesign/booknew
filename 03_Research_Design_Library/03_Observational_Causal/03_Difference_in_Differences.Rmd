@@ -32,7 +32,7 @@ design <-
   declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + Z + U) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 2) + 
   declare_step(Z = X == max(X), handler = mutate) + 
-  declare_reveal(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1), handler = mutate) +
+  reveal_outcomes(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1), handler = mutate) +
   declare_estimator(Y ~ Z * period, model = lm_robust, se_type = "none")
 ```
 
@@ -106,7 +106,7 @@ two_period_two_group_design <-
   
   declare_assignment(Z = unit_shock == max(unit_shock), handler = mutate) + 
   
-  declare_reveal(
+  reveal_outcomes(
     Y = case_when(Z == 0 | time < 1 ~ Y_Z_0, TRUE ~ Y_Z_1), handler = mutate) +
   
   declare_estimator(estimate = (mean(Y[Z == 1 & time == 1]) - mean(Y[Z == 0 & time == 1])) -
@@ -192,7 +192,7 @@ multi_period_design <-
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = time == 1) + 
   
   declare_assignment(Z = 1*(unit_treated & pretreatment == FALSE), handler = fabricate) + 
-  declare_reveal(Y, Z) + 
+  reveal_outcomes(Y, Z) + 
   
   declare_estimator(Y ~ Z + time, fixed_effects = ~ units + periods, 
                     model = lm_robust, label = "twoway-fe", estimand = "ATE") 

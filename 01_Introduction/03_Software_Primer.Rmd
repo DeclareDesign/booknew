@@ -320,7 +320,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) +
   declare_assignment(prob = 0.5) +
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
+  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
   declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 simple_design_data <- draw_data(simple_design)
 simple_design_data %>% head %>% kable(digits = 3, caption = "Data with revealed outcomes.")
@@ -353,7 +353,7 @@ potential_outcomes <- declare_potential_outcomes(Y_Z_0 = u, Y_Z_1 = Y_Z_0 + 0.25
 estimand <- declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) 
 sampling <- declare_sampling(n = 50) 
 assignment <- declare_assignment(prob = 0.5) 
-reveal <- declare_reveal(outcome_variables = Y, assignment_variables = Z) 
+reveal <- reveal_outcomes(outcome_variables = Y, assignment_variables = Z) 
 estimator <- declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 ```
 
@@ -373,7 +373,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) +
   declare_assignment(prob = 0.5) +
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
+  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
   declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 ```
 
@@ -493,7 +493,7 @@ simple_designer <- function(sample_size, effect_size) {
     declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
     declare_sampling(n = 50) +
     declare_assignment(prob = 0.5) +
-    declare_reveal(outcome_variables = Y, assignment_variables = Z) +
+    reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
     declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 }
 ```

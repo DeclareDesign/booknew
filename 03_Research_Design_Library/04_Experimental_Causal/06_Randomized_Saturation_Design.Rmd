@@ -45,10 +45,10 @@ design <-
                              conditions = list(Z = c(0,1), S = c("low","high"))) +
   declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-  declare_reveal(Z,S) +
+  reveal_outcomes(Z,S) +
   declare_step(ipw = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") + Z_S_high_cond_prob * (S == "high"))),
     handler = fabricate) +
-  declare_reveal(Y,c(Z, S)) +
+  reveal_outcomes(Y,c(Z, S)) +
 declare_estimator(Y ~ Z * S, clusters = network, model = lm_robust, term = c("Z", "Shigh"), 
                   estimand = c("ate_no_spill", "ate_saturation"),weight = ipw)
 ```
@@ -92,7 +92,7 @@ setup to handle.
 #     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
 #   declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
 #                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-#   declare_reveal(Y, c(Z, S)) +
+#   reveal_outcomes(Y, c(Z, S)) +
 #   declare_estimator(Y ~ Z + S, model = lm_robust, term = c("Z", "Shigh"), estimand = c("ATE_saturation", "ate_no_spill"), label = "main effect")
 # ```
 -->
@@ -212,13 +212,13 @@ design <-
   declare_estimand(high = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    med =  mean(Y_Z_0_S_med - Y_Z_0_S_low), 
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-  declare_reveal(Z,S) +
+  reveal_outcomes(Z,S) +
   declare_step(
     w = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") + 
                    Z_S_med_cond_prob * (S == "med") + 
                    Z_S_high_cond_prob * (S == "high"))),
     handler = fabricate) +
-  declare_reveal(Y,c(Z, S)) +
+  reveal_outcomes(Y,c(Z, S)) +
   declare_estimator(model = lm_robust, 
                     formula = Y ~ S,
                     subset = Z == 0 & S %in% c("high","low"), 

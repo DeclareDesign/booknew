@@ -192,7 +192,7 @@ Table \@ref(tab:MI1b) shows "draws" of three  estimands. We declare a simple ref
 M <-
   declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ 0.5 * Z + U) +
-  declare_reveal()
+  reveal_outcomes()
 
 I <- declare_estimand(
   YZ1 = mean(Y[Z==1]),
@@ -208,7 +208,7 @@ draw_estimands(M+I)
 M <-
   declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ 0.5 * Z + U) +
-  declare_reveal()
+  reveal_outcomes()
 
 I <- declare_estimand(
   YZ1 = mean(Y[Z==1]),

@@ -39,7 +39,7 @@ design <-
   ) +
   declare_potential_outcomes(Y ~ Z * treatment(X) + (1 - Z) * control(X) + U) +
   declare_estimand(LATE = treatment(0) - control(0)) +
-  declare_reveal(Y, Z) +
+  reveal_outcomes(Y, Z) +
   declare_estimator(Y ~ poly(X, 4) * Z, model = lm_robust, estimand = "LATE")
 ```
 
@@ -127,7 +127,7 @@ declare_population(
 declare_estimand(LATE = treatment(0) - control(0)) +
   
   # Data Strategy -----------------------------------------------------------------
-declare_reveal(Y, Z) +
+reveal_outcomes(Y, Z) +
   
   # Answer Strategy ---------------------------------------------------------
 declare_estimator(formula = Y ~ poly(X, 4) * Z,

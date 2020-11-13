@@ -31,8 +31,8 @@ design <-
   declare_estimand(ATE_R = mean(R_Z_1 - R_Z_0)) + 
   declare_estimand(CATE_ar = mean(Q_Z_1_R_1 - Q_Z_0_R_1), subset = (R_Z_1 == 1 & R_Z_0 == 0)) + 
   declare_assignment(prob = 0.5) +
-  declare_reveal(R, Z) +
-  declare_reveal(Q, c(Z, R)) +
+  reveal_outcomes(R, Z) +
+  reveal_outcomes(Q, c(Z, R)) +
   declare_estimator(R ~ Z, estimand = "ATE_R", label = "ATE_R") +
   declare_estimator(Q ~ Z, subset = (R == 1), estimand = "CATE_ar", label = "CATE_ar")
 ```
@@ -150,7 +150,7 @@ design <-
   potential_outcomes + 
   assignment + 
   estimand_1 + estimand_2 + estimand_3 + 
-  declare_reveal(outcome_variables = c("R", "Y")) + 
+  reveal_outcomes(outcome_variables = c("R", "Y")) + 
   estimator_1 + estimator_2 + estimator_3
 ```
 
