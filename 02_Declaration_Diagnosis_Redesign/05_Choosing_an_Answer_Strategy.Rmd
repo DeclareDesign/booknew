@@ -561,9 +561,9 @@ The first task, estimating the magnitude of the effect of $D$ on $Y$, can be acc
 
 For estimating the sign of the effect, we can calculate the sign of the effect magnitude, and then conduct a statistical test of the null hypothesis of zero effect to distinguish among zero, positive, and negative effects.
 
-The third task, determining whether there is an effect or not, similarly involves a statistical test of the null hypothesis of zero effect. If we fail to reject the null, then our posterior belief is that there is no effect, but if we reject in a two-sided test then we leave believing there is an effect. This zero average effect null hypothesis test can help us take the final step in distinguishing among the 216 possible DAGs representing the relationships between $D$ and $Y$ and the confounders $X$ and $U$. In Figure XX, we display the 16 DAGs that are identified under random assignment and pretreatment measurement of $X$. We need to use data and the two-sided null hypothesis test to distinguish between the top row (there is an effect $D\rightarrow Y$) and the bottom row (there is no effect). Our design got us most of the way there, but then we need to use the data to narrow further to one of the two rows of eight DAGs. Since our inquiry is about the causal relationship between $D$ and $Y$, we may not be concerned about distinguishing among the eight. If we are, we need to develop an alternative research design in order to learn about the causal effects of $X$.
+The third task, determining whether there is an effect or not, similarly involves a statistical test of the null hypothesis of zero effect. If we fail to reject the null, then our posterior belief is that there is no effect, but if we reject in a two-sided test then we leave believing there is an effect. This zero average effect null hypothesis test can help us take the final step in distinguishing among the 216 possible DAGs representing the relationships between $D$ and $Y$ and the confounders $X$ and $U$. In Figure \@ref(estimationdags), we display the 16 DAGs that are identified under random assignment and pretreatment measurement of $X$. We need to use data and the two-sided null hypothesis test to distinguish between the top row (there is an effect $D\rightarrow Y$) and the bottom row (there is no effect). Our design got us most of the way there, but then we need to use the data to narrow further to one of the two rows of eight DAGs. Since our inquiry is about the causal relationship between $D$ and $Y$, we may not be concerned about distinguishing among the eight. If we are, we need to develop an alternative research design in order to learn about the causal effects of $X$.
 
-```{r, echo = FALSE, fig.width = 40, fig.height = 12}
+```{r estimationdags, fig.cap = "The sixteen DAGs consistent with pretreatment measurement of X and randomization of Z. Hypothesis testing can distinguish among the eight DAGs with an effect of Z on Y (top row) and the eight with no effect of Z on Y (bottom row).", echo = FALSE, fig.width = 40, fig.height = 12}
 gg_df <-
   gg_df %>%
   filter(is.na(ruled_out_by)) %>%
@@ -573,8 +573,8 @@ gg_df <-
   )
 
 fill_scale <- c(
-  `Ruled out by rejection of null hypothesis of no effect` = dd_dark_blue,
-  `Cannot rule out` = "transparent"
+  `Ruled out if estimate is statistically significant` = dd_dark_blue,
+  `Cannot be ruled out, regardless of statistical significance` = "transparent"
 )
 
 dag_df <-
