@@ -204,9 +204,9 @@ As we described in chapter 6, we can (non-parametrically) express our model of t
 
 When we want to estimate a particular causal relationship, such as the average causal effect of D on Y, we can read off the DAG whether that relationship is *identified* or not. The most common (and useful) criterion for identification is the "backdoor criterion." If there exists an unblocked "backdoor path" from D to Y, then the relationship is not identified.^[Footnote here about other criteria.] A backdoor path is a causal path that begins with an arrow in to D and ends with an arrow in to Y. Backdoor paths can be blocked in two ways: conditioning the analysis on a variable along the path or *not* conditioning on a "collider" along the path.
 
-Pearl (p. 61) defines the backdoor criterion:
+We reproduce the definition of the backdoor criterion given in @Pearl (p. 79), swapping in the variable names we have been using through this book:
 
-Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satifies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. (pg. 61 Pearl primer)
+> Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satisfies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. 
 
 With this definition in hand, we can inspect DAGs to find "adjustment sets." An adjustment set is a set of variables that may be conditioned upon in the answer strategy. "Conditioned upon" is a sufficiently vague phrase to include conditioning procedures such as controlling for a variable in a regression setting or stratifying the analysis according to those variables.
 
@@ -605,8 +605,8 @@ g <-
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5),
     legend.position = "bottom",
-    legend.title = element_text(size = 30),
-    legend.text = element_text(size = 30),
+    legend.title = element_text(size = 40),
+    legend.text = element_text(size = 40),
     legend.key.size = unit(25, "mm"),
     strip.text = element_blank()
   )
@@ -732,9 +732,7 @@ One of the simplest ways to formalize a qualitative strategy is by constructing 
 
 ### Bayesian formalizations
 
-Recent developments in qualitative methods have sought to take Bayes' rule "from metaphor to analytic tool" [@BennettAppendix]. This approach characterizes qualitative inference as one in which prior beliefs about the world can be specified numerically and then are updated on the basis of evidence observed. At minimum, writing down such an answer strategy on a computer requires specifying beliefs, expressed as probabilities, about the likelihood of seeing certain kinds of evidence under different hypotheses. We provide a simple example of such a strategy in the design library. @HerronQuinn provide one approach to formalizing a qualitative answer strategy that focuses on understanding an average treatment effect. 
-@humphreys2015mixing provide an approach that can be used to formalize answer strategies targeting both causal effect and causal attribution inquiries, while @fairfield2017explicit formalize a Bayesian approach that approaches causal attribution as a problem of attaching posterior probability to competing alternative hypotheses. 
-@abell2019subjective suggest the use of "Supra-Bayesian" methods to aggregate multiple participant-provided narratives in ethnographic studies targeting causal attribution estimands. 
+Recent developments in qualitative methods have sought to take Bayes' rule "from metaphor to analytic tool" [@BennettAppendix]. This approach characterizes qualitative inference as one in which prior beliefs about the world can be specified numerically and then are updated on the basis of evidence observed. At minimum, writing down such an answer strategy on a computer requires specifying beliefs, expressed as probabilities, about the likelihood of seeing certain kinds of evidence under different hypotheses. We provide a simple example of such a strategy in the design library. @herron2016careful provide one approach to formalizing a qualitative answer strategy that focuses on understanding an average treatment effect. @humphreys2015mixing provide an approach that can be used to formalize answer strategies targeting both causal effect and causal attribution inquiries, while @fairfield2017explicit formalize a Bayesian approach that approaches causal attribution as a problem of attaching posterior probability to competing alternative hypotheses. @abell2019subjective suggest the use of "Supra-Bayesian" methods to aggregate multiple participant-provided narratives in ethnographic studies targeting causal attribution estimands. 
 
 ### Set-theoretic formalizations
 

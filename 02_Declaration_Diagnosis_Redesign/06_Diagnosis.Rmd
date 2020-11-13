@@ -61,7 +61,7 @@ Some diagnosands can be calculated analytically. It can be straightforward to ca
 
 In practice, it is important to diagnose a design under multiple possible $M$'s, given our fundamental uncertainty about the world $w$. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under *multiple* likely models. A $D$ and $A$ for a given $I$ that provide good diagnosand values under multiple $M$'s can be said to be robust to multiple models. 
 
-```{r, echo=FALSE, fig.cap="MIDA as a DAG", fig.width = 7, fig.height = 2.75}
+```{r, echo=FALSE, fig.cap="DAG of Design Simulation", fig.width = 7, fig.height = 2.75}
 dag <-
   dagify(m ~ M,
          am ~ m + I,
@@ -146,14 +146,7 @@ g <-
   coord_fixed(clip = "off") + 
   theme_dag()
 g
-
-ggsave("~/Desktop/myshit.pdf", g, width = 7, height = 2.75)
-system("open ~/Desktop/myshit.pdf")
-
 ```
-
-<!-- snip -->
-
 
 ## Estimating diagnosands analytically
 
@@ -195,19 +188,6 @@ design <-
   declare_estimator(Y ~ Z, estimand = "ATE")
 ```
 
-One draw of this simulation returns the following:
-
-```{r, eval = FALSE, echo = FALSE}
-run_design(design)
-```
-
-One draw from the simulation returns the following:
-
-| estimand| estimate| std.error| conf.low| conf.high| p.value|
-|--------:|--------:|---------:|--------:|---------:|-------:|
-|     0.10|     0.08|      0.04|    0.003|     0.156|    0.04|
-
-Figure \@ref(simdrawsone) shows the information we might obtain from a single run of the simulation. The filled point is the estimate $a^d$. The open triangle is the estimand $a^m$. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We're not sure where $a^d$ is, but if things are going according to plan, confidence intervals constructed this way will bracket $a^d$ 95\% of the time. 
 
 ```{r, echo=FALSE}
 design <-
@@ -256,16 +236,34 @@ gg_df <-
   ) 
 ```
 
+One draw of this simulation returns the following:
+
+```{r, eval = FALSE, echo = TRUE}
+run_design(design)
+```
+
+
+```{r onesimulationdraw, echo=FALSE}
+simulations %>% 
+  filter(sim_ID == 1) %>%
+  select(estimand, estimate, std.error, df, p.value, conf.low, conf.high) %>%
+  kable(digits = 3, caption = "One simulation draw")
+```
+
+
+Figure \@ref(simdrawsone) shows the information we might obtain from a single run of the simulation. The filled point is the estimate $a^d$. The open triangle is the estimand $a^m$. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We're not sure where $a^d$ is, but if things are going according to plan, confidence intervals constructed this way will bracket $a^d$ 95\% of the time. 
+
 
 ```{r simdrawsone, fig.cap = "Visualization of one draw from a design diagnosis.", fig.height = 1.5, fig.width = 5, echo = FALSE}
 simulation_1 <- simulations %>% filter(sim_ID == 1)
 
-simulation_1 %>% 
-  select(estimand, estimate, std.error, conf.low, conf.high, p.value) %>%
-  knitr::kable(digits = 3)
+# simulation_1 %>% 
+#   select(estimand, estimate, std.error, conf.low, conf.high, p.value) %>%
+#   knitr::kable(digits = 3)
 
 gg_df_1 <- gg_df %>% filter(sim_ID == 1)
 
+g_1 <- 
 ggplot(simulation_1, aes(x = estimate, y = as.factor(sim_ID)), color = dd_light_blue) +
   # geom_rect(xmin = -10, xmax = 0, ymin = -100, ymax = 100, fill = gray(0.96), size = 0) +
   geom_errorbarh(aes(xmin = conf.low, xmax = conf.high),
@@ -322,6 +320,79 @@ ggplot(simulation_1, aes(x = estimate, y = as.factor(sim_ID)), color = dd_light_
   scale_fill_manual(name = "Probability",
                     values = c(dd_light_blue_alpha, dd_light_blue_alpha, NA)) +
   labs(x = "Estimated sampling distribution (from point estimate and standard error)")
+
+
+
+g_1_annotated <- g_1 +
+  geom_text(
+    aes(x = estimand + 0.02, y = sim_ID, label = paste0("Estimand: ",format_num(estimand))),
+    position = position_nudge(y = -0.1),
+    size = 2.5,
+  ) +
+  geom_text(
+    aes(x = estimate, y = sim_ID, label = paste0("Estimate: ",format_num(estimate))),
+    position = position_nudge(y = 0.15),
+    size = 2.5,
+  ) +
+    geom_text(
+    aes(x = estimate, y = sim_ID, label = paste0("p-value: ",format_num(p.value))),
+    position = position_nudge(y = -0.3),
+    size = 2.5,
+  ) +
+  geom_richtext(
+    aes(x = conf.high, y = sim_ID, label = paste0("Estimated sampling distribution")),
+
+    position = position_nudge(y = 0.5, x = -0.015),
+    size = 2.5,
+    fill = NA,
+    label.colour = NA
+  ) +
+  geom_text(
+    aes(x = -0.02, y = sim_ID),
+    label = "x = 0",
+    position = position_nudge(y = 0.5),
+    size = 2.5,
+  ) +
+  geom_text(
+    aes(x = 0.04, y = sim_ID, label = paste0("Confidence interval: ", make_interval_entry(conf.low, conf.high, digits = 3))),
+    position = position_nudge(y = -0.10),
+    size = 2.5,
+  ) +
+  geom_segment(
+    aes(
+      x = 0.04,
+      xend = 0.04,
+      y = 0.92,
+      yend = 0.98
+    ),
+    arrow = arrow(length = unit(0.02, "npc")),
+    size = 0.1
+  ) +
+  geom_segment(
+    aes(
+      x = 0.067,
+      xend = -0.02,
+      y = 0.70,
+      yend = 0.98
+    ),
+    arrow = arrow(length = unit(0.02, "npc")),
+    size = 0.1
+  ) +
+  geom_segment(
+    aes(
+      x = 0.093,
+      xend = 0.168,
+      y = 0.70,
+      yend = 0.98
+    ),
+    arrow = arrow(length = unit(0.02, "npc")),
+    size = 0.1
+  )
+
+g_1_annotated
+
+
+
 ```
 
 <!-- We're interested in a few diagnosands. Bias (the expectation of the error statistics) is one, but we also want to know about RMSE (the square root of the expectation of the squared errors), power (the probability the $p$-value is below a threshold), and coverage (the probability the 95% confidence interval brackets the estimand).  -->
@@ -420,8 +491,9 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r}
-diagnosis
+```{r estimateddiagnosands, echo=FALSE}
+diagnosis$diagnosands_df %>% transmute(bias = make_se_entry(bias, `se(bias)`), 
+                                       power = make_se_entry(power, `se(power)`)) %>% kable(digits = 3, caption = "Diagnosand estimates with bootstrapped standard errors.")
 ```
 
 <!-- ## Interactive element -->
@@ -440,24 +512,28 @@ Say you decide to simulate the design 1000 times to see if it's biased. After a 
 As with frequentist statistics, we have to separate signal from noise. We have an estimate (here, of the bias diagnosand) that varies depending on how each simulation turns out. We want to quantify that variation in order to make a decision about whether the estimated bias is large enough to be significant. The simulation standard error (or, Monte Carlo standard error) is an estimate of the variation created by the simulation procedure. If that estimated variation is high relative to the estimated diagnosand, then we need to increase the number of simulations. 
 <!-- Following the example from the previous paragraph, if the simulation standard error was .015, then the simulation we ran was consistent with negative, positive, and no bias given the point estimate of .01. However, if we estimate a simulation standard error of .0001, then the .01 or .02 bias estimates give real cause for concern, since they were so unlikely to arise if the true bias were zero.  -->
 
-@morrisetal2019 provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define $a^d_i$ as the point estimate in the $i$'th simulation, $n_{sim}$ as the total number of simulations, and the average of the point estimates across simulations as $\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i$. Then, if the estimand is a constant and $a^d_i$ is independently and normally distributed, the simulation standard error for bias can be calculated as $\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}$. Here is how you can do it in code:
+@morrisetal2019 provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define $a^d_i$ as the point estimate in the $i$'th simulation, $n_{sim}$ as the total number of simulations, and the average of the point estimates across simulations as $\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i$. Then, if the estimand is a constant and $a^d_i$ is independently and normally distributed, the simulation standard error for bias can be calculated as $\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}$. 
+
+<!-- Here is how you can do it in code: -->
 
 
-```{r}
-simulated_estimates <- with(diagnosis$simulations_df, estimate)
-mean_estimate <- mean(simulated_estimates)
-n_sim <- length(simulated_estimates)
-SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((simulated_estimates - mean_estimate)^2)))
-SE_bias
-```
+<!-- ```{r} -->
+<!-- simulated_estimates <- with(diagnosis$simulations_df, estimate) -->
+<!-- mean_estimate <- mean(simulated_estimates) -->
+<!-- n_sim <- length(simulated_estimates) -->
+<!-- SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((simulated_estimates - mean_estimate)^2))) -->
+<!-- SE_bias -->
+<!-- ``` -->
 
-Of course, this estimate of the variance relies on assumptions and won't work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don't have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your $n_{sims}$ diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. `DeclareDesign` does nonparametric bootstrapping by default whenever the `diagnose_design()` function is called. The numbers are reported in the parentheses under the diagnosand estimates in the table above. Here's the simulation standard error for bias calculated by bootstrap resampling 100 times:
+Of course, this estimate of the variance relies on assumptions and won't work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don't have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your $n_{sims}$ diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. `DeclareDesign` does nonparametric bootstrapping by default whenever the `diagnose_design()` function is called. The numbers are reported in the parentheses after the diagnosand estimates in the table above. 
 
-```{r}
-diagnosis$diagnosands_df %>% pull("se(bias)")
-```
+<!-- Here's the simulation standard error for bias calculated by bootstrap resampling 100 times: -->
 
-As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics.
+<!-- ```{r} -->
+<!-- diagnosis$diagnosands_df %>% pull("se(bias)") -->
+<!-- ``` -->
+
+<!-- As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics. -->
 
 ### How many simulations to run
 
@@ -558,7 +634,6 @@ unbiased_lowprecision <- ggplot() +
     axis.text.y = element_blank()
   )
 
-n <- 50
 
 points_df <- tibble(
   rho = sqrt(runif(n, min = 0, max = 0.015)),
@@ -588,7 +663,7 @@ unbiased_highprecision <- ggplot() +
   coord_fixed() + 
   dd_theme() + 
   xlab("") + ylab("") + 
-  ggtitle("Unbiased, imprecise", subtitle = glue::glue("Variance = {summary_df$var}\nBias = {summary_df$bias}\nRMSE = {summary_df$mse}")) + 
+  ggtitle("Unbiased, precise", subtitle = glue::glue("Variance = {summary_df$var}\nBias = {summary_df$bias}\nRMSE = {summary_df$mse}")) + 
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
@@ -596,8 +671,6 @@ unbiased_highprecision <- ggplot() +
     axis.text.x = element_blank(),
     axis.text.y = element_blank()
   )
-
-n <- 50
 
 points_df <- tibble(
   rho = sqrt(runif(n, min = 0, max = 0.015)),
@@ -627,7 +700,7 @@ biased_highprecision <- ggplot() +
   coord_fixed() + 
   dd_theme() + 
   xlab("") + ylab("") + 
-  ggtitle("Unbiased, imprecise", subtitle = glue::glue("Variance = {summary_df$var}\nBias = {summary_df$bias}\nRMSE = {summary_df$mse}")) + 
+  ggtitle("Biased, precise", subtitle = glue::glue("Variance = {summary_df$var}\nBias = {summary_df$bias}\nRMSE = {summary_df$mse}")) + 
   theme(
     legend.position = "none",
     panel.grid.major = element_blank(),
@@ -636,15 +709,13 @@ biased_highprecision <- ggplot() +
     axis.text.y = element_blank()
   )
 
-library(patchwork)
-
 unbiased_lowprecision + unbiased_highprecision + biased_highprecision
 ```
 
 The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters **which target** your archer is shooting at. Figure \@ref(fig:archerydual) shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of $a^d$, we have to be clear about which $a^a$ they are associated with.
 
 
-```{r archerydual, echo=FALSE}
+```{r archerydual, fig.cap = "The bias, variance, and RMSE of an answer strategy depend on the inquiry.", echo=FALSE}
 n <- 50
 
 points_df <- tibble(
