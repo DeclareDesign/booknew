@@ -191,9 +191,10 @@ M <-
     X2 = rbinom(N, size = 1, prob = 0.25)
   ) +
   declare_potential_outcomes(D ~ Z * X1) +
-  declare_potential_outcomes(M ~ D, assignment_variables = c(D)) +
+  declare_potential_outcomes(M ~ D, assignment_variables = D) +
   declare_potential_outcomes(K ~ D * U, assignment_variables = D) +
-  declare_potential_outcomes(Y ~ X2 + X1 + M + U, assignment_variables = c(M)) +
+  declare_potential_outcomes(Y ~ X2 + X1 + M + U, 
+                             assignment_variables = c(M)) +
   declare_assignment(prob = 0.5) +
   reveal_outcomes(D, Z) +
   reveal_outcomes(M, c(D)) +
@@ -255,11 +256,9 @@ $A$: Finally, answer strategies rely on collected data to provide an answer to t
 
 If we have all this,  do we have enough for diagnosis? We might not. When we engage in diagnosis we may want to ask about how our design fares if the world worked in a particular way. For instance, the gender of subjects might not be a primary interest for us or enter into our inquiry, our data strategy, or our analysis, but we might worry that gender confounds our inferences---for example if it affects both treatment uptake and outcomes. In this case we may include gender in the reference model in order to assess the extent to which our analysis is sensitive to it.
 
-
 ## Specifying structural relations
 
 DAGs convey beliefs about *whether* two variables are causally related, but they do not encode beliefs about *how* they are related. This is no criticism of DAGs --- they just don't encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we'll need to make the leap from nonparametric models to *parametric* structural causal models. This move is not without costs -- each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!
-
 
 A slightly more complex example helps demonstrate how we can use a model declaration to facilitate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of $Z$ should be larger for units with $X = 1$. We can encode this belief in the  design declaration below. In the `declare_population` function, we write that $U$ is normally distributed with mean 0 and standard deviation 1; $X$ follows a Bernoulli distribution. In the `declare_potential_outcomes` function, we describe how the average effect of treatment depends on $X$.
 
@@ -285,7 +284,6 @@ The design describes a more complex world in which treatment effects of $Z$ depe
 <!-- maybe a footnote? -->
 <!-- - some of these variables will be exogenous and endogenous, in Pearl's terms. by exogenous variables, he means variables without parents, no antecendent causes. by endogenous variables, he means those with parents, that are determined in part by earlier variables. endogenous variables are distinct from the problem of endogeneity, which comes from a single variable being a parent of both the treatment variable of interest and the outcome we wish to measure the causal effect of the treatment on. we will use it in Pearl's sense. -->
 
-
 <!-- maybe should clarify somewhere that the choice of a distribution function is as much a parametric decision as the choice of its arguments -->
 
 ## Substantive justifications for choices of nodes and equations
@@ -293,7 +291,6 @@ The design describes a more complex world in which treatment effects of $Z$ depe
 So far we have described formal considerations but we have not described substantive considerations for including particular variables or stipulating particular relations between them. 
 
 The justification of your choice of reference model will depend on the purpose of your design. Broadly we distinguish between reality tracking models, discursive models, and sufficient models. 
-
 
 ### Reality tracking models
 
@@ -315,19 +312,15 @@ Where there are no past studies that are sufficiently similar in some dimension,
 
 In some cases, we can define many of the variables from early data collection in a study, e.g., from a baseline survey. Once we conduct a baseline survey, we can use the set of individuals selected for the study and their baseline characteristics to define many of the variables in our model. We can define our expectations about effect sizes and other features of endogenous variables, but rely on the correlations between exogenous variables from the baseline data. The danger here is that if we fix the characteristics of our model using baseline data, we will not consider what data *could have* been revealed if our sampling procedure had yielded a different set of study participants or we had conducted data collection a month later.
 
-
 ### Discursive models
 
-For some purposes the reference model might be developed not to track reality but to reflect assumptions in scholarly debate. For instance the purpose might be to question whether a given conclusion is valid **under the assumptions maintained by some scholarly community**.  Indeed it is possible that a reference model is used specifically because the researcher thinks it inaccurate, allowing them to show what even if they are wrong in some background assumptions about the world, their analysis will produce good answers. 
+For some purposes the reference model might be developed not to track reality but to reflect assumptions in scholarly debate. For instance the purpose might be to question whether a given conclusion is valid **under the assumptions maintained by some scholarly community**. Indeed it is possible that a reference model is used specifically because the researcher thinks it inaccurate, allowing them to show what even if they are wrong in some background assumptions about the world, their analysis will produce good answers. 
 
 A particularly important class of discursive models are what might be called "agnostic models": models that make weaker assumptions about the world than the researcher in good faith holds. In a directed acyclic graph, every arrow indicates a possible relation between a cause and an outcome. The big assumptions in these models however are not seen in the arrows but in the absence of arrows: every missing arrow represents a claim that an outcome is not affected by a possible cause.  Analysis strategies often depend upon such assumptions. Even when arrows are included, functional relations might presuppose particular features important for inference. For instance a researcher using "instrumental variables" analysis will generally assume that $Z$ causes $Y$ though $D$ but not through other paths. This is an assumption about absent arrows. The same analysis might also assume that $Z$ never affects $D$ negatively. That is an assumption about functional forms. An agnostic reference model might loosen these assumptions, allow for the possibility of violations of exclusion restrictions and violations of monotonicity assumptions and use this to see how analysis fares under conditions that the researcher believes not to be true, but that a skeptic might be willing to entertain.     
-
-
 
 ### Sufficient models
 
 For some purposes the validity of inferences, or the lessons learned from a diagnosis do not depend on $w$ lying in $M$, the relevant question is only whether the kinds of inferences one might draw given stipulated reference models would also hold reasonable well for the true data generating process. For instance if your aim is to assess whether an analysis strategy generates an unbiased estimate of a treatment effect you may go to pains to make sure that that you model treatment assignment carefully but modeling the size of a treatment effect correctly may not be important. The idea is that what you learn from the model that you do study is sufficient for inferences about a broader class of model within which the true data generating process might lie.       
-
 
 ## Getting it right?
 
