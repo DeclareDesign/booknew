@@ -86,8 +86,8 @@
 <p>Some diagnosands can be calculated analytically. It can be straightforward to calculate <span class="math inline">\(\sqrt{\mathbb{V}(a^d)}\)</span> if you have a two-arm experiment and are willing to make a lot of simplifying assumptions.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Insert formula 3.4 and cite to FEDAI.&lt;/p&gt;"><sup>21</sup></a> Most diagnosands for even moderately complex designs, however, require Monte Carlo computer simulation. A main purpose of the <code>DeclareDesign</code> software package is making the simulation step easier.</p>
 <p>In practice, it is important to diagnose a design under multiple possible <span class="math inline">\(M\)</span>’s, given our fundamental uncertainty about the world <span class="math inline">\(w\)</span>. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under <em>multiple</em> likely models. A <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> for a given <span class="math inline">\(I\)</span> that provide good diagnosand values under multiple <span class="math inline">\(M\)</span>’s can be said to be robust to multiple models.</p>
 <div class="figure">
-<span id="fig:unnamed-chunk-106"></span>
-<img src="book_files/figure-html/unnamed-chunk-106-1.svg" alt="DAG of Design Simulation" width="100%"><p class="caption">
+<span id="fig:midadagsimulated"></span>
+<img src="book_files/figure-html/midadagsimulated-1.svg" alt="DAG of Design Simulation" width="100%"><p class="caption">
 Figure 10.1: DAG of Design Simulation
 </p>
 </div>
@@ -343,7 +343,7 @@ power
 <td><span class="math inline">\(\mathbb{E}(a^d - a^m)\)</span></td>
 </tr>
 <tr class="odd">
-<td>Variance</td>
+<td>Variance of the estimates</td>
 <td></td>
 <td><span class="math inline">\(\mathbb{V}(a^d)\)</span></td>
 </tr>
@@ -358,8 +358,8 @@ power
 <td><span class="math inline">\(\widehat\sigma(A)\)</span></td>
 </tr>
 <tr class="even">
-<td>RMSE</td>
-<td>Root mean-squared-error</td>
+<td>Root mean-squared-error (RMSE)</td>
+<td></td>
 <td><span class="math inline">\(\sqrt{\mathbb{E}(a^d - a^m)}\)</span></td>
 </tr>
 <tr class="odd">
@@ -373,7 +373,7 @@ power
 <td><span class="math inline">\(\Pr(\mathrm{covers}^{a^d})\)</span></td>
 </tr>
 <tr class="odd">
-<td>Type S error rate</td>
+<td>Type-S error rate</td>
 <td>Probability estimate has incorrect sign, if statistically significant (Gelman and Carlin 2014)</td>
 <td><span class="math inline">\(\Pr(\mathrm{sgn}(a^d) \neq \mathrm{sgn}(a^m) \mid p \leq \alpha)\)</span></td>
 </tr>
@@ -384,12 +384,12 @@ power
 </tr>
 <tr class="odd">
 <td>Type I error</td>
-<td></td>
+<td>Rejecting the null hypothesis when it is true</td>
 <td><span class="math inline">\(\Pr(p \leq \alpha \mid a^m = a^0)\)</span></td>
 </tr>
 <tr class="even">
 <td>Type II error</td>
-<td></td>
+<td>Failure to reject the null hypothesis when it is false</td>
 <td><span class="math inline">\(\Pr(p \geq \alpha \mid a^m \neq a^0)\)</span></td>
 </tr>
 <tr class="odd">
@@ -399,13 +399,13 @@ power
 <td><span class="math inline">\(\mathbb{E}(a^m_{\mathrm sample} - a^m_{\mathrm population})\)</span></td>
 </tr>
 <tr class="even">
-<td>Maximum possible cost</td>
-<td></td>
+<td>Expected maximum cost</td>
+<td>Maximum cost across possible realizations of the study</td>
 <td><span class="math inline">\(\max{cost}\)</span></td>
 </tr>
 <tr class="odd">
 <td>Bayesian learning</td>
-<td></td>
+<td>Difference between prior and posterior guess of the value of the estimand</td>
 <td><span class="math inline">\(a^m_{\mathrm post} - a^m_{\mathrm pre}\)</span></td>
 </tr>
 <tr class="even">
@@ -415,12 +415,12 @@ power
 </tr>
 <tr class="odd">
 <td>Success</td>
-<td></td>
+<td>Qualitative assessment of the success of a study</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>Minimum detectable effect (MDE)</td>
-<td></td>
+<td>Smallest effect size for which the power of the design is nominal (e.g., powered at 80%)</td>
 <td><span class="math inline">\(\mathrm{argmin}_{a^m_*} \Pr(p \leq \alpha) = 0.8\)</span></td>
 </tr>
 <tr class="odd">
@@ -431,15 +431,15 @@ power
 <tr class="even">
 <td>Maximum proportion of subjects harmed</td>
 <td></td>
-<td><span class="math inline">\(\min{\Pr(\mathrm{harm})}\)</span></td>
+<td><span class="math inline">\(\max{\Pr(\mathrm{harm})}\)</span></td>
 </tr>
 </tbody>
 </table></div>
-<p>Not all of these diagnosands are relevant for every study. For example, in a descriptive study whose goal is to estimate the fraction of people in France who are left-handed, statistical power is irrelevant. A hypothesis test against the null hypothesis that 0 percent of the people in France are left-handed is preposterous. We know for sure that the fraction is not zero, we just don’t know its precise value. A much more important diagnosand for this study would be RMSE (root-mean-squared-error), which is a measure of how well-estimated the estimand is that incorporates both bias and variance.</p>
+<p>Not all of these diagnosands are relevant for every study. For example, in a descriptive study whose goal is to estimate the fraction of people in France who are left-handed, statistical power is irrelevant. A hypothesis test against the null hypothesis that zero percent of the people in France are left-handed is preposterous. We know for sure that the fraction is not zero, we just don’t know its precise value. A much more important diagnosand for this study would be RMSE (root-mean-squared-error), which is a measure of how well-estimated the estimand is that incorporates both bias and variance.</p>
 <p>Often, we need to look at several diagnosands in order to understand what might be going wrong. If your design exhibits “undercoverage” (e.g., your coverage is less than <span class="math inline">\(1 - \alpha\)</span>), that might be because your standard errors are too small (under-estimation of the variance in the sampling distribution) or because your point estimate is biased, or some combination of the two. In really perverse instances, you might have a biased point estimate which, thanks to overly-wide confidence intervals, just happens to get covered 95% of the time. So, when assessing coverage it’s important to look not only at point estimate bias, but you should also check that the average estimated standard error lines up with the true standard error. Alternatively, you could look at the “bias-eliminated coverage,” which assesses coverage purely in terms of confidence interval width, ignoring bias.</p>
 <p>Many research design decisions involve trading off bias and variance. In trade-off settings, we may need to accept higher variance in order to decrease bias. Likewise, we may need to accept a bit of bias in order to achieve lower variance. The tradeoff is captured by mean-squared error – which is the average squared distance between <span class="math inline">\(a^d\)</span> and <span class="math inline">\(a^m\)</span>. Of course we would ideally like to have as low a mean-squared error as possible. We would like to achieve low variance and low bias simultaneously.</p>
 <p>To illustrate, consider the following three designs as represented by three targets. The inquiry is the bullseye of the target. The data and answer strategies combine to generate a process by which arrows are shot towards the target. On the left, we have a very bad archer: even though the estimates are unbiased in the sense that they hit the bullseye “on average”, very few of the arrows are on target. In the middle, we have the Katniss Everdeen (the heroine of the Hunger Games novels who is good with a bow) of data and answer strategies: they are both on target and low variance. On the right, we have an archer who is very consistent (low variance) but biased. The mean squared error is highest on the left and lowest in the middle.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-113-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-112-1.svg" width="100%"></div>
 <p>The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters <strong>which target</strong> your archer is shooting at. Figure <a href="p2diagnosis.html#fig:archerydual">10.4</a> shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of <span class="math inline">\(a^d\)</span>, we have to be clear about which <span class="math inline">\(a^a\)</span> they are associated with.</p>
 <div class="figure">
 <span id="fig:archerydual"></span>
