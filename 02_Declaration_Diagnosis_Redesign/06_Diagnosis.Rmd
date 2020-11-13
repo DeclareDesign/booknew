@@ -177,25 +177,27 @@ A simple diagnostic statistic is "error," or the difference between the estimate
 
 Usually, we consider many diagnostic statistics at the same time. Here's a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.   
 
-```{r, echo=FALSE}
+```{r, eval=FALSE}
 design <-
   declare_population(N = 100, 
-                     Tau = rnorm(N, mean = 0.1, sd = 0.1),
+                     tau = rnorm(N, mean = 0.1, sd = 0.1),
                      U = rnorm(N, 0, 0.2)) +
-  declare_potential_outcomes(Y ~  Tau * Z + U) + 
+  declare_potential_outcomes(Y ~  tau * Z + U) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
   declare_estimator(Y ~ Z, estimand = "ATE")
 ```
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 design <-
-  declare_population(N = 100, U = rnorm(N, 0, 0.2)) +
-  declare_potential_outcomes(Y ~ rnorm(N, mean = 0.1, sd = 0.1) * Z + U) + 
+  declare_population(N = 100, 
+                     tau = rnorm(N, mean = 0.1, sd = 0.1),
+                     U = rnorm(N, 0, 0.2)) +
+  declare_potential_outcomes(Y ~  tau * Z + U) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_assignment() +
-  declare_estimator(Y ~ Z, estimand = "ATE", model = lm_robust)
+  declare_assignment(prob = 0.5) +
+  declare_estimator(Y ~ Z, estimand = "ATE")
 
 # diagnose_design(design, sims = 250)
 
@@ -791,7 +793,7 @@ Ethical considerations also often enter the process of assessing research design
 
 ## Diagnosing with respect to variations in M
 
-We are always uncertain about M -- if we were certain of M (or there was no real dispute about it), there would be no need to conduct new empirical research about it. Research design diagnosis can account for this uncertainty by evaluating the performace of the design under alternative models. We are unsure of the exact value of the intra-cluster correlation of outcomes we will encounter, so we simulate the variance of the estimator under a range of plausible ICC values. We are unsure of the true average treatment effect, so we simulate the power of the study over a range of plausible effect sizes. Uncertainty over model inputs like the means, variances, and covariances in data that will eventually be collect is a major reason to simulate under a range of plausible values. 
+We are always uncertain about M -- if we were certain of M (or there was no real dispute about it), there would be no need to conduct new empirical research about it. Research design diagnosis can account for this uncertainty by evaluating the performance of the design under alternative models. We are unsure of the exact value of the intra-cluster correlation of outcomes we will encounter, so we simulate the variance of the estimator under a range of plausible ICC values. We are unsure of the true average treatment effect, so we simulate the power of the study over a range of plausible effect sizes. Uncertainty over model inputs like the means, variances, and covariances in data that will eventually be collect is a major reason to simulate under a range of plausible values. 
 
 ```{r, include = FALSE, eval = FALSE}
 model <- declare_population(
@@ -801,8 +803,6 @@ model <- declare_population(
   declare_estimator(Y~Z, estimand = c("super_b", "case_b"))
 
 diagnose_design(model, sims = 100)
-                  
-
 ```
 <!-- Warning about "expected bias" -->
 
