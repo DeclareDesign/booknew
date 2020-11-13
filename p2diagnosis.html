@@ -87,11 +87,10 @@
 <p>In practice, it is important to diagnose a design under multiple possible <span class="math inline">\(M\)</span>’s, given our fundamental uncertainty about the world <span class="math inline">\(w\)</span>. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under <em>multiple</em> likely models. A <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> for a given <span class="math inline">\(I\)</span> that provide good diagnosand values under multiple <span class="math inline">\(M\)</span>’s can be said to be robust to multiple models.</p>
 <div class="figure">
 <span id="fig:unnamed-chunk-106"></span>
-<img src="book_files/figure-html/unnamed-chunk-106-1.svg" alt="MIDA as a DAG" width="100%"><p class="caption">
-Figure 10.1: MIDA as a DAG
+<img src="book_files/figure-html/unnamed-chunk-106-1.svg" alt="DAG of Design Simulation" width="100%"><p class="caption">
+Figure 10.1: DAG of Design Simulation
 </p>
 </div>
-<!-- snip -->
 <div id="estimating-diagnosands-analytically" class="section level2">
 <h2>
 <span class="header-section-number">10.1</span> Estimating diagnosands analytically<a class="anchor" aria-label="anchor" href="#estimating-diagnosands-analytically"><i class="fas fa-link"></i></a>
@@ -119,27 +118,12 @@ where <span class="math inline">\(\beta\)</span> is the statistical power of the
 <p>A simple diagnostic statistic is “error,” or the difference between the estimate and the estimand: <span class="math inline">\(error = a^d - a^m\)</span>. The bias diagnosand is the expectation of the error statistic <span class="math inline">\(\mathbb{E}[error]\)</span> over all possible ways the study could have come out.</p>
 <p>Usually, we consider many diagnostic statistics at the same time. Here’s a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.</p>
 <p>One draw of this simulation returns the following:</p>
-<p>One draw from the simulation returns the following:</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">run_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
-<thead><tr class="header">
-<th align="right">estimand</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">conf.low</th>
-<th align="right">conf.high</th>
-<th align="right">p.value</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td align="right">0.10</td>
-<td align="right">0.08</td>
-<td align="right">0.04</td>
-<td align="right">0.003</td>
-<td align="right">0.156</td>
-<td align="right">0.04</td>
-</tr></tbody>
-</table></div>
-<p>Figure <a href="#simdrawsone"><strong>??</strong></a> shows the information we might obtain from a single run of the simulation. The filled point is the estimate <span class="math inline">\(a^d\)</span>. The open triangle is the estimand <span class="math inline">\(a^m\)</span>. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We’re not sure where <span class="math inline">\(a^d\)</span> is, but if things are going according to plan, confidence intervals constructed this way will bracket <span class="math inline">\(a^d\)</span> 95% of the time.</p>
-<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:onesimulationdraw">Table 10.1: </span>One simulation draw
+</caption>
 <thead><tr>
 <th style="text-align:right;">
 estimand
@@ -151,13 +135,16 @@ estimate
 std.error
 </th>
 <th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+<th style="text-align:right;">
 conf.low
 </th>
 <th style="text-align:right;">
 conf.high
-</th>
-<th style="text-align:right;">
-p.value
 </th>
 </tr></thead>
 <tbody><tr>
@@ -171,16 +158,20 @@ p.value
 0.038
 </td>
 <td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+0.018
+</td>
+<td style="text-align:right;">
 0.016
 </td>
 <td style="text-align:right;">
 0.167
 </td>
-<td style="text-align:right;">
-0.018
-</td>
 </tr></tbody>
 </table></div>
+<p>Figure <a href="#simdrawsone"><strong>??</strong></a> shows the information we might obtain from a single run of the simulation. The filled point is the estimate <span class="math inline">\(a^d\)</span>. The open triangle is the estimand <span class="math inline">\(a^m\)</span>. The bell-shaped curve is our normal-approximation based estimate of the sampling distribution. The standard deviation of this estimated distribution is our estimated standard error, which expresses our uncertainty. The confidence interval around the estimate is another expression of our uncertainty: We’re not sure where <span class="math inline">\(a^d\)</span> is, but if things are going according to plan, confidence intervals constructed this way will bracket <span class="math inline">\(a^d\)</span> 95% of the time.</p>
 <div class="figure">
 <span id="fig:simdrawsone"></span>
 <img src="book_files/figure-html/simdrawsone-1.svg" alt="Visualization of one draw from a design diagnosis." width="100%"><p class="caption">
@@ -199,46 +190,53 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 </p>
 </div>
 <p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnositic satistics, then we summarise them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="fl">1000</span>, 
                              diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
                                select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"sd_estimate"</span>, <span class="st">"rmse"</span>, <span class="st">"power"</span>, <span class="st">"coverage"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span></code></pre></div>
-<pre><code>## 
-## Research design diagnosis based on 100 simulations. Diagnosand estimates with bootstrapped standard errors in parentheses (100 replicates).
-## 
-##  Design Label Estimand Label Estimator Label Term N Sims   Bias SD Estimate
-##        design            ATE       estimator    Z    100   0.00        0.04
-##                                                          (0.00)      (0.00)
-##    RMSE  Power Coverage
-##    0.04   0.62     0.96
-##  (0.00) (0.05)   (0.02)</code></pre>
-<!-- ## Interactive element -->
-<!-- You can have fun building up a design diagnosis run-by-run with this shiny app. Each time you run the design, it adds a new estimate to the sampling distribution so you can learn about the relationship of a single run of the design to the overall diagnosis. -->
-<!-- ```{r, echo = FALSE} -->
-<!-- knitr::include_app('https://gblair.shinyapps.io/diagnosis/', height = '400px') -->
-<!-- ``` -->
-<div id="interpreting-diagnosands" class="section level3">
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:estimateddiagnosands">Table 10.2: </span>Diagnosand estimates with bootstrapped standard errors.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+bias
+</th>
+<th style="text-align:left;">
+power
+</th>
+</tr></thead>
+<tbody><tr>
+<td style="text-align:left;">
+0.00 (0.00)
+</td>
+<td style="text-align:left;">
+0.62 (0.05)
+</td>
+</tr></tbody>
+</table></div>
+<!-- ## Interactive element --><!-- You can have fun building up a design diagnosis run-by-run with this shiny app. Each time you run the design, it adds a new estimate to the sampling distribution so you can learn about the relationship of a single run of the design to the overall diagnosis. --><!-- ```{r, echo = FALSE} --><!-- knitr::include_app('https://gblair.shinyapps.io/diagnosis/', height = '400px') --><!-- ``` --><div id="interpreting-diagnosands" class="section level3">
 <h3>
 <span class="header-section-number">10.2.1</span> Interpreting diagnosands<a class="anchor" aria-label="anchor" href="#interpreting-diagnosands"><i class="fas fa-link"></i></a>
 </h3>
 <p>Say you decide to simulate the design 1000 times to see if it’s biased. After a few seconds, the computer spits out bias of .02. Unsure whether to be concerned, you simulate the design another 1000 times. Now the computer says the bias is .01. Since each simulation was randomly generated, you should expect to get estimates of bias that vary. Given the random variation in the simulations and how large the estimate and estimand are, maybe it was even quite likely to get .01 or .02 bias even if the true bias is zero. Or maybe your design is biased.</p>
 <p>As with frequentist statistics, we have to separate signal from noise. We have an estimate (here, of the bias diagnosand) that varies depending on how each simulation turns out. We want to quantify that variation in order to make a decision about whether the estimated bias is large enough to be significant. The simulation standard error (or, Monte Carlo standard error) is an estimate of the variation created by the simulation procedure. If that estimated variation is high relative to the estimated diagnosand, then we need to increase the number of simulations.
 <!-- Following the example from the previous paragraph, if the simulation standard error was .015, then the simulation we ran was consistent with negative, positive, and no bias given the point estimate of .01. However, if we estimate a simulation standard error of .0001, then the .01 or .02 bias estimates give real cause for concern, since they were so unlikely to arise if the true bias were zero.  --></p>
-<p><span class="citation">Morris, White, and Crowther (<a href="references-4.html#ref-morrisetal2019" role="doc-biblioref">2019</a>)</span> provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define <span class="math inline">\(a^d_i\)</span> as the point estimate in the <span class="math inline">\(i\)</span>’th simulation, <span class="math inline">\(n_{sim}\)</span> as the total number of simulations, and the average of the point estimates across simulations as <span class="math inline">\(\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i\)</span>. Then, if the estimand is a constant and <span class="math inline">\(a^d_i\)</span> is independently and normally distributed, the simulation standard error for bias can be calculated as <span class="math inline">\(\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}\)</span>. Here is how you can do it in code:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">simulated_estimates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">diagnosis</span><span class="op">$</span><span class="va">simulations_df</span>, <span class="va">estimate</span><span class="op">)</span>
-<span class="va">mean_estimate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">simulated_estimates</span><span class="op">)</span>
-<span class="va">n_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">simulated_estimates</span><span class="op">)</span>
-<span class="va">SE_bias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">n_sim</span> <span class="op">*</span> <span class="op">(</span><span class="va">n_sim</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">simulated_estimates</span> <span class="op">-</span> <span class="va">mean_estimate</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">SE_bias</span></code></pre></div>
-<pre><code>## [1] 0.004152528</code></pre>
-<p>Of course, this estimate of the variance relies on assumptions and won’t work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don’t have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your <span class="math inline">\(n_{sims}\)</span> diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. <code>DeclareDesign</code> does nonparametric bootstrapping by default whenever the <code>diagnose_design()</code> function is called. The numbers are reported in the parentheses under the diagnosand estimates in the table above. Here’s the simulation standard error for bias calculated by bootstrap resampling 100 times:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span><span class="op">$</span><span class="va">diagnosands_df</span> <span class="op">%&gt;%</span> <span class="fu">pull</span><span class="op">(</span><span class="st">"se(bias)"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.003838199</code></pre>
-<p>As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics.</p>
+<p><span class="citation">Morris, White, and Crowther (<a href="references-4.html#ref-morrisetal2019" role="doc-biblioref">2019</a>)</span> provide a range of helpful formulas to estimate simulation standard errors of diagnosands. Define <span class="math inline">\(a^d_i\)</span> as the point estimate in the <span class="math inline">\(i\)</span>’th simulation, <span class="math inline">\(n_{sim}\)</span> as the total number of simulations, and the average of the point estimates across simulations as <span class="math inline">\(\bar{a^d} = \frac{1}{n_{sim}}\sum a^d_i\)</span>. Then, if the estimand is a constant and <span class="math inline">\(a^d_i\)</span> is independently and normally distributed, the simulation standard error for bias can be calculated as <span class="math inline">\(\sqrt{1/(n_{sim}(n_{sim} - 1)) \sum^{n_{sim}}_{i = 1} (a^d_i - \bar{a^d})^2}\)</span>.</p>
+<!-- Here is how you can do it in code: -->
+<!-- ```{r} -->
+<!-- simulated_estimates <- with(diagnosis$simulations_df, estimate) -->
+<!-- mean_estimate <- mean(simulated_estimates) -->
+<!-- n_sim <- length(simulated_estimates) -->
+<!-- SE_bias <- sqrt(1/(n_sim * (n_sim - 1)) * (sum((simulated_estimates - mean_estimate)^2))) -->
+<!-- SE_bias -->
+<!-- ``` -->
+<p>Of course, this estimate of the variance relies on assumptions and won’t work as soon as the estimand is not a constant or the estimates are not normally distributed. Rather than using analytic formulas, we recommend using an approach called nonparametric bootstrapping to estimate the simulation standard errors. Nonparametric bootstrapping can be used to estimate the standard error of any diagnosand whose diagnostic statistic is independently and identically distributed, so you don’t have to limit yourself to the classic diagnosands for which we have a formula. Nonparametric bootstrapping is quite simple to do: you randomly resample your <span class="math inline">\(n_{sims}\)</span> diagnostic statistics with replacement a large number of times and re-estimate the diagnosand on each resampled collection of diagnostic statistics. The standard deviation of the resulting distribution of diagnosand estimates gives you an estimate of the simulation standard error. <code>DeclareDesign</code> does nonparametric bootstrapping by default whenever the <code>diagnose_design()</code> function is called. The numbers are reported in the parentheses after the diagnosand estimates in the table above.</p>
+<!-- Here's the simulation standard error for bias calculated by bootstrap resampling 100 times: -->
+<!-- ```{r} -->
+<!-- diagnosis$diagnosands_df %>% pull("se(bias)") -->
+<!-- ``` -->
+<!-- As you can see, the nonparametric bootstrap gets us very close to the correct answer given by the analytic formula, without making any assumptions about the shape of the distribution of diagnostic statistics. -->
 </div>
 <div id="how-many-simulations-to-run" class="section level3">
 <h3>
@@ -252,10 +250,10 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 <h2>
 <span class="header-section-number">10.3</span> How to choose among diagnosands<a class="anchor" aria-label="anchor" href="#diagnosands"><i class="fas fa-link"></i></a>
 </h2>
-<p>A diagnostic statistic is a summary function of <span class="math inline">\(a^m\)</span> and <span class="math inline">\(a^d\)</span>, and a diagnosand is a summary of diagnostic-statistics. As a result, there are a great many to choose from. In Table <a href="p2diagnosis.html#tab:diagnosticstatistics">10.1</a>, we introduce a set of diagnostic statistics (far from complete!), and in Table <a href="p2diagnosis.html#tab:diagnosands">10.2</a> a set of diagnosands including those commonly and less commonly considered.</p>
+<p>A diagnostic statistic is a summary function of <span class="math inline">\(a^m\)</span> and <span class="math inline">\(a^d\)</span>, and a diagnosand is a summary of diagnostic-statistics. As a result, there are a great many to choose from. In Table <a href="p2diagnosis.html#tab:diagnosticstatistics">10.3</a>, we introduce a set of diagnostic statistics (far from complete!), and in Table <a href="p2diagnosis.html#tab:diagnosands">10.4</a> a set of diagnosands including those commonly and less commonly considered.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:diagnosticstatistics">Table 10.1: </span> Diagnostic statistics.</caption>
+<span id="tab:diagnosticstatistics">Table 10.3: </span> Diagnostic statistics.</caption>
 <colgroup>
 <col width="42%">
 <col width="57%">
@@ -312,7 +310,7 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 </table></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:diagnosands">Table 10.2: </span> Diagnosands.</caption>
+<span id="tab:diagnosands">Table 10.4: </span> Diagnosands.</caption>
 <colgroup>
 <col width="16%">
 <col width="54%">
@@ -441,9 +439,14 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 <p>Often, we need to look at several diagnosands in order to understand what might be going wrong. If your design exhibits “undercoverage” (e.g., your coverage is less than <span class="math inline">\(1 - \alpha\)</span>), that might be because your standard errors are too small (under-estimation of the variance in the sampling distribution) or because your point estimate is biased, or some combination of the two. In really perverse instances, you might have a biased point estimate which, thanks to overly-wide confidence intervals, just happens to get covered 95% of the time. So, when assessing coverage it’s important to look not only at point estimate bias, but you should also check that the average estimated standard error lines up with the true standard error. Alternatively, you could look at the “bias-eliminated coverage,” which assesses coverage purely in terms of confidence interval width, ignoring bias.</p>
 <p>Many research design decisions involve trading off bias and variance. In trade-off settings, we may need to accept higher variance in order to decrease bias. Likewise, we may need to accept a bit of bias in order to achieve lower variance. The tradeoff is captured by mean-squared error – which is the average squared distance between <span class="math inline">\(a^d\)</span> and <span class="math inline">\(a^m\)</span>. Of course we would ideally like to have as low a mean-squared error as possible. We would like to achieve low variance and low bias simultaneously.</p>
 <p>To illustrate, consider the following three designs as represented by three targets. The inquiry is the bullseye of the target. The data and answer strategies combine to generate a process by which arrows are shot towards the target. On the left, we have a very bad archer: even though the estimates are unbiased in the sense that they hit the bullseye “on average”, very few of the arrows are on target. In the middle, we have the Katniss Everdeen (the heroine of the Hunger Games novels who is good with a bow) of data and answer strategies: they are both on target and low variance. On the right, we have an archer who is very consistent (low variance) but biased. The mean squared error is highest on the left and lowest in the middle.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-116-1.svg" width="100%"></div>
-<p>The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters <strong>which target</strong> your archer is shooting at. Figure <a href="#fig:archerydual"><strong>??</strong></a> shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of <span class="math inline">\(a^d\)</span>, we have to be clear about which <span class="math inline">\(a^a\)</span> they are associated with.</p>
-<div class="inline-figure"><img src="book_files/figure-html/archerydual-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-113-1.svg" width="100%"></div>
+<p>The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters <strong>which target</strong> your archer is shooting at. Figure <a href="p2diagnosis.html#fig:archerydual">10.4</a> shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of <span class="math inline">\(a^d\)</span>, we have to be clear about which <span class="math inline">\(a^a\)</span> they are associated with.</p>
+<div class="figure">
+<span id="fig:archerydual"></span>
+<img src="book_files/figure-html/archerydual-1.svg" alt="The bias, variance, and RMSE of an answer strategy depend on the inquiry." width="100%"><p class="caption">
+Figure 10.4: The bias, variance, and RMSE of an answer strategy depend on the inquiry.
+</p>
+</div>
 <p>RMSE is an exactly equal weighting of variance and bias. Yet many other weightings of these two diagnosands are possible, and different researchers will vary in their weightings. Those weights may also depend on the research question a researcher is studying, their career stage, the strength of priors, the size of the effects, and other features.</p>
 <p>In evaluating a research design diagnosis, what we need to know is a researcher’s weighting of all relevant diagnosands. You can think of this as your utility unction. Your utility function includes how important it is to you to study big questions, to shift beliefs in a research field, to overturn established findings, to obtain unbiased answers, and to get the sign right. Your utility function evaluated for a given design will yield a utility and these can be compared across designs (this is the process of redesign, described in detail in the next section).</p>
 <p>We often consider the diagnosand power on its own. This diagnosand is the probability of getting a statistically significant result, which of course depends on many things about your design including, crucially, the unknown magnitude of the parameter to be estimated. You can think of statistical power as the probability of a success, where success is defined as getting a significant results. The conventional power target is 80% power. One could imagine redefining statistical power as “null risk,” or the probability of obtaining a null result. In these terms, the conventional power target is a 20% null risk, or a one in five chance of “failure.” Those odds aren’t great, so we recommend designing studies with lower null risk. But considering power alone is also misleading: no researcher wants to design a study that is 80% powered but which returns highly biased estimates that are 2-3x the true estimate. Another way of saying this is that researchers always carry about power and bias. How much they care about each feature determines the weight of power and bias in their utility function.</p>
@@ -477,7 +480,7 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 <li>
 <span class="citation">Gelman and Carlin (<a href="references-4.html#ref-Gelman2014b" role="doc-biblioref">2014</a>)</span> on Type M and Type S errors</li>
 <li>
-<span class="citation">Michael C. Herron and Quinn (<a href="references-4.html#ref-herron2016careful" role="doc-biblioref">2016</a>)</span> on case selection / sampling bias</li>
+<span class="citation">Herron and Quinn (<a href="references-4.html#ref-herron2016careful" role="doc-biblioref">2016</a>)</span> on case selection / sampling bias</li>
 <li>
 <span class="citation">Baumgartner and Thiem (<a href="references-4.html#ref-Baumgartner2019" role="doc-biblioref">2017</a>)</span> and <span class="citation">Rohlfing (<a href="references-4.html#ref-rohlfing2018power" role="doc-biblioref">2018</a>)</span> on diagnosands in qualitative research</li>
 <li>
