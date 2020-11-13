@@ -176,7 +176,7 @@
 <div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_assignment</span><span class="op">(</span>conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"general"</span>, <span class="st">"nationalism"</span>, <span class="st">"feminism"</span>, <span class="st">"intersectional"</span><span class="op">)</span>, simple <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_reveal</span><span class="op">(</span><span class="va">blm_support</span>, <span class="va">Z</span><span class="op">)</span> </code></pre></div>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">blm_support</span>, <span class="va">Z</span><span class="op">)</span> </code></pre></div>
 </div>
 <div id="answer-strategy-1" class="section level4">
 <h4>
@@ -2572,7 +2572,7 @@ Figure 20.4: Coefficient plot from Bonilla and Tillery design based on the study
   <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">75</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_assignment</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_reveal</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
 
 <span class="va">design2</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">200</span>, u <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -2580,7 +2580,7 @@ Figure 20.4: Coefficient plot from Bonilla and Tillery design based on the study
   <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_assignment</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">25</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_reveal</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
 
 <span class="fu">compare_designs</span><span class="op">(</span><span class="va">design1</span>, <span class="va">design2</span><span class="op">)</span>
@@ -2813,10 +2813,10 @@ Figure 20.4: Coefficient plot from Bonilla and Tillery design based on the study
 <!--   declare_potential_outcomes(M ~ rbinom(N, size = 1, prob = pnorm(D_M * -->
 <!--                                                                     D + U_M * U)), -->
 <!--                              assignment_variable = "D") + -->
-<!--   declare_reveal(M, D) + -->
+<!--   reveal_outcomes(M, D) + -->
 <!--   declare_potential_outcomes(Y ~ rnorm(N, D_Y * D + M_Y * M + U_Y * U), -->
 <!--                              conditions = list(D = c(0, 1), M = c(0, 1))) + -->
-<!--   declare_reveal(outcome_variables = "Y", -->
+<!--   reveal_outcomes(outcome_variables = "Y", -->
 <!--                  assignment_variables = c("D", "M")) + -->
 <!--   declare_estimand(CDE = mean(Y_D_1_M_1 - Y_D_0_M_1)) + -->
 <!--   declare_estimator(Y ~ D, subset = M == 1, estimand = "CDE") -->
