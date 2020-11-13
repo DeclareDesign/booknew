@@ -72,9 +72,12 @@ Y &= Z + U
 \end{align*}
 
 
-Equivalently, the potential outcomes (for $Y$) might be written as:
+Equivalently, the potential outcomes (for $Y$) might be written, for $i \in \{1,2,\dots, n\}$ as:
 
-$$Y_i(0) = u_i,  Y_i(1) = 1 + u_i, i \in \{1,2,\dots, n\}.$$
+\begin{align*}
+Y_i(0) &=& u_i  \\
+Y_i(1) &=& 1 + u_i 
+\end{align*}
 
 
 This DAG encodes this model in graphical form:
@@ -160,7 +163,7 @@ The first choice to make in declaring $M$ is the set of units about which you wi
 
 Which population you have in mind affects how reference populations should be modeled but also how draws from a population should be interpreted. 
 
-To illustrate consider a very simple model in which we believe that $Y$ depends upon $Z$ and $Z$ is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this books, might be declared like this:
+To illustrate consider a very simple model in which we believe that $Y$ depends upon $Z$ and $Z$ is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this book, might be declared like this:
 
 ```{r}
 M <-
@@ -299,8 +302,14 @@ tau_X0 <- 0.5
 tau_X1 <- 1
 
 M <-
-  declare_population(N = 100, U = rnorm(N), X = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ (X==0)*Z*tau_X0 + (X==1)*Z*tau_X1+U)
+  declare_population(
+    N = 100, 
+    U = rnorm(N), 
+    X = rbinom(N, 1, .5)
+  ) +
+  declare_potential_outcomes(
+    Y ~ (X == 0) * Z * tau_X0 + (X == 1) * Z * tau_X1 + U
+  )
 ```
 
 The design describes a more complex world in which treatment effects of $Z$ depend in a particular way on a background variable $X$. We could incorporate different beliefs about the causal model by changing the `tau_X0` and `tau_X1` parameters. However, regardless of the value of the interaction (either zero or some other number), the DAG looks the same but the ability of the design to answer questions of interest will vary. This highlights the point that DAGs themselves are not enough to characterize a model---design declaration requires functional equations also: either specific equations or families of equations.  Thus although we might feel uncomfortable specifying particular values for `tau_X0` and `tau_X1` we are not beholden to these particular values. We can easily vary them to see how a design performs over a range of models, or we could even expand the declaration to specify a distribution of values for `tau_X0` and `tau_X1`. 
