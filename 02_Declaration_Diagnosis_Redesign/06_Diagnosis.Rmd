@@ -470,7 +470,9 @@ This line of code does it all in one.  We simulate the design 1000 times to calc
 ```{r, eval=FALSE}
 diagnosis <- diagnose_design(design, sims = 1000, 
                              diagnosands = declare_diagnosands(
-                               select = c("bias", "sd_estimate", "rmse", "power", "coverage")))
+  bias = mean(estimate - estimand),
+  power = mean(p.value <= 0.05)
+))
 ```
 
 
@@ -478,7 +480,9 @@ diagnosis <- diagnose_design(design, sims = 1000,
 ```{r, eval = do_diagnosis & !exists("do_bookdown"), echo=FALSE}
 diagnosis <- diagnose_design(design, sims = sims, 
                              diagnosands = declare_diagnosands(
-                               select = c("bias", "sd_estimate", "rmse", "power", "coverage")))
+  bias = mean(estimate - estimand),
+  power = mean(p.value <= 0.05)
+))
 ```
 
 
@@ -1002,7 +1006,7 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 <!--   declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") +  -->
 <!--   declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check") -->
 
-<!-- decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE) -->
+<!-- decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand)) -->
 
 <!-- diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis) -->
 <!-- ``` -->
@@ -1045,7 +1049,7 @@ robustness_checks_design_dgp3 <- replace_step(
   new_step = declare_estimand(y1_y2_are_related = FALSE)
 )
 
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand))
 
 diag <- diagnose_design(
   robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, 

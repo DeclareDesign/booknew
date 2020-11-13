@@ -364,7 +364,12 @@ rr_design <-
   declare_estimator(handler = tidy_estimator(rr_mirrored), label = "mirrored", estimand = "sensitive_item_proportion") +
   declare_estimator(Y_direct ~ 1, model = lm_robust, term = "(Intercept)", label = "direct", estimand = "sensitive_item_proportion")
 
-rr_design <- set_diagnosands(rr_design, diagnosands = declare_diagnosands(select = c(mean_estimate, bias, rmse, power)))
+rr_design <- set_diagnosands(rr_design, diagnosands = declare_diagnosands(
+mean_estimate = mean(estimate),
+  bias = mean(estimate - estimand),
+  rmse = sqrt(mean((estimate - estimand)^2)),
+  power = mean(p.value <= 0.05)
+))
 ```
 
 ```{r, eval = do_diagnosis}

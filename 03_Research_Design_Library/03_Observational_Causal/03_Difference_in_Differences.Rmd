@@ -122,7 +122,7 @@ two_period_two_group_design <-
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
 diagnosis_two_period_two_group <- diagnose_design(
-  two_period_two_group_design, diagnosands = declare_diagnosands(select = bias),
+  two_period_two_group_design, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)),
   sims = sims, bootstrap_sims = b_sims)
 ```
 
@@ -200,7 +200,7 @@ multi_period_design <-
 ```
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis_multi_period_multi_group <- diagnose_design(multi_period_design, diagnosands = declare_diagnosands(select = bias), sims = sims, bootstrap_sims = b_sims)
+diagnosis_multi_period_multi_group <- diagnose_design(multi_period_design, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)), sims = sims, bootstrap_sims = b_sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}

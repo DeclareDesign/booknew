@@ -293,7 +293,11 @@ simulations <- read_rds(rds_file_path)
 Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
 
 ```{r}
-synth_diagnosands <- declare_diagnosands(select = c("bias", "rmse", "coverage"))
+synth_diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  rmse = sqrt(mean((estimate - estimand)^2)),
+  coverage = mean(estimand <= conf.high & estimand >= conf.low)
+  )
 
 diagnosis <- diagnose_design(simulations, diagnosands = synth_diagnosands, bootstrap_sims = b_sims)
 
