@@ -146,7 +146,7 @@ g <-
 g
 ```
 
-Figure \@ref(fig:worldandtheory) illustrates  how a research design is a correspondence $I(m) = a^m$ and $A(d) = a^d$. The theoretical half of a research design produces an answer to the inquiry **in theory**. The emprical half of a research design produces an *empirical estimate* of the answer to the inquiry. 
+Figure \@ref(fig:worldandtheory) illustrates  how a research design is a correspondence $I(m) = a^m$ and $A(d) = a^d$. The theoretical half of a research design produces an answer to the inquiry **in theory**. The empirical half of a research design produces an *empirical estimate* of the answer to the inquiry. 
 
 Neither answer is necessarily close to the truth $a^w$, of course. And, as shown in the figure, the truth is not directly accessible either to us in theory or in empirics. Our gamble in empirical research however is that our theoretical models are close enough to the truth: that the truth is like the set of models we imagine in our model set. 
 
@@ -184,75 +184,9 @@ From this discussion we see a striking analogy between the $M$, $I$ relationship
 
 In this section, we declare the @Gulzar2020 example in finer detail. The aim is to capture all of the analytically-relevant features of the design. In Chapter 2, we declared in words and in code a simplified version of the design, in order to communicate its key features. We will make this move again throughout the book: we will present simplified versions of canonical designs in the text, and also provide worked examples with the details of specific studies. Moving back and forth between the two will, we hope, enable you to both learn about the general principles and how to declare your own designs which always involve the fine details of research implementation.
 
-We first describe the design in words and then declare in code:
+We display the DAG for the design in Figure \@ref(p2gulzarkhandag).
 
-The *model* for the study describes the set of units: citizens living in the two Pakistani districts the study took place in, Haripur and Abbottabad. The endogenous outcomes of interest are whether the citizen filed papers to run for office; whether the citizen was elected; and the Euclidean distance of the citizen's preferences from average citizen preferences. The outcomes are a function in their causal model of three treatments, which emphasize either the social or personal benefits to holding public office or do not encourage anyone to run for office at all. Their model would include an expected treatment effect magnitude for each treatment and their suppositions about how correlated outcomes are within villages that they study. 
-
-The *inquiry* is the effect of an encouragement to run for office focused on prosocial motivations for officeholding (rather than encouragements that emphasized  personal benefits) on the rate of filing papers to run for office between people living in villages randomly assigned to receive.
-
-The *data strategy* entailed three steps: (1) randomly sampling 192 villages from among all villages in Haripur and Abbottabad districts, and using a random walk procedure to select 48 citizens in each village to participate in the experiment; (2) randomly-assigning each village with equal probability to one of three conditions (neutral, social benefits, or personal benefits); and (3) collecting administrative data on who filed papers to run and matching that back to pretreatment survey data on the 9,216 citizens. Sampling, treatment assignment, and measurement are the three common data strategy steps in an experiment; some experiments, instead, do not include a sampling step and instead assign treatments within a convenience sample. 
-
-@Gulzar2020 have a two-step *answer strategy*, fitting a linear model predicting whether a citizen ran for office (the outcome) with indicators for the social benefits and the personal benefits treatments, and then calculating the difference between the two coefficients as an estimate of whether social benefits are more or less effective than the personal benefits. Their answer strategy includes presenting a table with estimated difference, a standard error clustered on village to account for village-level random assignment, and a *p*-value calculated using permutation inference.
-
-```{r}
-gulzar_khan_design <- 
-  
-  declare_population(
-    # study is conducted in two districts in Pakistan, with 311 and 359 villages in them
-    districts = add_level(N = 2, name = c("Haripur", "Abbottabad"), N_villages = c(311, 359)),
-    
-    # villages nested within districts
-    villages = add_level(N = N_villages),
-    
-    # avg. 6500 citizens per village
-    citizens = add_level(N = 6500)
-  ) +
-  
-  # main outcome is whether a citizen filed papers to run for office
-  # we define potential outcomes in response to being assigned to a social, personal, or neutral appeal to run
-  declare_potential_outcomes(
-    filed_papers ~ rbinom(N, 1, prob = 0.05 + 0.05 * (Z_appeal == "social") + 0.01 * (Z_appeal == "personal")),
-    assignment_variable = Z_appeal, conditions = c("neutral", "social", "personal")
-  ) + 
-  
-  # inquiry is the difference in rates of filing papers between the social and personal appeal conditions
-  declare_estimand(ATE = mean(filed_papers_Z_appeal_social - filed_papers_Z_appeal_personal)) + 
-  
-  # sample 192 villages
-  declare_sampling(clusters = villages, n = 192, sampling_variable = "S_villages") + 
-  
-  # sample 48 citizens in each village via random walk
-  declare_sampling(strata = villages, n = 48, sampling_variable = "S_citizens") + 
-  
-  # assign villages to three arms with equal probabilities for three types of appeals to run for office
-  declare_assignment(
-    m_each = c(48, 72, 72),
-    clusters = villages,
-    conditions = c("neutral", "social", "personal"),
-    assignment_variable = Z_appeal
-  ) + 
-  
-  # recode treatment assignment for analysis into indicators for the two conditions of interest
-  declare_step(
-    Z_social_village = if_else(Z_appeal == "social", 1, 0),
-    Z_personal_village = if_else(Z_appeal == "personal", 1, 0),
-    handler = mutate
-  ) +
-  
-  # 1. run a linear regression with condition indicators
-  # 2. calculate the difference in effects between people in villages assigned to social appeals compared
-  #    to those assigned to personal appeals
-  # 3. calculate robust standard errors clustered on village
-  declare_estimator(
-    filed_papers ~ Z_social_village + Z_personal_village, 
-    linear_hypothesis = "Z_social_village - Z_personal_village = 0",
-    term = "Z_social_village - Z_personal_village = 0",
-    clusters = villages,
-    model = lh_robust
-  )
-```
-
-```{r p2gulzarkhandag,echo=FALSE, fig.height = 3.5, fig.width = 7, fig.cap = "DAG for Gulzar-Khan design."}
+```{r p2gulzarkhandag, echo=FALSE, fig.height = 3.5, fig.width = 7, fig.cap = "DAG for Gulzar-Khan design."}
 design <-
   declare_population(N = 100,
                      X = rbinom(N, 1, 0.3),
@@ -291,6 +225,149 @@ nodes <-
 ggdd_df <- make_dag_df(dag, nodes, design)
 
 base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon)) 
+```
+
+
+### Model
+
+The model for the study describes the set of units: citizens living in the two Pakistani districts the study took place in, Haripur and Abbottabad, each of which comprises over 300 villages. Approximately 6500 citizens who are eligible to run for elected office live in each village. The main outcome of interest is whether the citizen filed papers to run for office. The outcome depends on the level of three treatments. A neutral appeal simply informs potential candidates of how to run; the other two emphasize either the social or personal benefits to holding public office. We expect the neutral appeal to have some effect and the social and personal appeals to have an additional effect over and above the neutral appeal.
+
+```{r}
+model <-
+  declare_population(
+    districts = add_level(
+      N = 2,
+      district_name = c("Haripur", "Abbottabad"),
+      N_villages = c(311, 359)
+    ),
+    villages = add_level(N = N_villages),
+    citizens = add_level(N = 6500,
+                         U = runif(N))
+  ) +
+  declare_potential_outcomes(
+    Y_Z_control = U,
+    Y_Z_neutral = U + 0.02,
+    Y_Z_personal = U + 0.04,
+    Y_Z_social = U + 0.05
+  )
+```
+
+### Inquiry
+
+This model supports many inquiries, but here we'll focus on two: the average treatment effect of *any* appeal versus the pure control condition. This inquiry is theoretically important because it refers to the mere act of inviting citizens to stand for office. A second inquiry is more subtle: the average difference in effectiveness between appeals to run that focus on the pro-social reasons to stand for office versus appeals that emphasize the personal returns.
+  
+
+```{r}
+inquiry <- 
+  declare_estimand(
+    ATE = mean((Y_Z_neutral + Y_Z_personal + Y_Z_social) / 3 -
+                 Y_Z_control),
+    ATE_social_vs_personal = mean(Y_Z_social - Y_Z_personal)
+  ) 
+```
+
+### Data strategy
+
+The data strategy entailed three steps. First, 192 of the 670 villages were selected, via cluster sampling, to serve as treatment villages. Of these 48 were assigned to the neutral appeal, 72 to the social appeal, and 72 to the personal appeal. The 478 unsampled villages did not receive any treatment, so can serve as a pure control. Second, 48 citizens from each treated village were sampled via random walk, and were the individuals to whom the candidacy appeals were made. Third, the measurement procedure for this study was to obtain, via administrative record, the names of all candidates who stood for office. In this way, the outcome is observed for all subjects in the experiment, sampled and not.
+
+```{r}
+data_strategy <- 
+  declare_assignment(
+    m_each = c(478, 48, 72, 72),
+    clusters = villages,
+    conditions = c("control", "neutral", "social", "personal")
+  ) + 
+  reveal_outcomes(Y, Z) +
+  declare_step(any_treatment = if_else(Z == "control", 0, 1),
+               handler = fabricate) +
+  declare_sampling(strata = villages, 
+                   n_unit = if_else(Z == "control", 0, 48), 
+                   drop_nonsampled = FALSE) 
+```
+
+### Answer strategy
+
+The @Gulzar2020 design supports many alternative answer strategies. Here, we focus on two answer strategies in particular. First, we compare the rate of running in untreated villages to the rate among the sampled units among all treatment villages, using an OLS regression with standard errors clustered at the village level.^[The implemented design also included a village-level treatment that complicates (in interesting ways!) the interpretation of the untreated units in the treated villages]. Second, we compare the rates of running in the personal and social conditions for the sampled units only, again using an OLS regression with standard errors clustered at the village level.
+
+```{r}
+answer_strategy <- 
+  declare_estimator(
+    Y ~ any_treatment,
+    clusters = villages,
+    model = lm_robust,
+    se_type = "CR0",
+    subset = (Z == "control" | S == 1),
+    estimand = "ATE",
+    label = "ATE"
+  ) +
+  declare_estimator(
+    Y ~ Z,
+    clusters = villages,
+    model = lm_robust,
+    se_type = "CR0",
+    subset = (S == 1 & Z != "neutral"),
+    estimand = "ATE_social_vs_personal",
+    label = "ATE_social_vs_personal"
+  )
+```
+
+With these elements in hand, we can declare the full design and display one draw of the design:
+
+```{r}
+design <- 
+  model + inquiry + data_strategy + answer_strategy
+```
+
+```{r, eval = FALSE}
+dat <- draw_data(design)
+```
+
+```{r, echo = FALSE, eval = do_diagnosis}
+dat <- draw_data(design)
+
+dat_head <- head(dat)
+
+estimates <- run_design(design) 
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path_head <- paste0(get_dropbox_path("01_Declaration.Rmd"), "/dat_head.RDS")
+rds_file_path_estimates <- paste0(get_dropbox_path("01_Declaration.Rmd"), "/estimates.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(dat_head, path = rds_file_path_head)
+  write_rds(estimates, path = rds_file_path_estimates)
+}
+dat_head <- read_rds(rds_file_path_head)
+estimates <- read_rds(rds_file_path_estimates)
+```
+
+We print the first six rows of the simulated data in Table \@ref(tab:gulzarkhansimdata):
+
+```{r gulzarkhansimdata, echo = FALSE}
+dat_head %>% kable(digits = 3, caption = "Six rows of simulated data from the Gulzar-Khan design.")
+```
+
+From this data, we present simulated estimates of the two inquiries as well as the simulated estimand values in Table \@ref(gulzarkhansimestimates):
+
+```{r, eval = FALSE}
+estimates <- run_design(design)
+```
+
+```{r gulzarkhansimestimates, echo = FALSE}
+estimates$estimates_df %>% left_join(estimates$estimands_df) %>% select(estimator_label, estimate, std.error, estimand)  %>% kable(digits = 3, caption = "Simulated estimates and estimand from one run of the Gulzar-Khan design.")
+```
+
+In Table \@ref(gulzarkhansimcrosstab), we display the number of people and villages in each treatment assignment and sampling condition to illustrate the data strategy:
+
+```{r gulzarkhansimcrosstab, echo = FALSE}
+dat %>% group_by(Z) %>%
+  summarise(
+    n = n(),
+    n_sampled = sum(S),
+    n_villages = n_distinct(villages)
+  ) %>% 
+  kable(caption = "Count of units by treatment assignment and sampling status.")
 ```
 
 ## Further reading

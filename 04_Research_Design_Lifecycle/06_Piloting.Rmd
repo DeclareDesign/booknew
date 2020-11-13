@@ -53,27 +53,29 @@ sd_estimator <- function(data){
   data.frame(sd_y_0_hat = sd(data$Y[data$Z == 0]), sd_y_1_hat = sd(data$Y[data$Z == 1]))
 }
 
-des <- 
+design <- 
   declare_population(N = 50, u = rnorm(N, mean = 0, sd = 1)) + 
   declare_potential_outcomes(Y ~ 0.2 * Z + u) + 
   declare_assignment() + 
   declare_estimator(Y ~ Z) + 
   declare_estimator(handler = label_estimator(sd_estimator), label = "sd_estimator")
+```
 
-sims <- simulate_design(des, sims = 1000)
+```{r, eval = do_diagnosis}
+simulation_df <- simulate_design(design, sims = sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("06_Piloting.Rmd"), "/sims.RDS")
+rds_file_path <- paste0(get_dropbox_path("06_Piloting.Rmd"), "/simulation_df.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(sims, path = rds_file_path)
+  write_rds(simulation_df, path = rds_file_path)
 }
-sims <- read_rds(rds_file_path)
+simulation_df <- read_rds(rds_file_path)
 ```
 
 ```{r pilotingfig, echo = FALSE, fig.cap = "Learning from pilot studies.", fig.width = 6.5, fig.height = 3}
-gg_df <- sims %>% 
+gg_df <- simulation_df %>% 
   mutate(
     se_hat_full_study = sqrt( sd_y_0_hat^2 / 250  + sd_y_1_hat^2 / 250),
     mde_hat_full_study = 2.8 * se_hat_full_study
