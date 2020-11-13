@@ -66,11 +66,9 @@ We illustrate the application of the MIDA framework to a study of the motivation
 
 The *model* describes the citizens in the villages they conduct the study, and which village they live in. It describes both their individual characteristics and their potential outcomes in response to the possible treatment assignments. The *inquiry* is the average treatment effect between receiving and not receiving an encouragement to run for office. The *data strategy* is (1) randomly sampling 50 citizens per village; (2) random assignment of villages into either an encouragement to run for office (treatment) or no encouragement (control); and (3) measurement via a posttreatment survey. The *answer strategy* is calculating the difference-in-means, with standard errors accounting for the clustering of the treatment assignment by village.
 
-<!-- MIDA captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived, how interventions are implemented, or even, qualitatively, how outcomes are measured. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, if treatment effects decay, logistical details of data collection (such as the duration of time between a treatment being administered and endline data collection) may enter into the model. Similarly, if a researcher anticipates noncompliance, substantive knowledge of how treatments are taken up can be included in many parts of the design. -->
-
 ## Declaring a design in code
 
-You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula. We discuss in Section \@(p2diagnosis) why analytical diagnoses are challenging for the majority of designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices made in the model, inquiry, data strategy, and answer strategy.
+You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula. We discuss in Section \@ref(p2diagnosis) why analytical diagnoses are challenging for the majority of designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices made in the model, inquiry, data strategy, and answer strategy.
 
 Social scientists use a number of tools for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. At the time of writing, Stata and R are most commonly used platforms for academic work, though this may change in the future. We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other tools for implementing research designs and because it is free, open-source, and high-quality.
 
@@ -84,44 +82,41 @@ In the model, we describe a hierarchical structure 100 villages
 ```{r}
 model <-
   declare_population(
-    villages = add_level(
-      N = 100,
-      N_citizens_per_village = sample(20:100, N, replace = TRUE)
-    ),
-    citizens = add_level(N = N_citizens_per_village, u = runif(N))
+    villages = add_level(N = 192),
+    citizens = add_level(N = 48, U = runif(N))
   ) +
-  declare_potential_outcomes(Y_Z_0 = u,
-                             Y_Z_1 = pmin(1, Y_Z_0 + 0.025))
+  declare_potential_outcomes(Y_Z_neutral = U,
+                             Y_Z_personal = Y_Z_neutral + 0.02,
+                             Y_Z_social = Y_Z_neutral + 0.03)
 ```
 
 Our inquiry is the average treatment effect in the population, defined as the average difference in potential outcomes:
   
 ```{r}
-inquiry <-
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+inquiry <- declare_estimand(ATE_personal = mean(Y_Z_personal - Y_Z_neutral),
+                            ATE_social = mean(Y_Z_social - Y_Z_neutral))
 ```
   
 The data strategy consists of 4 steps:
 
-* sampling: we randomly sample 50 of the 100 villages in the population
-* assignment: we randomly assign half the sampled units to treatment and half to control
-* assignment: the assignment implies that treated units reveal their treated potential outcome and that untreated units reveal their untreated potential outcome.
+* assignment: We randomly assign one third to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal.
+* reveal outcomes: Subjects reveal outcomes (i.e., their probability of running for office) according to their randomly-assigned condition.
 * measurement: We measure a binary outcome `Yobs` from the unobserved, latent variable `Y`: units that have a latent outcome above 0.95 have `Yobs` of 1 and 0 otherwise.
   
 ```{r}
 data_strategy <-
-  declare_sampling(n = 50, clusters = villages) +
-  declare_assignment(prob = 0.5, clusters = villages) + 
+  declare_assignment(clusters = villages, conditions = c("neutral", "personal", "social")) + 
   declare_reveal(outcome_variables = Y, assignment_variables = Z) +
-  declare_measurement(Yobs = if_else(Y > 0.95, 1, 0))
+  declare_measurement(Yobs = if_else(Y > 0.97, 1, 0))
 ```
 
 The answer strategy consists of the difference-in-means of Y depending on Z, with standard errors clustered at the village level in order to respect the clustering of the assignment in the data stategy. We link this estimator to ATE to explicitly link the answer strategy to the inquiry.
   
 ```{r}
-answer_strategy <- declare_estimator(Y ~ Z, clusters = villages, 
-                                     model = difference_in_means, 
-                                     estimand = "ATE")
+answer_strategy <- 
+  declare_estimator(Y ~ Z, term = c("Zpersonal", "Zsocial"), clusters = villages, 
+                    model = lm_robust,
+                    estimand = c("ATE_personal", "ATE_social"))
 ```
 
 We concatenate all four aspects to declare it as a complete design:
@@ -132,7 +127,7 @@ design <- model + inquiry + data_strategy + answer_strategy
 
 For each design that we declare in the book, we will also present a graphical representation of the design. In Figure \@ref(fig:gulzarkhandag), we visualize the simplified form of the Gulzar-Khan design.
 
-```{r gulzarkhandag, fig.cap = "Simplified DAG for Gulzar Khan study", echo = FALSE}
+```{r gulzarkhandag, fig.cap = "Simplified DAG for Gulzar Khan study", fig.height = 3, fig.width = 7, echo = FALSE}
 
 design <-
   declare_population(N = 100,
@@ -200,16 +195,19 @@ To diagnose the design, we first define a set of diagnosands (see Section \@ref(
 
 ```{r}
 # Select diagnosands
-simple_design_diagnosands <- 
-  declare_diagnosands(select = c(bias, rmse, power))
+diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  rmse = sqrt(mean((estimate - estimand)^2)),
+  power = mean(p.value <= 0.05),
+  keep_defaults = FALSE
+)
 ```
 
 We then diagnose the design, which involves simulating the design and again and again, and then calculate the diagnosands based on the simulations data. 
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
 # Diagnose the design
-simple_design_diagnosis <- 
-  diagnose_design(simple_design, diagnosands = simple_design_diagnosands, sims = sims)
+diagnosis <- diagnose_design(design, diagnosands = diagnosands, sims = sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
@@ -222,7 +220,8 @@ simple_design_diagnosis <- read_rds(rds_file_path)
 ```
 
 ```{r simpledesigndiagnosis, echo = FALSE}
-get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>% kable(digits = 3, caption = "Diagnosis of simple design.")
+get_diagnosands(simple_design_diagnosis) %>% select(estimand_label, estimator_label, bias, rmse, power) %>%
+  kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.")
 ```
 
 ## Redesign

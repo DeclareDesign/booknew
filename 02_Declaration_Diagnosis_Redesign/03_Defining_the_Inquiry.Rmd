@@ -85,6 +85,7 @@ ggplot(gg_df, aes(X, pred)) +
   geom_line(color = "blue") +
   facet_wrap(~complexity, nrow = 1) +
   geom_point(data = dat, aes(X, Y), stroke = 0, alpha = 0.1) +
+  coord_cartesian(ylim = c(-10, 10)) + 
   theme_void()
 ```
 
@@ -127,9 +128,9 @@ Table \@ref(tab:descriptiveestimands) enumerates some common descriptive estiman
 
 | Inquiry           | Description                                   |
 | ----------------- | --------------------------------------------- |
-| $E_{i\in N}(Y)$   | The average value of the variable Y           | 
-| $E[Y | X = 1]$    | A conditional expectation of Y given X = 1.   |
-| $V[Y]$            | The variance of Y                             |
+| $\E_{i\in N}(Y)$   | The average value of the variable Y           | 
+| $\E[Y | X = 1]$    | A conditional expectation of Y given X = 1.   |
+| $\V[Y]$            | The variance of Y                             |
 | $\mathrm{Cov}(X, Y)$       | The covariance of X and Y                     |
 | $\mathrm{BLP}(Y | X)$      | The best linear predictor of Y given X        |
 | $\mathrm{CEF}(Y | X)$      | Conditional expectation function of Y given X |
@@ -151,11 +152,11 @@ Table \@ref(tab:causalestimands) enumerates some common causal estimands. These 
 
 | Inquiry                                                  | Description                                                                    |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| $E_{i\in S}[Y_i(1) - Y_i(0)]$                         | Sample average treatment effect  (SATE)                                        |
-| $E_{i\in N}[Y_i(1) - Y_i(0)]$                                     | Population average treatment effect (PATE)                                                                           |
-| $E[Y_i(1) - Y_i(0) | C_i = 1]$                           | Conditional average treatment effect (CATE) of $X$                             |
-| $E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]$                | Complier average causal effect (CACE) or local average treatment effect (LATE) |
-| $E[(Y_i(1, 1) - Y_i(0,1)) - (Y_i(1, 0) - Y_i(0,0))]$                           | Causal interactions of $X_1$ and $X_2$                             |
+| $\E_{i\in S}[Y_i(1) - Y_i(0)]$                           | Sample average treatment effect  (SATE)                                        |
+| $\E_{i\in N}[Y_i(1) - Y_i(0)]$                           | Population average treatment effect (PATE)                                     |
+| $\E[Y_i(1) - Y_i(0) | C_i = 1]$                          | Conditional average treatment effect (CATE) of $X$                             |
+| $\E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]$               | Complier average causal effect (CACE) or local average treatment effect (LATE) |
+| $\E[(Y_i(1, 1) - Y_i(0,1)) - (Y_i(1, 0) - Y_i(0,0))]$    | Causal interactions of $X_1$ and $X_2$                                         |
 
 Table: (\#tab:causalestimands) Causal inquiries
 
@@ -168,15 +169,15 @@ Generations of students have been told to excise words that connote causality fr
 
 Another kind of data-dependent inquiry that is distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units) *irrespective of the values that the outcome takes*. By contrast, causal attribution inquiries focus on probabilities that condition on realized outcomes, such as, the "probability of the absence of the outcome in the hypothetical absence of the treatment ($Y_i(0) = 0$) given the actual presence of both ($X_i = Y_i = 1$)" [@yamamoto2012understanding, pp.240-241]. @goertz2012tale refer to causal attribution inquiries as cause-of-effects questions because they start with an outcome (an effect) and seek validate a hypothesis about its cause. 
 
-The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like "'Was economic crisis necessary for democratization in the Southern Cone of Latin America?' or 'Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?'" are examples of such inquiries [@goertz2012tale]. Though they bear a resemblance and *are* related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)^[Specifically, as @yamamoto2012understanding points out, the causal attribution estimand for binary variables can be written $Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)$, while the average treatment effect among those successfully treated can be written $E[Y_i(1) - Y_i(0) \mid X_i = Y_i = 1]$. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written $Pr(Y_i(1)\mid X_i = Y_i = 1) - Pr(Y_i(0) \mid X_i = Y_i = 1)$. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.] it is important not to confuse the two kinds of inquiries, as often happens. 
+The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like "'Was economic crisis necessary for democratization in the Southern Cone of Latin America?' or 'Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?'" are examples of such inquiries [@goertz2012tale]. Though they bear a resemblance and *are* related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)^[Specifically, as @yamamoto2012understanding points out, the causal attribution estimand for binary variables can be written $\Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)$, while the average treatment effect among those successfully treated can be written $E[Y_i(1) - Y_i(0) \mid X_i = Y_i = 1]$. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written $\Pr(Y_i(1)\mid X_i = Y_i = 1) - \Pr(Y_i(0) \mid X_i = Y_i = 1)$. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.] it is important not to confuse the two kinds of inquiries, as often happens. 
 
-While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. @pearl1999probabilities provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, $Y_i = 1$ and $X_i = 1$ could represent "Peace" and "Both democracies" and $Y_i = 0$ and $X_i = 0$ could represent "War" and "Not both democracies." Then $Pr(Pr(Y_i(X_i = 0) = 0  \mid X_i = Y_i = 1))$ asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies---that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, $Pr(Y_i(X_i = 1)=1  \mid X_i = Y_i = 0)$  asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies---in other words, in what proportion of cases would democracy have been sufficient to cause peace? @yamamoto2012understanding extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.
+While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. @pearl1999probabilities provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, $Y_i = 1$ and $X_i = 1$ could represent "Peace" and "Both democracies" and $Y_i = 0$ and $X_i = 0$ could represent "War" and "Not both democracies." Then $\Pr(Y_i(X_i = 0) = 0  \mid X_i = Y_i = 1)$ asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies---that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, $\Pr(Y_i(X_i = 1)=1  \mid X_i = Y_i = 0)$  asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies---in other words, in what proportion of cases would democracy have been sufficient to cause peace? @yamamoto2012understanding extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.
 
-| Inquiry                                                  | Description                                                                    |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| $Pr(Y_i(X_i=0)=0  \mid X_i = Y_i = 1)$                   | Probability $X$ necessary for $Y$                                              |
-| $Pr(Y_i(X_i=1)=1  \mid X_i = Y_i = 0)$                   | Probability $X$ sufficient for $Y$                                             |
-| $Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)$      | Complier probability  $X$ necessary for $Y$                                    |
+| Inquiry                                                   | Description                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| $\Pr(Y_i(X_i=0)=0  \mid X_i = Y_i = 1)$                   | Probability $X$ necessary for $Y$                                              |
+| $\Pr(Y_i(X_i=1)=1  \mid X_i = Y_i = 0)$                   | Probability $X$ sufficient for $Y$                                             |
+| $\Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)$      | Complier probability  $X$ necessary for $Y$                                    |
 
 Table: (\#tab:attributionestimands) Causal attribution inquiries
 
@@ -241,10 +242,10 @@ There is a curiosity here in that one might wonder how to assess whether a given
 
 
 
-| Inquiry                                                  | Description                                                                    |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| $E[Y_i(1) - Y_i(0) | X_i = 1]$                           | Average treatment effect on the treated (ATT)                                  |
-| $E[Y_i(1) - Y_i(0) | S_i = 1]$                           | SATE                                                                           |
+| Inquiry                                                   | Description                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| $\E[Y_i(1) - Y_i(0) | X_i = 1]$                           | Average treatment effect on the treated (ATT)                                  |
+| $\E[Y_i(1) - Y_i(0) | S_i = 1]$                           | SATE                                                                           |
 
 Table: (\#tab:datadependentestimands) Data-dependent inquiries
 
@@ -308,12 +309,12 @@ The main trouble here is that the average treatment effect averages over all fou
 
 We might want switch our inquiry to be about the average effect among D types only. However this inquiry has a different problem -- it's unanswerable. Even though this inquiry is not undefined, it's unanswerable because we won't be able to learn who the D types are. In the treatment group, we can't tell the Bs from the Ds and in the control group, we can't tell the As from the Ds. The reason we can't tell these types apart using realized data is the fundamental problem of causal inference.
 
-| Type | Alive($Z = 0$) | Alive($Z = 1$) | Weight($Z = 0$) | Weight($Z = 1$) | Estimand                                         |
-|------|----------------|----------------|-----------------|-----------------|--------------------------------------------------|
-| A    | 1              | 0              | exists          | NA              | undefined                                        |
-| B    | 0              | 1              | NA              | exists          | undefined                                        |
-| C    | 0              | 0              | NA              | NA              | undefined                                        |
-| D    | 1              | 1              | exists          | exists          | $E[\mathrm{Weight}(Z=1) - \mathrm{Weight}(Z=0)]$ |
+| Type | Alive($Z = 0$) | Alive($Z = 1$) | Weight($Z = 0$) | Weight($Z = 1$) | Estimand                                          |
+|------|----------------|----------------|-----------------|-----------------|---------------------------------------------------|
+| A    | 1              | 0              | exists          | NA              | undefined                                         |
+| B    | 0              | 1              | NA              | exists          | undefined                                         |
+| C    | 0              | 0              | NA              | NA              | undefined                                         |
+| D    | 1              | 1              | exists          | exists          | $\E[\mathrm{Weight}(Z=1) - \mathrm{Weight}(Z=0)]$ |
 
 Table: (\#tab:bstypes) Latent types
 

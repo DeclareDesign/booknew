@@ -204,9 +204,9 @@ As we described in chapter 6, we can (non-parametrically) express our model of t
 
 When we want to estimate a particular causal relationship, such as the average causal effect of D on Y, we can read off the DAG whether that relationship is *identified* or not. The most common (and useful) criterion for identification is the "backdoor criterion." If there exists an unblocked "backdoor path" from D to Y, then the relationship is not identified.^[Footnote here about other criteria.] A backdoor path is a causal path that begins with an arrow in to D and ends with an arrow in to Y. Backdoor paths can be blocked in two ways: conditioning the analysis on a variable along the path or *not* conditioning on a "collider" along the path.
 
-Pearl (p. 61) defines the backdoor criterion:
+We reproduce the definition of the backdoor criterion given in @Pearl (p. 79), swapping in the variable names we have been using through this book:
 
-Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satifies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. (pg. 61 Pearl primer)
+> Given an ordered pair of variables D, Y in a DAG G, a set of variables X, satisfies the backdoor criterion relative to D, Y if no node in X is a descendant of D, and X blocks every path between D and Y that contains an arrow into D. 
 
 With this definition in hand, we can inspect DAGs to find "adjustment sets." An adjustment set is a set of variables that may be conditioned upon in the answer strategy. "Conditioned upon" is a sufficiently vague phrase to include conditioning procedures such as controlling for a variable in a regression setting or stratifying the analysis according to those variables.
 
@@ -297,7 +297,7 @@ design <-
 
 simulated_df <- draw_data(design)
 
-simulated_df %>% select(ID, X, D, Y) %>% head %>% kable(caption = "Simulated data from a DAG with varaibles $X$, $D$, $Y$, and $U$.", digits = 3)
+simulated_df %>% select(ID, X, D, Y) %>% head %>% kable(caption = "Simulated data from a DAG with varaibles $X$, $D$, and $Y$.", digits = 3)
 ```
 
 #### Consequences of conditioning
@@ -320,7 +320,7 @@ There are also many situations --- a majority in fact, the pink squares --- in w
 
 Without additional assumptions or manipulation in our data strategy, we cannot know where we are among the 200 acyclic DAGs represented in the plot. As a result, we are in danger either of having the effect of $D$ on $Y$ unidentified regardless of what we do, or of making the wrong choice to control or not to control.
 
-```{r dagsadjustment, fig.cap = "Consequences of conditioning on variable X for all 216 possible DAGs.", echo = FALSE, fig.width = 40, fig.height = 28}
+```{r dagsadjustment, fig.cap = "Consequences of conditioning on variable X for all 216 possible DAGs.", echo = FALSE, fig.width = 40, fig.height = 35}
 gg_df <-
   gg_df %>%
   mutate(tile_fac = as.factor(if_else(
@@ -351,13 +351,14 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend),
                    edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, 
+                      guide = guide_legend(nrow = 2, override.aes = list(color = c(rep("white", 4), gray(0.4))))) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(size = 25, hjust = 0.5),
-          plot.subtitle = element_text(size = 25, hjust = 0.5),
-          plot.margin = margin(10, 10, 100, 10, unit = "pt")) +
+    theme(plot.title = element_text(size = 30, hjust = 0.5),
+          plot.subtitle = element_text(size = 30, hjust = 0.5),
+          plot.margin = margin(10, 10, 25, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -376,15 +377,17 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>%
   map(my_fun)
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
     legend.title = element_text(size = 35),
     legend.text = element_text(size = 35),
     legend.key.size = unit(35, "mm"),
-    legend.margin = margin(t = 20, r = 0, b = 0, l = 0, unit = "mm"),
-    strip.text = element_text(size = 25)
+    legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 30)
     )
+
+wgg
 ```
 
 #### Adding model-based assumptions
@@ -397,7 +400,7 @@ Analysts who invoke this conditional independence assumption assure that there a
 
 Under selection-on-observables, there are still many DAGs that raise problems for us. There are still many DAGs in which $D\leftarrow Y$, $D$ is caused by $Y$ instead of the other way around. If we cannot rule those out by assumption, we will never identify the causal effect of $D$ on $Y$ regardless of whether we control for $X$. The DAGs in blue (the effect is identified only when we condition on $X$ and not otherwise) and purple (the opposite, that we only achieve identification when we do not condition on $X$) still remain. Those in blue involve $X$ confounding the relationship between $D$ and $Y$ and those in purple are when $X$ is a collider so conditioning on it opens up a backdoor path to $U$. In other words, the conditional independence of $D$ and $U$ given $X$ is insufficient to identify the effect, without ruling out these other scenarios.
 
-```{r dagsignorability, echo = FALSE, fig.cap = "Consequences of conditional ignorability assumption for all 216 possible DAGs.", fig.width = 30, fig.height = 21}
+```{r dagsignorability, echo = FALSE, fig.cap = "Consequences of conditional ignorability assumption for all 216 possible DAGs.", fig.width = 40, fig.height = 35}
 gg_df <-
   gg_df %>%
   mutate(tile_fac = as.factor(
@@ -430,12 +433,14 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend),
                    edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
+    scale_fill_manual("Effect of D on Y identified?", values = fill_scale, drop = FALSE, 
+                      guide = guide_legend(nrow = 2, override.aes = list(color = c(rep("white", 5), gray(0.4))))) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5),
-          plot.subtitle = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(size = 30, hjust = 0.5),
+          plot.subtitle = element_text(size = 30, hjust = 0.5),
+          plot.margin = margin(10, 10, 25, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
@@ -454,13 +459,16 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>%
   map(my_fun)
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
-    legend.title = element_text(size = 28),
-    legend.text = element_text(size = 28),
-    legend.key.size = unit(25, "mm")
-  )
+    legend.title = element_text(size = 35),
+    legend.text = element_text(size = 35),
+    legend.key.size = unit(35, "mm"),
+    legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 30)
+    )
+wgg
 ```
 
 #### Design-based identification
@@ -471,7 +479,7 @@ In doing so, we dramatically reduce the set of possible DAGs, because we set the
 
 In Figure \@ref(fig:dagsrandomization), we swap the colors to now indicate DAGs ruled out by measuring $X$ before treatment (salmon squares), and those ruled out by random assignment (blue squares). In all of the remaining white squares, the effect of $D$ on $Y$ is causally identified, regardless of whether we adjust for $X$ or not. We remove the conditionality of inference depending on whether we control. This is good, because ultimately even in the presence of strong ignorability assumptions outlined in the last section there are many possible DAGs in which controlling or failing to control lead to bias. Now, our inferences do not depend on guessing the correct DAG.
 
-```{r dagsrandomization, echo = FALSE, fig.cap = "Consequences of randomizing Z and measuring X before treatment for all 216 possible DAGs.", fig.width = 30, fig.height = 21}
+```{r dagsrandomization, echo = FALSE, fig.cap = "Consequences of randomizing Z and measuring X before treatment for all 216 possible DAGs.", fig.width = 40, fig.height = 35}
 gg_df <-
   gg_df %>%
   mutate(tile_fac = as.factor(if_else(
@@ -479,7 +487,6 @@ gg_df <-
     "Ruled out by acyclicity",
     as.character(id_adjustment_fac)
   )))
-
 gg_df <-
   gg_df %>%
   mutate(
@@ -490,20 +497,17 @@ gg_df <-
       is.na(ruled_out_by) ~ "Effect of D on Y identified"
     ))
   )
-
 fill_scale <- c(
   `Ruled out by acyclicity` = dd_light_gray,
   `Ruled out by pretreatment measurement` = dd_orange,  
   `Ruled out by random assignment` = dd_dark_blue,
   `Effect of D on Y identified` = "transparent"
 )
-
 subplot_function <- function(data) {
   dag_df <-
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac2) %>%
     summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
-
   g <-
     ggplot(data, aes(x, y)) +
     geom_tile(data = dag_df, aes(fill = tile_fac2), height = 1.75, width = 1.75, alpha = 0.5) +
@@ -511,19 +515,19 @@ subplot_function <- function(data) {
     geom_dag_edges(aes(xend = xend, yend = yend),
                    edge_width = 0.4,
                    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")) +
-    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2)) +
+    scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(nrow = 2, override.aes = list(color = c(gray(0.4), rep("white", 3))))) +
     facet_grid(YX_fac ~ DX_fac, switch = "both", labeller = label_parsed) +
     coord_fixed() +
     theme_void() +
-    theme(plot.title = element_text(hjust = 0.5),
-          plot.subtitle = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(size = 30, hjust = 0.5),
+          plot.subtitle = element_text(size = 30, hjust = 0.5),
+          plot.margin = margin(10, 10, 25, 10, unit = "pt")) +
     labs(subtitle = parse(text = as.character(unique(data$DY_fac))))
   if(as.character(unique(data$DY_fac)) == "D %->% Y"){
     g <- g + labs(title = as.character(unique(data$U_relationship_fac)))
   }
   g
 }
-
 my_fun <- function(data){
   data %>%
     split(.$DY_fac) %>%
@@ -535,13 +539,16 @@ gg <- gg_df %>%
   split(.$U_relationship_fac) %>%
   map(my_fun)
 
-wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
+wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect") &
   theme(
     legend.position = "bottom",
-    legend.title = element_text(size = 28),
-    legend.text = element_text(size = 28),
-    legend.key.size = unit(25, "mm")
-  )
+    legend.title = element_text(size = 35),
+    legend.text = element_text(size = 35),
+    legend.key.size = unit(35, "mm"),
+    legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
+    strip.text = element_text(size = 30)
+    )
+wgg
 ```
 
 In short, what we do by controlling the timing of measurement of $X$ and randomizing $D$ is to move our assumptions about conditional independence from $M$ our assumed (but possibly incorrect!) model of the world into our data strategy, which we control and so can guarantee by design.
@@ -554,20 +561,20 @@ The first task, estimating the magnitude of the effect of $D$ on $Y$, can be acc
 
 For estimating the sign of the effect, we can calculate the sign of the effect magnitude, and then conduct a statistical test of the null hypothesis of zero effect to distinguish among zero, positive, and negative effects.
 
-The third task, determining whether there is an effect or not, similarly involves a statistical test of the null hypothesis of zero effect. If we fail to reject the null, then our posterior belief is that there is no effect, but if we reject in a two-sided test then we leave believing there is an effect. This zero average effect null hypothesis test can help us take the final step in distinguishing among the 216 possible DAGs representing the relationships between $D$ and $Y$ and the confounders $X$ and $U$. In Figure XX, we display the 16 DAGs that are identified under random assignment and pretreatment measurement of $X$. We need to use data and the two-sided null hypothesis test to distinguish between the top row (there is an effect $D\rightarrow Y$) and the bottom row (there is no effect). Our design got us most of the way there, but then we need to use the data to narrow further to one of the two rows of eight DAGs. Since our inquiry is about the causal relationship between $D$ and $Y$, we may not be concerned about distinguishing among the eight. If we are, we need to develop an alternative research design in order to learn about the causal effects of $X$.
+The third task, determining whether there is an effect or not, similarly involves a statistical test of the null hypothesis of zero effect. If we fail to reject the null, then our posterior belief is that there is no effect, but if we reject in a two-sided test then we leave believing there is an effect. This zero average effect null hypothesis test can help us take the final step in distinguishing among the 216 possible DAGs representing the relationships between $D$ and $Y$ and the confounders $X$ and $U$. In Figure \@ref(estimationdags), we display the 16 DAGs that are identified under random assignment and pretreatment measurement of $X$. We need to use data and the two-sided null hypothesis test to distinguish between the top row (there is an effect $D\rightarrow Y$) and the bottom row (there is no effect). Our design got us most of the way there, but then we need to use the data to narrow further to one of the two rows of eight DAGs. Since our inquiry is about the causal relationship between $D$ and $Y$, we may not be concerned about distinguishing among the eight. If we are, we need to develop an alternative research design in order to learn about the causal effects of $X$.
 
-```{r, echo = FALSE, fig.width = 30, fig.height = 21}
+```{r estimationdags, fig.cap = "The sixteen DAGs consistent with pretreatment measurement of X and randomization of Z. Hypothesis testing can distinguish among the eight DAGs with an effect of Z on Y (top row) and the eight with no effect of Z on Y (bottom row).", echo = FALSE, fig.width = 40, fig.height = 12}
 gg_df <-
   gg_df %>%
   filter(is.na(ruled_out_by)) %>%
   mutate(
-    ruled_out_by_sig_test = as.factor(if_else(DY_fac == "D~~~Y", "Ruled out by rejection of null hypothesis of no effect", "Cannot rule out")),
+    ruled_out_by_sig_test = as.factor(if_else(DY_fac == "D~~~Y", "Ruled out if estimate is statistically significant", "Cannot be ruled out, regardless of statistical significance")),
     fct_rows = paste0(YX_fac, YU_fac, XU_fac)
   )
 
 fill_scale <- c(
-  `Ruled out by rejection of null hypothesis of no effect` = dd_dark_blue,
-  `Cannot rule out` = "transparent"
+  `Ruled out if estimate is statistically significant` = dd_dark_blue,
+  `Cannot be ruled out, regardless of statistical significance` = "transparent"
 )
 
 dag_df <-
@@ -584,13 +591,13 @@ g <-
     width = 1.75,
     alpha = 0.5
   ) +
-  geom_text(data = points_df, aes(label = name), size = 5) +
+  geom_text(data = points_df, aes(label = name), size = 10) +
   geom_dag_edges(
     aes(xend = xend, yend = yend),
-    edge_width = 0.4,
-    arrow_directed = grid::arrow(length = grid::unit(4, "pt"), type = "closed")
+    edge_width = 1,
+    arrow_directed = grid::arrow(length = grid::unit(12, "pt"), type = "closed")
   ) +
-  scale_fill_manual("Situation", values = fill_scale, drop = FALSE) +
+  scale_fill_manual("Situation", values = fill_scale, drop = FALSE, guide = guide_legend(override.aes = list(color = c(gray(0.4), "white")))) +
   facet_grid(DY_fac ~ fct_rows) +
   coord_fixed() +
   theme_void() +
@@ -598,10 +605,10 @@ g <-
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5),
     legend.position = "bottom",
-    legend.title = element_text(size = 28),
-    legend.text = element_text(size = 28),
+    legend.title = element_text(size = 40),
+    legend.text = element_text(size = 40),
     legend.key.size = unit(25, "mm"),
-    strip.text.y = element_blank()
+    strip.text = element_blank()
   )
 
 g
@@ -725,9 +732,7 @@ One of the simplest ways to formalize a qualitative strategy is by constructing 
 
 ### Bayesian formalizations
 
-Recent developments in qualitative methods have sought to take Bayes' rule "from metaphor to analytic tool" [@BennettAppendix]. This approach characterizes qualitative inference as one in which prior beliefs about the world can be specified numerically and then are updated on the basis of evidence observed. At minimum, writing down such an answer strategy on a computer requires specifying beliefs, expressed as probabilities, about the likelihood of seeing certain kinds of evidence under different hypotheses. We provide a simple example of such a strategy in the design library. @HerronQuinn provide one approach to formalizing a qualitative answer strategy that focuses on understanding an average treatment effect. 
-@humphreys2015mixing provide an approach that can be used to formalize answer strategies targeting both causal effect and causal attribution inquiries, while @fairfield2017explicit formalize a Bayesian approach that approaches causal attribution as a problem of attaching posterior probability to competing alternative hypotheses. 
-@abell2019subjective suggest the use of "Supra-Bayesian" methods to aggregate multiple participant-provided narratives in ethnographic studies targeting causal attribution estimands. 
+Recent developments in qualitative methods have sought to take Bayes' rule "from metaphor to analytic tool" [@BennettAppendix]. This approach characterizes qualitative inference as one in which prior beliefs about the world can be specified numerically and then are updated on the basis of evidence observed. At minimum, writing down such an answer strategy on a computer requires specifying beliefs, expressed as probabilities, about the likelihood of seeing certain kinds of evidence under different hypotheses. We provide a simple example of such a strategy in the design library. @herron2016careful provide one approach to formalizing a qualitative answer strategy that focuses on understanding an average treatment effect. @humphreys2015mixing provide an approach that can be used to formalize answer strategies targeting both causal effect and causal attribution inquiries, while @fairfield2017explicit formalize a Bayesian approach that approaches causal attribution as a problem of attaching posterior probability to competing alternative hypotheses. @abell2019subjective suggest the use of "Supra-Bayesian" methods to aggregate multiple participant-provided narratives in ethnographic studies targeting causal attribution estimands. 
 
 ### Set-theoretic formalizations
 
