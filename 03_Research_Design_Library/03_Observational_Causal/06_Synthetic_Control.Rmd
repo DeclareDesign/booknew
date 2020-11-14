@@ -17,14 +17,28 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+<!-- make sure to rename the section title below -->
+
+```{r synthetic_control, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 1000
+b_sims <- 500
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+library(Synth)
+library(augsynth) # remotes::install_github("ebenmichael/augsynth")
+library(glmnet)
+library(sf)
+```
+
 ## Synthetic controls
 
 ### Declaration
 
 ```{r, echo=FALSE}
-
-library(Synth)
-
 synth_weights_tidy <- function(data, predictors, time.predictors.prior, dependent, unit.variable, time.variable, treatment.identifier, controls.identifier) {
   dataprep.out <- dataprep(
     foo = data,
@@ -53,7 +67,6 @@ synth_weights_tidy <- function(data, predictors, time.predictors.prior, dependen
 
 
 ```{r}
-
 design <- 
   declare_population(
     unit = add_level(N = 10, units = 1:N, X = rnorm(N, sd = 0.5)),
@@ -131,274 +144,256 @@ base_dag_plot %+% ggdd_df
 
 ### Example
 
+<!-- Modeled after the example here:  -->
 
-<!-- make sure to rename the section title below -->
+<!-- https://www.mitpressjournals.org/doi/abs/10.1162/REST_a_00429?casa_token=o-zWqCima50AAAAA:yiEERZfdhAUoHV0-xBYNjgdljvgfRXrriR8foG7X8nHSUAMFrLcw2vWY8e9pHzmRT24MMAIv9hvKpQ -->
 
-```{r synthetic_control, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 1000
-b_sims <- 500
-```
+<!-- Did the 2007 Legal Arizona Workers Act Reduce the State's Unauthorized Immigrant Population? -->
+<!-- Sarah Bohn, Magnus Lofstrom, and Steven Raphael -->
+<!-- The Review of Economics and Statistics 2014 96:2, 258-269  -->
+<!-- Abstract: We test for an effect of Arizona's 2007 Legal Arizona Workers Act (LAWA) on the proportion of the state's population characterized as noncitizen Hispanic. We use the synthetic control method to select a group of states against which Arizona's population trends can be compared. We document a notable and statistically significant reduction in the proportion of the Hispanic noncitizen population in Arizona. The decline observed matches the timing of LAWA's implementation, deviates from the time series for the synthetic control group, and stands out relative to the distribution of placebo estimates for other states in the nation. -->
 
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-library(Synth)
-library(augsynth) # remotes::install_github("ebenmichael/augsynth")
-library(glmnet)
-library(sf)
-```
-
-Modeled after the example here: 
-
-https://www.mitpressjournals.org/doi/abs/10.1162/REST_a_00429?casa_token=o-zWqCima50AAAAA:yiEERZfdhAUoHV0-xBYNjgdljvgfRXrriR8foG7X8nHSUAMFrLcw2vWY8e9pHzmRT24MMAIv9hvKpQ
-
-Did the 2007 Legal Arizona Workers Act Reduce the State's Unauthorized Immigrant Population?
-Sarah Bohn, Magnus Lofstrom, and Steven Raphael
-The Review of Economics and Statistics 2014 96:2, 258-269 
-Abstract: We test for an effect of Arizona's 2007 Legal Arizona Workers Act (LAWA) on the proportion of the state's population characterized as noncitizen Hispanic. We use the synthetic control method to select a group of states against which Arizona's population trends can be compared. We document a notable and statistically significant reduction in the proportion of the Hispanic noncitizen population in Arizona. The decline observed matches the timing of LAWA's implementation, deviates from the time series for the synthetic control group, and stands out relative to the distribution of placebo estimates for other states in the nation.
-
-Outline:
-(1) how does synth work?
-- declaration: set up states with time trends and levels that are both correlated with a type and following the linear model assumed by SCM
-- try three estimators: (1) difference-in-difference; (2) single difference in treated period; and (3) difference in treated period weighted by Synth weights.
-- show that synth works under its assumptions; plot of time series of treat and synthetic control; plot of the time series from all units to illustrate which are picked (sorted by weights)
-(2) what are synth's assumptions?
-- linear model; treated unit is in convex hull of control units' pretreatment time series 
-(3) how to diagnose when you are outside the convex hull
-- declaration outside the convex hull and use the Abadie diagnostic demonstrating a poor match. (possibly explore power of this diagnostic)
-- show that synth is biased in this setting. augsynth is not. 
+<!-- Outline: -->
+<!-- (1) how does synth work? -->
+<!-- - declaration: set up states with time trends and levels that are both correlated with a type and following the linear model assumed by SCM -->
+<!-- - try three estimators: (1) difference-in-difference; (2) single difference in treated period; and (3) difference in treated period weighted by Synth weights. -->
+<!-- - show that synth works under its assumptions; plot of time series of treat and synthetic control; plot of the time series from all units to illustrate which are picked (sorted by weights) -->
+<!-- (2) what are synth's assumptions? -->
+<!-- - linear model; treated unit is in convex hull of control units' pretreatment time series  -->
+<!-- (3) how to diagnose when you are outside the convex hull -->
+<!-- - declaration outside the convex hull and use the Abadie diagnostic demonstrating a poor match. (possibly explore power of this diagnostic) -->
+<!-- - show that synth is biased in this setting. augsynth is not.  -->
 
 
 
 
-```{r synth_declaration}
-# tidy function that takes data and just adds the synthetic control weights to it
-synth_weights_tidy <- function(data) {
-  dataprep.out <- dataprep(
-    foo = data,
-    predictors = "prop_non_hispanic_below_hs",
-    predictors.op = "mean",
-    time.predictors.prior = 1998:2006,
-    dependent = "prop_non_hispanic_below_hs",
-    unit.variable = "state_number",
-    time.variable = "year",
-    treatment.identifier = 4,
-    controls.identifier = c(1:3, 5:50), # states without Arizona
-    time.optimize.ssr = 1998:2006,
-    time.plot = 1998:2009)
-  capture.output(fit <- synth(data.prep.obj = dataprep.out))
-  tab <- synth.tab(dataprep.res = dataprep.out, synth.res = fit) 
-  
-  data %>% 
-    left_join(tab$tab.w %>% mutate(synth_weights = w.weights) %>% dplyr::select(synth_weights, unit.numbers), by = c("state_number" = "unit.numbers")) %>% 
-    mutate(synth_weights = replace(synth_weights, state_number == 4, 1))
-}
+<!-- ```{r synth_declaration} -->
+<!-- # tidy function that takes data and just adds the synthetic control weights to it -->
+<!-- synth_weights_tidy <- function(data) { -->
+<!--   dataprep.out <- dataprep( -->
+<!--     foo = data, -->
+<!--     predictors = "prop_non_hispanic_below_hs", -->
+<!--     predictors.op = "mean", -->
+<!--     time.predictors.prior = 1998:2006, -->
+<!--     dependent = "prop_non_hispanic_below_hs", -->
+<!--     unit.variable = "state_number", -->
+<!--     time.variable = "year", -->
+<!--     treatment.identifier = 4, -->
+<!--     controls.identifier = c(1:3, 5:50), # states without Arizona -->
+<!--     time.optimize.ssr = 1998:2006, -->
+<!--     time.plot = 1998:2009) -->
+<!--   capture.output(fit <- synth(data.prep.obj = dataprep.out)) -->
+<!--   tab <- synth.tab(dataprep.res = dataprep.out, synth.res = fit)  -->
 
-augsynth_tidy <- function(data) {
-  fit <- augsynth(prop_non_hispanic_below_hs ~ legal_worker_act, state, year, t_int = 2007, data = data)
-  res <- summary(fit)$att %>% filter(Time == 2007) %>% select(Estimate, Std.Error)
-  names(res) <- c("estimate", "std.error")
-  res$p.value <- 2 * pt(-abs(res$estimate/res$std.error), df = nrow(data) - 15)
-  res$conf.low <- res$estimate - 1.96 * res$std.error
-  res$conf.high <- res$estimate + 1.96 * res$std.error
-  res
-}
+<!--   data %>%  -->
+<!--     left_join(tab$tab.w %>% mutate(synth_weights = w.weights) %>% dplyr::select(synth_weights, unit.numbers), by = c("state_number" = "unit.numbers")) %>%  -->
+<!--     mutate(synth_weights = replace(synth_weights, state_number == 4, 1)) -->
+<!-- } -->
 
-# note need to clean up the range of the data, currently over 1
-design <-
-  declare_population(
-    states = add_level(
-      N = 50, 
-      state = state.abb,
-      state_number = as.numeric(as.factor(state)),
-      state_shock = runif(N, -.15, .15),
-      border_state = state %in% c("AZ", "CA", "NM", "TX"),
-      state_shock = ifelse(border_state, .2, state_shock)
-    ),
-    years = add_level(
-      N = 12, nest = FALSE,
-      year = 1998:2009,
-      post_treatment_period = year >= 2007,
-      year_shock = runif(N, -.025, .025), 
-      year_trend = year - 1998
-    ),
-    obs = cross_levels(
-      by = join(states, years),
-      # treatment indicator:
-      legal_worker_act = if_else(post_treatment_period == TRUE & state == "AZ", 1, 0),
-      state_year_shock = runif(N, -.025, .025),
-      prop_non_hispanic_below_hs_baseline = 
-        0.4 + state_shock + year_shock + (.01 + .05 * border_state) * year_trend + state_year_shock
-    )
-  ) +
-  declare_potential_outcomes(
-    prop_non_hispanic_below_hs ~ prop_non_hispanic_below_hs_baseline + 0.25 * legal_worker_act, 
-    assignment_variable = legal_worker_act) +
-  declare_estimand(
-    ATE_AZ = mean(prop_non_hispanic_below_hs_legal_worker_act_1 - 
-                    prop_non_hispanic_below_hs_legal_worker_act_0), 
-    subset = legal_worker_act == TRUE) +
-  reveal_outcomes(prop_non_hispanic_below_hs, legal_worker_act) +
-  declare_step(handler = synth_weights_tidy) +
-  declare_estimator(
-    prop_non_hispanic_below_hs ~ legal_worker_act, 
-    subset = year >= 2007, weights = synth_weights, model = lm_robust, label = "synth") +
-  declare_estimator(
-    prop_non_hispanic_below_hs ~ legal_worker_act, subset = year >= 2007, 
-    model = lm_robust, label = "unweighted") +
-  declare_estimator(
-    prop_non_hispanic_below_hs ~ I(state == "AZ") + post_treatment_period + legal_worker_act, term = "legal_worker_act", 
-    model = lm_robust, label = "unweighted_did") +
-  declare_estimator(handler = tidy_estimator(augsynth_tidy), label = "augsynth")
-```
+<!-- augsynth_tidy <- function(data) { -->
+<!--   fit <- augsynth(prop_non_hispanic_below_hs ~ legal_worker_act, state, year, t_int = 2007, data = data) -->
+<!--   res <- summary(fit)$att %>% filter(Time == 2007) %>% select(Estimate, Std.Error) -->
+<!--   names(res) <- c("estimate", "std.error") -->
+<!--   res$p.value <- 2 * pt(-abs(res$estimate/res$std.error), df = nrow(data) - 15) -->
+<!--   res$conf.low <- res$estimate - 1.96 * res$std.error -->
+<!--   res$conf.high <- res$estimate + 1.96 * res$std.error -->
+<!--   res -->
+<!-- } -->
 
-```{r}
-state_data <- draw_data(design)
+<!-- # note need to clean up the range of the data, currently over 1 -->
+<!-- design <- -->
+<!--   declare_population( -->
+<!--     states = add_level( -->
+<!--       N = 50,  -->
+<!--       state = state.abb, -->
+<!--       state_number = as.numeric(as.factor(state)), -->
+<!--       state_shock = runif(N, -.15, .15), -->
+<!--       border_state = state %in% c("AZ", "CA", "NM", "TX"), -->
+<!--       state_shock = ifelse(border_state, .2, state_shock) -->
+<!--     ), -->
+<!--     years = add_level( -->
+<!--       N = 12, nest = FALSE, -->
+<!--       year = 1998:2009, -->
+<!--       post_treatment_period = year >= 2007, -->
+<!--       year_shock = runif(N, -.025, .025),  -->
+<!--       year_trend = year - 1998 -->
+<!--     ), -->
+<!--     obs = cross_levels( -->
+<!--       by = join(states, years), -->
+<!--       # treatment indicator: -->
+<!--       legal_worker_act = if_else(post_treatment_period == TRUE & state == "AZ", 1, 0), -->
+<!--       state_year_shock = runif(N, -.025, .025), -->
+<!--       prop_non_hispanic_below_hs_baseline =  -->
+<!--         0.4 + state_shock + year_shock + (.01 + .05 * border_state) * year_trend + state_year_shock -->
+<!--     ) -->
+<!--   ) + -->
+<!--   declare_potential_outcomes( -->
+<!--     prop_non_hispanic_below_hs ~ prop_non_hispanic_below_hs_baseline + 0.25 * legal_worker_act,  -->
+<!--     assignment_variable = legal_worker_act) + -->
+<!--   declare_estimand( -->
+<!--     ATE_AZ = mean(prop_non_hispanic_below_hs_legal_worker_act_1 -  -->
+<!--                     prop_non_hispanic_below_hs_legal_worker_act_0),  -->
+<!--     subset = legal_worker_act == TRUE) + -->
+<!--   reveal_outcomes(prop_non_hispanic_below_hs, legal_worker_act) + -->
+<!--   declare_step(handler = synth_weights_tidy) + -->
+<!--   declare_estimator( -->
+<!--     prop_non_hispanic_below_hs ~ legal_worker_act,  -->
+<!--     subset = year >= 2007, weights = synth_weights, model = lm_robust, label = "synth") + -->
+<!--   declare_estimator( -->
+<!--     prop_non_hispanic_below_hs ~ legal_worker_act, subset = year >= 2007,  -->
+<!--     model = lm_robust, label = "unweighted") + -->
+<!--   declare_estimator( -->
+<!--     prop_non_hispanic_below_hs ~ I(state == "AZ") + post_treatment_period + legal_worker_act, term = "legal_worker_act",  -->
+<!--     model = lm_robust, label = "unweighted_did") + -->
+<!--   declare_estimator(handler = tidy_estimator(augsynth_tidy), label = "augsynth") -->
+<!-- ``` -->
 
-state_data %>% dplyr::select(state, synth_weights) %>% distinct %>% arrange(-synth_weights) %>% head(5)
-```
+<!-- ```{r} -->
+<!-- state_data <- draw_data(design) -->
 
-```{r}
-state_data %>% 
-  ggplot() +
-  geom_line(aes(year, prop_non_hispanic_below_hs)) +
-  facet_wrap(~ state)
-```
+<!-- state_data %>% dplyr::select(state, synth_weights) %>% distinct %>% arrange(-synth_weights) %>% head(5) -->
+<!-- ``` -->
 
-```{r}
-state_data %>% 
-  mutate(treatment_state = factor(state == "AZ", levels = c(FALSE, TRUE), labels = c("Synthethic Control", "Arizona"))) %>% 
-  group_by(treatment_state, year) %>% 
-  summarize(prop_non_hispanic_below_hs = weighted.mean(prop_non_hispanic_below_hs, w = synth_weights)) %>% 
-  ggplot(aes(x = year, y = prop_non_hispanic_below_hs, color = treatment_state)) +
-  geom_line() + 
-  geom_vline(xintercept = 2007) + 
-  scale_x_continuous(breaks = scales::pretty_breaks()) + 
-  annotate("text", x = 2006.7, y = 1.7, label = "Law Introduced in 2007", hjust = "right", family = "Palatino") +
-  labs(color = "") +
-  xlab("") + ylab("Proportion Non-Hispanic Below H.S. Education") +
-  dd_theme()
-```
+<!-- ```{r} -->
+<!-- state_data %>%  -->
+<!--   ggplot() + -->
+<!--   geom_line(aes(year, prop_non_hispanic_below_hs)) + -->
+<!--   facet_wrap(~ state) -->
+<!-- ``` -->
 
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-simulations <- simulate_design(design, sims = sims)
-```
+<!-- ```{r} -->
+<!-- state_data %>%  -->
+<!--   mutate(treatment_state = factor(state == "AZ", levels = c(FALSE, TRUE), labels = c("Synthethic Control", "Arizona"))) %>%  -->
+<!--   group_by(treatment_state, year) %>%  -->
+<!--   summarize(prop_non_hispanic_below_hs = weighted.mean(prop_non_hispanic_below_hs, w = synth_weights)) %>%  -->
+<!--   ggplot(aes(x = year, y = prop_non_hispanic_below_hs, color = treatment_state)) + -->
+<!--   geom_line() +  -->
+<!--   geom_vline(xintercept = 2007) +  -->
+<!--   scale_x_continuous(breaks = scales::pretty_breaks()) +  -->
+<!--   annotate("text", x = 2006.7, y = 1.7, label = "Law Introduced in 2007", hjust = "right", family = "Palatino") + -->
+<!--   labs(color = "") + -->
+<!--   xlab("") + ylab("Proportion Non-Hispanic Below H.S. Education") + -->
+<!--   dd_theme() -->
+<!-- ``` -->
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("synthetic_control"), "/simulations.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations, path = rds_file_path)
-}
-simulations <- read_rds(rds_file_path)
-```
+<!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} -->
+<!-- simulations <- simulate_design(design, sims = sims) -->
+<!-- ``` -->
 
-Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("synthetic_control"), "/simulations.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(simulations, path = rds_file_path) -->
+<!-- } -->
+<!-- simulations <- read_rds(rds_file_path) -->
+<!-- ``` -->
 
-```{r}
-synth_diagnosands <- declare_diagnosands(
-  bias = mean(estimate - estimand),
-  rmse = sqrt(mean((estimate - estimand)^2)),
-  coverage = mean(estimand <= conf.high & estimand >= conf.low)
-  )
+<!-- Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want. -->
 
-diagnosis <- diagnose_design(simulations, diagnosands = synth_diagnosands, bootstrap_sims = b_sims)
+<!-- ```{r} -->
+<!-- synth_diagnosands <- declare_diagnosands( -->
+<!--   bias = mean(estimate - estimand), -->
+<!--   rmse = sqrt(mean((estimate - estimand)^2)), -->
+<!--   coverage = mean(estimand <= conf.high & estimand >= conf.low) -->
+<!--   ) -->
 
-kable(reshape_diagnosis(diagnosis), booktabs = TRUE)
-```
+<!-- diagnosis <- diagnose_design(simulations, diagnosands = synth_diagnosands, bootstrap_sims = b_sims) -->
 
-- we see that Synth outperforms either method
+<!-- kable(reshape_diagnosis(diagnosis), booktabs = TRUE) -->
+<!-- ``` -->
 
-### When there are not good controls, standard synth will get the wrong answer
+<!-- - we see that Synth outperforms either method -->
 
-```{r}
-# declaration outside the convex hull
-design_outside_hull <- replace_step(
-  design, 
-  step = 2, 
-  new_step = declare_potential_outcomes(
-    prop_non_hispanic_below_hs ~ prop_non_hispanic_below_hs_baseline + 0.25 * legal_worker_act + 0.2 * (state == "AZ"), 
-    assignment_variable = legal_worker_act))
+<!-- ### When there are not good controls, standard synth will get the wrong answer -->
 
-state_data_outside_hull <- draw_data(design_outside_hull)
-```
+<!-- ```{r} -->
+<!-- # declaration outside the convex hull -->
+<!-- design_outside_hull <- replace_step( -->
+<!--   design,  -->
+<!--   step = 2,  -->
+<!--   new_step = declare_potential_outcomes( -->
+<!--     prop_non_hispanic_below_hs ~ prop_non_hispanic_below_hs_baseline + 0.25 * legal_worker_act + 0.2 * (state == "AZ"),  -->
+<!--     assignment_variable = legal_worker_act)) -->
 
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_outside_hull <- simulate_design(design_outside_hull, sims = sims)
-```
+<!-- state_data_outside_hull <- draw_data(design_outside_hull) -->
+<!-- ``` -->
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("synthetic_control"), "/simulations_outside_hull.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_outside_hull, path = rds_file_path)
-}
-simulations_outside_hull <- read_rds(rds_file_path)
-```
+<!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} -->
+<!-- simulations_outside_hull <- simulate_design(design_outside_hull, sims = sims) -->
+<!-- ``` -->
 
-Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("synthetic_control"), "/simulations_outside_hull.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(simulations_outside_hull, path = rds_file_path) -->
+<!-- } -->
+<!-- simulations_outside_hull <- read_rds(rds_file_path) -->
+<!-- ``` -->
 
-```{r}
-diagnosis_outside_hull <- diagnose_design(simulations_outside_hull, diagnosands = synth_diagnosands, bootstrap_sims = b_sims)
+<!-- Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want. -->
 
-kable(reshape_diagnosis(diagnosis_outside_hull), booktabs = TRUE)
-```
+<!-- ```{r} -->
+<!-- diagnosis_outside_hull <- diagnose_design(simulations_outside_hull, diagnosands = synth_diagnosands, bootstrap_sims = b_sims) -->
 
-```{r}
-# plot the synthetic control constructed in this way (it usually picks just texas and is highly biased)
-state_data_outside_hull %>% 
-  mutate(treatment_state = factor(state == "AZ", levels = c(FALSE, TRUE), labels = c("Synthethic Control", "Arizona"))) %>% 
-  group_by(treatment_state, year) %>% 
-  summarize(prop_non_hispanic_below_hs = weighted.mean(prop_non_hispanic_below_hs, w = synth_weights)) %>% 
-  ggplot(aes(x = year, y = prop_non_hispanic_below_hs, color = treatment_state)) +
-  geom_line() + 
-  geom_vline(xintercept = 2007) + 
-  scale_x_continuous(breaks = scales::pretty_breaks()) + 
-  annotate("text", x = 2006.7, y = 1.7, label = "Law Introduced in 2007", hjust = "right", family = "Palatino") +
-  labs(color = "") +
-  xlab("") + ylab("Proportion Non-Hispanic Below H.S. Education") +
-  dd_theme()
-```
+<!-- kable(reshape_diagnosis(diagnosis_outside_hull), booktabs = TRUE) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- # plot the synthetic control constructed in this way (it usually picks just texas and is highly biased) -->
+<!-- state_data_outside_hull %>%  -->
+<!--   mutate(treatment_state = factor(state == "AZ", levels = c(FALSE, TRUE), labels = c("Synthethic Control", "Arizona"))) %>%  -->
+<!--   group_by(treatment_state, year) %>%  -->
+<!--   summarize(prop_non_hispanic_below_hs = weighted.mean(prop_non_hispanic_below_hs, w = synth_weights)) %>%  -->
+<!--   ggplot(aes(x = year, y = prop_non_hispanic_below_hs, color = treatment_state)) + -->
+<!--   geom_line() +  -->
+<!--   geom_vline(xintercept = 2007) +  -->
+<!--   scale_x_continuous(breaks = scales::pretty_breaks()) +  -->
+<!--   annotate("text", x = 2006.7, y = 1.7, label = "Law Introduced in 2007", hjust = "right", family = "Palatino") + -->
+<!--   labs(color = "") + -->
+<!--   xlab("") + ylab("Proportion Non-Hispanic Below H.S. Education") + -->
+<!--   dd_theme() -->
+<!-- ``` -->
 
 
-```{r, echo = FALSE, eval = FALSE}
-calculate_in_hull <- function(data) {
-  # NB: cannot get this function to work (GB)
-  # control_data <- data %>%
-  #   filter(post_treatment_period == FALSE & state != "AZ") %>%
-  #   transmute(year, prop_non_hispanic_below_hs, ID = 1:n())
-  # 
-  # chull <- tibble(ID = with(control_data, chull(year, prop_non_hispanic_below_hs))) %>%
-  #   left_join(control_data)
-  # 
-  # chull <- bind_rows(chull, chull[1, ])
-  # 
-  # chull_sf <- st_sf(geom = st_sfc(st_polygon(x = list(chull %>% select(year, prop_non_hispanic_below_hs) %>% as.matrix))), crs = st_crs(27700))
-  # 
-  # treat_points <- data %>%
-  #   filter(post_treatment_period == FALSE & state == "AZ") %>%
-  #   select(year, prop_non_hispanic_below_hs) %>%
-  #   # bind_rows(tibble(year = 100000, prop_non_hispanic_below_hs = 99)) %>%
-  #   st_as_sf(coords = c("year", "prop_non_hispanic_below_hs"), crs = st_crs(27700))
-  # 
-  # tt <- st_join(treat_points, chull_sf, join = st_intersects)
-  # 
-  #   st_join(chull_sf, join = st_within)
-  # 
-  # ggplot() + geom_sf(data = chull_sf) + geom_sf(data = treat_points)
-  # 
-  # data %>%
-  #   filter(post_treatment_period == FALSE) %>%
-  #   mutate(treatment_state = factor(state == "AZ", levels = c(FALSE, TRUE), labels = c("Synthetic Control", "Arizona"))) %>%
-  #   select(year, treatment_state, prop_non_hispanic_below_hs) %>%
-  #   with(., chull(x = year, y = prop_non_hispanic_below_hs)) %>%
-  #   tibble(points_in_hull)
-  # 
-}
-```
+<!-- ```{r, echo = FALSE, eval = FALSE} -->
+<!-- calculate_in_hull <- function(data) { -->
+<!--   # NB: cannot get this function to work (GB) -->
+<!--   # control_data <- data %>% -->
+<!--   #   filter(post_treatment_period == FALSE & state != "AZ") %>% -->
+<!--   #   transmute(year, prop_non_hispanic_below_hs, ID = 1:n()) -->
+<!--   #  -->
+<!--   # chull <- tibble(ID = with(control_data, chull(year, prop_non_hispanic_below_hs))) %>% -->
+<!--   #   left_join(control_data) -->
+<!--   #  -->
+<!--   # chull <- bind_rows(chull, chull[1, ]) -->
+<!--   #  -->
+<!--   # chull_sf <- st_sf(geom = st_sfc(st_polygon(x = list(chull %>% select(year, prop_non_hispanic_below_hs) %>% as.matrix))), crs = st_crs(27700)) -->
+<!--   #  -->
+<!--   # treat_points <- data %>% -->
+<!--   #   filter(post_treatment_period == FALSE & state == "AZ") %>% -->
+<!--   #   select(year, prop_non_hispanic_below_hs) %>% -->
+<!--   #   # bind_rows(tibble(year = 100000, prop_non_hispanic_below_hs = 99)) %>% -->
+<!--   #   st_as_sf(coords = c("year", "prop_non_hispanic_below_hs"), crs = st_crs(27700)) -->
+<!--   #  -->
+<!--   # tt <- st_join(treat_points, chull_sf, join = st_intersects) -->
+<!--   #  -->
+<!--   #   st_join(chull_sf, join = st_within) -->
+<!--   #  -->
+<!--   # ggplot() + geom_sf(data = chull_sf) + geom_sf(data = treat_points) -->
+<!--   #  -->
+<!--   # data %>% -->
+<!--   #   filter(post_treatment_period == FALSE) %>% -->
+<!--   #   mutate(treatment_state = factor(state == "AZ", levels = c(FALSE, TRUE), labels = c("Synthetic Control", "Arizona"))) %>% -->
+<!--   #   select(year, treatment_state, prop_non_hispanic_below_hs) %>% -->
+<!--   #   with(., chull(x = year, y = prop_non_hispanic_below_hs)) %>% -->
+<!--   #   tibble(points_in_hull) -->
+<!--   #  -->
+<!-- } -->
+<!-- ``` -->
 
-### References
+### Further reading
 
 
 

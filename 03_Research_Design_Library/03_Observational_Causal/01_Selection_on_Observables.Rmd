@@ -17,12 +17,24 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+<!-- make sure to rename the section title below -->
+
+```{r selection_on_observables, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
 ## Selection on observables
 
 ### Declaration
 
 ```{r}
- 
 design <-
   declare_population(N = 100, 
                      X_1 = rnorm(N),
@@ -36,11 +48,9 @@ design <-
 ```
 
 
-### Dag
-
+### DAG
 
 ```{r, echo = FALSE}
-
 dag <- dagify(Y ~ X_1 + X_2 + Z + U,
               Z ~ X_1 + X_2)
 nodes <-
@@ -70,18 +80,6 @@ base_dag_plot %+% ggdd_df
 
 
 (matching and regression etc.)
-<!-- make sure to rename the section title below -->
-
-```{r selection_on_observables, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
-```
-
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-```
 
 
 
@@ -192,6 +190,6 @@ dx_4
 ```
 
 
-## Further reading
+### Further reading
 
 - @rosenbaum2002observational on matching
