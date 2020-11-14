@@ -249,7 +249,7 @@ run_design(design)
 simulations %>% 
   filter(sim_ID == 1) %>%
   select(estimand, estimate, std.error, df, p.value, conf.low, conf.high) %>%
-  kable(digits = 3, caption = "One simulation draw")
+  kable(digits = 3, caption = "One simulation draw", booktabs = TRUE)
 ```
 
 
@@ -261,7 +261,7 @@ simulation_1 <- simulations %>% filter(sim_ID == 1)
 
 # simulation_1 %>% 
 #   select(estimand, estimate, std.error, conf.low, conf.high, p.value) %>%
-#   knitr::kable(digits = 3)
+#   kable(digits = 3, booktabs = TRUE)
 
 gg_df_1 <- gg_df %>% filter(sim_ID == 1)
 
@@ -501,8 +501,10 @@ diagnosis <- read_rds(rds_file_path)
 ```
 
 ```{r estimateddiagnosands, echo=FALSE}
-diagnosis$diagnosands_df %>% transmute(bias = make_se_entry(bias, `se(bias)`), 
-                                       power = make_se_entry(power, `se(power)`)) %>% kable(digits = 3, caption = "Diagnosand estimates with bootstrapped standard errors.")
+diagnosis$diagnosands_df %>% 
+transmute(bias = make_se_entry(bias, `se(bias)`), 
+power = make_se_entry(power, `se(power)`)) %>% 
+kable(digits = 3, caption = "Diagnosand estimates with bootstrapped standard errors.", booktabs = TRUE)
 ```
 
 <!-- ## Interactive element -->
@@ -978,7 +980,7 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE} -->
-<!-- kable(get_diagnosands(diags)) -->
+<!-- kable(get_diagnosands(diags), booktabs = TRUE) -->
 <!-- ``` -->
 
 <!-- ```{r} -->

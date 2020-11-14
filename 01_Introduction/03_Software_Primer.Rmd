@@ -1,9 +1,9 @@
 ---
 title: "Software primer"
 output:
+  pdf_document: default
   html_document:
     number_sections: yes
-  pdf_document: default
 tables: yes
 bibliography: ../bib/book.bib
 ---
@@ -79,7 +79,7 @@ voter_file <- fabricate(
 ```
 
 ```{r voterfile, echo = FALSE}
-kable(head(voter_file), digits = 3, caption = "Example data")
+kable(head(voter_file), digits = 3, caption = "Example data", booktabs = TRUE)
 ```
 
 There are `r nrow(voter_file)` voters in the dataset. 
@@ -102,7 +102,7 @@ simple_random_assignment_step(voter_file)
 ```{r voterfilera, echo = FALSE}
 simple_random_assignment_step(voter_file) %>% 
   head %>% 
-  kable(caption = "Data output following implementation of an assignment step.", digits = 3)
+  kable(caption = "Data output following implementation of an assignment step.", digits = 3, booktabs = TRUE)
 ```
 
 The output of the `simple_random_assignment_step(voter_file)` call is the original dataset with a new column indicating treatment assignment (`Z`) appended. As a bonus, the data also includes the probability that each unit is assigned *to the condition in which it is in* (`Z_cond`), which is an extremely useful number to know in many analysis settings. The most important thing to understand here is that steps are "dataset-in, dataset-out" functions. The `simple_random_assignment_step` took the `voter_file` dataset and returned a dataset with assignment information appended.
@@ -157,7 +157,7 @@ custom_assignment <- function(data)
  
 my_assignment_step <- declare_assignment(handler = custom_assignment)
 
-my_assignment_step(voter_file) %>% head %>% kable(caption = "Data generated using a custom function")  
+my_assignment_step(voter_file) %>% head %>% kable(caption = "Data generated using a custom function", booktabs = TRUE)
 ```
 
 <!-- There is, of course, no great difference in this example between `custom_assignment` and `my_assignment_step` since `my_assignment_step` is just a function that applies `custom_assignment`. Even still, it is worth declaring this step formally as a design step using `declare_assignment` since this lets `DeclareDesign` know how the step fits into the whole design, how to interpret it, and when to call it.    -->
@@ -178,7 +178,7 @@ The population defines the number of units in the population, any multilevel str
 declare_population(data = voter_file)
 ```
 ```{r voterfilepopulation, echo = FALSE}
-declare_population(data = voter_file)() %>% head %>% kable(digits = 3, caption = "Draw from a fixed population")
+declare_population(data = voter_file)() %>% head %>% kable(digits = 3, caption = "Draw from a fixed population", booktabs = TRUE)
 ```
 
 When we do not have complete data on the population, we simulate it. Relying on the data simulation functions from our `fabricatr` package, `declare_population` asks about the size and variables of the population. For instance if we want a function that generates a dataset with 100 units and a random variable `U` we write:
@@ -201,7 +201,7 @@ gt_df <-
   set_names(rep(c("ID", "U"), 5)) 
 
 gt_df %>%
-  kable(digits = 3, caption = "Five draws from the population.") %>%
+  kable(digits = 3, caption = "Five draws from the population.", booktabs = TRUE) %>%
   add_header_above(c("Draw 1" = 2,
                      "Draw 2" = 2,
                      "Draw 3" = 2,
@@ -263,7 +263,7 @@ design <-
 
 draw_data(design) %>% 
   head %>% 
-  kable(digits = 3, caption = "Adding potential outcomes to the population.")
+  kable(digits = 3, caption = "Adding potential outcomes to the population.", booktabs = TRUE)
 ```
 
 The `declare_potential_outcomes` function also includes an alternative interface for defining potential outcomes that uses R's formula syntax. The formula syntax lets you specify "regression-like" outcome equations. One downside is that it mildly obscures how the names of the eventual potential outcomes columns are named. We build the names of the potential outcomes columns the outcome name (here `Y` on the left-hand-side of the formula) and from the `assignment_variables` argument (here `Z`). 
@@ -305,7 +305,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) 
 
-draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Sampled data.")
+draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Sampled data.", booktabs = TRUE)
 ```
 
 Sampling could also be non-random, which could be accomplished by using a custom handler. 
@@ -337,7 +337,7 @@ simple_design <-
 
 draw_data(simple_design) %>% 
   head %>% 
-  kable(digits = 3, caption = "Sampled data with assignment indicator.")
+  kable(digits = 3, caption = "Sampled data with assignment indicator.", booktabs = TRUE)
 ```
 
 #### Measurement
@@ -359,7 +359,7 @@ simple_design <-
 
 draw_data(simple_design) %>% 
   head %>% 
-  kable(digits = 3, caption = "Sampled data with an explicitly measured outcome.")
+  kable(digits = 3, caption = "Sampled data with an explicitly measured outcome.", booktabs = TRUE)
 ```
 
 ### Answer strategy
@@ -377,7 +377,7 @@ simple_design <-
   declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 
 simple_design_data <- draw_data(simple_design)
-simple_design_data %>% head %>% kable(digits = 3, caption = "Data with revealed outcomes.")
+simple_design_data %>% head %>% kable(digits = 3, caption = "Data with revealed outcomes.", booktabs = TRUE)
 ```
 
 Our estimator is the difference-in-means estimator, which compares outcomes between the group that was assigned to treatment and that assigned to control. The `difference_in_means()` function in the `estimatr` package calculates the estimate, the standard error, $p$-value and confidence interval for you:
@@ -386,7 +386,9 @@ Our estimator is the difference-in-means estimator, which compares outcomes betw
 difference_in_means(Y ~ Z, data = simple_design_data)
 ```
 ```{r simpledesigndimestimate, echo = FALSE}
-difference_in_means(Y ~ Z, data = simple_design_data) %>% tidy %>% kable(digits = 3, caption = "Difference-in-means estimate from simulated data.")
+difference_in_means(Y ~ Z, data = simple_design_data) %>% 
+tidy %>% 
+kable(digits = 3, caption = "Difference-in-means estimate from simulated data.", booktabs = TRUE)
 ```
 
 Now, in order to *declare* our estimator, we can send the name of a modeling function to `declare_estimator`. R has many modeling functions that work with `declare_estimator`, including `lm`, `glm`, or the `ictreg` function from the `list` package, among hundreds of others. Throughout the book, we'll be using many estimators from `estimatr` because they are fast and calculate robust standard errors easily. Estimators are (almost always) associated with estimands.^[Sometimes, you may be interested in properties of an estimator that do not depend on an estimand, such as calculating its power] Here, we are targeting the population average treatment effect with the difference-in-means estimator. 
@@ -504,7 +506,7 @@ With the design defined as an object, we can learn about what kind of data it ge
 draw_data(simple_design)
 ```
 ```{r simpledesigndatadraw, echo = FALSE}
-draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Simulated data draw.")
+draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Simulated data draw.", booktabs = TRUE)
 ```
 
 `draw_data` runs all of the "data steps" in a design, which are both from the model (population and potential outcomes) and from the data strategy (sampling, assignment, and measurement).
@@ -516,7 +518,7 @@ draw_estimands(simple_design)
 ```
 ```{r simpledesignestimanddraw, echo = FALSE}
 draw_estimands(simple_design) %>% 
-  kable(digits = 3, caption = "Estimands calculated from simulated data.")
+  kable(digits = 3, caption = "Estimands calculated from simulated data.", booktabs = TRUE)
 ```
 
 Similarly, we can draw the estimates from a single run with `draw_estimates` which simulates data and at the appropriate moment calculates estimates.
@@ -527,7 +529,7 @@ draw_estimates(simple_design)
 
 ```{r simpledesignestimatedraw, echo = FALSE}
 draw_estimates(simple_design) %>% 
-  kable(digits = 3, caption = "Estimates calculated from simulated data.")
+  kable(digits = 3, caption = "Estimates calculated from simulated data.", booktabs = TRUE)
 ```
 
 To simulate designs, we use the `simulate_design` function to draw data, calculate estimands and estimates, and then repeat the process over and over.
@@ -538,7 +540,7 @@ simulate_design(simple_design, sims = 500)
 ```{r simpledesignsimulationsdf, echo = FALSE}
 simulations_df <- simulate_design(simple_design, sims = 5) 
 
-simulations_df %>% kable(digits = 3, caption = "Simulations data frame.")
+simulations_df %>% kable(digits = 3, caption = "Simulations data frame.", booktabs = TRUE)
 ```
 
 ## Diagnosing a research design
@@ -560,7 +562,9 @@ Second, apply your diagnosand declaration to the simulations dataframe with the 
 diagnose_design(simulations_df, diagnosands = study_diagnosands)
 ```
 ```{r simpledesigndiagnosis2, echo = FALSE}
-diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% get_diagnosands %>% kable(digits = 3, caption = "Design diagnosis.")
+diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% 
+get_diagnosands %>% 
+kable(digits = 3, caption = "Design diagnosis.", booktabs = TRUE)
 ```
 
 We can also do this in a single step by sending `diagnose_design` a design object. The function will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.
@@ -629,7 +633,8 @@ Similarly, we can compare two designs on the basis of their diagnoses:
 compare_diagnoses(planned_design, implemented_design)
 ```
 ```{r simpledesigncomparison, echo = FALSE, eval = FALSE}
-compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% kable(digits = 3, caption = "Comparison of two designs.")
+compare_diagnoses(simple_design, redesigned_simple_design, sims = sims)$compared_diagnoses_df %>% 
+kable(digits = 3, caption = "Comparison of two designs.", booktabs = TRUE)
 ```
 
 ### Library of designs
