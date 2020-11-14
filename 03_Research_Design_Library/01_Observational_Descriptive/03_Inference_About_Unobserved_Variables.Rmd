@@ -19,11 +19,11 @@ source("scripts/before_chapter_script.R")
 
 ## Inference about unobserved variables 
 
+The purpose of this unwritten entry is to show how a latent variable (`Y_star`) can be measured with three procedures (`Y_1`, `Y_2`, `Y_3`), which are then averaged into an index.
+
+We'll of course be "biased" for the true latent variable. Could a reasonable diagnosand here be the average correlation of the estimated index with the latent value?
 
 ### Declaration
-
-<!--
-JC Comment: This setup seems a bit odd to me. I don't think anyone ever has the true average amount or score of democracy in mind as their inquiry, or thinks they're getting it by averaging indicators. It seems a bit trivial to show that anyone who sets out to do so gets the answer wrong if they don't anticipate an intercept in the DGP of one of the measures or make the wrong distributional assumptions. My sense is that there are two kinds of estimands people are usually interested in with designs such as these. First, do the things I measured "load" onto the underlying thing in the way I expect; second, do the relative levels stack up as they should (e.g., if Togo is truly less democratic than Benin then I want this to show up in the ordering). I've had a go at one design below that focuses on the second kind of estimand. Not entirely sure about it but I think it may be a step in the right direction and shows off DD flexibility.
 
 ```{r}
 design <-
@@ -35,25 +35,8 @@ design <-
                       Y_idx = (Y_1 + Y_2 + Y_3) / 3) + 
   declare_estimator(Y_idx ~ 1, model = lm_robust, estimand = "Y_bar")
 ```
--->
-
-```{r}
-design <-
-  declare_population(N = 10, Y_star = rnorm(N), true_rank = rank(Y_star)) +
-  declare_measurement(Y_1 = 0.1 * Y_star + rnorm(N, sd = 0.25),
-                      Y_2 = Y_star + rnorm(N, sd = 0.25),
-                      Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.25),
-                      Y_idx = (Y_1 + Y_2 + Y_3) / 3, 
-                      ranking = rank(Y_idx)) 
-
-# simulate_design(design) %>% 
-#   summarize(ranking_correct = mean(true_rank == ranking))
-```
-
 
 ### Dag
-
-
 ```{r, echo = FALSE}
 
 
@@ -83,6 +66,8 @@ base_dag_plot %+% ggdd_df
 ```
 
 ### Example
+
+Perhaps a good psychometric example would be worthwhile to explore here? Or an education example?
 
 
 <!-- make sure to rename the section title below -->
