@@ -813,7 +813,7 @@ proportion_truthful_trump_vote
 <!-- diagnosis_list_glynn <- read_rds(rds_file_path) -->
 <!-- ``` -->
 <!-- ```{r} -->
-<!-- diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimand_label, estimator_label, bias, rmse) %>% kable -->
+<!-- diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimand_label, estimator_label, bias, rmse) %>% kable(booktabs = TRUE)) -->
 <!-- ``` -->
 <p>We see that the design is stil lunbiased for the ATE and now is unbiased for the proportion of truthful Trump vote. This is because there are no longer ceiling effects, which represented a violation of the no design effects assumption required to interpret the ATE as the proportion of truthful Trump vote.</p>
 <p>Changes the answer strategy have been proposed to address both the no design effects and no liars assumption. <span class="citation">Blair and Imai (<a href="references-4.html#ref-blair2012statistical" role="doc-biblioref">2012</a>)</span> propose a statistical test for the design effects assumption; if it does not pass, they suggest not analyzing the list experiment data (i.e., this is a procedure that makes up an answer strategy). Scholars have also identified improvements to the answer strategy to address violations of no liars: <span class="citation">Blair and Imai (<a href="references-4.html#ref-blair2012statistical" role="doc-biblioref">2012</a>)</span> provides a model that adjusts for ceiling and floor effects and <span class="citation">Li (<a href="references-4.html#ref-li2019relaxing" role="doc-biblioref">2019</a>)</span> provides a bounds approach that relaxes the assumption.</p>
@@ -889,7 +889,7 @@ mean_estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.i
 <div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rr_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">rr_design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="va">rr_diagnosis</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="va">rr_diagnosis</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -1097,7 +1097,7 @@ NA
 <!--   # bias line -->
 <!--   geom_line(aes(x = )) -->
 <!--  -->
-<!-- # kable(reshape_diagnosis(rr_tradeoff_diagnosis)) -->
+<!-- # kable(reshape_diagnosis(rr_tradeoff_diagnosis), booktabs = TRUE) -->
 <!-- ``` -->
 </div>
 </div>
