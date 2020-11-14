@@ -17,8 +17,6 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-## Multi-site trials
-
 <!-- make sure to rename the section title below -->
 
 ```{r multi_site_studies, echo = FALSE, output = FALSE, purl = FALSE}
@@ -32,6 +30,8 @@ b_sims <- 1000
 library(metafor)
 library(car)
 ```
+
+## Multi-site trials
 
 
 <!-- ## The Metaketa design -->
@@ -123,20 +123,20 @@ post_stratification <- function(data, pr_types_population) {
 }
 ```
 
-```{r}
-# need to have biased sampling to get bias here
-# two kinds of populations, one in which the study type determines the subject types and you select on study type
-#   a second kind where study type determines study shock 
-#   in second type if you adjust for subject type then you will be able to unbiased recover global
 
-multi_site_designer <- function(
-  N_sites = 10,
-  n_study_sites = 5,
-  n_subjects_per_site = 1000,
-  feasible_effect = 0,
-  subject_type_effects = seq(from = -0.1, to = 0.1, length.out = 10),
-  pr_types = c( # rows are sites, columns are types
-    0.005, 0.005, 0.09, 0.15, 0.25, 0.1, 0, 0.1, 0.15, 0.15,
+<!-- need to have biased sampling to get bias here -->
+<!-- two kinds of populations, one in which the study type determines the subject types and you select on study type -->
+<!--   a second kind where study type determines study shock  -->
+<!--   in second type if you adjust for subject type then you will be able to unbiased recover global -->
+
+```{r}
+N_sites <- 10
+n_study_sites <- 5
+n_subjects_per_site <- 1000
+feasible_effect <- 0
+subject_type_effects <- seq(from = -0.1, to = 0.1, length.out = 10)
+pr_types <- c( # rows are sites, columns are types
+  0.005, 0.005, 0.09, 0.15, 0.25, 0.1, 0, 0.1, 0.15, 0.15,
     0.1, 0.15, 0.15, 0.15, 0.25, 0.005, 0, 0.1, 0.09, 0.005,
     0.15, 0.15, 0.15, 0.005, 0.005, 0, 0.25, 0.09, 0.1, 0.1,
     0, 0.15, 0.005, 0.09, 0.005, 0.15, 0.25, 0.1, 0.1, 0.15,
@@ -146,7 +146,8 @@ multi_site_designer <- function(
     0.25, 0.1, 0.15, 0, 0.005, 0.15, 0.15, 0.1, 0.005, 0.09,
     0.005, 0.1, 0.1, 0.15, 0, 0.25, 0.15, 0.09, 0.005, 0.15,
     0.005, 0.09, 0.15, 0.1, 0, 0.1, 0.15, 0.005, 0.25, 0.15)
-) {
+
+design <- 
   declare_population(
     site = add_level(N = N_sites, feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE)),
     subject_types = add_level(
@@ -164,12 +165,11 @@ multi_site_designer <- function(
     declare_sampling(strata = site, n = n_subjects_per_site) + 
     declare_assignment(blocks = site, prob = 0.5) + 
     declare_estimand(study_site_ATE = mean(Y_Z_1 - Y_Z_0)) +
-    declare_estimator(handler = tidy_estimator(post_stratification), pr_types_population = pr_types, label = "post-strat")
-}
+    declare_estimator(handler = label_estimator(post_stratification), pr_types_population = pr_types, label = "post-strat")
 
-single_site_large_design <- multi_site_designer(n_study_sites = 1, n_subjects_per_site = 2500)
+single_site_large_design <- redesign(design, n_study_sites = 1, n_subjects_per_site = 2500)
 
-small_study_five_sites <- multi_site_designer(n_study_sites = 5, n_subjects_per_site = 500)
+small_study_five_sites <- redesign(design, n_study_sites = 5, n_subjects_per_site = 500)
 ```
 
 ```{r, warning = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
@@ -187,7 +187,7 @@ diagnosis_small_large <- read_rds(rds_file_path)
 ```
 
 ```{r, echo = FALSE}
-kable(get_diagnosands(diagnosis_small_large), booktabs = TRUE)
+kable(get_diagnosands(diagnosis_small_large) %>% reshape_diagnosis %>% select(Bias, RMSE), booktabs = TRUE)
 ```
 
 ### Bayesian estimation can improve estimates of effects for sampled sites
@@ -262,7 +262,7 @@ diagnosis_feasible_effects <- read_rds(rds_file_path)
 ```
 
 ```{r, echo = FALSE}
-kable(get_diagnosands(diagnosis_feasible_effects), booktabs = TRUE)
+kable(get_diagnosands(diagnosis_feasible_effects) %>% reshape_diagnosis %>% select(Bias, RMSE), booktabs = TRUE, caption = "Diagnosis with confounded sampling,", digits = 3)
 ```
 
 <!-- Other points I decided to abandon to keep this simple: -->
