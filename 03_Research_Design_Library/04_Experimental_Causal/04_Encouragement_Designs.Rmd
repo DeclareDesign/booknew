@@ -17,6 +17,16 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+<!-- make sure to rename the section title below -->
+
+```{r encouragement, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+
 ## Encouragement designs
 
 ### Declaration
@@ -61,9 +71,7 @@ design <-
   declare_estimator(Y ~ D | Z, model = iv_robust, estimand = "CACE")
 ```
 
-### Dag
-
-
+### DAG
 
 ```{r, echo = FALSE}
 dag <- dagify(Y ~ D + type + U,
@@ -94,17 +102,7 @@ base_dag_plot %+% ggdd_df
 
 ### Example
 
-
-Idea for this one would be to show how violations of no defiers and excludability lead to bias.
-
-<!-- make sure to rename the section title below -->
-
-```{r encouragement, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
-```
+To do: demonstrate how violations of no defiers and excludability leads to bias.
 
 ```{r}
 types <- c("Always-Taker", "Never-Taker", "Complier", "Defier")
@@ -147,7 +145,6 @@ design <-
 
 ```
 
-
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
 designs <- redesign(
   design,
@@ -155,26 +152,25 @@ designs <- redesign(
   direct_effect_of_encouragement = seq(0, 0.3, length.out = 5)
 )
 
-simulations <- simulate_design(designs, sims = sims)
+simulations_df <- simulate_design(designs, sims = sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("04_Encouragement_Designs.Rmd"), "/simulations_pilot.RDS")
+rds_file_path <- paste0(get_dropbox_path("04_Encouragement_Designs.Rmd"), "/simulations_df.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations, path = rds_file_path)
+  write_rds(simulations_df, path = rds_file_path)
 }
-simulations <- read_rds(rds_file_path)
+simulations_df <- read_rds(rds_file_path)
 ```
 
 
 ```{r}
 gg_df <-
-  simulations %>%
+  simulations_df %>%
   group_by(proportion_defiers,
            direct_effect_of_encouragement) %>%
   summarize(bias = mean(estimate - estimand))
-
 
 ggplot(gg_df,
        aes(
@@ -184,10 +180,11 @@ ggplot(gg_df,
          color = direct_effect_of_encouragement
        )) +
   geom_point() +
-  geom_line() 
+  geom_line() + 
+  dd_theme() + 
+  theme(legend.position = "bottom")
 ```
 
-### References
 
 
 
