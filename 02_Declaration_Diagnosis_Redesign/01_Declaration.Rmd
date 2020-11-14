@@ -328,18 +328,28 @@ dat <- draw_data(design)
 dat_head <- head(dat)
 
 estimates <- run_design(design) 
+
+summary_df <- dat %>% group_by(Z) %>%
+  summarise(
+    n = n(),
+    n_sampled = sum(S),
+    n_villages = n_distinct(villages)
+  ) 
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path_head <- paste0(get_dropbox_path("01_Declaration.Rmd"), "/dat_head.RDS")
 rds_file_path_estimates <- paste0(get_dropbox_path("01_Declaration.Rmd"), "/estimates.RDS")
+rds_file_path_summary_df <- paste0(get_dropbox_path("01_Declaration.Rmd"), "/summary_df.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
   write_rds(dat_head, path = rds_file_path_head)
   write_rds(estimates, path = rds_file_path_estimates)
+  write_rds(summary_df, path = rds_file_path_summary_df)
 }
 dat_head <- read_rds(rds_file_path_head)
 estimates <- read_rds(rds_file_path_estimates)
+summary_df <- read_rds(rds_file_path_summary_df)
 ```
 
 We print the first six rows of the simulated data in Table \@ref(tab:gulzarkhansimdata):
@@ -361,12 +371,7 @@ estimates$estimates_df %>% left_join(estimates$estimands_df) %>% select(estimato
 In Table \@ref(gulzarkhansimcrosstab), we display the number of people and villages in each treatment assignment and sampling condition to illustrate the data strategy:
 
 ```{r gulzarkhansimcrosstab, echo = FALSE}
-dat %>% group_by(Z) %>%
-  summarise(
-    n = n(),
-    n_sampled = sum(S),
-    n_villages = n_distinct(villages)
-  ) %>% 
+summary_df %>% 
   kable(caption = "Count of units by treatment assignment and sampling status.")
 ```
 
