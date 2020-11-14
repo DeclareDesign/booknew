@@ -111,38 +111,51 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:descriptiveestimands">Table 7.1: </span> Descriptive inquiries</caption>
+<colgroup>
+<col width="24%">
+<col width="52%">
+<col width="22%">
+</colgroup>
 <thead><tr class="header">
 <th>Inquiry</th>
 <th>Description</th>
+<th>Code</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td><span class="math inline">\(\mathbb{E}_{i\in N}(Y)\)</span></td>
 <td>The average value of the variable Y</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y)</a></code></td>
 </tr>
 <tr class="even">
 <td><span class="math inline">\(\mathbb{E}[Y | X = 1]\)</span></td>
 <td>A conditional expectation of Y given X = 1.</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y[X == 1])</a></code></td>
 </tr>
 <tr class="odd">
 <td><span class="math inline">\(\mathbb{V}[Y]\)</span></td>
 <td>The variance of Y</td>
+<td><code>pop.var(Y)</code></td>
 </tr>
 <tr class="even">
 <td><span class="math inline">\(\mathrm{Cov}(X, Y)\)</span></td>
 <td>The covariance of X and Y</td>
+<td><code>pop.cov(X, Y)</code></td>
 </tr>
 <tr class="odd">
 <td><span class="math inline">\(\mathrm{BLP}(Y | X)\)</span></td>
 <td>The best linear predictor of Y given X</td>
+<td><code>cov(Y, X) / var(X)</code></td>
 </tr>
 <tr class="even">
 <td><span class="math inline">\(\mathrm{CEF}(Y | X)\)</span></td>
 <td>Conditional expectation function of Y given X</td>
+<td><code>cef(Y, X)</code></td>
 </tr>
 <tr class="odd">
 <td>Truth status of X</td>
 <td>Is X True or False?</td>
+<td><code>X == TRUE</code></td>
 </tr>
 </tbody>
 </table></div>
@@ -158,35 +171,36 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <caption>
 <span id="tab:causalestimands">Table 7.2: </span> Causal inquiries</caption>
 <colgroup>
-<col width="41%">
-<col width="58%">
+<col width="27%">
+<col width="39%">
+<col width="33%">
 </colgroup>
 <thead><tr class="header">
 <th>Inquiry</th>
 <th>Description</th>
+<th>Code</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\mathbb{E}_{i\in S}[Y_i(1) - Y_i(0)]\)</span></td>
-<td>Sample average treatment effect (SATE)</td>
+<td><span class="math inline">\(\mathbb{E}_{i\in N}[Y_i(1) - Y_i(0)]\)</span></td>
+<td>Average treatment effect (ATE)</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_1 - Y_D_0)</a></code></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(\mathbb{E}_{i\in N}[Y_i(1) - Y_i(0)]\)</span></td>
-<td>Population average treatment effect (PATE)</td>
+<td><span class="math inline">\(\mathbb{E}[Y_i(1) - Y_i(0) | X_i = 1]\)</span></td>
+<td>Conditional average treatment effect (CATE) for X = 1</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_1[X == 1] - Y_D_0[X == 1])</a></code></td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(\mathbb{E}[Y_i(1) - Y_i(0) | C_i = 1]\)</span></td>
-<td>Conditional average treatment effect (CATE) of <span class="math inline">\(X\)</span>
-</td>
-</tr>
-<tr class="even">
 <td><span class="math inline">\(\mathbb{E}[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]\)</span></td>
 <td>Complier average causal effect (CACE) or local average treatment effect (LATE)</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_1[D_Z_1 &gt;= D_Z_0] - Y_D_0[D_Z_1 &gt;= D_Z_0])</a></code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><span class="math inline">\(\mathbb{E}[(Y_i(1, 1) - Y_i(0,1)) - (Y_i(1, 0) - Y_i(0,0))]\)</span></td>
-<td>Causal interactions of <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>
+<td>Causal interactions of <span class="math inline">\(D_1\)</span> and <span class="math inline">\(D_2\)</span>
 </td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean((Y_D1_1_D2_1 - Y_D1_0_D2_1) - (Y_D1_1_D2_0 - Y_D1_0_D2_0))</a></code></td>
 </tr>
 </tbody>
 </table></div>
@@ -196,35 +210,40 @@ Figure 7.1: Inquiries based on different numbers of parameters
 <h3>
 <span class="header-section-number">7.1.3</span> Causal attribution inquiries<a class="anchor" aria-label="anchor" href="#causalattribution"><i class="fas fa-link"></i></a>
 </h3>
-<p>Another kind of data-dependent inquiry that is distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units) <em>irrespective of the values that the outcome takes</em>. By contrast, causal attribution inquiries focus on probabilities that condition on realized outcomes, such as, the “probability of the absence of the outcome in the hypothetical absence of the treatment (<span class="math inline">\(Y_i(0) = 0\)</span>) given the actual presence of both (<span class="math inline">\(X_i = Y_i = 1\)</span>)” <span class="citation">(Yamamoto <a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref">2012</a>, 240–41)</span>. <span class="citation">Goertz and Mahoney (<a href="references-4.html#ref-goertz2012tale" role="doc-biblioref">2012</a>)</span> refer to causal attribution inquiries as cause-of-effects questions because they start with an outcome (an effect) and seek validate a hypothesis about its cause.</p>
-<p>The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like “‘Was economic crisis necessary for democratization in the Southern Cone of Latin America?’ or ‘Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?’” are examples of such inquiries <span class="citation">(Goertz and Mahoney <a href="references-4.html#ref-goertz2012tale" role="doc-biblioref">2012</a>)</span>. Though they bear a resemblance and <em>are</em> related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Specifically, as &lt;span class="citation"&gt;Yamamoto (&lt;a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref"&gt;2012&lt;/a&gt;)&lt;/span&gt; points out, the causal attribution estimand for binary variables can be written &lt;span class="math inline"&gt;\(\Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)\)&lt;/span&gt;, while the average treatment effect among those successfully treated can be written &lt;span class="math inline"&gt;\(E[Y_i(1) - Y_i(0) \mid X_i = Y_i = 1]\)&lt;/span&gt;. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written &lt;span class="math inline"&gt;\(\Pr(Y_i(1)\mid X_i = Y_i = 1) - \Pr(Y_i(0) \mid X_i = Y_i = 1)\)&lt;/span&gt;. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.&lt;/p&gt;'><sup>8</sup></a> it is important not to confuse the two kinds of inquiries, as often happens.</p>
-<p>While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. <span class="citation">Pearl (<a href="references-4.html#ref-pearl1999probabilities" role="doc-biblioref">1999</a>)</span> provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, <span class="math inline">\(Y_i = 1\)</span> and <span class="math inline">\(X_i = 1\)</span> could represent “Peace” and “Both democracies” and <span class="math inline">\(Y_i = 0\)</span> and <span class="math inline">\(X_i = 0\)</span> could represent “War” and “Not both democracies.” Then <span class="math inline">\(\Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1)\)</span> asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies—that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, <span class="math inline">\(\Pr(Y_i(X_i = 1)=1 \mid X_i = Y_i = 0)\)</span> asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies—in other words, in what proportion of cases would democracy have been sufficient to cause peace? <span class="citation">Yamamoto (<a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref">2012</a>)</span> extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.</p>
+<p>Another kind of data-dependent inquiry that is distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units) <em>irrespective of the values that the outcome takes</em>. By contrast, causal attribution inquiries focus on probabilities that condition on realized outcomes, such as, the “probability of the absence of the outcome in the hypothetical absence of the treatment (<span class="math inline">\(Y_i(0) = 0\)</span>) given the actual presence of both (<span class="math inline">\(D_i = Y_i = 1\)</span>)” <span class="citation">(Yamamoto <a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref">2012</a>, 240–41)</span>. <span class="citation">Goertz and Mahoney (<a href="references-4.html#ref-goertz2012tale" role="doc-biblioref">2012</a>)</span> refer to causal attribution inquiries as cause-of-effects questions because they start with an outcome (an effect) and seek validate a hypothesis about its cause.</p>
+<p>The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like “‘Was economic crisis necessary for democratization in the Southern Cone of Latin America?’ or ‘Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?’” are examples of such inquiries <span class="citation">(Goertz and Mahoney <a href="references-4.html#ref-goertz2012tale" role="doc-biblioref">2012</a>)</span>. Though they bear a resemblance and <em>are</em> related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Specifically, as &lt;span class="citation"&gt;Yamamoto (&lt;a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref"&gt;2012&lt;/a&gt;)&lt;/span&gt; points out, the causal attribution estimand for binary variables can be written &lt;span class="math inline"&gt;\(\Pr(Y_i(0) = 0 \mid D_i = Y_i = 1)\)&lt;/span&gt;, while the average treatment effect among those successfully treated can be written &lt;span class="math inline"&gt;\(E[Y_i(1) - Y_i(0) \mid D_i = Y_i = 1]\)&lt;/span&gt;. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written &lt;span class="math inline"&gt;\(\Pr(Y_i(1)\mid D_i = Y_i = 1) - \Pr(Y_i(0) \mid D_i = Y_i = 1)\)&lt;/span&gt;. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.&lt;/p&gt;'><sup>8</sup></a> it is important not to confuse the two kinds of inquiries, as often happens.</p>
+<p>While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. <span class="citation">Pearl (<a href="references-4.html#ref-pearl1999probabilities" role="doc-biblioref">1999</a>)</span> provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, <span class="math inline">\(Y_i = 1\)</span> and <span class="math inline">\(D_i = 1\)</span> could represent “Peace” and “Both democracies” and <span class="math inline">\(Y_i = 0\)</span> and <span class="math inline">\(D_i = 0\)</span> could represent “War” and “Not both democracies.” Then <span class="math inline">\(\Pr(Y_i(D_i = 0) = 0 \mid D_i = Y_i = 1)\)</span> asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies—that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, <span class="math inline">\(\Pr(Y_i(D_i = 1)=1 \mid D_i = Y_i = 0)\)</span> asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies—in other words, in what proportion of cases would democracy have been sufficient to cause peace? <span class="citation">Yamamoto (<a href="references-4.html#ref-yamamoto2012understanding" role="doc-biblioref">2012</a>)</span> extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:attributionestimands">Table 7.3: </span> Causal attribution inquiries</caption>
 <colgroup>
-<col width="42%">
-<col width="57%">
+<col width="34%">
+<col width="26%">
+<col width="38%">
 </colgroup>
 <thead><tr class="header">
 <th>Inquiry</th>
 <th>Description</th>
+<th>Code</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\Pr(Y_i(X_i=0)=0 \mid X_i = Y_i = 1)\)</span></td>
-<td>Probability <span class="math inline">\(X\)</span> necessary for <span class="math inline">\(Y\)</span>
+<td><span class="math inline">\(\Pr(Y_i(D_i=0)=0 \mid D_i = Y_i = 1)\)</span></td>
+<td>Probability <span class="math inline">\(D\)</span> necessary for <span class="math inline">\(Y\)</span>
 </td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_0[D == 1 &amp; Y == 1] == 0)</a></code></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(\Pr(Y_i(X_i=1)=1 \mid X_i = Y_i = 0)\)</span></td>
-<td>Probability <span class="math inline">\(X\)</span> sufficient for <span class="math inline">\(Y\)</span>
+<td><span class="math inline">\(\Pr(Y_i(D_i=1)=1 \mid D_i = Y_i = 0)\)</span></td>
+<td>Probability <span class="math inline">\(D\)</span> sufficient for <span class="math inline">\(Y\)</span>
 </td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_1[D == 0 &amp; Y == 0] == 1)</a></code></td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(\Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)\)</span></td>
-<td>Complier probability <span class="math inline">\(X\)</span> necessary for <span class="math inline">\(Y\)</span>
+<td><span class="math inline">\(\Pr(Y_i(D_i = 0) = 0 \mid D_i = Y_i = 1, D_i(Z_i)=z)\)</span></td>
+<td>Complier probability <span class="math inline">\(D\)</span> necessary for <span class="math inline">\(Y\)</span>
 </td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_0[D == 1 &amp; Y == 1 &amp; D_Z_1 == 1 &amp; D_Z_0 == 0] == 0)</a></code></td>
 </tr>
 </tbody>
 </table></div>
@@ -237,18 +256,22 @@ Figure 7.1: Inquiries based on different numbers of parameters
 </h2>
 <p>Table <a href="defining-the-inquiry.html#tab:MI1b">7.4</a> shows “draws” of three estimands. We declare a simple reference model and then an inquiry—or rather a set of inquiries. The estimand draws are then implemented by drawing a particular model <span class="math inline">\(m\)</span> from <span class="math inline">\(M\)</span> and then applying <span class="math inline">\(I\)</span> to the draw.</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
+                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+                     D <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span> <span class="va">U</span>, 
+                             assignment_variable <span class="op">=</span> <span class="st">"D"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span>
 
-<span class="va">I</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>
-  YZ1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span><span class="op">==</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
-  ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>,
-  POC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_Z_0</span><span class="op">&lt;</span><span class="fl">0</span><span class="op">)</span><span class="op">[</span><span class="va">Z</span><span class="op">==</span><span class="fl">1</span> <span class="op">&amp;</span> <span class="va">Y_Z_1</span><span class="op">&gt;</span><span class="fl">0</span><span class="op">]</span><span class="op">)</span>
+<span class="va">inquiry</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>
+    treatment_group_mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
+    ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1</span> <span class="op">-</span> <span class="va">Y_D_0</span><span class="op">)</span>,
+    probability_of_causation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_D_0</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">Y_D_1</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span>
   <span class="op">)</span>
 
-<span class="fu">draw_estimands</span><span class="op">(</span><span class="va">M</span><span class="op">+</span><span class="va">I</span><span class="op">)</span></code></pre></div>
+<span class="fu">draw_estimands</span><span class="op">(</span><span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:MI1b">Table 7.4: </span>One model three estimands.
@@ -264,10 +287,10 @@ estimand
 <tbody>
 <tr>
 <td style="text-align:left;">
-YZ1
+treatment_group_mean
 </td>
 <td style="text-align:right;">
-0.33
+0.332
 </td>
 </tr>
 <tr>
@@ -275,24 +298,24 @@ YZ1
 ATE
 </td>
 <td style="text-align:right;">
-0.50
+0.500
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-POC
+probability_of_causation
 </td>
 <td style="text-align:right;">
-0.28
+0.276
 </td>
 </tr>
 </tbody>
 </table></div>
-<p>The first estimand is a descriptive estimand: the average outcome for <span class="math inline">\(Y\)</span> when <span class="math inline">\(Z = 1\)</span>.
+<p>The first estimand is a descriptive estimand: the average outcome for <span class="math inline">\(Y\)</span> when <span class="math inline">\(D = 1\)</span>.
 Note that the declaration of the estimand does not make use of any counterfactual quantities.</p>
-<p>The second estimand is causal effect. The inquiry is asked of the same model but this time the inquiry takes the average difference, across individual, in two potential outcomes. Unlike the descriptive estimand, this estimand uses information about <span class="math inline">\(Y\)</span>’s potential outcomes but it does not use any information about the distribution of <span class="math inline">\(X\)</span>.</p>
-<p>The third inquiry asks an attribution question, in this case on continuous data. In this case we ask about the share of units with positive values of <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z=1\)</span> that <em>would have had</em> negative values of <span class="math inline">\(Y\)</span> were <span class="math inline">\(Z=0\)</span>. This estimand requires information about both potential outcomes and actual outcomes (for <span class="math inline">\(Z\)</span>).</p>
-<p>In this illustration each “run” of <code>M+I</code> provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution or we might think of the model, <span class="math inline">\(M\)</span>, as representing a set of possible worlds and we are interested in performance in each of them. Which approach we take will matter when we turn to diagnosis.</p>
+<p>The second estimand is causal effect. The inquiry is asked of the same model but this time the inquiry takes the average difference, across individual, in two potential outcomes. Unlike the descriptive estimand, this estimand uses information about <span class="math inline">\(Y\)</span>’s potential outcomes but it does not use any information about the distribution of <span class="math inline">\(D\)</span>.</p>
+<p>The third inquiry asks an attribution question, in this case on continuous data. In this case we ask about the share of units with positive values of <span class="math inline">\(Y\)</span> and <span class="math inline">\(D=1\)</span> that <em>would have had</em> negative values of <span class="math inline">\(Y\)</span> were <span class="math inline">\(D=0\)</span>. This estimand requires information about both potential outcomes and actual outcomes (for <span class="math inline">\(D\)</span>).</p>
+<p>In this illustration each “run” of <code>model + inquiry</code> provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution or we might think of the model, <span class="math inline">\(M\)</span>, as representing a set of possible worlds and we are interested in performance in each of them. Which approach we take will matter when we turn to diagnosis.</p>
 </div>
 <div id="common-complexities-in-defining-estimands" class="section level2">
 <h2>
@@ -309,21 +332,25 @@ Note that the declaration of the estimand does not make use of any counterfactua
 <caption>
 <span id="tab:datadependentestimands">Table 7.5: </span> Data-dependent inquiries.</caption>
 <colgroup>
-<col width="42%">
-<col width="57%">
+<col width="28%">
+<col width="39%">
+<col width="32%">
 </colgroup>
 <thead><tr class="header">
 <th>Inquiry</th>
 <th>Description</th>
+<th>Code</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(\mathbb{E}[Y_i(1) - Y_i(0) | X_i = 1]\)</span></td>
+<td><span class="math inline">\(\mathbb{E}[Y_i(1) - Y_i(0) | D_i = 1]\)</span></td>
 <td>Average treatment effect on the treated (ATT)</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_1[D == 1] - Y_D_0[D == 1])</a></code></td>
 </tr>
 <tr class="even">
 <td><span class="math inline">\(\mathbb{E}[Y_i(1) - Y_i(0) | S_i = 1]\)</span></td>
-<td>SATE</td>
+<td>Sample average treatment effect (SATE)</td>
+<td><code><a href="https://rdrr.io/r/base/mean.html">mean(Y_D_1[S == 1] - Y_D_0[S == 1])</a></code></td>
 </tr>
 </tbody>
 </table></div>
