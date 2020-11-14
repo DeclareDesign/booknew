@@ -72,7 +72,7 @@
 </h1>
 <!-- make sure to rename the section title below -->
 <p>Diagnosis is the process of learning the value of a diagnosand and the utility of a research design. Often diagnosis is undertaken for a range of specifications of <em>M</em> to assess robustness to alternative models.</p>
-<p>Redesign is the process of <em>changing</em> parts of <em>D</em> and <em>A</em> (and, perhaps, <span class="math inline">\(I\)</span>) in order to learn how diagnosand values and researcher utility change. The redesign process is complete when a researcher settles on a choice of <strong>D</strong> and <strong>A</strong> among the feasible set.</p>
+<p>Redesign is the process of <em>changing</em> parts of <strong>D</strong> and <strong>A</strong> (and, perhaps, <strong>I</strong>) in order to learn how diagnosand values and researcher utility change. The redesign process is complete when a researcher settles on a choice of <strong>D</strong> and <strong>A</strong> among the feasible set.</p>
 <p>For example, we can compare how the distribution of errors changes if we use a different data strategy <span class="math inline">\(D'\)</span>: <span class="math inline">\(P_M(a^d - a^m|D')\)</span> or a different answer strategy <span class="math inline">\(A'\)</span>: <span class="math inline">\(P_M(a^{d'} - a^m|D)\)</span>. In each case as we examine variation in <strong>D</strong> and <strong>A</strong> our diagnoses can assess how the distribution of errors differs for alternative model <span class="math inline">\(M'\)</span>: <span class="math inline">\(P_M(a^{d} - a^{m'}|D)\)</span>.</p>
 <p>Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have many variations, so the search space must be limited. Typically, researchers will want to find the optimal values of a small set of easily-controlled design parameters. For example, a researcher might want to find the sample size <span class="math inline">\(N\)</span> and the number of treated units <span class="math inline">\(N_t\)</span> that minimize a design’s bias subject to a fixed budget for the experiment in which data collection for each unit costs $25 and treating one unit costs $5. They solve the optimization problem:</p>
 <p><span class="math display">\[\begin{equation*}
@@ -91,17 +91,59 @@
 <h2>
 <span class="header-section-number">11.1</span> Graphical inspection<a class="anchor" aria-label="anchor" href="#graphical-inspection"><i class="fas fa-link"></i></a>
 </h2>
-<p>You may have encountered some figures that implicitly do redesign. Power curves are an example of the redesign process. A power curve has sample size on the horizontal axis and statistical power on the vertical axis. From a power curve, you can learn how big a study needs to be in order to achieve a desired level of statistical power. A “minimum detectable effect” figure is similar. It has sample size on the horizontal axis too, but plots the smallest effect size for which 80% power can be achieved. These plots are useful for learning something like, “given my budget, I can only sample 400 units. At 400 units, the MDE is a 0.5 standard deviation effect. My theory says that that the effect should be smaller than that, something closer to 0.1 SDs. I should apply for more funding or study something else.”</p>
-<p>The highest level advice we have about redesign is, at the beginning of the processes at least, change one design parameter at a time. Vary the data strategy, holding the model, inquiry, and answer strategy constant. Change the answer strategy, while holding the other aspects of the design constant. Graphical representation of how diagnosands change as designs change are an intuitive way to do this.</p>
+<p>One approach is to examine performance along multiple diagnosands visually. You may have encountered some figures that implicitly do redesign. Power curves are an example of the redesign process. A power curve has sample size on the horizontal axis and statistical power on the vertical axis. From a power curve, you can learn how big a study needs to be in order to achieve a desired level of statistical power. A “minimum detectable effect” figure is similar. It has sample size on the horizontal axis too, but plots the smallest effect size for which 80% power can be achieved. These plots are useful for learning something like, “given my budget, I can only sample 400 units. At 400 units, the MDE is a 0.5 standard deviation effect. My theory says that that the effect should be smaller than that, something closer to 0.1 SDs. I should apply for more funding or study something else.”</p>
+<p>The highest level advice for redesign decisions using this approach is, at the beginning of the processes at least, change one design parameter at a time. Vary the data strategy, holding the model, inquiry, and answer strategy constant. Change the answer strategy, while holding the other aspects of the design constant. Graphical representation of how diagnosands change as designs change are an intuitive way to do this.</p>
 </div>
 <div id="formal-optimization" class="section level2">
 <h2>
 <span class="header-section-number">11.2</span> Formal optimization<a class="anchor" aria-label="anchor" href="#formal-optimization"><i class="fas fa-link"></i></a>
 </h2>
+<p>A somewhat more integrated approach is to generate a diagnosand that reflects your objective function (or loss function)—which may be a combination of performance and cost—and choose the design the performs best for this diagnosand. The steps under this approach involve:</p>
 <ul>
-<li>Example with a loss function drawn from a decision problem and selection of an optimal design over some set. Candidate: assume a decision will be taken if estimate is of a given size. Costs of different types of errors. Note: optimization does not have to use diagnosands as inputs but may be done via a complex diagnosand. Optimization may take account of priors over <span class="math inline">\(M\)</span>.</li>
+<li>Declaring a model that reflects your <em>prior</em> beliefs over underlying processes: expectations over diagnosands will be taken with respect to these priors.</li>
+<li>Varying <strong>D</strong> and <strong>A</strong> over viable alternatives, recording the costs of different alternatives.</li>
+<li>Declaring a diagnosand that reflects ultimate objectives including performance and cost.</li>
 </ul>
-<!-- ## Redesign Mountain --><!-- This figure shows a schematic of the redesign process. We vary design parameter 1 and design parameter 2 independently to learn the value of the diagnosand for each combination of design parameters. The redesign process can be in more than 2 dimensions of course. We suggest varying the design parameters you have control over first. --><!-- ```{r redesignmountain, fig.cap = "Redesign mountain.", echo=FALSE} --><!-- expand.grid(param_1 = seq(0, 1, length.out = 100), --><!--             param_2 = seq(0, 1, length.out = 100)) %>% --><!--   mutate(diagnosand = 1 - sqrt((param_1 - 0.3) ^ 2 + (param_2 - 0.7) ^ 2)) %>% --><!--   ggplot(aes(param_1, param_2)) +  --><!--   geom_tile(aes(fill = diagnosand)) + --><!--   geom_point(x = 0.3, y = 0.7, size = 2) + --><!--   geom_contour(aes(z = diagnosand)) + --><!--   scale_fill_gradient(low = "blue", high = "red") + --><!--   labs(x = "Design Parameter 1", --><!--        y = "Design Parameter 2", --><!--        title = "Diagnosands change as design parameters change") --><!-- ``` --><!-- ## Redesign to assess the robustness of designs to models  --><!-- - Hold inquiry constant! (read Richard Crump “Moving the Goalposts”) --><!-- - Hold three constant, vary one of MIDA at a time --><!-- - M: ICC, null model, alternative DAGs, heterogeneity --><!-- - I: --><!-- Diagnosis is like this: --><!-- (we need a math glyph for left relation composition notation) --><!-- $$ --><!-- MIDA |> \\ --><!--   simulate |> \\ --><!--   summarize --><!-- $$ --><!-- Redesign is like this --><!-- $$ --><!-- map(parameters) |> \\ --><!--   MIDA |>  \\ --><!--   simulate |> \\  --><!--   group\_by(parameters) |> \\ --><!--   summarize --><!-- $$ --><!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
+<p>Consider for example a design is which we place a prior distribution over a treatment effect, <span class="math inline">\(b\)</span>. We consider designs that vary (a) the number of units studies and (b) the investment in careful measurement. Each comes with a cost. We imagine that results will be used as follows: if a positive and significant treatment effect is estimated then an intervention is implemented which has value <span class="math inline">\(b\)</span> and cost <span class="math inline">\(c\)</span>. OUr diagnosand is the expected utility from whatever policy is implemented after the study: <span class="math inline">\(b-c\)</span> if the policy is adopted, 0 otherwise. Thus it is responsive to different types of errors: implementing a weak intervention with <span class="math inline">\(b&lt;c\)</span> and failing to implement a strong intervention with <span class="math inline">\(b&gt;c\)</span>. Note of course that this policy decision rule is not <em>itself</em> optimal since it is based on significance not on posteriors, yet it may still be the rule used and we may still need to know how to undertake optimal design given this rule.</p>
+<p><em>Illustration to follow.</em></p>
+<!-- ## Redesign Mountain -->
+<!-- This figure shows a schematic of the redesign process. We vary design parameter 1 and design parameter 2 independently to learn the value of the diagnosand for each combination of design parameters. The redesign process can be in more than 2 dimensions of course. We suggest varying the design parameters you have control over first. -->
+<!-- ```{r redesignmountain, fig.cap = "Redesign mountain.", echo=FALSE} -->
+<!-- expand.grid(param_1 = seq(0, 1, length.out = 100), -->
+<!--             param_2 = seq(0, 1, length.out = 100)) %>% -->
+<!--   mutate(diagnosand = 1 - sqrt((param_1 - 0.3) ^ 2 + (param_2 - 0.7) ^ 2)) %>% -->
+<!--   ggplot(aes(param_1, param_2)) +  -->
+<!--   geom_tile(aes(fill = diagnosand)) + -->
+<!--   geom_point(x = 0.3, y = 0.7, size = 2) + -->
+<!--   geom_contour(aes(z = diagnosand)) + -->
+<!--   scale_fill_gradient(low = "blue", high = "red") + -->
+<!--   labs(x = "Design Parameter 1", -->
+<!--        y = "Design Parameter 2", -->
+<!--        title = "Diagnosands change as design parameters change") -->
+<!-- ``` -->
+<!-- ## Redesign to assess the robustness of designs to models  -->
+<!-- - Hold inquiry constant! (read Richard Crump “Moving the Goalposts”) -->
+<!-- - Hold three constant, vary one of MIDA at a time -->
+<!-- - M: ICC, null model, alternative DAGs, heterogeneity -->
+<!-- - I: -->
+<!-- Diagnosis is like this: -->
+<!-- (we need a math glyph for left relation composition notation) -->
+<!-- $$ -->
+<!-- MIDA |> \\ -->
+<!--   simulate |> \\ -->
+<!--   summarize -->
+<!-- $$ -->
+<!-- Redesign is like this -->
+<!-- $$ -->
+<!-- map(parameters) |> \\ -->
+<!--   MIDA |>  \\ -->
+<!--   simulate |> \\  -->
+<!--   group\_by(parameters) |> \\ -->
+<!--   summarize -->
+<!-- $$ -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
 </div>
   <div class="chapter-nav">
