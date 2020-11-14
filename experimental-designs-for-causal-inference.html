@@ -58,7 +58,7 @@
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="part-iv-exercises.html"><span class="header-section-number">21</span> Part IV Exercises</a></li>
-<li><a class="" href="references-4.html">References</a></li>
+<li><a class="" href="references-2.html">References</a></li>
 </ul>
 
         <div class="book-extra">
@@ -74,6 +74,7 @@
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
+<!-- make sure to rename the section title below -->
 <div id="two-arm-trials-1" class="section level2">
 <h2>
 <span class="header-section-number">17.1</span> Two arm trials<a class="anchor" aria-label="anchor" href="#two-arm-trials-1"><i class="fas fa-link"></i></a>
@@ -92,263 +93,17 @@
 </div>
 <div id="dag-15" class="section level3">
 <h3>
-<span class="header-section-number">17.1.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-15"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-323-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-324-1.svg" width="100%"></div>
 </div>
 <div id="example-15" class="section level3">
 <h3>
 <span class="header-section-number">17.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-15"><i class="fas fa-link"></i></a>
 </h3>
-<!-- make sure to rename the section title below -->
-<p>You can use the global bib file via rmarkdown cites like this: <span class="citation">Imai, King, and Stuart (<a href="references-4.html#ref-imai2008" role="doc-biblioref">2008</a><a href="references-4.html#ref-imai2008" role="doc-biblioref">b</a>)</span></p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span><span class="op">)</span></code></pre></div>
-<p>This chunk is set to <code>echo = TRUE</code> and <code>eval = do_diagnosis</code></p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">simulations_pilot</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<p>Right after you do simulations, you want to save the simulations rds.</p>
-<p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">simulations_pilot</span>, <span class="fl">5</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-design_label
-</th>
-<th style="text-align:right;">
-sim_ID
-</th>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-estimate
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-p.value
-</th>
-<th style="text-align:right;">
-conf.low
-</th>
-<th style="text-align:right;">
-conf.high
-</th>
-<th style="text-align:right;">
-df
-</th>
-<th style="text-align:left;">
-outcome
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.9624445
-</td>
-<td style="text-align:right;">
-0.1705951
-</td>
-<td style="text-align:right;">
-5.641688
-</td>
-<td style="text-align:right;">
-2.0e-07
-</td>
-<td style="text-align:right;">
-0.6234399
-</td>
-<td style="text-align:right;">
-1.301449
-</td>
-<td style="text-align:right;">
-88.32465
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.9532166
-</td>
-<td style="text-align:right;">
-0.2124610
-</td>
-<td style="text-align:right;">
-4.486548
-</td>
-<td style="text-align:right;">
-2.0e-05
-</td>
-<td style="text-align:right;">
-0.5315217
-</td>
-<td style="text-align:right;">
-1.374911
-</td>
-<td style="text-align:right;">
-96.66334
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.9674071
-</td>
-<td style="text-align:right;">
-0.2137695
-</td>
-<td style="text-align:right;">
-4.525468
-</td>
-<td style="text-align:right;">
-1.7e-05
-</td>
-<td style="text-align:right;">
-0.5431863
-</td>
-<td style="text-align:right;">
-1.391628
-</td>
-<td style="text-align:right;">
-97.96114
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-1.0545908
-</td>
-<td style="text-align:right;">
-0.1942247
-</td>
-<td style="text-align:right;">
-5.429747
-</td>
-<td style="text-align:right;">
-4.0e-07
-</td>
-<td style="text-align:right;">
-0.6690878
-</td>
-<td style="text-align:right;">
-1.440094
-</td>
-<td style="text-align:right;">
-96.58766
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-1.0708566
-</td>
-<td style="text-align:right;">
-0.1897958
-</td>
-<td style="text-align:right;">
-5.642153
-</td>
-<td style="text-align:right;">
-2.0e-07
-</td>
-<td style="text-align:right;">
-0.6942127
-</td>
-<td style="text-align:right;">
-1.447501
-</td>
-<td style="text-align:right;">
-97.99051
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-</tbody>
-</table></div>
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
 </div>
 <div id="blocked-trials" class="section level2">
@@ -359,7 +114,7 @@ Y
 <h3>
 <span class="header-section-number">17.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-17"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
                      X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.3</span><span class="op">)</span>,
@@ -375,20 +130,20 @@ Y
 </div>
 <div id="dag-16" class="section level3">
 <h3>
-<span class="header-section-number">17.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-16"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-16"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-334-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-330-1.svg" width="100%"></div>
 </div>
 <div id="example-16" class="section level3">
 <h3>
 <span class="header-section-number">17.2.3</span> Example<a class="anchor" aria-label="anchor" href="#example-16"><i class="fas fa-link"></i></a>
 </h3>
 </div>
-<div id="two-arm-trials-and-designs-with-blocking-and-clustering" class="section level3">
+<div id="blocked-clustered-trials" class="section level3">
 <h3>
-<span class="header-section-number">17.2.4</span> Two-arm trials and designs with blocking and clustering<a class="anchor" aria-label="anchor" href="#two-arm-trials-and-designs-with-blocking-and-clustering"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.2.4</span> Blocked clustered trials<a class="anchor" aria-label="anchor" href="#blocked-clustered-trials"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     villages <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -426,6 +181,7 @@ Y
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
+<!-- make sure to rename the section title below -->
 </div>
 </div>
 <div id="multiarm-designs" class="section level2">
@@ -439,262 +195,17 @@ Y
 </div>
 <div id="dag-17" class="section level3">
 <h3>
-<span class="header-section-number">17.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-17"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-17"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="example-17" class="section level3">
 <h3>
 <span class="header-section-number">17.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-17"><i class="fas fa-link"></i></a>
 </h3>
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 <!-- make sure to rename the section title below -->
-<p>You can use the global bib file via rmarkdown cites like this: <span class="citation">Imai, King, and Stuart (<a href="references-4.html#ref-imai2008" role="doc-biblioref">2008</a><a href="references-4.html#ref-imai2008" role="doc-biblioref">b</a>)</span></p>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span><span class="op">)</span></code></pre></div>
-<p>This chunk is set to <code>echo = TRUE</code> and <code>eval = do_diagnosis</code></p>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">simulations_pilot</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<p>Right after you do simulations, you want to save the simulations rds.</p>
-<p>Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">simulations_pilot</span>, <span class="fl">5</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-design_label
-</th>
-<th style="text-align:right;">
-sim_ID
-</th>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-estimate
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-p.value
-</th>
-<th style="text-align:right;">
-conf.low
-</th>
-<th style="text-align:right;">
-conf.high
-</th>
-<th style="text-align:right;">
-df
-</th>
-<th style="text-align:left;">
-outcome
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.9624445
-</td>
-<td style="text-align:right;">
-0.1705951
-</td>
-<td style="text-align:right;">
-5.641688
-</td>
-<td style="text-align:right;">
-2.0e-07
-</td>
-<td style="text-align:right;">
-0.6234399
-</td>
-<td style="text-align:right;">
-1.301449
-</td>
-<td style="text-align:right;">
-88.32465
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.9532166
-</td>
-<td style="text-align:right;">
-0.2124610
-</td>
-<td style="text-align:right;">
-4.486548
-</td>
-<td style="text-align:right;">
-2.0e-05
-</td>
-<td style="text-align:right;">
-0.5315217
-</td>
-<td style="text-align:right;">
-1.374911
-</td>
-<td style="text-align:right;">
-96.66334
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-0.9674071
-</td>
-<td style="text-align:right;">
-0.2137695
-</td>
-<td style="text-align:right;">
-4.525468
-</td>
-<td style="text-align:right;">
-1.7e-05
-</td>
-<td style="text-align:right;">
-0.5431863
-</td>
-<td style="text-align:right;">
-1.391628
-</td>
-<td style="text-align:right;">
-97.96114
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-1.0545908
-</td>
-<td style="text-align:right;">
-0.1942247
-</td>
-<td style="text-align:right;">
-5.429747
-</td>
-<td style="text-align:right;">
-4.0e-07
-</td>
-<td style="text-align:right;">
-0.6690878
-</td>
-<td style="text-align:right;">
-1.440094
-</td>
-<td style="text-align:right;">
-96.58766
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:left;">
-estimator
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-1.0708566
-</td>
-<td style="text-align:right;">
-0.1897958
-</td>
-<td style="text-align:right;">
-5.642153
-</td>
-<td style="text-align:right;">
-2.0e-07
-</td>
-<td style="text-align:right;">
-0.6942127
-</td>
-<td style="text-align:right;">
-1.447501
-</td>
-<td style="text-align:right;">
-97.99051
-</td>
-<td style="text-align:left;">
-Y
-</td>
-</tr>
-</tbody>
-</table></div>
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
 <div id="encouragement-designs" class="section level2">
@@ -705,7 +216,7 @@ Y
 <h3>
 <span class="header-section-number">17.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-19"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 
@@ -745,17 +256,16 @@ Y
 </div>
 <div id="dag-18" class="section level3">
 <h3>
-<span class="header-section-number">17.4.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-18"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-18"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-350-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-342-1.svg" width="100%"></div>
 </div>
 <div id="example-18" class="section level3">
 <h3>
 <span class="header-section-number">17.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-18"><i class="fas fa-link"></i></a>
 </h3>
-<p>Idea for this one would be to show how violations of no defiers and excludability lead to bias.</p>
-<!-- make sure to rename the section title below -->
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<p>To do: demonstrate how violations of no defiers and excludability leads to bias.</p>
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Never-Taker"</span>, <span class="st">"Complier"</span>, <span class="st">"Defier"</span><span class="op">)</span>
 <span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
@@ -793,21 +303,20 @@ Y
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span>
   <span class="va">design</span>,
   proportion_defiers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
   direct_effect_of_encouragement <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="op">)</span>
 
-<span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<span class="va">simulations_df</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gg_df</span> <span class="op">&lt;-</span>
-  <span class="va">simulations</span> <span class="op">%&gt;%</span>
+  <span class="va">simulations_df</span> <span class="op">%&gt;%</span>
   <span class="fu">group_by</span><span class="op">(</span><span class="va">proportion_defiers</span>,
            <span class="va">direct_effect_of_encouragement</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">summarize</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>
-
 
 <span class="fu">ggplot</span><span class="op">(</span><span class="va">gg_df</span>,
        <span class="fu">aes</span><span class="op">(</span>
@@ -817,13 +326,10 @@ Y
          color <span class="op">=</span> <span class="va">direct_effect_of_encouragement</span>
        <span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> </code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-354-1.svg" width="100%"></div>
-</div>
-<div id="references-2" class="section level3">
-<h3>
-<span class="header-section-number">17.4.4</span> References<a class="anchor" aria-label="anchor" href="#references-2"><i class="fas fa-link"></i></a>
-</h3>
+  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">dd_theme</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-346-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -834,18 +340,18 @@ Y
 <span class="header-section-number">17.5</span> Stepped wedge designs<a class="anchor" aria-label="anchor" href="#stepped-wedge-designs"><i class="fas fa-link"></i></a>
 </h2>
 <p>In a stepped wedge design, individuals are randomly assigned to enter into treatment in different stages and at each stage their outcomes are remeasured. Figure <a href="#fig:stepped-wedge"><strong>??</strong></a> illustrates where the study gets its name: as two units are randomly added to the treatment group in each of the three waves, the treatment group increases in “steps” while the control group diminishes.</p>
-<p>Often, stepped wedge designs are vaunted for their policy appeal because they allow for everyone to be (eventually) treated in the context of an experiment. However, you could achieve the same goal in a regular two-armed trial by treating everyone after the final wave of measurement, and not all stepped wedge designs involve treating everyone. The real advantage of the stepped wedge is not in its ethical appeal: it’s the ability to squeeze more power out of a small sample by treating each wave as though it were its own study.</p>
+<p>Often, stepped wedge designs are vaunted for their policy appeal because they allow for everyone to be (eventually) treated in the context of an experiment. However, you could achieve the same goal in a regular two-arm trial by treating everyone after the final wave of measurement, and not all stepped wedge designs involve treating everyone. Beyond its ethical and logistical appeal, the design can squeeze more power out of a small sample by treating each wave as though it were its own study.</p>
 <div id="declaration-20" class="section level3">
 <h3>
 <span class="header-section-number">17.5.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-20"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
-<li><p><strong>M</strong>odel: Eight units are randomized and remeasured at three time points. Importantly, any unit at any given point in time reveals one of only two potential outcomes—treated or untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific shock. Treated potential outcomes increase relative to control potential outcome by a rate of 1 each period—in other words, there are bigger treatment effects in later periods.</p></li>
+<li><p><strong>M</strong>odel: Eight units are randomized and remeasured at three time points. Importantly, any unit at any given point in time reveals one of only two potential outcomes — treated or untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific shock. Treated potential outcomes increase relative to control potential outcome by a rate of 1 each period — in other words, there are bigger treatment effects in later periods.</p></li>
 <li><p><strong>I</strong>nquiry: Our estimand is the average treatment effect over all units and periods in the sample. Averaged over the three periods, the ATE is (1 + 2 + 3) / 3 = 2.</p></li>
-<li><p><strong>D</strong>ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all—see the remaining two orange squares at the top-right corner of Figure <a href="#fig:stepped-wedge"><strong>??</strong></a>. Notice that, while every <em>unit</em> is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of <em>unit-periods</em> with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.</p></li>
-<li><p><strong>A</strong>nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy “under-represents” treated potential outcomes in the first wave and “over-represents” them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit’s IPW is represented on Figure <a href="#fig:stepped-wedge"><strong>??</strong></a>. But what do the numbers mean, and why do they change from one wave to another? In a sampling context, the IPW tells us how many units in the population each sampled unit represents. In the experimental context, the treatment assignment randomly samples units’ <em>potential outcomes</em>. So, in the first wave, the two treated units each have to stand in for four units’ treated potential outcomes (4 + 4 = 8 units). The potential outcomes revealed by the six units assigned to the control each stand in for 1.33 other units’ potential outcomes (1.33 + 1.33 + 1.33 + 1.33 + 1.33 + 1.33 = 8 units). Since the second wave is comprised of one-half treated potential outcomes and one-half control potential outcomes, each unit represents two other units’ potential outcomes. Using these weights, we get a “representative” estimate of the average control and treatment potential outcomes in each wave. If we didn’t apply the weights, we wouldn’t get a representative view of the unobserved potential outcomes we’re sampling, and our estimates would be biased. So what does all this buy us? We also declare a “two-arm” estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.</p></li>
+<li><p><strong>D</strong>ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all—see the remaining two orange squares at the top-right corner of Figure <a href="#fig:steppedwedge"><strong>??</strong></a>. Notice that, while every <em>unit</em> is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of <em>unit-periods</em> with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.</p></li>
+<li><p><strong>A</strong>nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy “under-represents” treated potential outcomes in the first wave and “over-represents” them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit’s IPW is represented on Figure <a href="#fig:steppedwedge"><strong>??</strong></a>. Using these weights, we get a “representative” estimate of the average control and treatment potential outcomes in each wave. If we didn’t apply the weights, we wouldn’t get a representative view of the unobserved potential outcomes we’re sampling, and our estimates would be biased. So what does all this buy us? We also declare a “two-arm” estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.</p></li>
 </ul>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">8</span>,
@@ -885,17 +391,22 @@ Y
     label <span class="op">=</span> <span class="st">"2: Wave 2 Only"</span>,
     subset <span class="op">=</span> <span class="va">period</span> <span class="op">==</span> <span class="fl">2</span>
   <span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/stepped-wedge-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/steppedwedge-1.svg" width="100%"></div>
 </div>
 <div id="dag-19" class="section level3">
 <h3>
-<span class="header-section-number">17.5.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-19"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-19"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-360-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-352-1.svg" width="100%"></div>
+</div>
+<div id="example-19" class="section level3">
+<h3>
+<span class="header-section-number">17.5.3</span> Example<a class="anchor" aria-label="anchor" href="#example-19"><i class="fas fa-link"></i></a>
+</h3>
 </div>
 <div id="exercises-5" class="section level3">
 <h3>
-<span class="header-section-number">17.5.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-5"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-5"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Add an answer strategy to the design that doesn’t include IPWs and diagnose the design.</li>
@@ -908,103 +419,14 @@ Y
 <ol start="2" style="list-style-type: decimal">
 <li>Our design makes a subtle but crucial assumption about the potential outcomes: namely, that the treated potential outcome revealed in one period is the same irrespective of whether the unit was treated in the previous (or subsequent) periods. What would a violation of this assumption look like?</li>
 </ol>
-</div>
-<div id="online-appendix-applied-example-1" class="section level3">
-<h3>
-<span class="header-section-number">17.5.4</span> Online Appendix Applied Example<a class="anchor" aria-label="anchor" href="#online-appendix-applied-example-1"><i class="fas fa-link"></i></a>
-</h3>
-<p>FIND AND ADD EXAMPLE.</p>
-<!-- - Comparing 1 and 2, stepped wedge gives a big improvement in power, is -->
-<!-- unbiased, and gets the coverage correct. Clearly better than just doing a -->
-<!-- cross-section at wave 2.  -->
-<!-- - Estimator 3 shows two pitfalls, however, that can lead us to overestimate -->
-<!-- benefits of SW. -->
-<!-- 1. First, it is biased: [explain how treated POs are more commonly observed in -->
-<!-- periods when they're higher, we need to weight for this. How weights come about: -->
-<!-- There is one way that a unit can be observed in a treated state in wave 1: they -->
-<!-- are assigned to W1 with probability `p_W1`. There are two ways in which a unit -->
-<!-- can be treated in wave 2: they are assigned in W1 with `p_W1` or in W2 with -->
-<!-- `p_W2`. Because being assigned in W1 or in W2 are exclusive and independent -->
-<!-- events, we can get the prob of being treated in any period by wave 2 by summing -->
-<!-- the probs.] -->
-<!-- 2. Second, standard errors are wrong. Units should be treated as clusters (draw -->
-<!-- analogue to two-stage random assignment in saturation design?) -->
-<!-- A natural question is how power changes as more or fewer units are assigned.  -->
-<!-- Here, we consider variations on the stepped wedge design declared above, in  -->
-<!-- which we hold constant at 3 the number of units assigned to the pure control,  -->
-<!-- and shift an increasing proportion of the assignment to later waves. -->
-<!-- ```{r} -->
-<!-- designs <- list( -->
-<!--   a = redesign(design, p_00 = 3/8, p_W1 =  3/8, p_W2 = 1/8, p_W3 = 1/8), -->
-<!--   b = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 2/8, p_W3 = 1/8), -->
-<!--   c = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 1/8, p_W3 = 2/8), -->
-<!--   d = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 3/8, p_W3 = 1/8), -->
-<!--   e = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 2/8, p_W3 = 2/8), -->
-<!--   f = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 1/8, p_W3 = 3/8) -->
-<!--   ) -->
-<!-- ``` -->
-<!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} -->
-<!-- # Diagnose design -->
-<!-- diagnoses <- diagnose_designs(designs) -->
-<!-- ``` -->
-<!-- ```{r, echo = FALSE, purl = FALSE} -->
-<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
-<!-- rds_file_path <- paste0(get_dropbox_path("05_Stepped_Wedge_Designs.Rmd"), "/diagnoses.RDS") -->
-<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
-<!--   write_rds(diagnoses, path = rds_file_path) -->
-<!-- } -->
-<!-- diagnoses <- read_rds(rds_file_path) -->
-<!-- ``` -->
-<!-- ```{r, echo = FALSE} -->
-<!-- designs_data <- names(designs) %>%  -->
-<!--   lapply(function(name) designs[[name]] %>%  -->
-<!--            draw_data %>%  -->
-<!--            mutate(design_id = name)) %>%  -->
-<!--   do.call(what = rbind,args = .) %>%  -->
-<!--   arrange(design_id,wave,i) %>%  -->
-<!--   group_by(t,design_id) %>% -->
-<!--   mutate(i = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control"))  -->
-<!-- diags <- diagnoses %>%  -->
-<!--   get_diagnosands() %>%  -->
-<!--   filter(estimator_label == "2: Weighted, clustered SW") %>%  -->
-<!--   mutate( -->
-<!--     design_name = paste0("Design ", design_label, ": W1 = ",8*p_W1, -->
-<!--                          "; W2 = ", 8*p_W2,  -->
-<!--                          "; W3 = ", 8*p_W3,",\nPower = ",round(power,2) -->
-<!--                          ) -->
-<!--   ) -->
-<!-- designs_data <- left_join(designs_data, diags %>% select(design_name, design_label), by = c("design_id" = "design_label")) -->
-<!-- designs_data %>%  -->
-<!--   ggplot(aes(x = t, y = i, fill = Assignment)) + -->
-<!--   geom_tile(color = "white") +  -->
-<!--   scale_fill_manual(values = c(control_color, treatment_color)) + -->
-<!--   dd_theme() + facet_wrap(~ design_name, nrow = 1) +  -->
-<!--   scale_y_continuous("",labels = NULL) -->
-<!-- ``` -->
-<!-- - We see a monotonic decrease in the power as more of the sample is treated  -->
-<!-- later. This occurs because treating units later means observing less of the -->
-<!-- potential outcomes. The potential outcomes are more variant, so we're better -->
-<!-- off when we observe more of them [I think!] -->
-<!-- ### Spillovers -->
-<!-- An important assumption is that the potential outcomes revealed are not a -->
-<!-- function of what wave the unit entered into treatment. In other words, there are -->
-<!-- no Show how, in case of such spillovers, you can just treat the effects as -->
-<!-- different, but then you lose power gains (and possibly change estimand) -->
-</div>
-<div id="references-3" class="section level3">
-<h3>
-<span class="header-section-number">17.5.5</span> References<a class="anchor" aria-label="anchor" href="#references-3"><i class="fas fa-link"></i></a>
-</h3>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<!-- - Comparing 1 and 2, stepped wedge gives a big improvement in power, is --><!-- unbiased, and gets the coverage correct. Clearly better than just doing a --><!-- cross-section at wave 2.  --><!-- - Estimator 3 shows two pitfalls, however, that can lead us to overestimate --><!-- benefits of SW. --><!-- 1. First, it is biased: [explain how treated POs are more commonly observed in --><!-- periods when they're higher, we need to weight for this. How weights come about: --><!-- There is one way that a unit can be observed in a treated state in wave 1: they --><!-- are assigned to W1 with probability `p_W1`. There are two ways in which a unit --><!-- can be treated in wave 2: they are assigned in W1 with `p_W1` or in W2 with --><!-- `p_W2`. Because being assigned in W1 or in W2 are exclusive and independent --><!-- events, we can get the prob of being treated in any period by wave 2 by summing --><!-- the probs.] --><!-- 2. Second, standard errors are wrong. Units should be treated as clusters (draw --><!-- analogue to two-stage random assignment in saturation design?) --><!-- A natural question is how power changes as more or fewer units are assigned.  --><!-- Here, we consider variations on the stepped wedge design declared above, in  --><!-- which we hold constant at 3 the number of units assigned to the pure control,  --><!-- and shift an increasing proportion of the assignment to later waves. --><!-- ```{r} --><!-- designs <- list( --><!--   a = redesign(design, p_00 = 3/8, p_W1 =  3/8, p_W2 = 1/8, p_W3 = 1/8), --><!--   b = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 2/8, p_W3 = 1/8), --><!--   c = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 1/8, p_W3 = 2/8), --><!--   d = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 3/8, p_W3 = 1/8), --><!--   e = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 2/8, p_W3 = 2/8), --><!--   f = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 1/8, p_W3 = 3/8) --><!--   ) --><!-- ``` --><!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} --><!-- # Diagnose design --><!-- diagnoses <- diagnose_designs(designs) --><!-- ``` --><!-- ```{r, echo = FALSE, purl = FALSE} --><!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file --><!-- rds_file_path <- paste0(get_dropbox_path("05_Stepped_Wedge_Designs.Rmd"), "/diagnoses.RDS") --><!-- if (do_diagnosis & !exists("do_bookdown")) { --><!--   write_rds(diagnoses, path = rds_file_path) --><!-- } --><!-- diagnoses <- read_rds(rds_file_path) --><!-- ``` --><!-- ```{r, echo = FALSE} --><!-- designs_data <- names(designs) %>%  --><!--   lapply(function(name) designs[[name]] %>%  --><!--            draw_data %>%  --><!--            mutate(design_id = name)) %>%  --><!--   do.call(what = rbind,args = .) %>%  --><!--   arrange(design_id,wave,i) %>%  --><!--   group_by(t,design_id) %>% --><!--   mutate(i = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control"))  --><!-- diags <- diagnoses %>%  --><!--   get_diagnosands() %>%  --><!--   filter(estimator_label == "2: Weighted, clustered SW") %>%  --><!--   mutate( --><!--     design_name = paste0("Design ", design_label, ": W1 = ",8*p_W1, --><!--                          "; W2 = ", 8*p_W2,  --><!--                          "; W3 = ", 8*p_W3,",\nPower = ",round(power,2) --><!--                          ) --><!--   ) --><!-- designs_data <- left_join(designs_data, diags %>% select(design_name, design_label), by = c("design_id" = "design_label")) --><!-- designs_data %>%  --><!--   ggplot(aes(x = t, y = i, fill = Assignment)) + --><!--   geom_tile(color = "white") +  --><!--   scale_fill_manual(values = c(control_color, treatment_color)) + --><!--   dd_theme() + facet_wrap(~ design_name, nrow = 1) +  --><!--   scale_y_continuous("",labels = NULL) --><!-- ``` --><!-- - We see a monotonic decrease in the power as more of the sample is treated  --><!-- later. This occurs because treating units later means observing less of the --><!-- potential outcomes. The potential outcomes are more variant, so we're better --><!-- off when we observe more of them [I think!] --><!-- ### Spillovers --><!-- An important assumption is that the potential outcomes revealed are not a --><!-- function of what wave the unit entered into treatment. In other words, there are --><!-- no Show how, in case of such spillovers, you can just treat the effects as --><!-- different, but then you lose power gains (and possibly change estimand) --><!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
 <div id="randomized-saturation-design" class="section level2">
 <h2>
 <span class="header-section-number">17.6</span> Randomized Saturation Design<a class="anchor" aria-label="anchor" href="#randomized-saturation-design"><i class="fas fa-link"></i></a>
 </h2>
-<p>Randomized saturation designs are used to measure the diffusion of treatment effects throughout a pre-defined area or network (<span class="citation">Baird et al. (<a href="references-4.html#ref-bairdetal2018" role="doc-biblioref">2018</a>)</span>). The design works in two phases. First, entire areas or networks are randomly assigned to <em>saturations</em>, e.g. 0%, 25%, and 75% saturation. Then, in each network, units are individually assigned in proportions determined by the saturations: e.g., in the groups randomly assigned to 0%, none of the units are assigned to treatment, while in the groups assigned to 25% and 75%, one-quarter and three-quarters of the units are assigned to treatment, respectively. By comparing untreated units in the 0% groups to their <em>untreated</em> counterparts in the higher-saturation networks, researchers can estimate the indirect treatment effects that result from saturation-induced spillovers.</p>
+<p>Randomized saturation designs are used to measure the diffusion of treatment effects throughout a pre-defined area or network (<span class="citation">Baird et al. (<a href="references-2.html#ref-bairdetal2018" role="doc-biblioref">2018</a>)</span>). The design works in two phases. First, entire areas or networks are randomly assigned to <em>saturations</em>, e.g. 0%, 25%, and 75% saturation. Then, in each network, units are individually assigned in proportions determined by the saturations: e.g., in the groups randomly assigned to 0%, none of the units are assigned to treatment, while in the groups assigned to 25% and 75%, one-quarter and three-quarters of the units are assigned to treatment, respectively. By comparing untreated units in the 0% groups to their <em>untreated</em> counterparts in the higher-saturation networks, researchers can estimate the indirect treatment effects that result from saturation-induced spillovers.</p>
 <div id="declaration-21" class="section level3">
 <h3>
 <span class="header-section-number">17.6.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-21"><i class="fas fa-link"></i></a>
@@ -1015,82 +437,66 @@ Y
 <li><p><strong>D</strong>ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.</p></li>
 </ul>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>network <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, 
-                     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">4</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>assignment_variable <span class="op">=</span> <span class="st">"S"</span>, 
-                     clusters <span class="op">=</span> <span class="va">network</span>, 
-                     conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>,<span class="st">"high"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.25</span>, 
-                     blocks <span class="op">=</span> <span class="va">network</span>, 
-                     assignment_variable <span class="op">=</span> <span class="st">"Z_S_low"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.75</span>, 
-                     blocks <span class="op">=</span> <span class="va">network</span>, 
-                     assignment_variable <span class="op">=</span> <span class="st">"Z_S_high"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_step</span><span class="op">(</span>spillover_low <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z_S_low</span>, <span class="va">network</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>, 
-               spillover_high <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z_S_high</span>, <span class="va">network</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span>  <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">spillover_low</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span><span class="op">)</span> <span class="op">+</span> 
-                               <span class="va">Z</span> <span class="op">*</span> <span class="va">spillover_high</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span>,
-                             conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,  S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ate_saturation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_0_S_high</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span>,
-                   ate_no_spill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1_S_low</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Z</span>,<span class="va">S</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_step</span><span class="op">(</span>ipw <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span>
-    <span class="va">S_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">Z_S_low_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span><span class="op">)</span> <span class="op">+</span> 
-                     <span class="va">Z_S_high_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-    handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
-    <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">S</span>,
-    clusters <span class="op">=</span> <span class="va">network</span>,
-    model <span class="op">=</span> <span class="va">lm_robust</span>,
-    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Z"</span>, <span class="st">"Shigh"</span><span class="op">)</span>,
-    estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ate_no_spill"</span>, <span class="st">"ate_saturation"</span><span class="op">)</span>,
-    weight <span class="op">=</span> <span class="va">ipw</span>
-  <span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/saturation-1.svg" width="100%"></div>
-<!-- 
-JC Comment: I see that the previous version was far too complex but the updated version was 
-misleadingly simple. The POs need to be a function of the proportion of units treated, not 
-simply a fixed trait of the saturation category you're assigned to. As it was setup before, 
-I could set the saturations at all sorts of crazy values and it makes no difference, it was 
-basically a het-fx by blocks design. Also, the point and variance estimators were biased 
-because this design requires IPWing. To me, the minimally sufficient declaration has to 
+<!-- # ```{r} --><!-- # design <-  --><!-- #   declare_population(network = add_level(N = 4),  --><!-- #                      unit = add_level(N = 4, U = rnorm(N))) + --><!-- #   declare_assignment(assignment_variable = "S",  --><!-- #                      clusters = network,  --><!-- #                      conditions = c("low","high")) + --><!-- #   declare_assignment(prob = 0.25,  --><!-- #                      blocks = network,  --><!-- #                      assignment_variable = "Z_S_low") + --><!-- #   declare_assignment(prob = 0.75,  --><!-- #                      blocks = network,  --><!-- #                      assignment_variable = "Z_S_high") + --><!-- #   declare_step(spillover_low = ave(Z_S_low, network, FUN = mean),  --><!-- #                spillover_high = ave(Z_S_high, network, FUN = mean),handler = fabricate)  + --><!-- #   declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") +  --><!-- #                                Z * spillover_high * (S == "high") + U, --><!-- #                              conditions = list(Z = c(0, 1),  S = c("low", "high"))) + --><!-- #   declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low), --><!-- #                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) + --><!-- #   reveal_outcomes(Z,S) + --><!-- #   declare_step(ipw = 1 / ( --><!-- #     S_cond_prob * (Z_S_low_cond_prob * (S == "low") +  --><!-- #                      Z_S_high_cond_prob * (S == "high"))), --><!-- #     handler = fabricate) + --><!-- #   reveal_outcomes(Y, c(Z, S)) + --><!-- #   declare_estimator( --><!-- #     Y ~ Z * S, --><!-- #     clusters = network, --><!-- #     model = lm_robust, --><!-- #     term = c("Z", "Shigh"), --><!-- #     estimand = c("ate_no_spill", "ate_saturation"), --><!-- #     weight = ipw --><!-- #   ) --><!-- # ``` --><!--
+JC Comment: I see that the previous version was far too complex but the updated version was
+misleadingly simple. The POs need to be a function of the proportion of units treated, not
+simply a fixed trait of the saturation category you're assigned to. As it was setup before,
+I could set the saturations at all sorts of crazy values and it makes no difference, it was
+basically a het-fx by blocks design. Also, the point and variance estimators were biased
+because this design requires IPWing. To me, the minimally sufficient declaration has to
 illustrate the design works in terms of bias and coverage in a DGP it was specifically
-setup to handle. 
-# ```{r}
-# design <- 
-#   declare_population(
-#     group = add_level(N = 10, X = rnorm(N)),
-#     unit = add_level(N = 100, U = rnorm(N))
-#   ) +
-#   declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
-#   declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
-#   declare_assignment(blocks = group, prob_unit = S_prob) + 
-#   declare_potential_outcomes(
-#     Y ~ Z + (S == "high") + Z*(S == "high") + X + U,
-#     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
-#   declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
-#                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-#   reveal_outcomes(Y, c(Z, S)) +
-#   declare_estimator(Y ~ Z + S, model = lm_robust, term = c("Z", "Shigh"), estimand = c("ATE_saturation", "ate_no_spill"), label = "main effect")
-# ```
--->
+setup to handle.
+--><div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>
+    group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>,
+    unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_assignment</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">group</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>, assignment_variable <span class="op">=</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_step</span><span class="op">(</span>S_prob <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span> <span class="op">~</span> <span class="fl">0.25</span>, <span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span> <span class="op">~</span> <span class="fl">0.75</span><span class="op">)</span>, <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_assignment</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">group</span>, prob_unit <span class="op">=</span> <span class="va">S_prob</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_step</span><span class="op">(</span>spillover <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">group</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,
+               handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span>  <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+    <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">spillover</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span><span class="op">)</span> <span class="op">+</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">spillover</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span><span class="op">)</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span>,
+    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE_saturation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_0_S_high</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span>,
+                   ate_no_spill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1_S_low</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">S</span>,
+                    weights <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="va">S_cond_prob</span> <span class="op">*</span> <span class="va">Z_cond_prob</span><span class="op">)</span>,
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Z"</span>, <span class="st">"Shigh"</span><span class="op">)</span>,
+                    estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_saturation"</span>, <span class="st">"ate_no_spill"</span><span class="op">)</span>,
+                    label <span class="op">=</span> <span class="st">"main effect"</span><span class="op">)</span></code></pre></div>
+<!-- # ```{r saturation, echo = FALSE} -->
+<!-- # draw_data(design) %>%  -->
+<!-- #   mutate( -->
+<!-- #     label = paste0("Group ", group, "\nSaturation = ", S),  -->
+<!-- #     Z = as.factor(Z) -->
+<!-- #   ) %>%  -->
+<!-- #   ggplot() + -->
+<!-- #   geom_point(aes(y = 1, x = unit, shape = Z, color = Z))  + -->
+<!-- #   facet_wrap(~ label, scales = "free", nrow = 1) + -->
+<!-- #   theme(axis.title.y = element_blank(), -->
+<!-- #     axis.text.y = element_blank(), -->
+<!-- #     axis.ticks.y = element_blank(), -->
+<!-- #     axis.line = element_blank())  -->
+<!-- # ``` -->
 </div>
 <div id="dag-20" class="section level3">
 <h3>
-<span class="header-section-number">17.6.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-20"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.6.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-20"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-366-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-358-1.svg" width="100%"></div>
 </div>
 <div id="exercises-6" class="section level3">
 <h3>
 <span class="header-section-number">17.6.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-6"><i class="fas fa-link"></i></a>
 </h3>
+<!-- - Increase the saturation of the "low" condition from 0% to 25% and diagnose the design. Notice how this changes the mean saturation and direct effect estimands. Now set the saturations both equal to 25%. Explain why the two estimands do or do not change. -->
 <ul>
-<li><p>Increase the saturation of the “low” condition from 0% to 25% and diagnose the design. Notice how this changes the mean saturation and direct effect estimands. Now set the saturations both equal to 25%. Explain why the two estimands do or do not change.</p></li>
-<li><p>Setting the saturations back to their original values, remove the <code>ipw</code> from the estimator. What happens to the bias? Explain your answer.</p></li>
+<li><p>Setting the saturations back to their original values, remove the <code>weights</code> from the estimator. What happens to the bias? Explain your answer.</p></li>
 <li>
 <p>In the potential outcomes declaration for <code>Y</code>, add an interaction between the high saturation condition and <code>Z</code>, and diagnose the design with the saturations set to their original values of 0 and .75.</p>
 <ol style="list-style-type: decimal">
@@ -1100,725 +506,7 @@ setup to handle.
 </ol>
 </li>
 </ul>
-</div>
-<div id="online-appendix-applied-example-2" class="section level3">
-<h3>
-<span class="header-section-number">17.6.4</span> Online Appendix Applied Example<a class="anchor" aria-label="anchor" href="#online-appendix-applied-example-2"><i class="fas fa-link"></i></a>
-</h3>
-<!-- make sure to rename the section title below -->
-<p><span class="citation">Asunka et al. (<a href="references-4.html#ref-asunka2019" role="doc-biblioref">2019</a>)</span>, for example, wanted to know if the presence of election monitors at ballot stations would displace violence and fraud to other ballot stations. They randomized constituencies to low, medium, and high levels of saturation, and then randomized ballot stations to have election monitoring or not in low, medium, or high concentrations, depending on the randomized saturation. In the original study, the authors did not include a zero-saturation condition. Here, we declare a simplified version of their design in which a zero-saturation condition is included.</p>
-<p>Main points to develop:</p>
-<ul>
-<li>Randomized saturation is great when you get the model right. Though, show how IPW reduces the power to detect main effect, especially if there’s no spillover.</li>
-<li>Randomized saturation assumes a model that may be wrong. In particular, spillovers are restricted to containers. But this might not be correct.</li>
-</ul>
-</div>
-<div id="design-declaration-4" class="section level3">
-<h3>
-<span class="header-section-number">17.6.5</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration-4"><i class="fas fa-link"></i></a>
-</h3>
-<ul>
-<li><p><strong>M</strong>odel:
-Potential outcomes are defined in terms of <code>S</code>—the saturation—and <code>Z</code>—whether or not a ballot station is treated. We model spillovers in two ways. In the first, the amount of spillover that affects a unit is determined by how many other units in its network are treated. In the second, the amount of spillover a unit receives is determined by whether that unit’s geographic neighbor is treated, irrespective of whether they share a network.</p></li>
-<li><p><strong>I</strong>nquiry:
-We want to know the effect of having high and medium levels of saturation versus low saturation in the control: <span class="math inline">\(\mathbb{E}[Y_i(Z_i = 0, S_i = \text{high})-Y_i(Z_i = 0, S_i = \text{low})]\)</span> and <span class="math inline">\(\mathbb{E}[Y_i(Z_i = 0, S_i = \text{medium})-Y_i(Z_i = 0, S_i = \text{low})]\)</span>. We also want to know the “direct effect”–e.g. what happens to those directly treated if we disregard spillovers. Here it is defined over potential outcomes that the experiment does not reveal, since no one is treated in low-saturation constituencies: <span class="math inline">\(\mathbb{E}[Y_i(Z_i = 1, S_i = \text{low})-Y_i(Z_i = 0, S_i = \text{low})]\)</span>.</p></li>
-<li><p><strong>D</strong>ata strategy: We assign entire groups of individual ballot stations to one of three saturations: low (0%), medium (50%), and high (75%). We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
-<li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. To estimate spillovers, we run one regression comparing high and one regression comparing medium to low saturation control units. To estimate the direct effect, we run a regression of the outcome on the treatment indicatior on the full sample, controlling for saturation.</p></li>
-</ul>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N_individuals</span> <span class="op">&lt;-</span> <span class="fl">60</span>
-<span class="va">N_groups</span> <span class="op">&lt;-</span> <span class="fl">15</span>
-<span class="va">G_per_saturation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span>
-
-<span class="va">design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_individuals</span>, 
-                     X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span>, 
-                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
-                     G <span class="op">=</span> <span class="fu">ntile</span><span class="op">(</span><span class="va">X</span>, <span class="va">N_groups</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_assignment</span><span class="op">(</span>assignment_variable <span class="op">=</span> <span class="st">"S"</span>, 
-                     clusters <span class="op">=</span> <span class="va">G</span>, 
-                     conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>,<span class="st">"med"</span>,<span class="st">"high"</span><span class="op">)</span>,
-                     m_each <span class="op">=</span> <span class="va">G_per_saturation</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0</span>,
-                     blocks <span class="op">=</span> <span class="va">G</span>,
-                     assignment_variable <span class="op">=</span> <span class="st">"Z_S_low"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">.5</span>,
-                     blocks <span class="op">=</span> <span class="va">G</span>,
-                     assignment_variable <span class="op">=</span> <span class="st">"Z_S_med"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">.75</span>,
-                     blocks <span class="op">=</span> <span class="va">G</span>,
-                     assignment_variable <span class="op">=</span> <span class="st">"Z_S_high"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_step</span><span class="op">(</span>
-    spillover_low <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z_S_low</span>, <span class="va">G</span>, FUN <span class="op">=</span> <span class="va">sum</span><span class="op">)</span> <span class="op">*</span> <span class="fl">.1</span>,
-    spillover_med <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z_S_med</span>, <span class="va">G</span>, FUN <span class="op">=</span> <span class="va">sum</span><span class="op">)</span> <span class="op">*</span> <span class="fl">.1</span>,
-    spillover_high <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z_S_high</span>, <span class="va">G</span>, FUN <span class="op">=</span> <span class="va">sum</span><span class="op">)</span> <span class="op">*</span> <span class="fl">.1</span>,
-    handler <span class="op">=</span> <span class="va">fabricate</span>,
-    label <span class="op">=</span> <span class="st">"spillover"</span><span class="op">)</span>  <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">-</span><span class="fl">.20</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> 
-      <span class="va">spillover_low</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span><span class="op">)</span> <span class="op">+</span> 
-      <span class="va">spillover_med</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"med"</span><span class="op">)</span> <span class="op">+</span> 
-      <span class="va">spillover_high</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span><span class="op">)</span>,
-    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>,<span class="st">"med"</span>,<span class="st">"high"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>high <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_0_S_high</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span>,
-                   med <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_0_S_med</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span>, 
-                   ate_no_spill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1_S_low</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Z</span>,<span class="va">S</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_step</span><span class="op">(</span>
-    w <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="va">S_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">Z_S_low_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span><span class="op">)</span> <span class="op">+</span> 
-                   <span class="va">Z_S_med_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"med"</span><span class="op">)</span> <span class="op">+</span> 
-                   <span class="va">Z_S_high_cond_prob</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-    handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>model <span class="op">=</span> <span class="va">lm_robust</span>, 
-                    formula <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">S</span>,
-                    subset <span class="op">=</span> <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">S</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"high"</span>,<span class="st">"low"</span><span class="op">)</span>, 
-                    estimand <span class="op">=</span> <span class="st">"high"</span>,
-                    weights <span class="op">=</span> <span class="va">w</span>,
-                    label <span class="op">=</span> <span class="st">"high vs low"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>model <span class="op">=</span> <span class="va">lm_robust</span>, 
-                    formula <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">S</span>,
-                    subset <span class="op">=</span> <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">S</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"med"</span>,<span class="st">"low"</span><span class="op">)</span>, 
-                    weights <span class="op">=</span> <span class="va">w</span>,
-                    estimand <span class="op">=</span> <span class="st">"med"</span>,
-                    label <span class="op">=</span> <span class="st">"med vs low"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>model <span class="op">=</span> <span class="va">lm_robust</span>, 
-                    formula <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">S</span>,
-                    term <span class="op">=</span> <span class="st">"Z"</span>, 
-                    weights <span class="op">=</span> <span class="va">w</span>,
-                    estimand <span class="op">=</span> <span class="st">"ate_no_spill"</span>,
-                    label <span class="op">=</span> <span class="st">"main effect"</span><span class="op">)</span></code></pre></div>
-<p>Here’s what our hypothetical country looks like:</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-369-1.svg" width="100%"></div>
-<p>Let’s diagnose</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<p>Our diagnosis shows this design does a pretty great job, under this model of spillovers:</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">%&gt;%</span> <span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span>booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
-<th style="text-align:left;">
-Bias
-</th>
-<th style="text-align:left;">
-RMSE
-</th>
-<th style="text-align:left;">
-Power
-</th>
-<th style="text-align:left;">
-Coverage
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-SD Estimate
-</th>
-<th style="text-align:left;">
-Mean Se
-</th>
-<th style="text-align:left;">
-Type S Rate
-</th>
-<th style="text-align:left;">
-Mean Estimand
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-ate_no_spill
-</td>
-<td style="text-align:left;">
-main effect
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.01
-</td>
-<td style="text-align:left;">
-0.35
-</td>
-<td style="text-align:left;">
-0.10
-</td>
-<td style="text-align:left;">
-0.93
-</td>
-<td style="text-align:left;">
--0.19
-</td>
-<td style="text-align:left;">
-0.35
-</td>
-<td style="text-align:left;">
-0.33
-</td>
-<td style="text-align:left;">
-0.08
-</td>
-<td style="text-align:left;">
--0.20
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-high
-</td>
-<td style="text-align:left;">
-high vs low
-</td>
-<td style="text-align:left;">
-Shigh
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
--0.05
-</td>
-<td style="text-align:left;">
-0.51
-</td>
-<td style="text-align:left;">
-0.12
-</td>
-<td style="text-align:left;">
-0.90
-</td>
-<td style="text-align:left;">
-0.25
-</td>
-<td style="text-align:left;">
-0.50
-</td>
-<td style="text-align:left;">
-0.48
-</td>
-<td style="text-align:left;">
-0.13
-</td>
-<td style="text-align:left;">
-0.30
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.05)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-med
-</td>
-<td style="text-align:left;">
-med vs low
-</td>
-<td style="text-align:left;">
-Smed
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-0.39
-</td>
-<td style="text-align:left;">
-0.09
-</td>
-<td style="text-align:left;">
-0.93
-</td>
-<td style="text-align:left;">
-0.20
-</td>
-<td style="text-align:left;">
-0.39
-</td>
-<td style="text-align:left;">
-0.38
-</td>
-<td style="text-align:left;">
-0.04
-</td>
-<td style="text-align:left;">
-0.20
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-</tbody>
-</table></div>
-<ul>
-<li><p>It’s particularly nice, since we’re able to estimate the direct effect (whose constitutive POs we never observe) by partialling out spillovers.</p></li>
-<li><p>Show here: power tradeoffs for main effects versus spillovers, in terms of
-proportion of sample allocated to the “low” versus other conditions</p></li>
-<li><p>and also in terms of IPW (equivalent sample size with everyone in the .5 condition)</p></li>
-</ul>
-<p>Now, we consider a model of spillovers in which fraud is displaced latitudinally,
-from one neighbor to the next. Say, because there are roads traveling north and
-fraudsters disregard boundaries (in reality, they are unlikely to do so).</p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">distal_design</span> <span class="op">&lt;-</span>
-  <span class="fu">replace_step</span><span class="op">(</span>
-    design <span class="op">=</span> <span class="va">design</span>,
-    step <span class="op">=</span> <span class="st">"spillover"</span>,
-    new_step <span class="op">=</span> <span class="fu">declare_step</span><span class="op">(</span>
-      next_neighbor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">N</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
-      spillover_low <span class="op">=</span> <span class="va">Z_S_low</span><span class="op">[</span><span class="va">next_neighbor</span><span class="op">]</span>,
-      spillover_med <span class="op">=</span> <span class="va">Z_S_med</span><span class="op">[</span><span class="va">next_neighbor</span><span class="op">]</span>,
-      spillover_high <span class="op">=</span> <span class="va">Z_S_high</span><span class="op">[</span><span class="va">next_neighbor</span><span class="op">]</span>,
-      handler <span class="op">=</span> <span class="va">fabricate</span>
-    <span class="op">)</span>
-  <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">distal_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">distal_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<ul>
-<li>When there are next-neighbor spillovers that ignore boundaries, the estimator is biased again</li>
-</ul>
-<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">distal_diagnosis</span> <span class="op">%&gt;%</span> <span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">kable</span><span class="op">(</span>booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
-<th style="text-align:left;">
-Bias
-</th>
-<th style="text-align:left;">
-RMSE
-</th>
-<th style="text-align:left;">
-Power
-</th>
-<th style="text-align:left;">
-Coverage
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-SD Estimate
-</th>
-<th style="text-align:left;">
-Mean Se
-</th>
-<th style="text-align:left;">
-Type S Rate
-</th>
-<th style="text-align:left;">
-Mean Estimand
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-distal_design
-</td>
-<td style="text-align:left;">
-ate_no_spill
-</td>
-<td style="text-align:left;">
-main effect
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
--0.25
-</td>
-<td style="text-align:left;">
-0.43
-</td>
-<td style="text-align:left;">
-0.23
-</td>
-<td style="text-align:left;">
-0.88
-</td>
-<td style="text-align:left;">
--0.45
-</td>
-<td style="text-align:left;">
-0.36
-</td>
-<td style="text-align:left;">
-0.36
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
--0.20
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-distal_design
-</td>
-<td style="text-align:left;">
-high
-</td>
-<td style="text-align:left;">
-high vs low
-</td>
-<td style="text-align:left;">
-Shigh
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.20
-</td>
-<td style="text-align:left;">
-0.54
-</td>
-<td style="text-align:left;">
-0.48
-</td>
-<td style="text-align:left;">
-0.91
-</td>
-<td style="text-align:left;">
-0.95
-</td>
-<td style="text-align:left;">
-0.50
-</td>
-<td style="text-align:left;">
-0.48
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-0.75
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-distal_design
-</td>
-<td style="text-align:left;">
-med
-</td>
-<td style="text-align:left;">
-med vs low
-</td>
-<td style="text-align:left;">
-Smed
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.15
-</td>
-<td style="text-align:left;">
-0.42
-</td>
-<td style="text-align:left;">
-0.33
-</td>
-<td style="text-align:left;">
-0.92
-</td>
-<td style="text-align:left;">
-0.65
-</td>
-<td style="text-align:left;">
-0.40
-</td>
-<td style="text-align:left;">
-0.41
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-0.50
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-</tbody>
-</table></div>
+<!-- ### Online Appendix Applied Example --><!-- @asunka2019, for example, wanted to know if the presence of election monitors at ballot stations would displace violence and fraud to other ballot stations. They randomized constituencies to low, medium, and high levels of saturation, and then randomized ballot stations to have election monitoring or not in low, medium, or high concentrations, depending on the randomized saturation. In the original study, the authors did not include a zero-saturation condition. Here, we declare a simplified version of their design in which a zero-saturation condition is included.  --><!-- Main points to develop: --><!-- - Randomized saturation is great when you get the model right. Though, show how IPW reduces the power to detect main effect, especially if there's no spillover. --><!-- - Randomized saturation assumes a model that may be wrong. In particular, spillovers are restricted to containers. But this might not be correct. --><!-- ### Design Declaration --><!-- - **M**odel:  --><!-- Potential outcomes are defined in terms of `S`---the saturation---and `Z`---whether or not a ballot station is treated. We model spillovers in two ways. In the first, the amount of spillover that affects a unit is determined by how many other units in its network are treated. In the second, the amount of spillover a unit receives is determined by whether that unit's geographic neighbor is treated, irrespective of whether they share a network. --><!-- - **I**nquiry:  --><!-- We want to know the effect of having high and medium levels of saturation versus low saturation in the control: $\E[Y_i(Z_i = 0, S_i = \text{high})-Y_i(Z_i = 0, S_i = \text{low})]$ and $\E[Y_i(Z_i = 0, S_i = \text{medium})-Y_i(Z_i = 0, S_i = \text{low})]$. We also want to know the "direct effect"--e.g. what happens to those directly treated if we disregard spillovers. Here it is defined over potential outcomes that the experiment does not reveal, since no one is treated in low-saturation constituencies: $\E[Y_i(Z_i = 1, S_i = \text{low})-Y_i(Z_i = 0, S_i = \text{low})]$.   --><!-- - **D**ata strategy: We assign entire groups of individual ballot stations to one of three saturations: low (0%), medium (50%), and high (75%). We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized. --><!-- - **A**nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they're in. To estimate spillovers, we run one regression comparing high and one regression comparing medium to low saturation control units. To estimate the direct effect, we run a regression of the outcome on the treatment indicatior on the full sample, controlling for saturation. --><!-- ```{r} --><!-- N_individuals <- 60 --><!-- N_groups <- 15 --><!-- G_per_saturation <- c(5,5,5) --><!-- design <-  --><!--   declare_population(N = N_individuals,  --><!--                      X = 1:N,  --><!--                      U = rnorm(N), --><!--                      G = ntile(X, N_groups)) +  --><!--   declare_assignment(assignment_variable = "S",  --><!--                      clusters = G,  --><!--                      conditions = c("low","med","high"), --><!--                      m_each = G_per_saturation) + --><!--   declare_assignment(prob = 0, --><!--                      blocks = G, --><!--                      assignment_variable = "Z_S_low") + --><!--   declare_assignment(prob = .5, --><!--                      blocks = G, --><!--                      assignment_variable = "Z_S_med") + --><!--   declare_assignment(prob = .75, --><!--                      blocks = G, --><!--                      assignment_variable = "Z_S_high") + --><!--   declare_step( --><!--     spillover_low = ave(Z_S_low, G, FUN = sum) * .1, --><!--     spillover_med = ave(Z_S_med, G, FUN = sum) * .1, --><!--     spillover_high = ave(Z_S_high, G, FUN = sum) * .1, --><!--     handler = fabricate, --><!--     label = "spillover")  + --><!--   declare_potential_outcomes( --><!--     Y ~ Z * -.20 + U +  --><!--       spillover_low * (S == "low") +  --><!--       spillover_med * (S == "med") +  --><!--       spillover_high * (S == "high"), --><!--     conditions = list(Z = c(0,1), S = c("low","med","high"))) + --><!--   declare_estimand(high = mean(Y_Z_0_S_high - Y_Z_0_S_low), --><!--                    med =  mean(Y_Z_0_S_med - Y_Z_0_S_low),  --><!--                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) + --><!--   reveal_outcomes(Z,S) + --><!--   declare_step( --><!--     w = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") +  --><!--                    Z_S_med_cond_prob * (S == "med") +  --><!--                    Z_S_high_cond_prob * (S == "high"))), --><!--     handler = fabricate) + --><!--   reveal_outcomes(Y,c(Z, S)) + --><!--   declare_estimator(model = lm_robust,  --><!--                     formula = Y ~ S, --><!--                     subset = Z == 0 & S %in% c("high","low"),  --><!--                     estimand = "high", --><!--                     weights = w, --><!--                     label = "high vs low") + --><!--   declare_estimator(model = lm_robust,  --><!--                     formula = Y ~ S, --><!--                     subset = Z == 0 & S %in% c("med","low"),  --><!--                     weights = w, --><!--                     estimand = "med", --><!--                     label = "med vs low") + --><!--   declare_estimator(model = lm_robust,  --><!--                     formula = Y ~ Z + S, --><!--                     term = "Z",  --><!--                     weights = w, --><!--                     estimand = "ate_no_spill", --><!--                     label = "main effect") --><!-- ``` --><!-- Here's what our hypothetical country looks like: --><!-- ```{r, echo=FALSE} --><!-- draw_data(design) %>%  --><!--   ggplot(aes(x = 1, y = X, color = as.factor(G))) + --><!--   geom_point() + --><!--   scale_color_discrete("Ballot station") + --><!--   scale_y_continuous("Latitude") + --><!--   scale_x_continuous("Longitude") + --><!--   geom_hline(yintercept = seq(1, N_individuals, by = N_individuals / N_groups) - .5) --><!-- ``` --><!-- Let's diagnose --><!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} --><!-- diagnosis <- diagnose_design(design, sims = sims) --><!-- ``` --><!-- ```{r, echo = FALSE, purl = FALSE} --><!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file --><!-- rds_file_path <- paste0(get_dropbox_path("06_Randomized_Saturation_Designs"), "/diagnosis.RDS") --><!-- if (do_diagnosis & !exists("do_bookdown")) { --><!--   write_rds(diagnosis, path = rds_file_path) --><!-- } --><!-- diagnosis <- read_rds(rds_file_path) --><!-- ``` --><!-- Our diagnosis shows this design does a pretty great job, under this model of spillovers: --><!-- ```{r} --><!-- diagnosis %>% reshape_diagnosis() %>% kable() --><!-- ``` --><!-- - It's particularly nice, since we're able to estimate the direct effect (whose constitutive POs we never observe) by partialling out spillovers. --><!-- - Show here: power tradeoffs for main effects versus spillovers, in terms of  --><!--   proportion of sample allocated to the "low" versus other conditions --><!-- - and also in terms of IPW (equivalent sample size with everyone in the .5 condition) --><!-- Now, we consider a model of spillovers in which fraud is displaced latitudinally,  --><!-- from one neighbor to the next. Say, because there are roads traveling north and  --><!-- fraudsters disregard boundaries (in reality, they are unlikely to do so). --><!-- ```{r} --><!-- distal_design <- --><!--   replace_step( --><!--     design = design, --><!--     step = "spillover", --><!--     new_step = declare_step( --><!--       next_neighbor = c(N, 1:(N - 1)), --><!--       spillover_low = Z_S_low[next_neighbor], --><!--       spillover_med = Z_S_med[next_neighbor], --><!--       spillover_high = Z_S_high[next_neighbor], --><!--       handler = fabricate --><!--     ) --><!--   ) --><!-- ``` --><!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} --><!-- distal_diagnosis <- diagnose_design(distal_design, sims = sims) --><!-- ``` --><!-- ```{r, echo = FALSE, purl = FALSE} --><!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file --><!-- rds_file_path <- paste0(get_dropbox_path("06_Randomized_Saturation_Designs"), "/distal_diagnosis.RDS") --><!-- if (do_diagnosis & !exists("do_bookdown")) { --><!--   write_rds(distal_diagnosis, path = rds_file_path) --><!-- } --><!-- distal_diagnosis <- read_rds(rds_file_path) --><!-- ``` --><!-- - When there are next-neighbor spillovers that ignore boundaries, the estimator is biased again --><!-- ```{r} --><!-- distal_diagnosis %>% reshape_diagnosis() %>% kable() --><!-- ``` -->
 </div>
 </div>
 </div>
@@ -1832,49 +520,45 @@ Smed
 <li>
 <a class="nav-link" href="#two-arm-trials-1"><span class="header-section-number">17.1</span> Two arm trials</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-16"><span class="header-section-number">17.1.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-15"><span class="header-section-number">17.1.2</span> Dag</a></li>
+<li><a class="nav-link" href="#dag-15"><span class="header-section-number">17.1.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-15"><span class="header-section-number">17.1.3</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#blocked-trials"><span class="header-section-number">17.2</span> Blocked trials</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-17"><span class="header-section-number">17.2.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-16"><span class="header-section-number">17.2.2</span> Dag</a></li>
+<li><a class="nav-link" href="#dag-16"><span class="header-section-number">17.2.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-16"><span class="header-section-number">17.2.3</span> Example</a></li>
-<li><a class="nav-link" href="#two-arm-trials-and-designs-with-blocking-and-clustering"><span class="header-section-number">17.2.4</span> Two-arm trials and designs with blocking and clustering</a></li>
+<li><a class="nav-link" href="#blocked-clustered-trials"><span class="header-section-number">17.2.4</span> Blocked clustered trials</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#multiarm-designs"><span class="header-section-number">17.3</span> Multiarm Designs</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-18"><span class="header-section-number">17.3.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-17"><span class="header-section-number">17.3.2</span> Dag</a></li>
+<li><a class="nav-link" href="#dag-17"><span class="header-section-number">17.3.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-17"><span class="header-section-number">17.3.3</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#encouragement-designs"><span class="header-section-number">17.4</span> Encouragement designs</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-19"><span class="header-section-number">17.4.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-18"><span class="header-section-number">17.4.2</span> Dag</a></li>
+<li><a class="nav-link" href="#dag-18"><span class="header-section-number">17.4.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-18"><span class="header-section-number">17.4.3</span> Example</a></li>
-<li><a class="nav-link" href="#references-2"><span class="header-section-number">17.4.4</span> References</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#stepped-wedge-designs"><span class="header-section-number">17.5</span> Stepped wedge designs</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-20"><span class="header-section-number">17.5.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-19"><span class="header-section-number">17.5.2</span> Dag</a></li>
-<li><a class="nav-link" href="#exercises-5"><span class="header-section-number">17.5.3</span> Exercises</a></li>
-<li><a class="nav-link" href="#online-appendix-applied-example-1"><span class="header-section-number">17.5.4</span> Online Appendix Applied Example</a></li>
-<li><a class="nav-link" href="#references-3"><span class="header-section-number">17.5.5</span> References</a></li>
+<li><a class="nav-link" href="#dag-19"><span class="header-section-number">17.5.2</span> DAG</a></li>
+<li><a class="nav-link" href="#example-19"><span class="header-section-number">17.5.3</span> Example</a></li>
+<li><a class="nav-link" href="#exercises-5"><span class="header-section-number">17.5.4</span> Exercises</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#randomized-saturation-design"><span class="header-section-number">17.6</span> Randomized Saturation Design</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-21"><span class="header-section-number">17.6.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-20"><span class="header-section-number">17.6.2</span> Dag</a></li>
+<li><a class="nav-link" href="#dag-20"><span class="header-section-number">17.6.2</span> DAG</a></li>
 <li><a class="nav-link" href="#exercises-6"><span class="header-section-number">17.6.3</span> Exercises</a></li>
-<li><a class="nav-link" href="#online-appendix-applied-example-2"><span class="header-section-number">17.6.4</span> Online Appendix Applied Example</a></li>
-<li><a class="nav-link" href="#design-declaration-4"><span class="header-section-number">17.6.5</span> Design Declaration</a></li>
 </ul>
 </li>
 </ul>
