@@ -118,7 +118,7 @@ where <span class="math inline">\(\beta\)</span> is the statistical power of the
 <p>So we estimate diagnosands by summarizing the distribution of diagnostic statistics – of course this raises the question: what is a diagnostic statistic? We take a draw from the model (<span class="math inline">\(m\)</span>) and calculate the value of the inquiry <span class="math inline">\(I(m) = a^m\)</span>. We take one draw from the data strategy (<span class="math inline">\(D(m) = d\)</span>), and calculates the value of the answer strategy <span class="math inline">\(A(d) = a^d\)</span>. A diagnostic statistic is some function of <span class="math inline">\(a^m\)</span> and <span class="math inline">\(a^d\)</span>.</p>
 <p>A simple diagnostic statistic is “error,” or the difference between the estimate and the estimand: <span class="math inline">\(\mathrm{error} = a^d - a^m\)</span>. The bias diagnosand is the expectation of the error statistic <span class="math inline">\(\mathbb{E}[\mathrm{error}]\)</span> over all possible ways the study could have come out.</p>
 <p>Usually, we consider many diagnostic statistics at the same time. Here’s a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="fl">0.1</span>, sd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,
@@ -128,7 +128,7 @@ where <span class="math inline">\(\beta\)</span> is the statistical power of the
   <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
 <p>One draw of this simulation returns the following:</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">run_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -200,7 +200,7 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 </p>
 </div>
 <p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnositic satistics, then we summarise them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> 
   <span class="fu">diagnose_design</span><span class="op">(</span>
     <span class="va">design</span>, sims <span class="op">=</span> <span class="fl">1000</span>, 

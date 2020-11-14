@@ -116,7 +116,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 </ul>
 <p>Which population you have in mind affects how reference populations should be modeled but also how draws from a population should be interpreted.</p>
 <p>To illustrate consider a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z\)</span> is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this book, might be declared like this:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
@@ -338,7 +338,7 @@ Figure 6.2: A DAG with an explantory variable of interest (D), an outcome of int
 <p>DAGs convey beliefs about <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we’ll need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
 <p>A slightly more complex example helps demonstrate how we can use a model declaration to facilitate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of <span class="math inline">\(Z\)</span> should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in the design declaration below. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard deviation 1; <span class="math inline">\(X\)</span> follows a Bernoulli distribution. In the <code>declare_potential_outcomes</code> function, we describe how the average effect of treatment depends on <span class="math inline">\(X\)</span>.</p>
 <!-- I removed the confounding to keep focused on one point -->
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tau_X0</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">tau_X1</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 

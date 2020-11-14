@@ -161,7 +161,7 @@ Figure 5.2: DAG for Gulzar-Khan design.
 <span class="header-section-number">5.1.1</span> Model<a class="anchor" aria-label="anchor" href="#model-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>The model for the study describes the set of units: citizens living in the two Pakistani districts the study took place in, Haripur and Abbottabad, each of which comprises over 300 villages. Approximately 6500 citizens who are eligible to run for elected office live in each village. The main outcome of interest is whether the citizen filed papers to run for office. The outcome depends on the level of three treatments. A neutral appeal simply informs potential candidates of how to run; the other two emphasize either the social or personal benefits to holding public office. We expect the neutral appeal to have some effect and the social and personal appeals to have an additional effect over and above the neutral appeal.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     districts <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -185,7 +185,7 @@ Figure 5.2: DAG for Gulzar-Khan design.
 <span class="header-section-number">5.1.2</span> Inquiry<a class="anchor" aria-label="anchor" href="#inquiry-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>This model supports many inquiries, but here we’ll focus on two: the average treatment effect of <em>any</em> appeal versus the pure control condition. This inquiry is theoretically important because it refers to the mere act of inviting citizens to stand for office. A second inquiry is more subtle: the average difference in effectiveness between appeals to run that focus on the pro-social reasons to stand for office versus appeals that emphasize the personal returns.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_estimand</span><span class="op">(</span>
     ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_Z_neutral</span> <span class="op">+</span> <span class="va">Y_Z_personal</span> <span class="op">+</span> <span class="va">Y_Z_social</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span> <span class="op">-</span>
@@ -198,7 +198,7 @@ Figure 5.2: DAG for Gulzar-Khan design.
 <span class="header-section-number">5.1.3</span> Data strategy<a class="anchor" aria-label="anchor" href="#data-strategy-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>The data strategy entailed three steps. First, 192 of the 670 villages were selected, via cluster sampling, to serve as treatment villages. Of these 48 were assigned to the neutral appeal, 72 to the social appeal, and 72 to the personal appeal. The 478 unsampled villages did not receive any treatment, so can serve as a pure control. Second, 48 citizens from each treated village were sampled via random walk, and were the individuals to whom the candidacy appeals were made. Third, the measurement procedure for this study was to obtain, via administrative record, the names of all candidates who stood for office. In this way, the outcome is observed for all subjects in the experiment, sampled and not.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_assignment</span><span class="op">(</span>
     m_each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">478</span>, <span class="fl">48</span>, <span class="fl">72</span>, <span class="fl">72</span><span class="op">)</span>,
@@ -217,7 +217,7 @@ Figure 5.2: DAG for Gulzar-Khan design.
 <span class="header-section-number">5.1.4</span> Answer strategy<a class="anchor" aria-label="anchor" href="#answer-strategy-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>The <span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020" role="doc-biblioref">n.d.</a>)</span> design supports many alternative answer strategies. Here, we focus on two answer strategies in particular. First, we compare the rate of running in untreated villages to the rate among the sampled units among all treatment villages, using an OLS regression with standard errors clustered at the village level.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;The implemented design also included a village-level treatment that complicates (in interesting ways!) the interpretation of the untreated units in the treated villages&lt;/p&gt;"><sup>5</sup></a>. Second, we compare the rates of running in the personal and social conditions for the sampled units only, again using an OLS regression with standard errors clustered at the village level.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">any_treatment</span>,
@@ -238,10 +238,10 @@ Figure 5.2: DAG for Gulzar-Khan design.
     label <span class="op">=</span> <span class="st">"ATE_social_vs_personal"</span>
   <span class="op">)</span></code></pre></div>
 <p>With these elements in hand, we can declare the full design and display one draw of the design:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <p>We print the first six rows of the simulated data in Table <a href="declaration.html#tab:gulzarkhansimdata">5.2</a>:</p>
 <div class="inline-table"><table class="table table-sm">
@@ -602,7 +602,7 @@ control
 </tbody>
 </table></div>
 <p>From this data, we present simulated estimates of the two inquiries as well as the simulated estimand values in Table <a href="declaration.html#tab:gulzarkhansimestimates">5.3</a>:</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="fu">run_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>

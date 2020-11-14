@@ -1368,7 +1368,6 @@ S_inclusion_prob
 <p>After treatments are assigned, some <em>potential</em> outcomes are <em>revealed</em>. Treated units reveal their treated potential outcomes and untreated units reveal their untreated outcome. The <code>reveal_outcomes</code> function performs this switching operation.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span></code></pre></div>
-<pre><code>## reveal_outcomes(Y, Z)</code></pre>
 <p>Adding these two declarations to the design results in a data frame with an additional indicator <code>Z</code> of the assignment as well as the probability of assignment. Again, here the assignment probabilities are constant, but in other designs described in Section <a href="crafting-a-data-strategy.html#p2assignment">8.2</a> they are not and this is crucial information for the analysis stage. The outcome variable <code>Y</code> is composed of each unit’s potential outcomes depending on its treatment status.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -1565,9 +1564,8 @@ Y
 <span class="header-section-number">3.3.3.3</span> Measurement<a class="anchor" aria-label="anchor" href="#measurement"><i class="fas fa-link"></i></a>
 </h4>
 <p>Measurement is a critical part of every research design; sometimes it is beneficial to explicitly declare the measurement procedures of the design, rather than allowing them to be implicit in the ways variables are created in <code>declare_population</code> and <code>declare_potential_outcomes</code>. For example, we might imagine that the normally distributed outcome variable <code>Y</code> is a latent outcome than will be translated into a binary outcome when measured by the researcher:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_measurement</span><span class="op">(</span>Y_binary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## declare_measurement(Y_binary = rbinom(N, 1, prob = pnorm(Y)))</code></pre>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:simpledesignmeasurement">Table 3.10: </span>Sampled data with an explicitly measured outcome.
@@ -1996,7 +1994,7 @@ Y
 </tbody>
 </table></div>
 <p>Our estimator is the difference-in-means estimator, which compares outcomes between the group that was assigned to treatment and that assigned to control. The <code>difference_in_means()</code> function in the <code>estimatr</code> package calculates the estimate, the standard error, <span class="math inline">\(p\)</span>-value and confidence interval for you:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">difference_in_means</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, data <span class="op">=</span> <span class="va">simple_design_data</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -2062,7 +2060,7 @@ Y
 </tr></tbody>
 </table></div>
 <p>Now, in order to <em>declare</em> our estimator, we can send the name of a modeling function to <code>declare_estimator</code>. R has many modeling functions that work with <code>declare_estimator</code>, including <code>lm</code>, <code>glm</code>, or the <code>ictreg</code> function from the <code>list</code> package, among hundreds of others. Throughout the book, we’ll be using many estimators from <code>estimatr</code> because they are fast and calculate robust standard errors easily. Estimators are (almost always) associated with estimands.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Sometimes, you may be interested in properties of an estimator that do not depend on an estimand, such as calculating its power&lt;/p&gt;"><sup>3</sup></a> Here, we are targeting the population average treatment effect with the difference-in-means estimator.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span>
   <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, estimand <span class="op">=</span> <span class="st">"PATE"</span>
 <span class="op">)</span></code></pre></div>
@@ -2072,10 +2070,10 @@ Y
 </h4>
 <p>The main <code>declare_*</code> functions cover many elements of research designs, but not all. You can include any operations we haven’t explicitly included as steps in your design too, using <code>declare_step</code>. Here, you must define a specific handler. Some handlers that may be useful are the <code>dplyr</code> verbs such as <code>mutate</code> and <code>summarize</code>, and the <code>fabricate</code> function from our <code>fabricatr</code> package.</p>
 <p>To add a variable using fabricate:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_step</span><span class="op">(</span>handler <span class="op">=</span> <span class="va">fabricate</span>, added_variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>If you have district-month data you may want to analyze at the district level, collapsing across months:<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">collapse_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">collapse_by</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">data</span> <span class="op">%&gt;%</span> 
     <span class="fu">group_by</span><span class="op">(</span><span class="op">{</span><span class="op">{</span> <span class="va">collapse_by</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -2085,10 +2083,11 @@ Y
 <span class="fu">declare_step</span><span class="op">(</span>handler <span class="op">=</span> <span class="va">collapse_data</span>, collapse_by <span class="op">=</span> <span class="va">district</span><span class="op">)</span>
 
 <span class="co"># Note: The `{{ }}` syntax is handy for writing functions in `dplyr` </span>
-<span class="co"># where you want to be able reuse the function with different variable names. </span>
-<span class="co"># Here, the `collapse_data` function will `group_by` the variable you </span>
-<span class="co"># send to the argument `collapse_by`, which in our declaration we set to `district`. </span>
-<span class="co"># The pipeline within the function then calculates the mean in each district.</span></code></pre></div>
+<span class="co"># where you want to be able reuse the function with different variable </span>
+<span class="co"># names. Here, the `collapse_data` function will `group_by` the </span>
+<span class="co"># variable you send to the argument `collapse_by`, which in our </span>
+<span class="co"># declaration we set to `district`. The pipeline within the function </span>
+<span class="co"># then calculates the mean in each district.</span></code></pre></div>
 </div>
 </div>
 </div>
@@ -2097,7 +2096,7 @@ Y
 <span class="header-section-number">3.4</span> Building a design from design steps<a class="anchor" aria-label="anchor" href="#building-a-design-from-design-steps"><i class="fas fa-link"></i></a>
 </h2>
 <p>In the last section, we defined a set of individual research steps. We draw one version of them together here:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">population</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> 
 
@@ -2121,12 +2120,12 @@ Y
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, estimand <span class="op">=</span> <span class="st">"PATE"</span>
   <span class="op">)</span></code></pre></div>
 <p>To construct a research design <em>object</em> that we can operate on — diagnose it, redesign it, draw data from it, etc. — we add them together with the <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code> operator, just as <code>%&gt;%</code> makes <code>dplyr</code> pipelines or <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code> creates <code>ggplot</code> objects.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simple_design</span> <span class="op">&lt;-</span> 
   <span class="va">population</span> <span class="op">+</span> <span class="va">potential_outcomes</span> <span class="op">+</span> <span class="va">estimand</span> <span class="op">+</span> 
   <span class="va">sampling</span> <span class="op">+</span> <span class="va">assignment</span> <span class="op">+</span> <span class="va">reveal</span> <span class="op">+</span> <span class="va">estimator</span></code></pre></div>
 <p>We’ll usually declare designs more compactly, concatenating steps directly with <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simple_design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
@@ -2142,11 +2141,11 @@ Y
 <span class="header-section-number">3.4.1</span> Order matters<a class="anchor" aria-label="anchor" href="#order-matters"><i class="fas fa-link"></i></a>
 </h3>
 <p>When defining a design, the order steps are included in the design via the <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code> operator matters. Think of the order of your design as the temporal order in which steps take place. Here, since the estimand comes before sampling and assignment means it is a <em>population</em> estimand, the population average treatment effect.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">population</span> <span class="op">+</span> <span class="va">potential_outcomes</span> <span class="op">+</span> <span class="va">estimand</span> <span class="op">+</span> 
   <span class="va">sampling</span> <span class="op">+</span> <span class="va">assignment</span> <span class="op">+</span> <span class="va">reveal</span> <span class="op">+</span> <span class="va">estimator</span></code></pre></div>
 <p>We could define our estimand as a <em>sample</em> average treatment effect by putting <code>estimand</code> after <code>sampling</code>:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">population</span> <span class="op">+</span> <span class="va">potential_outcomes</span> <span class="op">+</span> <span class="va">sampling</span> <span class="op">+</span>
   <span class="va">estimand</span> <span class="op">+</span> <span class="va">assignment</span> <span class="op">+</span> <span class="va">reveal</span> <span class="op">+</span> <span class="va">estimator</span></code></pre></div>
 </div>
@@ -2157,7 +2156,7 @@ Y
 </h2>
 <p>Diagnosing a research design — learning about its properties — requires first simulating running the design over and over. We need to simulate the data generating process, then calculate the estimands, then calculate the estimates that will result.</p>
 <p>With the design defined as an object, we can learn about what kind of data it generates, the values of its estimand and estimates, and other features. For example, to draw simulated data based on the design, we use <code>draw_data</code>:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">simple_design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -2350,7 +2349,7 @@ Y
 </table></div>
 <p><code>draw_data</code> runs all of the “data steps” in a design, which are both from the model (population and potential outcomes) and from the data strategy (sampling, assignment, and measurement).</p>
 <p>To simulate the estimands from a single run of the design, we use <code>draw_estimands</code>. This runs two operations at once: it draws the data, and calculates the estimands at the point defined by the design. For example, in our design the estimand comes just after the potential outcomes. In this design, <code>draw_estimands</code> will run the first two steps and then calculate the estimands from the <code>estimand</code> function we declared:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_estimands</span><span class="op">(</span><span class="va">simple_design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -2374,7 +2373,7 @@ PATE
 </tr></tbody>
 </table></div>
 <p>Similarly, we can draw the estimates from a single run with <code>draw_estimates</code> which simulates data and at the appropriate moment calculates estimates.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_estimates</span><span class="op">(</span><span class="va">simple_design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -2452,7 +2451,7 @@ PATE
 </tr></tbody>
 </table></div>
 <p>To simulate designs, we use the <code>simulate_design</code> function to draw data, calculate estimands and estimates, and then repeat the process over and over.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">simulate_design</span><span class="op">(</span><span class="va">simple_design</span>, sims <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -2731,14 +2730,14 @@ Y
 <span class="header-section-number">3.6</span> Diagnosing a research design<a class="anchor" aria-label="anchor" href="#diagnosing-a-research-design"><i class="fas fa-link"></i></a>
 </h2>
 <p>Using the simulations dataframe, we can calculate diagnosands like bias, root mean-squared error, and power for each estimator-estimand pair. In <code>DeclareDesign</code>, we do this in two steps. First, declare your diagnosands, which are functions that summarize simulations data. The software includes many pre-coded diagnosands (see Section <a href="p2diagnosis.html#p2diagnosis">10</a>), though you can write your own like this:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">study_diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
   rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
   power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Second, apply your diagnosand declaration to the simulations dataframe with the <code>diagnose_design</code> function:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_df</span>, diagnosands <span class="op">=</span> <span class="va">study_diagnosands</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -2816,17 +2815,17 @@ Z
 </tr></tbody>
 </table></div>
 <p>We can also do this in a single step by sending <code>diagnose_design</code> a design object. The function will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simple_design</span>, diagnosands <span class="op">=</span> <span class="va">study_diagnosands</span><span class="op">)</span></code></pre></div>
 <div id="redesign-1" class="section level3">
 <h3>
 <span class="header-section-number">3.6.1</span> Redesign<a class="anchor" aria-label="anchor" href="#redesign-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>After the declaration phase, you will often want to learn how the diagnosands change as design features change. We can do this using <code>redesign</code>:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">redesign</span><span class="op">(</span><span class="va">simple_design</span>, N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span>, <span class="fl">300</span>, <span class="fl">400</span>, <span class="fl">500</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>An alternative way to do this is to write a “designer.” A designer is a function that makes designs based on a few design parameters. Designer help researchers flexibly explore design variations. Here’s a simple designer based on our running example:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simple_designer</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">sample_size</span>, <span class="va">effect_size</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="va">sample_size</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">effect_size</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
@@ -2839,17 +2838,17 @@ Z
     <span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>To create a single design, based on our original parameters of a 100-unit sample size and a treatment effect of <code>0.25</code>, we can run:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simple_design</span> <span class="op">&lt;-</span> <span class="fu">simple_designer</span><span class="op">(</span>sample_size <span class="op">=</span> <span class="fl">100</span>, effect_size <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></code></pre></div>
 <p>Now to simulate multiple designs, we can use the <code>DeclareDesign</code> function <code>expand_design</code>. Here we examine our simple design under several possible sample sizes, which we might want to do to conduct a minimum power analysis. We hold the effect size constant.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simple_designs</span> <span class="op">&lt;-</span> <span class="fu">expand_design</span><span class="op">(</span>
   <span class="va">simple_designer</span>, 
   sample_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span>, 
   effect_size <span class="op">=</span> <span class="fl">0.25</span>
 <span class="op">)</span></code></pre></div>
 <p>Our simulation and diagnosis tools can take a list of designs and simulate all of them at once, creating a column called <code>design_label</code> to keep track. For example:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simple_designs</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="comparing-designs" class="section level3">
@@ -2857,10 +2856,10 @@ Z
 <span class="header-section-number">3.6.2</span> Comparing designs<a class="anchor" aria-label="anchor" href="#comparing-designs"><i class="fas fa-link"></i></a>
 </h3>
 <p>Alternatively, we can compare a pair of designs directly with the <code>compare_designs</code> function. This function is most useful for comparing the differences between a planned design and an implemented design (see Section <a href="#p4reconciliation"><strong>??</strong></a>).</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">compare_designs</span><span class="op">(</span><span class="va">planned_design</span>, <span class="va">implemented_design</span><span class="op">)</span></code></pre></div>
 <p>Similarly, we can compare two designs on the basis of their diagnoses:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">compare_diagnoses</span><span class="op">(</span><span class="va">planned_design</span>, <span class="va">implemented_design</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="library-of-designs" class="section level3">
@@ -2868,7 +2867,7 @@ Z
 <span class="header-section-number">3.6.3</span> Library of designs<a class="anchor" aria-label="anchor" href="#library-of-designs"><i class="fas fa-link"></i></a>
 </h3>
 <p>In our <code>DesignLibrary</code> package, we have created a set of common designs as designers (functions that create designs from just a few parameters), so you can get started quickly.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/library/">DesignLibrary</a></span><span class="op">)</span>
 
 <span class="va">b_c_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DesignLibrary/man/block_cluster_two_arm_designer.html">block_cluster_two_arm_designer</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">1000</span>, N_blocks <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
