@@ -71,9 +71,9 @@
 <span class="header-section-number">15</span> Experimental designs for descriptive inference<a class="anchor" aria-label="anchor" href="#experimental-designs-for-descriptive-inference"><i class="fas fa-link"></i></a>
 </h1>
 <p>Why would we ever need to do an <em>experiment</em> to do descriptive inference?</p>
-<p>Suppose we want to understand the causal model <span class="math inline">\(M\)</span> of a violin. In particular, we have a descriptive inquiry <span class="math inline">\(I\)</span> about the pitch of the highest string, the E string. We want to know if the E string is in tune. Call the latent pitch of the string <span class="math inline">\(Y^*\)</span>. No matter how hard we listen to the string, we can’t hear <span class="math inline">\(Y^*\)</span> – it is latent. As part of a data strategy <span class="math inline">\(D\)</span>, we could measure the pitch by <span class="math inline">\(P\)</span> plucking it: <span class="math inline">\(Y^* -&gt; Y &lt;- P\)</span>. This is descriptive research about the causal model <span class="math inline">\(M\)</span>, because the DAG of the violin includes four string nodes which each cause pitch nodes; we’d like to know a descriptive fact about the pitch nodes (what frequency they are vibrating at.)</p>
-<p>This could also be a causal inquiry: the untreated potential outcome is the pitch of the unplucked string, as defined by the frequency of vibration – while strings are never <em>perfectly</em> still, we can call the untreated potential outcome <span class="math inline">\(Y_i(0) = 0hz\)</span>. The treated potential outcome is the vibrations when the string is plucked <span class="math inline">\(Y_i(1) = 650hz\)</span>. The causal effect of plucking the string is <span class="math inline">\(Y_i(1) - Y_i(0) = 650 - 0 = 650\)</span>.</p>
-<p>This is a sense in which causal inference and descriptive inference are the same. Whether framed as a descriptive inquiry or a casual inquiry, we arrive at an answer of 650 hertz. Violinists reading this will know that that means the E string is flat and will need to be tuned up to <span class="math inline">\(659.3hz\)</span> (if using equal temperament).</p>
+<p>Suppose we want to understand the causal model <em>M</em> of a violin. In particular, we have a descriptive inquiry <em>I</em> about the pitch of the highest string, the E string. We want to know if the E string is in tune. Call the latent pitch of the string <span class="math inline">\(Y^*\)</span>. No matter how hard we listen to the string, we can’t hear <span class="math inline">\(Y^*\)</span> – it is latent. As part of a data strategy <span class="math inline">\(D\)</span>, we could measure the pitch by <span class="math inline">\(P\)</span> plucking it: <span class="math inline">\(Y^* -&gt; Y &lt;- P\)</span>. This is descriptive research about the causal model <span class="math inline">\(M\)</span>, because the DAG of the violin includes four string nodes which each cause pitch nodes; we’d like to know a descriptive fact about the pitch nodes (at what frequency do they vibrate?).</p>
+<p>This question could be recast as a causal inquiry: the untreated potential outcome is the pitch of the unplucked string, as defined by the frequency of vibration. While strings are never <em>perfectly</em> still, we can call the untreated potential outcome <span class="math inline">\(Y_i(0) = 0hz\)</span>. The treated potential outcome is the frequency when the string is plucked <span class="math inline">\(Y_i(1) = 650hz\)</span>. The causal effect of plucking the string is <span class="math inline">\(Y_i(1) - Y_i(0) = 650 - 0 = 650\)</span>.</p>
+<p>In this sense, causal inference and descriptive inference are fundamentally the same. Whether framed as a descriptive inquiry or a casual inquiry, we arrive at an answer of 650 hertz. Violinists reading this will know that that means the E string is flat and will need to be tuned up to <span class="math inline">\(659.3hz\)</span> (if using equal temperament).</p>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -166,7 +166,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-4"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-184-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-183-1.svg" width="100%"></div>
 </div>
 <div id="example-5" class="section level3">
 <h3>
@@ -274,7 +274,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-5"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-191-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-190-1.svg" width="100%"></div>
 </div>
 <div id="example-6" class="section level3">
 <h3>
@@ -283,7 +283,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-194-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-193-1.svg" width="100%"></div>
 <!-- #### Violations of identifying assumptions -->
 <!-- In our model, the definition of the treated potential outcome, `Y_list_Z_1 = Y_list_Z_0 + truthful_trump_vote`, bakes in the no design effects and no liars assumptions. The first component is the control item count `Y_list_Z_0`, which ensures the respondent's count of control items is the same in both groups. The second is the true trump vote, which assumes no liars.  -->
 <!-- What do we learn from this experimental design if these assumptions do not hold? We examine the case of "ceiling effects," in which respondents whose control item count is the maximum (in the example, they would vote yes to all three control items) withhold their true support for Trump in the treatment group. We thus redefine the treated potential outcome to be a function of the original count, but those who would respond 4 (all control items plus Trump support) instead respond 3. These are the "liars."  -->
@@ -507,7 +507,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-6"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-201-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-200-1.svg" width="100%"></div>
 </div>
 <div id="example-7" class="section level3">
 <h3>
@@ -557,7 +557,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-208-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-207-1.svg" width="100%"></div>
 </div>
 <div id="example-8" class="section level3">
 <h3>
