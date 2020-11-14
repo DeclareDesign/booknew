@@ -33,7 +33,6 @@ library(car)
 
 ## Multi-site trials
 
-
 <!-- ## The Metaketa design -->
 
 <!-- | Study Number | Place | What Works   | Design Implemented | Success? | -->
@@ -82,14 +81,14 @@ Two notable features of the design:
 
 ```{r, echo = FALSE}
 random_effects_meta_analysis <- function(data){
-  site_estimates_df <- data %>% 
-    group_by(site) %>% 
-    do(tidy(lm_robust(Y ~ Z, data = .))) %>% 
-    filter(term == "Z") %>% 
-    ungroup 
-  
+  site_estimates_df <- data %>%
+    group_by(site) %>%
+    do(tidy(lm_robust(Y ~ Z, data = .))) %>%
+    filter(term == "Z") %>%
+    ungroup
+
   meta_fit <- rma(estimate, std.error, data = site_estimates_df, method = "REML")
-  
+
   with(meta_fit, tibble(
     estimate = as.vector(beta), std.error = se, p.value = pval, conf.low = ci.lb, conf.high = ci.ub))
 }
@@ -130,46 +129,43 @@ post_stratification <- function(data, pr_types_population) {
 <!--   in second type if you adjust for subject type then you will be able to unbiased recover global -->
 
 ```{r}
-N_sites <- 10
-n_study_sites <- 5
-n_subjects_per_site <- 1000
-feasible_effect <- 0
-subject_type_effects <- seq(from = -0.1, to = 0.1, length.out = 10)
-pr_types <- c( # rows are sites, columns are types
-  0.005, 0.005, 0.09, 0.15, 0.25, 0.1, 0, 0.1, 0.15, 0.15,
-    0.1, 0.15, 0.15, 0.15, 0.25, 0.005, 0, 0.1, 0.09, 0.005,
-    0.15, 0.15, 0.15, 0.005, 0.005, 0, 0.25, 0.09, 0.1, 0.1,
-    0, 0.15, 0.005, 0.09, 0.005, 0.15, 0.25, 0.1, 0.1, 0.15,
-    0.005, 0.1, 0.09, 0.25, 0.15, 0.15, 0.005, 0, 0.1, 0.15,
-    0.005, 0.15, 0.25, 0.1, 0, 0.1, 0.005, 0.15, 0.09, 0.15,
-    0.15, 0.15, 0.005, 0.25, 0.1, 0.15, 0.09, 0.005, 0.1, 0,
-    0.25, 0.1, 0.15, 0, 0.005, 0.15, 0.15, 0.1, 0.005, 0.09,
-    0.005, 0.1, 0.1, 0.15, 0, 0.25, 0.15, 0.09, 0.005, 0.15,
-    0.005, 0.09, 0.15, 0.1, 0, 0.1, 0.15, 0.005, 0.25, 0.15)
-
-design <- 
+single_site_design <- 
   declare_population(
-    site = add_level(N = N_sites, feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE)),
-    subject_types = add_level(
-      N = 10,
-      subject_type = 1:10,
-      subject_type_effect = subject_type_effects,
-      type_proportion = pr_types,
-      N_subjects = ceiling(2500 * type_proportion)
+    site = add_level(
+      N = 10, 
+      feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE),
+      study_effect = seq(from = -0.1, to = 0.1, length.out = N) 
     ),
-    subjects = add_level(N = N_subjects, noise = rnorm(N))
+    subjects = add_level(N = n_subjects_per_site, noise = rnorm(N))
   ) + 
-    declare_potential_outcomes(Y ~ Z * (0.1 + subject_type_effect + feasible_effect * feasible_site) + noise) +
-    declare_estimand(ATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == FALSE) + # true effect for feasible sites
-    declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, n_study_sites)) + 
-    declare_sampling(strata = site, n = n_subjects_per_site) + 
-    declare_assignment(blocks = site, prob = 0.5) + 
-    declare_estimand(study_site_ATE = mean(Y_Z_1 - Y_Z_0)) +
-    declare_estimator(handler = label_estimator(post_stratification), pr_types_population = pr_types, label = "post-strat")
+  declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + noise) +
+  declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == FALSE) + 
+  declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, 1)) + 
+  declare_sampling(strata = site, n = n_subjects_per_site) + 
+  declare_assignment(blocks = site, prob = 0.5) + 
+  declare_estimator(Y ~ Z, model = lm_robust)
 
-single_site_large_design <- redesign(design, n_study_sites = 1, n_subjects_per_site = 2500)
+multi_site_design <- 
+  declare_population(
+    site = add_level(
+      N = 10, 
+      feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE),
+      study_effect = seq(from = -0.1, to = 0.1, length.out = N) 
+    ),
+    subjects = add_level(N = n_subjects_per_site, noise = rnorm(N))
+  ) + 
+  declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + feasible_effect * feasible_site) + noise) +
+  declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == FALSE) + 
+  declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, n_study_sites)) + 
+  declare_sampling(strata = site, n = n_subjects_per_site) + 
+  declare_assignment(blocks = site, prob = 0.5) + 
+  declare_estimator(handler = random_effects_meta_analysis)
 
-small_study_five_sites <- redesign(design, n_study_sites = 5, n_subjects_per_site = 500)
+single_site_large_design <- redesign(single_site_design, n_subjects_per_site = 2500)
+
+small_study_five_sites <- redesign(multi_site_design, n_study_sites = 5, n_subjects_per_site = 500)
 ```
 
 ```{r, warning = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
@@ -187,7 +183,7 @@ diagnosis_small_large <- read_rds(rds_file_path)
 ```
 
 ```{r, echo = FALSE}
-kable(get_diagnosands(diagnosis_small_large) %>% reshape_diagnosis %>% select(Bias, RMSE), booktabs = TRUE)
+kable(diagnosis_small_large %>% reshape_diagnosis %>% select(`Design Label`, `Estimand Label`, Bias, RMSE), booktabs = TRUE)
 ```
 
 ### Bayesian estimation can improve estimates of effects for sampled sites

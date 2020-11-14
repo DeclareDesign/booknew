@@ -44,7 +44,7 @@ We'll consider an application of the regression discontinuity design that examin
 
   - **M**odel: Regression discontinuity designs have four components: A running variable, a cutoff, a treatment variable, and an outcome. The cutoff determines which units are treated depending on the value of the running variable.
   
-    In our example, the running variable $X$ is the Democratic party's margin of victory at time $t-1$; and the treatment, $Z$, is whether the Democratic party won the election in time $t-1$. The outcome, $Y$, is the Democratic vote margin at time $t$. We'll consider a population of 1,000 of these pairs of elections.
+    In our example, the running variable $X$ is the Democratic party's margin of victory at time $t-1$; and the treatment, $D$, is whether the Democratic party won the election in time $t-1$. The outcome, $Y$, is the Democratic vote margin at time $t$. We'll consider a population of 1,000 of these pairs of elections.
     
     A major assumption required for regression discontinuity is that the conditional expectation functions for both treatment and control potential outcomes are continuous at the cutoff.^[An alternative motivation for some designs that do not rely on continuity at the cutoff is "local randomization".] To satisfy this assumption, we specify two smooth conditional expectation functions, one for each potential outcome. The figure plots $Y$ (the Democratic vote margin at time $t$) against $X$ (the margin at time $t-1$). We've also plotted the true conditional expectation functions for the treated and control potential outcomes. The solid lines correspond to the observed data and the dashed lines correspond to the unobserved data.
     
@@ -61,12 +61,12 @@ design <-
     N = 1000,
     U = rnorm(N, 0, 0.1),
     X = runif(N, 0, 1) + U - cutoff,
-    Z = 1 * (X > 0)
+    D = 1 * (X > 0)
   ) +
-  declare_potential_outcomes(Y ~ Z * treatment(X) + (1 - Z) * control(X) + U) +
+  declare_potential_outcomes(Y ~ D * treatment(X) + (1 - D) * control(X) + U, assignment_variable = D) +
   declare_estimand(LATE = treatment(0) - control(0)) +
-  reveal_outcomes(Y, Z) +
-  declare_estimator(Y ~ poly(X, 4) * Z, model = lm_robust, estimand = "LATE")
+  reveal_outcomes(Y, D) +
+  declare_estimator(Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE")
 
 mock_data <- draw_data(design)
 X <- seq(-.5, .5, .005)
@@ -75,21 +75,21 @@ treatment_frame <-
     X = X,
     Y = treatment(X),
     observed = ifelse(X > 0, "a", "b"),
-    Z = 1
+    D = 1
   )
 control_frame <-
   data.frame(
     X = X,
     Y = control(X),
     observed = ifelse(X <= 0, "a", "b"),
-    Z = 0
+    D = 0
   )
 plot_frame <-
   rbind(treatment_frame, control_frame)
 ```
 
 ```{r,echo=FALSE, warning=FALSE}
-ggplot(plot_frame, aes(x = X, y = Y, color = as.factor(Z))) +
+ggplot(plot_frame, aes(x = X, y = Y, color = as.factor(D))) +
   geom_line(aes(linetype = observed)) +
   geom_point(data = mock_data, alpha = .2, size = .5) +
   scale_linetype_discrete(name = "", labels = c("Observable", "Unobservable")) +
@@ -123,30 +123,30 @@ design <-
     N = 1000,
     U = rnorm(N, 0, 0.1),
     X = runif(N, 0, 1) + U - cutoff,
-    Z = 1 * (X > 0)
+    D = 1 * (X > 0)
   ) +
-  declare_potential_outcomes(Y ~ Z * treatment(X) + (1 - Z) * control(X) + U) +
+  declare_potential_outcomes(Y ~ D * treatment(X) + (1 - D) * control(X) + U, assignment_variable = D) +
   declare_estimand(LATE = treatment(0) - control(0)) +
-  reveal_outcomes(Y, Z) +
-  declare_estimator(Y ~ poly(X, 4) * Z, model = lm_robust, estimand = "LATE")
+  reveal_outcomes(Y, D) +
+  declare_estimator(Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE")
 ```
 
 
 ### DAG
 
 ```{r, echo = FALSE}
-dag <- dagify(Y ~ Z + X + U,
-              Z ~ X,
+dag <- dagify(Y ~ D + X + U,
+              D ~ X,
               X ~ U)
 
 nodes <-
   tibble(
-    name = c("U", "X", "Z", "Y"),
-    label = c("U", "X", "Z", "Y"),
+    name = c("U", "X", "D", "Y"),
+    label = c("U", "X", "D", "Y"),
     annotation = c(
       "**Unknown heterogeneity**",
       "**Exogenous variable**",
-      "**Treatment assignment**",
+      "**Treatment**",
       "**Outcome variable**"
     ),
     x = c(5, 1, 4, 5),
