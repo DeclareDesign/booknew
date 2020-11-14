@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 6 Specifying the model | Research Design: Declare, Diagnose, Redesign</title>
 <meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.2.9000/tabs.js"></script><script src="libs/bs3compat-0.2.2.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -116,7 +116,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 </ul>
 <p>Which population you have in mind affects how reference populations should be modeled but also how draws from a population should be interpreted.</p>
 <p>To illustrate consider a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z\)</span> is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this book, might be declared like this:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
@@ -338,7 +338,7 @@ Figure 6.2: A DAG with an explantory variable of interest (D), an outcome of int
 <p>DAGs convey beliefs about <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we’ll need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
 <p>A slightly more complex example helps demonstrate how we can use a model declaration to facilitate representation of a class of possibly stochastic models. Suppose that according to our model, the effect of <span class="math inline">\(Z\)</span> should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in the design declaration below. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard deviation 1; <span class="math inline">\(X\)</span> follows a Bernoulli distribution. In the <code>declare_potential_outcomes</code> function, we describe how the average effect of treatment depends on <span class="math inline">\(X\)</span>.</p>
 <!-- I removed the confounding to keep focused on one point -->
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tau_X0</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">tau_X1</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 

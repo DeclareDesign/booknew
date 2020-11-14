@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 18 Multi-study designs | Research Design: Declare, Diagnose, Redesign</title>
 <meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.2.9000/tabs.js"></script><script src="libs/bs3compat-0.2.2.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -70,7 +70,7 @@
 <h1>
 <span class="header-section-number">18</span> Multi-study designs<a class="anchor" aria-label="anchor" href="#multi-study-designs"><i class="fas fa-link"></i></a>
 </h1>
-<p>section introduction</p>
+<p>To be written: section introduction</p>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -101,7 +101,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n3</span> <span class="op">&lt;-</span> <span class="fl">100</span>
@@ -113,32 +113,59 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
             U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Y <span class="op">=</span> <span class="va">tau</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">gamma</span> <span class="op">*</span> <span class="va">M</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">three_study_design</span> <span class="op">&lt;-</span> 
+<span class="va">three_study_design</span> <span class="op">&lt;-</span>
   <span class="co"># Study 1 -- Bivariate correlation between X and Y</span>
-  <span class="fu">declare_population</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n1</span>, tau <span class="op">=</span> <span class="va">tau</span>, gamma <span class="op">=</span> <span class="va">gamma</span>, rho <span class="op">=</span> <span class="va">rho</span>, handler <span class="op">=</span> <span class="va">generate_study_sample</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>, term <span class="op">=</span> <span class="st">"X"</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"Study 1"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_population</span><span class="op">(</span>
+    n <span class="op">=</span> <span class="va">n1</span>,
+    tau <span class="op">=</span> <span class="va">tau</span>,
+    gamma <span class="op">=</span> <span class="va">gamma</span>,
+    rho <span class="op">=</span> <span class="va">rho</span>,
+    handler <span class="op">=</span> <span class="va">generate_study_sample</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>,
+                    term <span class="op">=</span> <span class="st">"X"</span>,
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    label <span class="op">=</span> <span class="st">"Study 1"</span><span class="op">)</span> <span class="op">+</span>
   <span class="co"># Study 2 -- Bivariate correlation between M and X</span>
-  <span class="fu">declare_population</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n2</span>, tau <span class="op">=</span> <span class="va">tau</span>, gamma <span class="op">=</span> <span class="va">gamma</span>, rho <span class="op">=</span> <span class="va">rho</span>, handler <span class="op">=</span> <span class="va">generate_study_sample</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">M</span> <span class="op">~</span> <span class="va">X</span>, term <span class="op">=</span> <span class="st">"X"</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"Study 2"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="co"># Study 3 -- Interaction in X and M </span>
-  <span class="fu">declare_population</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n3</span>, tau <span class="op">=</span> <span class="va">tau</span>, gamma <span class="op">=</span> <span class="va">gamma</span>, rho <span class="op">=</span> <span class="va">rho</span>, handler <span class="op">=</span> <span class="va">generate_study_sample</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">M</span> <span class="op">+</span> <span class="va">X</span><span class="op">:</span><span class="va">M</span>, term <span class="op">=</span> <span class="st">"X:M"</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"Study 3"</span><span class="op">)</span> </code></pre></div>
+  <span class="fu">declare_population</span><span class="op">(</span>
+    n <span class="op">=</span> <span class="va">n2</span>,
+    tau <span class="op">=</span> <span class="va">tau</span>,
+    gamma <span class="op">=</span> <span class="va">gamma</span>,
+    rho <span class="op">=</span> <span class="va">rho</span>,
+    handler <span class="op">=</span> <span class="va">generate_study_sample</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">M</span> <span class="op">~</span> <span class="va">X</span>,
+                    term <span class="op">=</span> <span class="st">"X"</span>,
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    label <span class="op">=</span> <span class="st">"Study 2"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co"># Study 3 -- Interaction in X and M</span>
+  <span class="fu">declare_population</span><span class="op">(</span>
+    n <span class="op">=</span> <span class="va">n3</span>,
+    tau <span class="op">=</span> <span class="va">tau</span>,
+    gamma <span class="op">=</span> <span class="va">gamma</span>,
+    rho <span class="op">=</span> <span class="va">rho</span>,
+    handler <span class="op">=</span> <span class="va">generate_study_sample</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">M</span> <span class="op">+</span> <span class="va">X</span><span class="op">:</span><span class="va">M</span>,
+                    term <span class="op">=</span> <span class="st">"X:M"</span>,
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    label <span class="op">=</span> <span class="st">"Study 3"</span><span class="op">)</span> </code></pre></div>
 </div>
 <div id="dag-21" class="section level3">
 <h3>
 <span class="header-section-number">18.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-21"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-377-1.svg" width="100%"></div>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-380-1.svg" width="100%"></div>
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ggdd_df</span> <span class="op">&lt;-</span> <span class="fu">make_dag_df</span><span class="op">(</span><span class="va">dag</span>, <span class="va">nodes</span>, <span class="va">design2</span><span class="op">)</span>
 
 <span class="va">base_dag_plot</span> <span class="op">%+%</span> <span class="va">ggdd_df</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-378-1.svg" width="100%"></div>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-381-1.svg" width="100%"></div>
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ggdd_df</span> <span class="op">&lt;-</span> <span class="fu">make_dag_df</span><span class="op">(</span><span class="va">dag</span>, <span class="va">nodes</span>, <span class="va">design3</span><span class="op">)</span>
 
 <span class="va">base_dag_plot</span> <span class="op">%+%</span> <span class="va">ggdd_df</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-379-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-382-1.svg" width="100%"></div>
 </div>
 <div id="takeaways-4" class="section level3">
 <h3>
@@ -149,18 +176,13 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulate design</span>
 <span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
 <span class="co"># Simulate null design</span>
 <span class="va">null_three_study_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">three_study_design</span>, tau <span class="op">=</span> <span class="fl">0</span>, gamma <span class="op">=</span> <span class="fl">0</span>, rho <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="va">null_simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">null_three_study_design</span><span class="op">)</span></code></pre></div>
-<p>In the first three rows of the table, the theory is correct in that <code>tau</code>,<br><code>gamma</code>, and <code>rho</code> are positive, in the second three rows it is incorrect because
-both the main effect and interaction are zero. The “power” column tells us the
-proportion of simulations in which the effect is significant at the <span class="math inline">\(\alpha = .05\)</span> level, the “all significant” column tells us the proportion of simulations in which all
-of the studies have significant effects, the “positive” column tells us how often
-the study found a positively signed result, while the “all positive column” tells
-us the proportion of simulations where all studies had a positively signed result.</p>
+<p>In the first three rows of the table, the theory is correct in that <code>tau</code>, <code>gamma</code>, and <code>rho</code> are positive, in the second three rows it is incorrect because both the main effect and interaction are zero. The “power” column tells us the proportion of simulations in which the effect is significant at the <span class="math inline">\(\alpha = .05\)</span> level, the “all significant” column tells us the proportion of simulations in which all of the studies have significant effects, the “positive” column tells us how often the study found a positively signed result, while the “all positive column” tells us the proportion of simulations where all studies had a positively signed result.</p>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:right;">
@@ -361,7 +383,7 @@ accordingly. As the number of studies increases, so too does the probability
 of discordant results, and using the unanimity of signs to judge whether
 the theory is correct becomes increasingly unwise.</p></li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-387-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-390-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -489,7 +511,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 - the design with five sites has half the RMSE of the one-site design. this is because of the variation in the proportions of types across sites.
 - interestingly there is poor coverage (anti-conservative) when you use the single site design</p>
 <p>(when you have contextual variation as well, i.e. effect differs across sites for reasons not captured by the het fx, coverage is off for all designs. will keep this point out, seems like too much and you don’t need contextual effects to get different effects across sites, those come from different proportions of types)</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">meta_re_estimator</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
   <span class="va">site_estimates_df</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">%&gt;%</span> 
     <span class="fu">group_by</span><span class="op">(</span><span class="va">site</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -530,7 +552,7 @@ the theory is correct becomes increasingly unwise.</p></li>
     <span class="fu">tibble</span><span class="op">(</span>error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="op">}</span>
 <span class="op">}</span></code></pre></div>
-<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># need to have biased sampling to get bias here</span>
 <span class="co"># two kinds of populations, one in which the study type determines the subject types and you select on study type</span>
 <span class="co">#   a second kind where study type determines study shock </span>
@@ -577,10 +599,10 @@ the theory is correct becomes increasingly unwise.</p></li>
 <span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu">multi_site_designer</span><span class="op">(</span>n_study_sites <span class="op">=</span> <span class="fl">1</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
 
 <span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu">multi_site_designer</span><span class="op">(</span>n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_small_large</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">std.error</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">statistic</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.low</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.high</span><span class="op">)</span><span class="op">)</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_small_large</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -933,7 +955,7 @@ post-strat
 </h3>
 <p>you can improve site-level effect estimates by analyzing with simple Bayesian model because of its shrinkage property, even when the Bayesian model is wrong about distribution of effects in population</p>
 <p>this is the point from the blog post; I will modify the above design so it can also make this point, switching between the normal distribution and uniform distribution for the fx distribution</p>
-<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">stan_model</span> <span class="op">&lt;-</span> <span class="st">" 
 data {
   int&lt;lower=0&gt; J;         // number of sites 
@@ -979,12 +1001,12 @@ model {
 </h3>
 <p>none of these designs work when you’re trying to make predictions for sites that are systematically different, i.e. are not in the same population as the sampling frame</p>
 <p>the design was set up to include several sites where researchers could not feasibly set up experiments. in the original design, effects do not depend on whether sites are feasible for the experiment. when effects do vary, there are systematic differences for those target sites. those differences might come from three sources: mean effect size differs in places that are sampled vs not sampled; individual-level het fx sizes that systematically differ in places that are sampled to study vs others; covariate profiles that do not exist in sites outside the sampling frame. I introduce effects in the first way and show there is substantial bias.</p>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">small_study_five_sites_feasible_effects</span> <span class="op">&lt;-</span> <span class="fu">multi_site_designer</span><span class="op">(</span>n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span>, feasible_effect  <span class="op">=</span> <span class="op">-</span><span class="fl">0.25</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_feasible_effects</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">small_study_five_sites_feasible_effects</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_feasible_effects</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_feasible_effects</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">std.error</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">statistic</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">p.value</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.low</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">conf.high</span><span class="op">)</span><span class="op">)</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_feasible_effects</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>

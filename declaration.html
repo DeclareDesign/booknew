@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 5 Declaration | Research Design: Declare, Diagnose, Redesign</title>
 <meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.2.9000/tabs.js"></script><script src="libs/bs3compat-0.2.2.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -88,7 +88,7 @@
 Figure 5.1: MIDA as a DAG
 </p>
 </div>
-<p>Figure <a href="declaration.html#fig:worldandtheory">5.1</a> illustrates how a research design is a correspondence <span class="math inline">\(I(m) = a^m\)</span> and <span class="math inline">\(A(d) = a^d\)</span>. The theoretical half of a research design produces an answer to the inquiry <strong>in theory</strong>. The emprical half of a research design produces an <em>empirical estimate</em> of the answer to the inquiry.</p>
+<p>Figure <a href="declaration.html#fig:worldandtheory">5.1</a> illustrates how a research design is a correspondence <span class="math inline">\(I(m) = a^m\)</span> and <span class="math inline">\(A(d) = a^d\)</span>. The theoretical half of a research design produces an answer to the inquiry <strong>in theory</strong>. The empirical half of a research design produces an <em>empirical estimate</em> of the answer to the inquiry.</p>
 <p>Neither answer is necessarily close to the truth <span class="math inline">\(a^w\)</span>, of course. And, as shown in the figure, the truth is not directly accessible either to us in theory or in empirics. Our gamble in empirical research however is that our theoretical models are close enough to the truth: that the truth is like the set of models we imagine in our model set.</p>
 <!-- MH: Having some trouble understanding the distrinction between W and w. If w includes potential outcome functions, isn't it the true causal model? If W is the set of possible worlds, is that a subject of inquiry. For instance say our estimand is sd(ate) would that be a(W) rather than a(w). -->
 <!-- Think it worth having a second figure which shows just two panels:if indeed w \in M, then: -->
@@ -149,72 +149,588 @@ Figure 5.1: MIDA as a DAG
 <span class="header-section-number">5.1</span> Example<a class="anchor" aria-label="anchor" href="#p2gulzarkhanrevisited"><i class="fas fa-link"></i></a>
 </h2>
 <p>In this section, we declare the <span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020" role="doc-biblioref">n.d.</a>)</span> example in finer detail. The aim is to capture all of the analytically-relevant features of the design. In Chapter 2, we declared in words and in code a simplified version of the design, in order to communicate its key features. We will make this move again throughout the book: we will present simplified versions of canonical designs in the text, and also provide worked examples with the details of specific studies. Moving back and forth between the two will, we hope, enable you to both learn about the general principles and how to declare your own designs which always involve the fine details of research implementation.</p>
-<p>We first describe the design in words and then declare in code:</p>
-<p>The <em>model</em> for the study describes the set of units: citizens living in the two Pakistani districts the study took place in, Haripur and Abbottabad. The endogenous outcomes of interest are whether the citizen filed papers to run for office; whether the citizen was elected; and the Euclidean distance of the citizen’s preferences from average citizen preferences. The outcomes are a function in their causal model of three treatments, which emphasize either the social or personal benefits to holding public office or do not encourage anyone to run for office at all. Their model would include an expected treatment effect magnitude for each treatment and their suppositions about how correlated outcomes are within villages that they study.</p>
-<p>The <em>inquiry</em> is the effect of an encouragement to run for office focused on prosocial motivations for officeholding (rather than encouragements that emphasized personal benefits) on the rate of filing papers to run for office between people living in villages randomly assigned to receive.</p>
-<p>The <em>data strategy</em> entailed three steps: (1) randomly sampling 192 villages from among all villages in Haripur and Abbottabad districts, and using a random walk procedure to select 48 citizens in each village to participate in the experiment; (2) randomly-assigning each village with equal probability to one of three conditions (neutral, social benefits, or personal benefits); and (3) collecting administrative data on who filed papers to run and matching that back to pretreatment survey data on the 9,216 citizens. Sampling, treatment assignment, and measurement are the three common data strategy steps in an experiment; some experiments, instead, do not include a sampling step and instead assign treatments within a convenience sample.</p>
-<p><span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020" role="doc-biblioref">n.d.</a>)</span> have a two-step <em>answer strategy</em>, fitting a linear model predicting whether a citizen ran for office (the outcome) with indicators for the social benefits and the personal benefits treatments, and then calculating the difference between the two coefficients as an estimate of whether social benefits are more or less effective than the personal benefits. Their answer strategy includes presenting a table with estimated difference, a standard error clustered on village to account for village-level random assignment, and a <em>p</em>-value calculated using permutation inference.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gulzar_khan_design</span> <span class="op">&lt;-</span> 
-  
-  <span class="fu">declare_population</span><span class="op">(</span>
-    <span class="co"># study is conducted in two districts in Pakistan, with 311 and 359 villages in them</span>
-    districts <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Haripur"</span>, <span class="st">"Abbottabad"</span><span class="op">)</span>, N_villages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">311</span>, <span class="fl">359</span><span class="op">)</span><span class="op">)</span>,
-    
-    <span class="co"># villages nested within districts</span>
-    villages <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_villages</span><span class="op">)</span>,
-    
-    <span class="co"># avg. 6500 citizens per village</span>
-    citizens <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">6500</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># main outcome is whether a citizen filed papers to run for office</span>
-  <span class="co"># we define potential outcomes in response to being assigned to a social, personal, or neutral appeal to run</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    <span class="va">filed_papers</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.05</span> <span class="op">+</span> <span class="fl">0.05</span> <span class="op">*</span> <span class="op">(</span><span class="va">Z_appeal</span> <span class="op">==</span> <span class="st">"social"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="op">(</span><span class="va">Z_appeal</span> <span class="op">==</span> <span class="st">"personal"</span><span class="op">)</span><span class="op">)</span>,
-    assignment_variable <span class="op">=</span> <span class="va">Z_appeal</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"neutral"</span>, <span class="st">"social"</span>, <span class="st">"personal"</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">+</span> 
-  
-  <span class="co"># inquiry is the difference in rates of filing papers between the social and personal appeal conditions</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">filed_papers_Z_appeal_social</span> <span class="op">-</span> <span class="va">filed_papers_Z_appeal_personal</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  
-  <span class="co"># sample 192 villages</span>
-  <span class="fu">declare_sampling</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">villages</span>, n <span class="op">=</span> <span class="fl">192</span>, sampling_variable <span class="op">=</span> <span class="st">"S_villages"</span><span class="op">)</span> <span class="op">+</span> 
-  
-  <span class="co"># sample 48 citizens in each village via random walk</span>
-  <span class="fu">declare_sampling</span><span class="op">(</span>strata <span class="op">=</span> <span class="va">villages</span>, n <span class="op">=</span> <span class="fl">48</span>, sampling_variable <span class="op">=</span> <span class="st">"S_citizens"</span><span class="op">)</span> <span class="op">+</span> 
-  
-  <span class="co"># assign villages to three arms with equal probabilities for three types of appeals to run for office</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>
-    m_each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">72</span>, <span class="fl">72</span><span class="op">)</span>,
-    clusters <span class="op">=</span> <span class="va">villages</span>,
-    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"neutral"</span>, <span class="st">"social"</span>, <span class="st">"personal"</span><span class="op">)</span>,
-    assignment_variable <span class="op">=</span> <span class="va">Z_appeal</span>
-  <span class="op">)</span> <span class="op">+</span> 
-  
-  <span class="co"># recode treatment assignment for analysis into indicators for the two conditions of interest</span>
-  <span class="fu">declare_step</span><span class="op">(</span>
-    Z_social_village <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z_appeal</span> <span class="op">==</span> <span class="st">"social"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,
-    Z_personal_village <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z_appeal</span> <span class="op">==</span> <span class="st">"personal"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,
-    handler <span class="op">=</span> <span class="va">mutate</span>
-  <span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># 1. run a linear regression with condition indicators</span>
-  <span class="co"># 2. calculate the difference in effects between people in villages assigned to social appeals compared</span>
-  <span class="co">#    to those assigned to personal appeals</span>
-  <span class="co"># 3. calculate robust standard errors clustered on village</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
-    <span class="va">filed_papers</span> <span class="op">~</span> <span class="va">Z_social_village</span> <span class="op">+</span> <span class="va">Z_personal_village</span>, 
-    linear_hypothesis <span class="op">=</span> <span class="st">"Z_social_village - Z_personal_village = 0"</span>,
-    term <span class="op">=</span> <span class="st">"Z_social_village - Z_personal_village = 0"</span>,
-    clusters <span class="op">=</span> <span class="va">villages</span>,
-    model <span class="op">=</span> <span class="va">lh_robust</span>
-  <span class="op">)</span></code></pre></div>
+<p>We display the DAG for the design in Figure <a href="#p2gulzarkhandag"><strong>??</strong></a>.</p>
 <div class="figure">
 <span id="fig:p2gulzarkhandag"></span>
 <img src="book_files/figure-html/p2gulzarkhandag-1.svg" alt="DAG for Gulzar-Khan design." width="100%"><p class="caption">
 Figure 5.2: DAG for Gulzar-Khan design.
 </p>
+</div>
+<div id="model-1" class="section level3">
+<h3>
+<span class="header-section-number">5.1.1</span> Model<a class="anchor" aria-label="anchor" href="#model-1"><i class="fas fa-link"></i></a>
+</h3>
+<p>The model for the study describes the set of units: citizens living in the two Pakistani districts the study took place in, Haripur and Abbottabad, each of which comprises over 300 villages. Approximately 6500 citizens who are eligible to run for elected office live in each village. The main outcome of interest is whether the citizen filed papers to run for office. The outcome depends on the level of three treatments. A neutral appeal simply informs potential candidates of how to run; the other two emphasize either the social or personal benefits to holding public office. We expect the neutral appeal to have some effect and the social and personal appeals to have an additional effect over and above the neutral appeal.</p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>
+    districts <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
+      N <span class="op">=</span> <span class="fl">2</span>,
+      district_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Haripur"</span>, <span class="st">"Abbottabad"</span><span class="op">)</span>,
+      N_villages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">311</span>, <span class="fl">359</span><span class="op">)</span>
+    <span class="op">)</span>,
+    villages <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_villages</span><span class="op">)</span>,
+    citizens <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">6500</span>,
+                         U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+    Y_Z_control <span class="op">=</span> <span class="va">U</span>,
+    Y_Z_neutral <span class="op">=</span> <span class="va">U</span> <span class="op">+</span> <span class="fl">0.02</span>,
+    Y_Z_personal <span class="op">=</span> <span class="va">U</span> <span class="op">+</span> <span class="fl">0.04</span>,
+    Y_Z_social <span class="op">=</span> <span class="va">U</span> <span class="op">+</span> <span class="fl">0.05</span>
+  <span class="op">)</span></code></pre></div>
+</div>
+<div id="inquiry-1" class="section level3">
+<h3>
+<span class="header-section-number">5.1.2</span> Inquiry<a class="anchor" aria-label="anchor" href="#inquiry-1"><i class="fas fa-link"></i></a>
+</h3>
+<p>This model supports many inquiries, but here we’ll focus on two: the average treatment effect of <em>any</em> appeal versus the pure control condition. This inquiry is theoretically important because it refers to the mere act of inviting citizens to stand for office. A second inquiry is more subtle: the average difference in effectiveness between appeals to run that focus on the pro-social reasons to stand for office versus appeals that emphasize the personal returns.</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>
+    ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_Z_neutral</span> <span class="op">+</span> <span class="va">Y_Z_personal</span> <span class="op">+</span> <span class="va">Y_Z_social</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span> <span class="op">-</span>
+                 <span class="va">Y_Z_control</span><span class="op">)</span>,
+    ATE_social_vs_personal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_social</span> <span class="op">-</span> <span class="va">Y_Z_personal</span><span class="op">)</span>
+  <span class="op">)</span> </code></pre></div>
+</div>
+<div id="data-strategy-1" class="section level3">
+<h3>
+<span class="header-section-number">5.1.3</span> Data strategy<a class="anchor" aria-label="anchor" href="#data-strategy-1"><i class="fas fa-link"></i></a>
+</h3>
+<p>The data strategy entailed three steps. First, 192 of the 670 villages were selected, via cluster sampling, to serve as treatment villages. Of these 48 were assigned to the neutral appeal, 72 to the social appeal, and 72 to the personal appeal. The 478 unsampled villages did not receive any treatment, so can serve as a pure control. Second, 48 citizens from each treated village were sampled via random walk, and were the individuals to whom the candidacy appeals were made. Third, the measurement procedure for this study was to obtain, via administrative record, the names of all candidates who stood for office. In this way, the outcome is observed for all subjects in the experiment, sampled and not.</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>
+    m_each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">478</span>, <span class="fl">48</span>, <span class="fl">72</span>, <span class="fl">72</span><span class="op">)</span>,
+    clusters <span class="op">=</span> <span class="va">villages</span>,
+    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"control"</span>, <span class="st">"neutral"</span>, <span class="st">"social"</span>, <span class="st">"personal"</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_step</span><span class="op">(</span>any_treatment <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">==</span> <span class="st">"control"</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,
+               handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_sampling</span><span class="op">(</span>strata <span class="op">=</span> <span class="va">villages</span>, 
+                   n_unit <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">==</span> <span class="st">"control"</span>, <span class="fl">0</span>, <span class="fl">48</span><span class="op">)</span>, 
+                   drop_nonsampled <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </code></pre></div>
+</div>
+<div id="answer-strategy-1" class="section level3">
+<h3>
+<span class="header-section-number">5.1.4</span> Answer strategy<a class="anchor" aria-label="anchor" href="#answer-strategy-1"><i class="fas fa-link"></i></a>
+</h3>
+<p>The <span class="citation">Gulzar and Khan (<a href="references-4.html#ref-Gulzar2020" role="doc-biblioref">n.d.</a>)</span> design supports many alternative answer strategies. Here, we focus on two answer strategies in particular. First, we compare the rate of running in untreated villages to the rate among the sampled units among all treatment villages, using an OLS regression with standard errors clustered at the village level.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;The implemented design also included a village-level treatment that complicates (in interesting ways!) the interpretation of the untreated units in the treated villages&lt;/p&gt;"><sup>7</sup></a>. Second, we compare the rates of running in the personal and social conditions for the sampled units only, again using an OLS regression with standard errors clustered at the village level.</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_estimator</span><span class="op">(</span>
+    <span class="va">Y</span> <span class="op">~</span> <span class="va">any_treatment</span>,
+    clusters <span class="op">=</span> <span class="va">villages</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    se_type <span class="op">=</span> <span class="st">"CR0"</span>,
+    subset <span class="op">=</span> <span class="op">(</span><span class="va">Z</span> <span class="op">==</span> <span class="st">"control"</span> <span class="op">|</span> <span class="va">S</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>,
+    estimand <span class="op">=</span> <span class="st">"ATE"</span>,
+    label <span class="op">=</span> <span class="st">"ATE"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span>
+    <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
+    clusters <span class="op">=</span> <span class="va">villages</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    se_type <span class="op">=</span> <span class="st">"CR0"</span>,
+    subset <span class="op">=</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">Z</span> <span class="op">!=</span> <span class="st">"neutral"</span><span class="op">)</span>,
+    estimand <span class="op">=</span> <span class="st">"ATE_social_vs_personal"</span>,
+    label <span class="op">=</span> <span class="st">"ATE_social_vs_personal"</span>
+  <span class="op">)</span></code></pre></div>
+<p>With these elements in hand, we can declare the full design and display one draw of the design:</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
+  <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
+<p>We print the first six rows of the simulated data in Table <a href="declaration.html#tab:gulzarkhansimdata">5.2</a>:</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:gulzarkhansimdata">Table 5.2: </span>Six rows of simulated data from the Gulzar-Khan design.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+districts
+</th>
+<th style="text-align:left;">
+district_name
+</th>
+<th style="text-align:right;">
+N_villages
+</th>
+<th style="text-align:left;">
+villages
+</th>
+<th style="text-align:left;">
+citizens
+</th>
+<th style="text-align:right;">
+U
+</th>
+<th style="text-align:right;">
+Y_Z_control
+</th>
+<th style="text-align:right;">
+Y_Z_neutral
+</th>
+<th style="text-align:right;">
+Y_Z_personal
+</th>
+<th style="text-align:right;">
+Y_Z_social
+</th>
+<th style="text-align:left;">
+Z
+</th>
+<th style="text-align:right;">
+Z_cond_prob
+</th>
+<th style="text-align:right;">
+Y
+</th>
+<th style="text-align:right;">
+any_treatment
+</th>
+<th style="text-align:right;">
+S
+</th>
+<th style="text-align:right;">
+S_inclusion_prob
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Haripur
+</td>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:left;">
+0000001
+</td>
+<td style="text-align:right;">
+0.915
+</td>
+<td style="text-align:right;">
+0.915
+</td>
+<td style="text-align:right;">
+0.935
+</td>
+<td style="text-align:right;">
+0.955
+</td>
+<td style="text-align:right;">
+0.965
+</td>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+0.713
+</td>
+<td style="text-align:right;">
+0.915
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Haripur
+</td>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:left;">
+0000002
+</td>
+<td style="text-align:right;">
+0.937
+</td>
+<td style="text-align:right;">
+0.937
+</td>
+<td style="text-align:right;">
+0.957
+</td>
+<td style="text-align:right;">
+0.977
+</td>
+<td style="text-align:right;">
+0.987
+</td>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+0.713
+</td>
+<td style="text-align:right;">
+0.937
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Haripur
+</td>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:left;">
+0000003
+</td>
+<td style="text-align:right;">
+0.286
+</td>
+<td style="text-align:right;">
+0.286
+</td>
+<td style="text-align:right;">
+0.306
+</td>
+<td style="text-align:right;">
+0.326
+</td>
+<td style="text-align:right;">
+0.336
+</td>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+0.713
+</td>
+<td style="text-align:right;">
+0.286
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Haripur
+</td>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:left;">
+0000004
+</td>
+<td style="text-align:right;">
+0.830
+</td>
+<td style="text-align:right;">
+0.830
+</td>
+<td style="text-align:right;">
+0.850
+</td>
+<td style="text-align:right;">
+0.870
+</td>
+<td style="text-align:right;">
+0.880
+</td>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+0.713
+</td>
+<td style="text-align:right;">
+0.830
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Haripur
+</td>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:left;">
+0000005
+</td>
+<td style="text-align:right;">
+0.642
+</td>
+<td style="text-align:right;">
+0.642
+</td>
+<td style="text-align:right;">
+0.662
+</td>
+<td style="text-align:right;">
+0.682
+</td>
+<td style="text-align:right;">
+0.692
+</td>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+0.713
+</td>
+<td style="text-align:right;">
+0.642
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Haripur
+</td>
+<td style="text-align:right;">
+311
+</td>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:left;">
+0000006
+</td>
+<td style="text-align:right;">
+0.519
+</td>
+<td style="text-align:right;">
+0.519
+</td>
+<td style="text-align:right;">
+0.539
+</td>
+<td style="text-align:right;">
+0.559
+</td>
+<td style="text-align:right;">
+0.569
+</td>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+0.713
+</td>
+<td style="text-align:right;">
+0.519
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>From this data, we present simulated estimates of the two inquiries as well as the simulated estimand values in Table <a href="#gulzarkhansimestimates"><strong>??</strong></a>:</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="fu">run_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:gulzarkhansimestimates">Table 5.3: </span>Simulated estimates and estimand from one run of the Gulzar-Khan design.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+estimator_label
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+estimand
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ATE
+</td>
+<td style="text-align:right;">
+0.038
+</td>
+<td style="text-align:right;">
+0.003
+</td>
+<td style="text-align:right;">
+0.037
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE_social_vs_personal
+</td>
+<td style="text-align:right;">
+-0.010
+</td>
+<td style="text-align:right;">
+0.006
+</td>
+<td style="text-align:right;">
+0.010
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>In Table <a href="#gulzarkhansimcrosstab"><strong>??</strong></a>, we display the number of people and villages in each treatment assignment and sampling condition to illustrate the data strategy:</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:gulzarkhansimcrosstab">Table 5.4: </span>Count of units by treatment assignment and sampling status.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Z
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+n_sampled
+</th>
+<th style="text-align:right;">
+n_villages
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+control
+</td>
+<td style="text-align:right;">
+3107000
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+478
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+neutral
+</td>
+<td style="text-align:right;">
+312000
+</td>
+<td style="text-align:right;">
+2304
+</td>
+<td style="text-align:right;">
+48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+social
+</td>
+<td style="text-align:right;">
+468000
+</td>
+<td style="text-align:right;">
+3456
+</td>
+<td style="text-align:right;">
+72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+personal
+</td>
+<td style="text-align:right;">
+468000
+</td>
+<td style="text-align:right;">
+3456
+</td>
+<td style="text-align:right;">
+72
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <div id="further-reading-1" class="section level2">
@@ -230,6 +746,7 @@ Figure 5.2: DAG for Gulzar-Khan design.
 <!-- ## Brief illustration --><!-- To illustrate, consider the following design.  --><!-- * A model *M* specifies three variables $X$, $Y$ and $Z$ (all defined on the reals). These form the signature. In additional we assume functional relationships between them that allow for the possibility of confounding (for example, $Y =  bX + Z + \epsilon_Y; X = Z+ \epsilon_X$, with $Z, \epsilon_X, \epsilon_Z$ distributed standard normal).  --><!-- * The inquiry $I$ is ``what would be the average effect of a unit increase in $X$ on $Y$ in the population?'' Note that this question depends on the signature of the model, but not the functional equations of the model (the answer provided by the model does of course depend on the functional equations).  --><!-- * Under data strategy, $D$,  data is gathered on $X$ and $Y$ for $n$ randomly selected units.  --><!-- * Answer $a^d$, is then generated using ordinary least squares as the answer strategy, $A$. --><!-- We have specified all the components of MIDA. We now ask: How strong is this research design? One way to answer this question is with respect to the diagnosand "expected error." Here the model's functional equations provide an answer, $a^m$ to the inquiry (for any draw of $\beta$), and so the distribution of the expected error, *given the model*, $a^d-a^m$, can be calculated. In this example the expected performance of the design may be poor, as measured by this diagnosand, because the data and analysis strategy do not handle the confounding described by the model. --><!-- In comparison, better performance may be achieved through an alternative data strategy (e.g., where $D'$ randomly assigned $X$ to $n$ units before recording $X$ and $Y$) or an alternative analysis strategy (e.g., $A'$  conditions on $Z$). These design evaluations depend on the model, and so one might reasonably ask how performance would look were the model different (for example if the underlying process involved nonlinearities). --><!-- note do_bookdown is set in index.rmd, so we know if you are running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
+
   <div class="chapter-nav">
 <div class="prev"><a href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></div>
 <div class="next"><a href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></div>
@@ -237,7 +754,14 @@ Figure 5.2: DAG for Gulzar-Khan design.
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration"><span class="header-section-number">5</span> Declaration</a></li>
-<li><a class="nav-link" href="#p2gulzarkhanrevisited"><span class="header-section-number">5.1</span> Example</a></li>
+<li>
+<a class="nav-link" href="#p2gulzarkhanrevisited"><span class="header-section-number">5.1</span> Example</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#model-1"><span class="header-section-number">5.1.1</span> Model</a></li>
+<li><a class="nav-link" href="#inquiry-1"><span class="header-section-number">5.1.2</span> Inquiry</a></li>
+<li><a class="nav-link" href="#data-strategy-1"><span class="header-section-number">5.1.3</span> Data strategy</a></li>
+<li><a class="nav-link" href="#answer-strategy-1"><span class="header-section-number">5.1.4</span> Answer strategy</a></li>
+</ul>
+</li>
 <li><a class="nav-link" href="#further-reading-1"><span class="header-section-number">5.2</span> Further reading</a></li>
 </ul>
 

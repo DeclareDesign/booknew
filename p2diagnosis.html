@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 10 Diagnosis | Research Design: Declare, Diagnose, Redesign</title>
 <meta name="author" content="Graeme Blair, Jasper Cooper, Alexander Coppock, and Macartan Humphreys">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.2.9000/tabs.js"></script><script src="libs/bs3compat-0.2.2.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -84,7 +84,7 @@
 <p>The <span class="math inline">\(f()\)</span> is a statistical functional that summarizes the random variable. For example, the expectation function <span class="math inline">\(\mathbb{E}[X]\)</span> summarizes the random variable <span class="math inline">\(X\)</span> with its expectation, the mean, while the variance function summarizes the expectation of the squared deviation of a random variable from its mean.<!-- Diagnosands are summaries of diagnostic statics.--> We’ll use the Greek letter <span class="math inline">\(\phi\)</span> to describe the idea of a diagnosand in general.</p>
 <p>Let’s back up a moment to work through some concrete examples of common diagnosands (see section <a href="p2diagnosis.html#diagnosands">10.3</a> for a more exhaustive list). Consider the diagnosand “bias.” Bias is the average difference between the estimand and the estimate. Under a model that has two potential outcomes, a treated potential outcome and an untreated potential outcome, the inquiry might be the average treatment effect (the difference in the two potential outcomes averaged over units in the population or sample, abbreviated as ATE). Under a single realization <span class="math inline">\(m\)</span> of the model <span class="math inline">\(M\)</span>, the value of the ATE will be a particular number, which we call <span class="math inline">\(a^m\)</span>. If our data strategy is simply to collect data on those who come to be treated versus those who don’t (i.e., we do not use random assignment), and our answer strategy is difference-in-means, our answer <span class="math inline">\(a^d\)</span> could be systematically different from <span class="math inline">\(a^m\)</span>. The diagnostic statistic is the error <span class="math inline">\(a^d - a^m\)</span>; this error is a random variable because each draw of <span class="math inline">\(m\)</span> from <span class="math inline">\(M\)</span> is slightly different. The expectation of this random variable is <span class="math inline">\(\mathbb{E}[a^d - a^m]\)</span>, or the value of the bias diagnosand.</p>
 <p>Answer strategies commonly rely on measures of uncertainty like <span class="math inline">\(p\)</span>-values, standard errors, and confidence intervals in order to make decisions about how to interpret <span class="math inline">\(a^d\)</span>. Any measure estimated from the data to make a decision about <span class="math inline">\(a^d\)</span> can be used as a diagnostic statistic and summarized as a diagnosand. Like bias, statistical power is an expectation, this time of the diagnostic statistic <span class="math inline">\(\mathbb{1}(p \leq 0.05)\)</span>, an indicator function that equals 1 if the <span class="math inline">\(p\)</span>-value is no greater than 0.05 and 0 otherwise. Power describes how frequently (under beliefs about the model) a research design would return a statistically significant result. A standard error provides another diagnostic statistic whose expectation provides the expected standard error diagnosand, for example. This can be especially informative in comparison with another diagnosand, <span class="math inline">\(\sqrt{\mathbb{V}(a^d)}\)</span>, the actual standard deviation of the estimates generated by the model.</p>
-<p>Some diagnosands can be calculated analytically. It can be straightforward to calculate <span class="math inline">\(\sqrt{\mathbb{V}(a^d)}\)</span> if you have a two-arm experiment and are willing to make a lot of simplifying assumptions.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Insert formula 3.4 and cite to FEDAI.&lt;/p&gt;"><sup>21</sup></a> Most diagnosands for even moderately complex designs, however, require Monte Carlo computer simulation. A main purpose of the <code>DeclareDesign</code> software package is making the simulation step easier.</p>
+<p>Some diagnosands can be calculated analytically. It can be straightforward to calculate <span class="math inline">\(\sqrt{\mathbb{V}(a^d)}\)</span> if you have a two-arm experiment and are willing to make a lot of simplifying assumptions.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Insert formula 3.4 and cite to FEDAI.&lt;/p&gt;"><sup>22</sup></a> Most diagnosands for even moderately complex designs, however, require Monte Carlo computer simulation. A main purpose of the <code>DeclareDesign</code> software package is making the simulation step easier.</p>
 <p>In practice, it is important to diagnose a design under multiple possible <span class="math inline">\(M\)</span>’s, given our fundamental uncertainty about the world <span class="math inline">\(w\)</span>. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under <em>multiple</em> likely models. A <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> for a given <span class="math inline">\(I\)</span> that provide good diagnosand values under multiple <span class="math inline">\(M\)</span>’s can be said to be robust to multiple models.</p>
 <div class="figure">
 <span id="fig:midadagsimulated"></span>
@@ -118,8 +118,17 @@ where <span class="math inline">\(\beta\)</span> is the statistical power of the
 <p>So we estimate diagnosands by summarizing the distribution of diagnostic statistics – of course this raises the question: what is a diagnostic statistic? We take a draw from the model (<span class="math inline">\(m\)</span>) and calculate the value of the inquiry <span class="math inline">\(I(m) = a^m\)</span>. We take one draw from the data strategy (<span class="math inline">\(D(m) = d\)</span>), and calculates the value of the answer strategy <span class="math inline">\(A(d) = a^d\)</span>. A diagnostic statistic is some function of <span class="math inline">\(a^m\)</span> and <span class="math inline">\(a^d\)</span>.</p>
 <p>A simple diagnostic statistic is “error,” or the difference between the estimate and the estimand: <span class="math inline">\(error = a^d - a^m\)</span>. The bias diagnosand is the expectation of the error statistic <span class="math inline">\(\mathbb{E}[error]\)</span> over all possible ways the study could have come out.</p>
 <p>Usually, we consider many diagnostic statistics at the same time. Here’s a design declaration for a two-arm trial with a balanced (50/50) design. We have 100 subjects and their responses to treatment are drawn from a normal distribution with mean 0.1 and sd 0.1.</p>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
+                     tau <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="fl">0.1</span>, sd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,
+                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span>  <span class="va">tau</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
 <p>One draw of this simulation returns the following:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">run_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -150,25 +159,25 @@ conf.high
 </tr></thead>
 <tbody><tr>
 <td style="text-align:right;">
-0.1
+0.09
 </td>
 <td style="text-align:right;">
-0.091
+0.068
 </td>
 <td style="text-align:right;">
-0.038
+0.04
 </td>
 <td style="text-align:right;">
-98
+96.443
 </td>
 <td style="text-align:right;">
-0.018
+0.089
 </td>
 <td style="text-align:right;">
-0.016
+-0.01
 </td>
 <td style="text-align:right;">
-0.167
+0.147
 </td>
 </tr></tbody>
 </table></div>
@@ -191,10 +200,12 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 </p>
 </div>
 <p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnositic satistics, then we summarise them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="fl">1000</span>, 
                              diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
-                               select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bias"</span>, <span class="st">"sd_estimate"</span>, <span class="st">"rmse"</span>, <span class="st">"power"</span>, <span class="st">"coverage"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
+  power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:estimateddiagnosands">Table 10.2: </span>Diagnosand estimates with bootstrapped standard errors.
@@ -209,7 +220,7 @@ power
 </tr></thead>
 <tbody><tr>
 <td style="text-align:left;">
-0.00 (0.00)
+-0.01 (0.00)
 </td>
 <td style="text-align:left;">
 0.62 (0.05)
@@ -440,7 +451,7 @@ power
 <p>Often, we need to look at several diagnosands in order to understand what might be going wrong. If your design exhibits “undercoverage” (e.g., your coverage is less than <span class="math inline">\(1 - \alpha\)</span>), that might be because your standard errors are too small (under-estimation of the variance in the sampling distribution) or because your point estimate is biased, or some combination of the two. In really perverse instances, you might have a biased point estimate which, thanks to overly-wide confidence intervals, just happens to get covered 95% of the time. So, when assessing coverage it’s important to look not only at point estimate bias, but you should also check that the average estimated standard error lines up with the true standard error. Alternatively, you could look at the “bias-eliminated coverage,” which assesses coverage purely in terms of confidence interval width, ignoring bias.</p>
 <p>Many research design decisions involve trading off bias and variance. In trade-off settings, we may need to accept higher variance in order to decrease bias. Likewise, we may need to accept a bit of bias in order to achieve lower variance. The tradeoff is captured by mean-squared error – which is the average squared distance between <span class="math inline">\(a^d\)</span> and <span class="math inline">\(a^m\)</span>. Of course we would ideally like to have as low a mean-squared error as possible. We would like to achieve low variance and low bias simultaneously.</p>
 <p>To illustrate, consider the following three designs as represented by three targets. The inquiry is the bullseye of the target. The data and answer strategies combine to generate a process by which arrows are shot towards the target. On the left, we have a very bad archer: even though the estimates are unbiased in the sense that they hit the bullseye “on average”, very few of the arrows are on target. In the middle, we have the Katniss Everdeen (the heroine of the Hunger Games novels who is good with a bow) of data and answer strategies: they are both on target and low variance. On the right, we have an archer who is very consistent (low variance) but biased. The mean squared error is highest on the left and lowest in the middle.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-112-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-120-1.svg" width="100%"></div>
 <p>The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters <strong>which target</strong> your archer is shooting at. Figure <a href="p2diagnosis.html#fig:archerydual">10.4</a> shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of <span class="math inline">\(a^d\)</span>, we have to be clear about which <span class="math inline">\(a^a\)</span> they are associated with.</p>
 <div class="figure">
 <span id="fig:archerydual"></span>
@@ -459,7 +470,7 @@ Figure 10.4: The bias, variance, and RMSE of an answer strategy depend on the in
 <h2>
 <span class="header-section-number">10.4</span> Diagnosing with respect to variations in M<a class="anchor" aria-label="anchor" href="#diagnosing-with-respect-to-variations-in-m"><i class="fas fa-link"></i></a>
 </h2>
-<p>We are always uncertain about M – if we were certain of M (or there was no real dispute about it), there would be no need to conduct new empirical research about it. Research design diagnosis can account for this uncertainty by evaluating the performace of the design under alternative models. We are unsure of the exact value of the intra-cluster correlation of outcomes we will encounter, so we simulate the variance of the estimator under a range of plausible ICC values. We are unsure of the true average treatment effect, so we simulate the power of the study over a range of plausible effect sizes. Uncertainty over model inputs like the means, variances, and covariances in data that will eventually be collect is a major reason to simulate under a range of plausible values.</p>
+<p>We are always uncertain about M – if we were certain of M (or there was no real dispute about it), there would be no need to conduct new empirical research about it. Research design diagnosis can account for this uncertainty by evaluating the performance of the design under alternative models. We are unsure of the exact value of the intra-cluster correlation of outcomes we will encounter, so we simulate the variance of the estimator under a range of plausible ICC values. We are unsure of the true average treatment effect, so we simulate the power of the study over a range of plausible effect sizes. Uncertainty over model inputs like the means, variances, and covariances in data that will eventually be collect is a major reason to simulate under a range of plausible values.</p>
 <!-- Warning about "expected bias" -->
 <div id="estimating-the-minimum-detectable-effect-size" class="section level3">
 <h3>
@@ -592,9 +603,9 @@ Figure 10.4: The bias, variance, and RMSE of an answer strategy depend on the in
 <!-- } -->
 <!-- design <- -->
 <!--   declare_population(     -->
-<!--     N = 100, X = rbinom(N, 1, 0.5), u = rnorm(N) -->
+<!--     N = 100, X = rbinom(N, 1, 0.5), U = rnorm(N) -->
 <!--   ) +  -->
-<!--   declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + u) +  -->
+<!--   declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + U) +  -->
 <!--   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +  -->
 <!--   declare_assignment(prob = 0.5) +  -->
 <!--   reveal_outcomes(Y, Z) +  -->
@@ -633,7 +644,7 @@ Figure 10.4: The bias, variance, and RMSE of an answer strategy depend on the in
 <!--   declare_estimand(y1_y2_are_related = TRUE) +  -->
 <!--   declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") +  -->
 <!--   declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check") -->
-<!-- decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE) -->
+<!-- decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand)) -->
 <!-- diag <- diagnose_design(robustness_checks_design, sims = sims, diagnosands = decision_diagnosis) -->
 <!-- ``` -->
 <!-- We evaluate the two answer strategies in terms of the rate of correctly deciding there is a correlation between `y2` and `y1`. In the main analysis, this means we judge there is a correlation when the p-value is below $0.05$. In our robustness check answer strategy, we decide there is a correlation when both the main analysis and the robustness check return p-values below $0.05$ on the coefficient on `y1`. We see that we are more likely to correctly judge there is a correlation in the simpler analysis strategy. This is because we added an additional criterion to our decision; both criteria, due to random noise, sometimes fail to reject the null of no correlation. Our second answer strategy is more robust in the sense that we have stronger evidence of a correlation when we run the two analyses together. But we are also less likely to decide (correctly) that there is a relationship. The robustness check is conservative. This exercise highlights that the properties of an answer strategy with secondary analyses will be different than the properties of the main analysis alone. If we planned (or conducted) robustness checks, we may wish to know how good the pair of strategies is together. -->
@@ -674,7 +685,7 @@ robustness_checks_design_dgp3 <- replace_step(
   new_step = declare_estimand(y1_y2_are_related = FALSE)
 )
 
-decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand), keep_defaults = FALSE)
+decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand))
 
 diag <- diagnose_design(
   robustness_checks_design, robustness_checks_design_dgp2, robustness_checks_design_dgp3, 
