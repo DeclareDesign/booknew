@@ -320,7 +320,7 @@ declare_assignment(prob = 0.5)
 
 After treatments are assigned, some *potential* outcomes are *revealed*. Treated units reveal their treated potential outcomes and untreated units reveal their untreated outcome. The `reveal_outcomes` function performs this switching operation.
 
-```{r}
+```{r, eval = FALSE}
 reveal_outcomes(Y, Z)
 ```
 
@@ -344,7 +344,7 @@ draw_data(simple_design) %>%
 
 Measurement is a critical part of every research design; sometimes it is beneficial to explicitly declare the measurement procedures of the design, rather than allowing them to be implicit in the ways variables are created in `declare_population` and `declare_potential_outcomes`. For example, we might imagine that the normally distributed outcome variable `Y` is a latent outcome than will be translated into a binary outcome when measured by the researcher:
 
-```{r}
+```{r, eval = FALSE}
 declare_measurement(Y_binary = rbinom(N, 1, prob = pnorm(Y)))
 ```
 
@@ -419,10 +419,11 @@ collapse_data <- function(data, collapse_by) {
 declare_step(handler = collapse_data, collapse_by = district)
 
 # Note: The `{{ }}` syntax is handy for writing functions in `dplyr` 
-# where you want to be able reuse the function with different variable names. 
-# Here, the `collapse_data` function will `group_by` the variable you 
-# send to the argument `collapse_by`, which in our declaration we set to `district`. 
-# The pipeline within the function then calculates the mean in each district.
+# where you want to be able reuse the function with different variable 
+# names. Here, the `collapse_data` function will `group_by` the 
+# variable you send to the argument `collapse_by`, which in our 
+# declaration we set to `district`. The pipeline within the function 
+# then calculates the mean in each district.
 ```
 
 ## Building a design from design steps
