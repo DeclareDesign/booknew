@@ -28,8 +28,8 @@ source("scripts/before_chapter_script.R")
 ```{r software_primer, echo = FALSE, output = FALSE, purl = FALSE}
 # run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
 do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
+sims <- 1000
+b_sims <- 200
 ```
 
 ```{r, echo = FALSE}
@@ -79,7 +79,7 @@ voter_file <- fabricate(
 ```
 
 ```{r voterfile, echo = FALSE}
-kable(head(voter_file), digits = 3, caption = "Example data", booktabs = TRUE)
+kable(head(voter_file, 5), digits = 3, caption = "Example data", booktabs = TRUE)
 ```
 
 There are `r nrow(voter_file)` voters in the dataset. 
@@ -101,7 +101,7 @@ simple_random_assignment_step(voter_file)
 ```
 ```{r voterfilera, echo = FALSE}
 simple_random_assignment_step(voter_file) %>% 
-  head %>% 
+  head(5) %>% 
   kable(caption = "Data output following implementation of an assignment step.", digits = 3, booktabs = TRUE)
 ```
 
@@ -126,8 +126,6 @@ Every step of a research design declaration can be written using one of the `dec
 
 Table: (\#tab:declarationfunctions) Declaration functions in `DeclareDesign`
 
-
-<!-- In the next section, we walk through each step and how to declare it using `DeclareDesign`.  -->
 
 ### Options and defaults
 
@@ -157,7 +155,7 @@ custom_assignment <- function(data)
  
 my_assignment_step <- declare_assignment(handler = custom_assignment)
 
-my_assignment_step(voter_file) %>% head %>% kable(caption = "Data generated using a custom function", booktabs = TRUE)
+my_assignment_step(voter_file) %>% head(5) %>% kable(caption = "Data generated using a custom function", booktabs = TRUE)
 ```
 
 <!-- There is, of course, no great difference in this example between `custom_assignment` and `my_assignment_step` since `my_assignment_step` is just a function that applies `custom_assignment`. Even still, it is worth declaring this step formally as a design step using `declare_assignment` since this lets `DeclareDesign` know how the step fits into the whole design, how to interpret it, and when to call it.    -->
@@ -178,7 +176,7 @@ The population defines the number of units in the population, any multilevel str
 declare_population(data = voter_file)
 ```
 ```{r voterfilepopulation, echo = FALSE}
-declare_population(data = voter_file)() %>% head %>% kable(digits = 3, caption = "Draw from a fixed population", booktabs = TRUE)
+declare_population(data = voter_file)() %>% head(5) %>% kable(digits = 3, caption = "Draw from a fixed population", booktabs = TRUE)
 ```
 
 When we do not have complete data on the population, we simulate it. Relying on the data simulation functions from our `fabricatr` package, `declare_population` asks about the size and variables of the population. For instance if we want a function that generates a dataset with 100 units and a random variable `U` we write:
@@ -190,11 +188,11 @@ declare_population(N = 100, U = rnorm(N))
 When we run this population function, we will get a different 100-unit dataset each time, as shown in Table \@ref(tab:fivepopulationdraws).
 
 ```{r fivepopulationdraws, echo = FALSE}
-tab1 <- declare_population(N = 100, U = rnorm(N))() %>% head 
-tab2 <- declare_population(N = 100, U = rnorm(N))() %>% head 
-tab3 <- declare_population(N = 100, U = rnorm(N))() %>% head
-tab4 <- declare_population(N = 100, U = rnorm(N))() %>% head
-tab5 <- declare_population(N = 100, U = rnorm(N))() %>% head
+tab1 <- declare_population(N = 100, U = rnorm(N))() %>% head(5) 
+tab2 <- declare_population(N = 100, U = rnorm(N))() %>% head(5) 
+tab3 <- declare_population(N = 100, U = rnorm(N))() %>% head(5)
+tab4 <- declare_population(N = 100, U = rnorm(N))() %>% head(5)
+tab5 <- declare_population(N = 100, U = rnorm(N))() %>% head(5)
 
 gt_df <- 
   bind_cols(tab1, tab2, tab3, tab4, tab5) %>%
@@ -262,7 +260,7 @@ design <-
   declare_potential_outcomes(Y ~ 0.25 * Z + U)
 
 draw_data(design) %>% 
-  head %>% 
+  head(5) %>% 
   kable(digits = 3, caption = "Adding potential outcomes to the population.", booktabs = TRUE)
 ```
 
@@ -305,7 +303,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) 
 
-draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Sampled data.", booktabs = TRUE)
+draw_data(simple_design) %>% head(5) %>% kable(digits = 3, caption = "Sampled data.", booktabs = TRUE)
 ```
 
 Sampling could also be non-random, which could be accomplished by using a custom handler. 
@@ -336,7 +334,7 @@ simple_design <-
   reveal_outcomes(Y, Z)
 
 draw_data(simple_design) %>% 
-  head %>% 
+  head(5) %>% 
   kable(digits = 3, caption = "Sampled data with assignment indicator.", booktabs = TRUE)
 ```
 
@@ -358,7 +356,8 @@ simple_design <-
   declare_measurement(Y_binary = rbinom(N, 1, prob = pnorm(Y)))
 
 draw_data(simple_design) %>% 
-  head %>% 
+  select(-fab_ID_1) %>%
+  head(5) %>% 
   kable(digits = 3, caption = "Sampled data with an explicitly measured outcome.", booktabs = TRUE)
 ```
 
@@ -377,7 +376,7 @@ simple_design <-
   declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 
 simple_design_data <- draw_data(simple_design)
-simple_design_data %>% head %>% kable(digits = 3, caption = "Data with revealed outcomes.", booktabs = TRUE)
+simple_design_data %>% head(5) %>% kable(digits = 3, caption = "Data with revealed outcomes.", booktabs = TRUE)
 ```
 
 Our estimator is the difference-in-means estimator, which compares outcomes between the group that was assigned to treatment and that assigned to control. The `difference_in_means()` function in the `estimatr` package calculates the estimate, the standard error, $p$-value and confidence interval for you:
@@ -460,7 +459,7 @@ estimator <-
 To construct a research design *object* that we can operate on --- diagnose it, redesign it, draw data from it, etc. --- we add them together with the `+` operator, just as `%>%` makes `dplyr` pipelines or `+` creates `ggplot` objects.
 
 ```{r}
-simple_design <- 
+design <- 
   population + potential_outcomes + estimand + 
   sampling + assignment + reveal + estimator
 ```
@@ -468,7 +467,7 @@ simple_design <-
 We'll usually declare designs more compactly, concatenating steps directly with `+`:
 
 ```{r}
-simple_design <- 
+design <- 
   declare_population(N = 100, U = rnorm(N)) +
   declare_potential_outcomes(Y ~ 0.25 * Z + U) +
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
@@ -503,10 +502,10 @@ Diagnosing a research design --- learning about its properties --- requires firs
 With the design defined as an object, we can learn about what kind of data it generates, the values of its estimand and estimates, and other features. For example, to draw simulated data based on the design, we use `draw_data`:
 
 ```{r, eval = FALSE}
-draw_data(simple_design)
+draw_data(design)
 ```
 ```{r simpledesigndatadraw, echo = FALSE}
-draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Simulated data draw.", booktabs = TRUE)
+draw_data(design) %>% head(5) %>% kable(digits = 3, caption = "Simulated data draw.", booktabs = TRUE)
 ```
 
 `draw_data` runs all of the "data steps" in a design, which are both from the model (population and potential outcomes) and from the data strategy (sampling, assignment, and measurement).
@@ -514,33 +513,49 @@ draw_data(simple_design) %>% head %>% kable(digits = 3, caption = "Simulated dat
 To simulate the estimands from a single run of the design, we use `draw_estimands`. This runs two operations at once: it draws the data, and calculates the estimands at the point defined by the design. For example, in our design the estimand comes just after the potential outcomes. In this design, `draw_estimands` will run the first two steps and then calculate the estimands from the `estimand` function we declared:
 
 ```{r, eval = FALSE}
-draw_estimands(simple_design)
+draw_estimands(design)
 ```
 ```{r simpledesignestimanddraw, echo = FALSE}
-draw_estimands(simple_design) %>% 
+draw_estimands(design) %>% 
   kable(digits = 3, caption = "Estimands calculated from simulated data.", booktabs = TRUE)
 ```
 
 Similarly, we can draw the estimates from a single run with `draw_estimates` which simulates data and at the appropriate moment calculates estimates.
 
 ```{r, eval = FALSE}
-draw_estimates(simple_design)
+draw_estimates(design)
 ```
 
 ```{r simpledesignestimatedraw, echo = FALSE}
-draw_estimates(simple_design) %>% 
+draw_estimates(design) %>% 
+  select(-estimator_label) %>%
   kable(digits = 3, caption = "Estimates calculated from simulated data.", booktabs = TRUE)
 ```
 
 To simulate designs, we use the `simulate_design` function to draw data, calculate estimands and estimates, and then repeat the process over and over.
 
 ```{r, eval = FALSE}
-simulate_design(simple_design, sims = 500)
+simulate_design(design)
 ```
-```{r simpledesignsimulationsdf, echo = FALSE}
-simulations_df <- simulate_design(simple_design, sims = 5) 
 
-simulations_df %>% kable(digits = 3, caption = "Simulations data frame.", booktabs = TRUE)
+```{r, echo = FALSE, eval = do_diagnosis}
+simulation_df <- simulate_design(design, sims = sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("03_Software_Primer.Rmd"), "/simulation_df.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(simulation_df, path = rds_file_path)
+}
+simulation_df <- read_rds(rds_file_path)
+```
+
+```{r simpledesignsimulationsdf, echo = FALSE}
+simulation_df %>% 
+  head(5) %>% 
+  select(-design_label, -estimator_label, -estimand_label, -term, -outcome) %>% 
+  kable(digits = 3, caption = "Simulations data frame.", booktabs = TRUE)
 ```
 
 ## Diagnosing a research design
@@ -553,24 +568,25 @@ study_diagnosands <- declare_diagnosands(
   rmse = sqrt(mean((estimate - estimand)^2)),
   power = mean(p.value <= 0.05)
 )
-  
 ```
 
 Second, apply your diagnosand declaration to the simulations dataframe with the `diagnose_design` function:
 
 ```{r, eval = FALSE}
-diagnose_design(simulations_df, diagnosands = study_diagnosands)
+diagnose_design(simulation_df, diagnosands = study_diagnosands)
 ```
+
 ```{r simpledesigndiagnosis2, echo = FALSE}
-diagnose_design(simulations_df, diagnosands = study_diagnosands) %>% 
-get_diagnosands %>% 
-kable(digits = 3, caption = "Design diagnosis.", booktabs = TRUE)
+diagnose_design(simulation_df, diagnosands = study_diagnosands) %>% 
+reshape_diagnosis() %>% 
+  select(Bias, RMSE, Power) %>%
+  kable(digits = 3, caption = "Design diagnosis.", booktabs = TRUE)
 ```
 
 We can also do this in a single step by sending `diagnose_design` a design object. The function will first run the simulations for you, then calculate the diagnosands from the simulations data frame that results.
 
 ```{r, eval = FALSE}
-diagnose_design(simple_design, diagnosands = study_diagnosands)
+diagnose_design(design, diagnosands = study_diagnosands)
 ```
 
 ### Redesign
@@ -578,7 +594,7 @@ diagnose_design(simple_design, diagnosands = study_diagnosands)
 After the declaration phase, you will often want to learn how the diagnosands change as design features change. We can do this using `redesign`:
 
 ```{r, eval = FALSE}
-redesign(simple_design, N = c(100, 200, 300, 400, 500))
+redesign(design, N = c(100, 200, 300, 400, 500))
 ```
 
 An alternative way to do this is to write a "designer." A designer is a function that makes designs based on a few design parameters. Designer help researchers flexibly explore design variations. Here's a simple designer based on our running example:
@@ -600,13 +616,13 @@ simple_designer <- function(sample_size, effect_size) {
 To create a single design, based on our original parameters of a 100-unit sample size and a treatment effect of `0.25`, we can run:
 
 ```{r}
-simple_design <- simple_designer(sample_size = 100, effect_size = 0.25)
+design <- simple_designer(sample_size = 100, effect_size = 0.25)
 ```
 
 Now to simulate multiple designs, we can use the `DeclareDesign` function `expand_design`. Here we examine our simple design under several possible sample sizes, which we might want to do to conduct a minimum power analysis. We hold the effect size constant.
 
 ```{r, eval = FALSE}
-simple_designs <- expand_design(
+designs <- expand_design(
   simple_designer, 
   sample_size = c(100, 500, 1000), 
   effect_size = 0.25
@@ -616,7 +632,7 @@ simple_designs <- expand_design(
 Our simulation and diagnosis tools can take a list of designs and simulate all of them at once, creating a column called `design_label` to keep track. For example:
 
 ```{r, eval = FALSE}
-diagnose_design(simple_designs)
+diagnose_design(designs)
 ```
 
 ### Comparing designs
