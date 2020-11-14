@@ -33,7 +33,7 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-In Chapter 2, we gave a high-level overview of our framework for describing research designs in terms of their models, inquiries, data strategies, and answer strategies, our process for diagnosing their properties, and a general purpose approach for improving them to better fit research tasks. Now in this chapter, we place our approach on firmal formal footing. To do so, we employ elements from Pearl's [-@Pearl2009] approach to causal modeling (directed acyclic graphs, or DAGs for short), which provides a syntax for mapping design inputs to design outputs. We also use the potential outcomes framework as presented, for example, in @Imbens2015, which many social scientists use to clarify their inferential targets. 
+In Chapter 2, we gave a high-level overview of our framework for describing research designs in terms of their models, inquiries, data strategies, and answer strategies, our process for diagnosing their properties, and a general purpose approach for improving them to better fit research tasks. Now in this chapter, we place our approach on firmal formal footing. To do so, we employ elements from Pearl's [-@pearl2009causality] approach to causal modeling (directed acyclic graphs, or DAGs for short), which provides a syntax for mapping design inputs to design outputs. We also use the potential outcomes framework as presented, for example, in @Imbens2015, which many social scientists use to clarify their inferential targets. 
 
 Our goal here is not formalization for formalization's sake. Describing a research design as a DAG helps us to see the fundamental symmetries across the theoretical (M and I) and empirical (D and A) halves of a research design. A recurring theme of our book is that research designs tend to be stronger when the relationship of M to I is mirrored by the relationship of D to A; the aim of this chapter is to make this somewhat mystical claim more concrete.
 
@@ -184,7 +184,7 @@ From this discussion we see a striking analogy between the $M$, $I$ relationship
 
 In this section, we declare the @Gulzar2020 example in finer detail. The aim is to capture all of the analytically-relevant features of the design. In Chapter 2, we declared in words and in code a simplified version of the design, in order to communicate its key features. We will make this move again throughout the book: we will present simplified versions of canonical designs in the text, and also provide worked examples with the details of specific studies. Moving back and forth between the two will, we hope, enable you to both learn about the general principles and how to declare your own designs which always involve the fine details of research implementation.
 
-We display the DAG for the design in Figure \@ref(p2gulzarkhandag).
+We display the DAG for the design in Figure \@ref(fig:p2gulzarkhandag).
 
 ```{r p2gulzarkhandag, echo=FALSE, fig.height = 3.5, fig.width = 7, fig.cap = "DAG for Gulzar-Khan design."}
 design <-
@@ -358,7 +358,7 @@ We print the first six rows of the simulated data in Table \@ref(tab:gulzarkhans
 dat_head %>% kable(digits = 3, caption = "Six rows of simulated data from the Gulzar-Khan design.")
 ```
 
-From this data, we present simulated estimates of the two inquiries as well as the simulated estimand values in Table \@ref(gulzarkhansimestimates):
+From this data, we present simulated estimates of the two inquiries as well as the simulated estimand values in Table \@ref(tab:gulzarkhansimestimates):
 
 ```{r, eval = FALSE}
 estimates <- run_design(design)
