@@ -17,10 +17,50 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+<!-- make sure to rename the section title below -->
+
+```{r audit_experiments, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
 ## Audit experiments
 
+An audit experiment (see **Audit Experiment Design**) that seeks to assess the effects of an email from a Latino name (versus a White name) on *whether* and *how well* election officials respond to requests for information. For example, do they use a positive or negative tone. These questions seem reasonable enough. The problem, however, is that if there are officials who don't send responses, tone is undefined. More subtly, if there is an official that does send an email but would not have sent it in a different treatment condition, then tone is undefined for one of their potential outcomes. 
 
 ### Declaration
+
+- **M**odel: 
+    
+    The model has two outcome variables, $R_i$ and $Y_i$. $R_i$ stands for "response" and is equal to 1 if a response is sent, and 0 otherwise. $Y_i$ is the tone of the response and is normally distributed when it is defined. $Z_i$ is the treatment and equals 1 if the email is sent using a Latino name and 0 otherwise. The table below shows the potential outcomes for four possible types of subjects, depending on the potential outcomes of $R_i$. *A* types always respond regardless of treatment and *D* types never respond, regardless of treatment. *B* types respond if and only if they are treated, whereas *C* types respond if and only if they are *not* treated. The table also includes columns for the potential outcomes of $Y_i$, showing which potential outcome subjects would express depending on their type. The key thing to note is that for the B, C, and D types, the effect of treatment on $Y_i$ is *undefined* because messages never sent have no tone. The last (and very important) feature of our model is that the outcomes $Y_i$ are possibly correlated with subject type. Even though both $\E[Y_i(1) | \text{Type} = A]$ and $\E[Y_i(1) | \text{Type} = B]$ exist, there's no reason to expect that they are the same. 
+    In the design we assume a distribution of types with  40% *A*, 5% *B*, 10% *C*, and 45% *D*.
+
+| Type | $R_i(0)$ | $R_i(1)$ | $Y_i(0)$  | $Y_i(1)$ |
+| ---- | -------- | -------- | --------- | -------- |
+| A    | 1        | 1        | $Y_i(0)$  | $Y_i(1)$ |
+| B    | 0        | 1        | NA        | $Y_i(1)$ |
+| C    | 1        | 0        | $Y_i(0)$  | NA       |
+| D    | 0        | 0        | NA        | NA       |
+
+Table: Causal Types 
+
+- **I**nquiry: 
+
+    We have two inquiries. The first is straightforward: $\E[R_i(1) - R_i(0)]$ is the Average Treatment Effect on response. The second inquiry is the undefined inquiry that does not have an answer: $\E[Y_i(1) - Y_i(0)]$. We will also consider a third inquiry, which *is* defined: $\E[Y_i(1) - Y_i(0) | \mathrm{Type} = A]$, which is the average effect of treatment on tone among $A$ types.
+
+- **D**ata strategy: 
+
+    The data strategy will be to use complete random assignment to assign 250 of 500 units to treatment.
+
+- **A**nswer strategy: 
+
+    We'll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.
 
 ```{r}
 design <- 
@@ -38,8 +78,7 @@ design <-
 ```
 
 
-### Dag
-
+### DAG
 
 ```{r, echo = FALSE}
 dag <- dagify(
@@ -69,129 +108,29 @@ base_dag_plot %+% ggdd_df
 
 ### Example
 
-<!-- make sure to rename the section title below -->
 
-```{r audit_experiments, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
-```
-
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-```
-
-A basic requirement of a good research design is that the question it seeks to answer does in fact *have* an answer, at least under plausible models of the world. In our framework, this means that an inquiry $I$ must have an associated answer $a^M$, which refers to the answer under the model. Interestingly, we sometimes might not be conscious that the questions we ask do not have answers. Fortunately, when we ask a computer to answer such a question, it complains.
-
-How could a question not have an answer? Answerless questions can arise when inquiries depend on variables that do not exist or are undefined for some units. In other words, when there is a mismatch between the model and the inquiry, we're asking a question about something that doesn't exist.
-
-Consider an audit experiment (see **Audit Experiment Design**) that seeks to assess the effects of an email from a Latino name (versus a White name) on *whether* and *how well* election officials respond to requests for information. For example, do they use a positive or negative tone. These questions seem reasonable enough. The problem, however, is that if there are officials who don't send responses, tone is undefined. More subtly, if there is an official that does send an email but would not have sent it in a different treatment condition, then tone is undefined for one of their potential outcomes. 
 
 ### Design Declaration
 
-- **M**odel: 
-    
-    The model has two outcome variables, $R_i$ and $Y_i$. $R_i$ stands for "response" and is equal to 1 if a response is sent, and 0 otherwise. $Y_i$ is the tone of the response and is normally distributed when it is defined. $Z_i$ is the treatment and equals 1 if the email is sent using a Latino name and 0 otherwise. The table below shows the potential outcomes for four possible types of subjects, depending on the potential outcomes of $R_i$. *A* types always respond regardless of treatment and *D* types never respond, regardless of treatment. *B* types respond if and only if they are treated, whereas *C* types respond if and only if they are *not* treated. The table also includes columns for the potential outcomes of $Y_i$, showing which potential outcome subjects would express depending on their type. The key thing to note is that for the B, C, and D types, the effect of treatment on $Y_i$ is *undefined* because messages never sent have no tone. The last (and very important) feature of our model is that the outcomes $Y_i$ are possibly correlated with subject type. Even though both $\E[Y_i(1) | \text{Type} = A]$ and $\E[Y_i(1) | \text{Type} = B]$ exist, there's no reason to expect that they are the same. 
-    In the design we assume a distribution of types with  40% *A*, 5% *B*, 10% *C*, and 45% *D*.
 
-| Type | $R_i(0)$ | $R_i(1)$ | $Y_i(0)$  | $Y_i(1)$ |
-| ---- | -------- | -------- | --------- | -------- |
-| A    | 1        | 1        | $Y_i(0)$  | $Y_i(1)$ |
-| B    | 0        | 1        | NA        | $Y_i(1)$ |
-| C    | 1        | 0        | $Y_i(0)$  | NA       |
-| D    | 0        | 0        | NA        | NA       |
 
-Table: Causal Types 
+<!-- We learn three things from the design diagnosis. First, as expected, our experiment is unbiased for the average treatment effect on response. -->
 
-- **I**nquiry: 
+<!-- Next, we see that our second inquiry, as well as our diagnostics for it, are undefined. The diagnosis tells us that our definition of potential outcomes produces a definition problem for the estimand. Note that the diagnosands that are defined, including power, depend only on the answer strategy and not on the estimand. -->
 
-    We have two inquiries. The first is straightforward: $\E[R_i(1) - R_i(0)]$ is the Average Treatment Effect on response. The second inquiry is the undefined inquiry that does not have an answer: $\E[Y_i(1) - Y_i(0)]$. We will also consider a third inquiry, which *is* defined: $\E[Y_i(1) - Y_i(0) | \mathrm{Type} = A]$, which is the average effect of treatment on tone among $A$ types.
+<!-- Finally, our third estimand -- the average effects for the $A$ types -- is defined but our estimates are biased. The reason for this is that we cannot tell from the data which types are the $A$ types: we are not conditioning on the correct subset. Indeed, we are unable to condition on the correct subset. If a subject responds in the treatment group, we don't know if she is an $A$ or a $B$ type; in the control group, we can't tell if a responder is an $A$ or a $C$ type. Our difference-in-means estimator of the ATE on $Y$ among $A$s will be off whenever $A$s have different outcomes from $B$s and $C$s. -->
 
-- **D**ata strategy: 
+<!-- In some cases, the problem might be resolved by changing the inquiry. Closely related estimands can often be defined, perhaps by redefining $Y$ (e.g., emails never sent have a tone of zero). Some redefinitions of the problem, as in the one we examine above, require estimating effects for unobserved subgroups which is a difficult challenge. -->
 
-    The data strategy will be to use complete random assignment to assign 250 of 500 units to treatment.
+<!-- ### Applications -->
 
-- **A**nswer strategy: 
+<!-- This kind of problem is surprisingly common. Here are three more distinct instances of the problem: -->
 
-    We'll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.
+<!-- 1. $Y$ is the decision to vote Democrat ($Y=1$) or Republican ($Y=0$), $R$ is the decision to turn out to vote and $Z$ is a campaign message. The decision to vote may depend on treatment but if subjects do not vote then $Y$ is undefined. -->
+<!-- 2. $Y$ is the weight of infants, $R$ is whether a child is born and $Z$ is a maternal health intervention. Fertility may depend on treatment but the weight of unborn (possibly never conceived) babies is not defined. -->
+<!-- 2. $Y$ is the charity to whom contributions are made during fundraising and $R$ is whether anything is contributed and $Z$ is an encouragement to contribute. The identity of beneficiaries is not defined if there are no contributions.  -->
 
-```{r}
-# Model -------------------------------------------------------------------
-population <- declare_population(
-  N = 500,
-  type = sample(c("A", "B", "C", "D"), size = N, 
-                replace = TRUE, prob = c(.40, .05, .10, .45)))
-
-potential_outcomes <- declare_potential_outcomes(
-  R_Z_0 = type %in% c("A", "C"),
-  R_Z_1 = type %in% c("A", "B"),
-  Y_Z_0 = ifelse(R_Z_0, rnorm(n = sum(R_Z_0), mean = .1*(type == "A") - 2*(type == "C")), NA),
-  Y_Z_1 = ifelse(R_Z_1, rnorm(n = sum(R_Z_1), mean = .2*(type == "A") + 2*(type == "B")), NA)
-)
-
-# Inquiry -----------------------------------------------------------------
-estimand_1 <- declare_estimand(ATE_R = mean(R_Z_1 - R_Z_0))
-estimand_2 <- declare_estimand(ATE_Y = mean(Y_Z_1 - Y_Z_0))
-estimand_3 <- declare_estimand(
-  ATE_Y_for_As = mean(Y_Z_1[type == "A"] - Y_Z_0[type == "A"]))
-
-# Data Strategy -----------------------------------------------------------
-assignment <- declare_assignment(m = 250)
-
-# Answer Strategy ---------------------------------------------------------
-estimator_1 <- declare_estimator(R ~ Z, estimand = estimand_1, label = "ATE_R")
-estimator_2 <- declare_estimator(Y ~ Z, estimand = estimand_2, label = "ATE_Y")
-estimator_3 <- declare_estimator(Y ~ Z, estimand = estimand_3, label = "ATE_YA")
-
-# Design ------------------------------------------------------------------
-design <- 
-  population + 
-  potential_outcomes + 
-  assignment + 
-  estimand_1 + estimand_2 + estimand_3 + 
-  reveal_outcomes(outcome_variables = c("R", "Y")) + 
-  estimator_1 + estimator_2 + estimator_3
-```
-
-### Takeaways
-
-We now diagnose the design:
-
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis <- diagnose_design(design, sims = sims)
-```
-
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("audit_experiments"), "/diagnosis.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis, path = rds_file_path)
-}
-diagnosis <- read_rds(rds_file_path)
-```
-
-```{r, echo = FALSE}
-knitr::kable(reshape_diagnosis(diagnosis), booktabs = TRUE)
-```
-
-We learn three things from the design diagnosis. First, as expected, our experiment is unbiased for the average treatment effect on response.
-
-Next, we see that our second inquiry, as well as our diagnostics for it, are undefined. The diagnosis tells us that our definition of potential outcomes produces a definition problem for the estimand. Note that the diagnosands that are defined, including power, depend only on the answer strategy and not on the estimand.
-
-Finally, our third estimand -- the average effects for the $A$ types -- is defined but our estimates are biased. The reason for this is that we cannot tell from the data which types are the $A$ types: we are not conditioning on the correct subset. Indeed, we are unable to condition on the correct subset. If a subject responds in the treatment group, we don't know if she is an $A$ or a $B$ type; in the control group, we can't tell if a responder is an $A$ or a $C$ type. Our difference-in-means estimator of the ATE on $Y$ among $A$s will be off whenever $A$s have different outcomes from $B$s and $C$s.
-
-In some cases, the problem might be resolved by changing the inquiry. Closely related estimands can often be defined, perhaps by redefining $Y$ (e.g., emails never sent have a tone of zero). Some redefinitions of the problem, as in the one we examine above, require estimating effects for unobserved subgroups which is a difficult challenge.
-
-### Applications
-
-This kind of problem is surprisingly common. Here are three more distinct instances of the problem:
-
-1. $Y$ is the decision to vote Democrat ($Y=1$) or Republican ($Y=0$), $R$ is the decision to turn out to vote and $Z$ is a campaign message. The decision to vote may depend on treatment but if subjects do not vote then $Y$ is undefined.
-2. $Y$ is the weight of infants, $R$ is whether a child is born and $Z$ is a maternal health intervention. Fertility may depend on treatment but the weight of unborn (possibly never conceived) babies is not defined.
-2. $Y$ is the charity to whom contributions are made during fundraising and $R$ is whether anything is contributed and $Z$ is an encouragement to contribute. The identity of beneficiaries is not defined if there are no contributions. 
-
-All of these problem exhibit a form of post treatment bias (see section **Post treatment bias**) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn't exist for some subjects.
+<!-- All of these problem exhibit a form of post treatment bias (see section **Post treatment bias**) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn't exist for some subjects. -->
 
 ### Exercises
 
