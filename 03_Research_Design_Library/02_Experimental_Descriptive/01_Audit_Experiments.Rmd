@@ -32,7 +32,9 @@ b_sims <- 20
 
 ## Audit experiments
 
-An audit experiment (see **Audit Experiment Design**) that seeks to assess the effects of an email from a Latino name (versus a White name) on *whether* and *how well* election officials respond to requests for information. For example, do they use a positive or negative tone. These questions seem reasonable enough. The problem, however, is that if there are officials who don't send responses, tone is undefined. More subtly, if there is an official that does send an email but would not have sent it in a different treatment condition, then tone is undefined for one of their potential outcomes. 
+Audit experiments are used to measure whether requests that vary according along a nominally irrelevant dimension receive equal treatment. The design is used commonly in employment settings to measure whether job applications that are otherwise similar but come from candidates from different genders, races, or social backgrounds receive the same rate of job interview invitations. The same approach has been applied to a very wide range of settings, including education, housing, and requests to politicians.
+
+For example @WHITE_NATHAN_FALLER_2015 seeks to assess the effects of an email from a Latino name (versus a White name) on *whether* and *how well* election officials respond to requests for information. 
 
 ### Declaration
 
@@ -106,11 +108,14 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 base_dag_plot %+% ggdd_df
 ```
 
-### Example
+### Takeaways
+
+- The effect on response is identified by the design
+- This is a "descriptive" quantity in the sense that we seek to estimate the fraction of bureaucrats that discriminate against Latinos. We only learn this if the treatment effect on response is "monotonic"
 
 
+<!-- ### Example -->
 
-### Design Declaration
 
 
 
@@ -132,11 +137,11 @@ base_dag_plot %+% ggdd_df
 
 <!-- All of these problem exhibit a form of post treatment bias (see section **Post treatment bias**) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn't exist for some subjects. -->
 
-### Exercises
+<!-- ### Exercises -->
 
-1. The amount of bias on the third estimand depends on both the distribution of types and the correlation of types with the potential outcomes of Y. Modify the declaration so that the estimator of the effect on Y is unbiased, changing only the distribution of types. Repeat the exercise, changing only the correlation of type with the potential outcomes of $Y$.  
+<!-- 1. The amount of bias on the third estimand depends on both the distribution of types and the correlation of types with the potential outcomes of Y. Modify the declaration so that the estimator of the effect on Y is unbiased, changing only the distribution of types. Repeat the exercise, changing only the correlation of type with the potential outcomes of $Y$.   -->
 
-2. Try approaching the problem by redefining the inquiry, seeking to assess the effect of treatment on the share of responses with positive tone. 
+<!-- 2. Try approaching the problem by redefining the inquiry, seeking to assess the effect of treatment on the share of responses with positive tone.  -->
 
 
 
