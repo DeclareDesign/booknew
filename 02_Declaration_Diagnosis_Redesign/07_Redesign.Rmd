@@ -32,48 +32,58 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-Diagnosis is the process of learning the value of a diagnosand and research utility --- a weighted summary of diagnosands --- for a single design, often under multiple specifications of M to assess robustness to alternative models. Redesign is the process of *changing* parts of D and A in order to learn how diagnosand values and researcher utility change. The redesign process is complete when a research selects the best (or one of the best) D and A among the feasible set, as measured by researcher utility.
+Diagnosis is the process of learning the value of a diagnosand and the utility of a research design. Often diagnosis is undertaken for a range of  specifications of  *M* to assess robustness to alternative models. 
 
-For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{d'} - a^m|D)$. We can also hold the data and answer strategies fixed and consider the distribution of errors under an alternative model $M'$: $P_M(a^{d} - a^{m'}|D)$.
+Redesign is the process of *changing* parts of *D* and *A* (and, perhaps, $I$) in order to learn how diagnosand values and researcher utility change. The redesign process is complete when a researcher settles on a choice of **D** and **A** among the feasible set.
 
-Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have infinite variations, so the search space must be limited. Typically, researchers will want to find the optimal values of a small set of easily-controlled design parameters. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
+For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{d'} - a^m|D)$. In each case as we examine variation in **D** and **A** our diagnoses can assess how the distribution of errors differs for alternative model $M'$: $P_M(a^{d} - a^{m'}|D)$.
+
+Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have many variations, so the search space must be limited. Typically, researchers will want to find the optimal values of a small set of easily-controlled design parameters. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
 
 \begin{equation*}
 \begin{aligned}
 & \underset{N, N_t}{\text{argmin}}
-& & E_M(a^{d} - a^{m}|D_{N, N_t}) \\
+& & E_M(L(a^{d} - a^{m}|D_{N, N_t})) \\
 & \text{s.t.}
-& & 25 * N + 5 * N_t \leq 5000
+& & 25  N + 5  N_t \leq 5000
 \end{aligned}
 \end{equation*}
 
-However, optimizing a design for a single diagnosand may lead to poor design choices. If we redesign by optimizing for the power diagnosand, we are likely to find a design that is highly powered but highly biased --- it is targeting the wrong estimand. We can solve this by switching to the root mean-squared error as the diagnosand, which is a weighted combination of the bias and efficiency of the design. More generally, the choice of an optimal design requires the researcher to select a weighting of diagnosands. They must balance bias, efficiency, the risk of imprecise null results, the risk of getting the sign of an effect wrong, and other diagnosands given their research goals.
+where $L$ is a loss function, increasing in the difference between $a^{d}$ and $a^{m}$.
+
+There is no reason however to optimizing with respect to a single diagnosand. If we redesign by optimizing for the power diagnosand, we are likely to find a design that is highly powered but highly biased --- it is targeting the wrong estimand. We can solve this by switching to the root mean-squared error as the diagnosand, which reflects both the bias and efficiency of the design. More generally, the choice of an optimal design requires the researcher to select a weighting of diagnosands. They must balance bias, efficiency, the risk of imprecise null results, the risk of getting the sign of an effect wrong, and other diagnosands given their research goals.
 
 The full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of one or more diagnosands, and comparing the diagnoses to what could be achieved under alternative designs.
 
 <!-- We usually redesign with respect to the data and answer strategies. We tweak the data strategy by changing $N$ to see how RMSE changes. We change the answer strategy to see how the inclusion of covariates decreases bias. While we usually redesign the empirical side, redesign can take place with respect to the theoretical side (model and inquiry) as well.^[There are some subtleties here. Sometimes a single design includes ncertainty about the model -- for example when we draw parameter values from a random distribution. We have a parameter be drawn from a normal distribution centered at 0.3 with an SD of 0.1 because we think a resonable value for the parameter is "about three, plus or minus". We *could* imagine that we are "redesigning" with respect to each value of parameter, but only if the goal is to see how the changes in the model change the diagnosands. Otherwise, it's not redesign, it's just plain diagnosis, averaging over multiple models.] -->
 
+## Graphical inspection 
+
 You may have encountered some figures that implicitly do redesign. Power curves are an example of the redesign process. A power curve has sample size on the horizontal axis and statistical power on the vertical axis. From a power curve, you can learn how big a study needs to be in order to achieve a desired level of statistical power. A "minimum detectable effect" figure is similar. It has sample size on the horizontal axis too, but plots the smallest effect size for which 80% power can be achieved. These plots are useful for learning something like, "given my budget, I can only sample 400 units. At 400 units, the MDE is a 0.5 standard deviation effect. My theory says that that the effect should be smaller than that, something closer to 0.1 SDs. I should apply for more funding or study something else."
 
-The highest level advice we have about redesign is, at the beginning of the processes at least, change one design parameter at a time. Vary the data strategy, holding the model, inquiry, and answer strategy constant. Change the answer strategy, while holding the other aspects of the design constant. 
+The highest level advice we have about redesign is, at the beginning of the processes at least, change one design parameter at a time. Vary the data strategy, holding the model, inquiry, and answer strategy constant. Change the answer strategy, while holding the other aspects of the design constant. Graphical representation of how diagnosands change as designs change are an intuitive way to do this.
 
-## Redesign Mountain
+## Formal optimization
 
-This figure shows a schematic of the redesign process. We vary design parameter 1 and design parameter 2 independently to learn the value of the diagnosand for each combination of design parameters. The redesign process can be in more than 2 dimensions of course. We suggest varying the design parameters you have control over first.
+* Example with a loss function drawn from a decision problem and selection of an optimal design over some set. Candidate: assume a decision will be taken if estimate is of a given size. Costs of different types of errors. Note: optimization does not have to use diagnosands as inputs but may be done via a complex diagnosand.
 
-```{r redesignmountain, fig.cap = "Redesign mountain.", echo=FALSE}
-expand.grid(param_1 = seq(0, 1, length.out = 100),
-            param_2 = seq(0, 1, length.out = 100)) %>%
-  mutate(diagnosand = 1 - sqrt((param_1 - 0.3) ^ 2 + (param_2 - 0.7) ^ 2)) %>%
-  ggplot(aes(param_1, param_2)) + 
-  geom_tile(aes(fill = diagnosand)) +
-  geom_point(x = 0.3, y = 0.7, size = 2) +
-  geom_contour(aes(z = diagnosand)) +
-  scale_fill_gradient(low = "blue", high = "red") +
-  labs(x = "Design Parameter 1",
-       y = "Design Parameter 2",
-       title = "Diagnosands change as design parameters change")
-```
+<!-- ## Redesign Mountain -->
+
+<!-- This figure shows a schematic of the redesign process. We vary design parameter 1 and design parameter 2 independently to learn the value of the diagnosand for each combination of design parameters. The redesign process can be in more than 2 dimensions of course. We suggest varying the design parameters you have control over first. -->
+
+<!-- ```{r redesignmountain, fig.cap = "Redesign mountain.", echo=FALSE} -->
+<!-- expand.grid(param_1 = seq(0, 1, length.out = 100), -->
+<!--             param_2 = seq(0, 1, length.out = 100)) %>% -->
+<!--   mutate(diagnosand = 1 - sqrt((param_1 - 0.3) ^ 2 + (param_2 - 0.7) ^ 2)) %>% -->
+<!--   ggplot(aes(param_1, param_2)) +  -->
+<!--   geom_tile(aes(fill = diagnosand)) + -->
+<!--   geom_point(x = 0.3, y = 0.7, size = 2) + -->
+<!--   geom_contour(aes(z = diagnosand)) + -->
+<!--   scale_fill_gradient(low = "blue", high = "red") + -->
+<!--   labs(x = "Design Parameter 1", -->
+<!--        y = "Design Parameter 2", -->
+<!--        title = "Diagnosands change as design parameters change") -->
+<!-- ``` -->
 
 
 
