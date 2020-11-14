@@ -325,7 +325,7 @@ dat <- draw_data(design)
 ```{r, echo = FALSE, eval = do_diagnosis}
 dat <- draw_data(design)
 
-dat_head <- head(dat)
+dat_head <- head(dat, 5)
 
 estimates <- run_design(design) 
 
@@ -355,7 +355,9 @@ summary_df <- read_rds(rds_file_path_summary_df)
 We print the first six rows of the simulated data in Table \@ref(tab:gulzarkhansimdata):
 
 ```{r gulzarkhansimdata, echo = FALSE}
-dat_head %>% kable(digits = 3, caption = "Six rows of simulated data from the Gulzar-Khan design.")
+dat_head %>% 
+  select(-villages, -N_villages, -citizens, -districts, -Z_cond_prob, -S_inclusion_prob) %>% 
+  kable(digits = 3, caption = "Five rows of simulated data from the Gulzar-Khan design.", booktabs = TRUE)
 ```
 
 From this data, we present simulated estimates of the two inquiries as well as the simulated estimand values in Table \@ref(tab:gulzarkhansimestimates):
@@ -365,14 +367,16 @@ estimates <- run_design(design)
 ```
 
 ```{r gulzarkhansimestimates, echo = FALSE}
-estimates$estimates_df %>% left_join(estimates$estimands_df) %>% select(estimator_label, estimate, std.error, estimand)  %>% kable(digits = 3, caption = "Simulated estimates and estimand from one run of the Gulzar-Khan design.")
+estimates$estimates_df %>% left_join(estimates$estimands_df) %>% 
+select(estimator_label, estimate, std.error, estimand) %>% 
+kable(digits = 3, caption = "Simulated estimates and estimands from one run of the Gulzar-Khan design.", booktabs = TRUE)
 ```
 
 In Table \@ref(tab:gulzarkhansimcrosstab), we display the number of people and villages in each treatment assignment and sampling condition to illustrate the data strategy:
 
 ```{r gulzarkhansimcrosstab, echo = FALSE}
 summary_df %>% 
-  kable(caption = "Count of units by treatment assignment and sampling status.")
+  kable(caption = "Count of units by treatment assignment and sampling status.", booktabs = TRUE)
 ```
 
 ## Further reading

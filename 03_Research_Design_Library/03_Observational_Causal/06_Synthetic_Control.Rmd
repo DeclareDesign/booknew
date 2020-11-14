@@ -256,7 +256,7 @@ design <-
 ```{r}
 state_data <- draw_data(design)
 
-state_data %>% dplyr::select(state, synth_weights) %>% distinct %>% arrange(-synth_weights) %>% head
+state_data %>% dplyr::select(state, synth_weights) %>% distinct %>% arrange(-synth_weights) %>% head(5)
 ```
 
 ```{r}
@@ -305,7 +305,7 @@ synth_diagnosands <- declare_diagnosands(
 
 diagnosis <- diagnose_design(simulations, diagnosands = synth_diagnosands, bootstrap_sims = b_sims)
 
-kable(reshape_diagnosis(diagnosis))
+kable(reshape_diagnosis(diagnosis), booktabs = TRUE)
 ```
 
 - we see that Synth outperforms either method
@@ -342,7 +342,7 @@ Now all that simulating, saving, and loading is done, and we can use the simulat
 ```{r}
 diagnosis_outside_hull <- diagnose_design(simulations_outside_hull, diagnosands = synth_diagnosands, bootstrap_sims = b_sims)
 
-kable(reshape_diagnosis(diagnosis_outside_hull))
+kable(reshape_diagnosis(diagnosis_outside_hull), booktabs = TRUE)
 ```
 
 ```{r}

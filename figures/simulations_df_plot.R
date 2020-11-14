@@ -127,7 +127,7 @@ simulation_1 <- simulations %>% filter(sim_ID == 1)
 
 simulation_1 %>% 
   select(estimand, estimate, std.error, conf.low, conf.high, p.value) %>%
-  knitr::kable(digits = 3)
+  knitr::kable(digits = 3, booktabs = TRUE)
 
 gg_df_1 <- gg_df %>% filter(sim_ID == 1)
 

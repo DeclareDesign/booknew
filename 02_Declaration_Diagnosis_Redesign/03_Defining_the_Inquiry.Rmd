@@ -125,16 +125,15 @@ Descriptive inquiries are usually about latent variables since we mostly care ab
 
 Table \@ref(tab:descriptiveestimands) enumerates some common descriptive estimands. These estimands have in common that you do not need any counterfactual quantities in order to define. Note especially that the covariance (similarly, the correlation) between $X$ and $Y$ enters as a descriptive estimand, so too does the line of best fit for $Y$ given $X$.
 
-
-| Inquiry           | Description                                   |
-| ----------------- | --------------------------------------------- |
-| $\E_{i\in N}(Y)$   | The average value of the variable Y           | 
-| $\E[Y | X = 1]$    | A conditional expectation of Y given X = 1.   |
-| $\V[Y]$            | The variance of Y                             |
-| $\mathrm{Cov}(X, Y)$       | The covariance of X and Y                     |
-| $\mathrm{BLP}(Y | X)$      | The best linear predictor of Y given X        |
-| $\mathrm{CEF}(Y | X)$      | Conditional expectation function of Y given X |
-| Truth status of X | Is X True or False?                            |
+| Inquiry               | Description                                    | Code                 |
+| --------------------- | ---------------------------------------------- | -------------------- |
+| $\E_{i\in N}(Y)$      | The average value of the variable Y            | `mean(Y)`            |
+| $\E[Y | X = 1]$       | A conditional expectation of Y given X = 1.    | `mean(Y[X == 1])`    |
+| $\V[Y]$               | The variance of Y                              | `pop.var(Y)`         |
+| $\mathrm{Cov}(X, Y)$  | The covariance of X and Y                      | `pop.cov(X, Y)`      |
+| $\mathrm{BLP}(Y | X)$ | The best linear predictor of Y given X         | `cov(Y, X) / var(X)` |
+| $\mathrm{CEF}(Y | X)$ | Conditional expectation function of Y given X  | `cef(Y, X)`          |
+| Truth status of X     | Is X True or False?                            | `X == TRUE`          |
 
 Table: (\#tab:descriptiveestimands) Descriptive inquiries
 
@@ -150,13 +149,12 @@ Table \@ref(tab:causalestimands) enumerates some common causal estimands. These 
 
 
 
-| Inquiry                                                  | Description                                                                    |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| $\E_{i\in S}[Y_i(1) - Y_i(0)]$                           | Sample average treatment effect  (SATE)                                        |
-| $\E_{i\in N}[Y_i(1) - Y_i(0)]$                           | Population average treatment effect (PATE)                                     |
-| $\E[Y_i(1) - Y_i(0) | C_i = 1]$                          | Conditional average treatment effect (CATE) of $X$                             |
-| $\E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]$               | Complier average causal effect (CACE) or local average treatment effect (LATE) |
-| $\E[(Y_i(1, 1) - Y_i(0,1)) - (Y_i(1, 0) - Y_i(0,0))]$    | Causal interactions of $X_1$ and $X_2$                                         |
+| Inquiry                                               | Description                                                                    | Code                                                              |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| $\E_{i\in N}[Y_i(1) - Y_i(0)]$                        | Average treatment effect (ATE)                                                 | `mean(Y_D_1 - Y_D_0)`                                             |
+| $\E[Y_i(1) - Y_i(0) | X_i = 1]$                       | Conditional average treatment effect (CATE) for X = 1                          | `mean(Y_D_1[X == 1] - Y_D_0[X == 1])`                             |
+| $\E[Y_i(1) - Y_i(0) | d_i(1) \geq d_i(0)]$            | Complier average causal effect (CACE) or local average treatment effect (LATE) | `mean(Y_D_1[D_Z_1 >= D_Z_0] - Y_D_0[D_Z_1 >= D_Z_0])`             |
+| $\E[(Y_i(1, 1) - Y_i(0,1)) - (Y_i(1, 0) - Y_i(0,0))]$ | Causal interactions of $D_1$ and $D_2$                                         | `mean((Y_D1_1_D2_1 - Y_D1_0_D2_1) - (Y_D1_1_D2_0 - Y_D1_0_D2_0))` |
 
 Table: (\#tab:causalestimands) Causal inquiries
 
@@ -164,17 +162,17 @@ Generations of students have been told to excise words that connote causality fr
 
 ### Causal attribution inquiries {#causalattribution}
 
-Another kind of data-dependent inquiry that is distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units) *irrespective of the values that the outcome takes*. By contrast, causal attribution inquiries focus on probabilities that condition on realized outcomes, such as, the "probability of the absence of the outcome in the hypothetical absence of the treatment ($Y_i(0) = 0$) given the actual presence of both ($X_i = Y_i = 1$)" [@yamamoto2012understanding, pp.240-241]. @goertz2012tale refer to causal attribution inquiries as cause-of-effects questions because they start with an outcome (an effect) and seek validate a hypothesis about its cause. 
+Another kind of data-dependent inquiry that is distinct from the notion of a causal effect is that of causal attribution. A causal effect inquiry focuses on the change in an outcome that would be induced by a change in the causal variable (at the unit-level or across units) *irrespective of the values that the outcome takes*. By contrast, causal attribution inquiries focus on probabilities that condition on realized outcomes, such as, the "probability of the absence of the outcome in the hypothetical absence of the treatment ($Y_i(0) = 0$) given the actual presence of both ($D_i = Y_i = 1$)" [@yamamoto2012understanding, pp.240-241]. @goertz2012tale refer to causal attribution inquiries as cause-of-effects questions because they start with an outcome (an effect) and seek validate a hypothesis about its cause. 
 
-The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like "'Was economic crisis necessary for democratization in the Southern Cone of Latin America?' or 'Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?'" are examples of such inquiries [@goertz2012tale]. Though they bear a resemblance and *are* related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)^[Specifically, as @yamamoto2012understanding points out, the causal attribution estimand for binary variables can be written $\Pr(Y_i(0) = 0 \mid X_i = Y_i = 1)$, while the average treatment effect among those successfully treated can be written $E[Y_i(1) - Y_i(0) \mid X_i = Y_i = 1]$. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written $\Pr(Y_i(1)\mid X_i = Y_i = 1) - \Pr(Y_i(0) \mid X_i = Y_i = 1)$. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.] it is important not to confuse the two kinds of inquiries, as often happens. 
+The dependence of these inquiries on actual outcomes makes them harder (though not impossible!) to answer with the tools of quantitative science, though they are often of central interest to scientific and policy agendas and have occupied a large number of qualitative studies. Questions like "'Was economic crisis necessary for democratization in the Southern Cone of Latin America?' or 'Were high levels of foreign investment in combination with soft authoritarianism and export-oriented policies sufficient for the economic miracles in South Korea and Taiwan?'" are examples of such inquiries [@goertz2012tale]. Though they bear a resemblance and *are* related to causal effects inquiries that focus on observed subsets (such as the average treatment effect on the treated, or ATT)^[Specifically, as @yamamoto2012understanding points out, the causal attribution estimand for binary variables can be written $\Pr(Y_i(0) = 0 \mid D_i = Y_i = 1)$, while the average treatment effect among those successfully treated can be written $E[Y_i(1) - Y_i(0) \mid D_i = Y_i = 1]$. Given binary outcomes and the additive property of expectations, the ATE among those successfully treated can be written $\Pr(Y_i(1)\mid D_i = Y_i = 1) - \Pr(Y_i(0) \mid D_i = Y_i = 1)$. The causal attribution inquiry can be written as one minus the second term of the ATE among the successfully treated.] it is important not to confuse the two kinds of inquiries, as often happens. 
 
-While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. @pearl1999probabilities provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, $Y_i = 1$ and $X_i = 1$ could represent "Peace" and "Both democracies" and $Y_i = 0$ and $X_i = 0$ could represent "War" and "Not both democracies." Then $\Pr(Y_i(X_i = 0) = 0  \mid X_i = Y_i = 1)$ asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies---that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, $\Pr(Y_i(X_i = 1)=1  \mid X_i = Y_i = 0)$  asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies---in other words, in what proportion of cases would democracy have been sufficient to cause peace? @yamamoto2012understanding extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.
+While it is increasingly common to explicitly formalize causal effect inquiries, it is less common to formalize causal attribution inquiries. Doing so, however, can be important to providing the specificity required to diagnose a design on a computer. @pearl1999probabilities provides formal definitions for these inquiries using the language of causal necessity and sufficiency, depicted on the table below. To put these inquiries in the context of the democratic peace hypothesis, for example, in a given country dyad-year, $Y_i = 1$ and $D_i = 1$ could represent "Peace" and "Both democracies" and $Y_i = 0$ and $D_i = 0$ could represent "War" and "Not both democracies." Then $\Pr(Y_i(D_i = 0) = 0  \mid D_i = Y_i = 1)$ asks, among peaceful, fully democratic dyads, what is the proportion that would have had wars were they not both democracies---that is, in what proportion of dyad-years was democracy a necessary cause of peace? Similarly, $\Pr(Y_i(D_i = 1)=1  \mid D_i = Y_i = 0)$  asks, among dyads that had war and at least one non-democracy in a given year, what is the proportion that would have experienced peace if both countries were democracies---in other words, in what proportion of cases would democracy have been sufficient to cause peace? @yamamoto2012understanding extends on this account to focus on causal attribution inquiries that focus on important subsets, such as compliers.
 
-| Inquiry                                                   | Description                                                                    |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| $\Pr(Y_i(X_i=0)=0  \mid X_i = Y_i = 1)$                   | Probability $X$ necessary for $Y$                                              |
-| $\Pr(Y_i(X_i=1)=1  \mid X_i = Y_i = 0)$                   | Probability $X$ sufficient for $Y$                                             |
-| $\Pr(Y_i(X_i = 0) = 0 \mid X_i = Y_i = 1, X_i(z)=z)$      | Complier probability  $X$ necessary for $Y$                                    |
+| Inquiry                                                | Description                                | Code                                                          |
+| ------------------------------------------------------ | ------------------------------------------ | ------------------------------------------------------------- |
+| $\Pr(Y_i(D_i=0)=0  \mid D_i = Y_i = 1)$                | Probability $D$ necessary for $Y$          | `mean(Y_D_0[D == 1 & Y == 1] == 0)`                           |
+| $\Pr(Y_i(D_i=1)=1  \mid D_i = Y_i = 0)$                | Probability $D$ sufficient for $Y$         | `mean(Y_D_1[D == 0 & Y == 0] == 1)`                           |
+| $\Pr(Y_i(D_i = 0) = 0 \mid D_i = Y_i = 1, D_i(Z_i)=z)$ | Complier probability $D$ necessary for $Y$ | `mean(Y_D_0[D == 1 & Y == 1 & D_Z_1 == 1 & D_Z_0 == 0] == 0)` |
 
 Table: (\#tab:attributionestimands) Causal attribution inquiries
 
@@ -186,46 +184,54 @@ Table \@ref(tab:MI1b) shows "draws" of three  estimands. We declare a simple ref
 
 
 ```{r MI1a, comment = "", eval = FALSE}
-M <-
-  declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * Z + U) +
-  reveal_outcomes()
+model <-
+  declare_population(N = 100,
+                     U = rnorm(N),
+                     D = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * D + U, 
+                             assignment_variable = "D") +
+  reveal_outcomes(Y, D)
 
-I <- declare_estimand(
-  YZ1 = mean(Y[Z==1]),
-  ATE = mean(Y_Z_1 - Y_Z_0),
-  POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0])
+inquiry <-
+  declare_estimand(
+    treatment_group_mean = mean(Y[D == 1]),
+    ATE = mean(Y_D_1 - Y_D_0),
+    probability_of_causation = mean((Y_D_0 < 0)[D == 1 & Y_D_1 > 0])
   )
 
-draw_estimands(M+I)
+draw_estimands(model + inquiry)
 
 ```
 
 ```{r MI1b, comment = "", echo  = FALSE}
-M <-
-  declare_population(N = 100, U = rnorm(N), Z = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * Z + U) +
-  reveal_outcomes()
+model <-
+  declare_population(N = 100,
+                     U = rnorm(N),
+                     D = rbinom(N, 1, .5)) +
+  declare_potential_outcomes(Y ~ 0.5 * D + U, 
+                             assignment_variable = "D") +
+  reveal_outcomes(Y, D)
 
-I <- declare_estimand(
-  YZ1 = mean(Y[Z==1]),
-  ATE = mean(Y_Z_1 - Y_Z_0),
-  POC = mean((Y_Z_0<0)[Z==1 & Y_Z_1>0])
+inquiry <-
+  declare_estimand(
+    treatment_group_mean = mean(Y[D == 1]),
+    ATE = mean(Y_D_1 - Y_D_0),
+    probability_of_causation = mean((Y_D_0 < 0)[D == 1 & Y_D_1 > 0])
   )
 
-draw_estimands(M+I) %>% 
-  kable(caption = "One model three estimands.", digits = 2)
+draw_estimands(model + inquiry) %>% 
+  kable(caption = "One model three estimands.", digits = 3, booktabs = TRUE)
 
 ```
 
-The first estimand is a descriptive estimand: the average outcome for $Y$ when $Z = 1$. 
+The first estimand is a descriptive estimand: the average outcome for $Y$ when $D = 1$. 
 Note that the declaration of the estimand does not make use of any counterfactual quantities.   
  
-The second estimand is causal effect. The inquiry is asked of the same model but this time the inquiry takes the average difference, across individual, in two potential outcomes.  Unlike the descriptive estimand, this estimand uses information about $Y$'s potential outcomes but it does not use any information about the distribution of $X$.
+The second estimand is causal effect. The inquiry is asked of the same model but this time the inquiry takes the average difference, across individual, in two potential outcomes.  Unlike the descriptive estimand, this estimand uses information about $Y$'s potential outcomes but it does not use any information about the distribution of $D$.
 
-The third inquiry asks an attribution question, in this case  on continuous data. In this case we ask about the share of units with positive values of $Y$ and $Z=1$ that *would have had* negative values of $Y$ were $Z=0$. This estimand requires information about both potential outcomes and actual outcomes (for $Z$).
+The third inquiry asks an attribution question, in this case  on continuous data. In this case we ask about the share of units with positive values of $Y$ and $D=1$ that *would have had* negative values of $Y$ were $D=0$. This estimand requires information about both potential outcomes and actual outcomes (for $D$).
 
-In this illustration each "run" of `M+I` provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution  or we might think of the model, $M$, as representing a set of possible worlds and we are interested in performance in each of them. Which approach we take will matter when we turn to diagnosis. 
+In this illustration each "run" of `model + inquiry` provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution or we might think of the model, $M$, as representing a set of possible worlds and we are interested in performance in each of them. Which approach we take will matter when we turn to diagnosis. 
 
 ## Common complexities in defining estimands
 
@@ -239,10 +245,10 @@ There is a curiosity here in that one might wonder how to assess whether a given
 
 
 
-| Inquiry                                                   | Description                                                                    |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| $\E[Y_i(1) - Y_i(0) | X_i = 1]$                           | Average treatment effect on the treated (ATT)                                  |
-| $\E[Y_i(1) - Y_i(0) | S_i = 1]$                           | SATE                                                                           |
+| Inquiry                          | Description                                   | Code                                  |
+| -------------------------------- | --------------------------------------------- | ------------------------------------- |
+| $\E[Y_i(1) - Y_i(0) | D_i = 1]$  | Average treatment effect on the treated (ATT) | `mean(Y_D_1[D == 1] - Y_D_0[D == 1])` |
+| $\E[Y_i(1) - Y_i(0) | S_i = 1]$  | Sample average treatment effect (SATE)        | `mean(Y_D_1[S == 1] - Y_D_0[S == 1])` |
 
 Table: (\#tab:datadependentestimands) Data-dependent inquiries.
 

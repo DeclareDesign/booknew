@@ -248,7 +248,10 @@ diagnosis_list_ceiling <- read_rds(rds_file_path)
 ```
 
 ```{r, echo = FALSE}
-diagnosis_list_ceiling %>% get_diagnosands %>% select(estimator_label, estimand_label, bias, rmse) %>% kable(digits = 3)
+diagnosis_list_ceiling %>% 
+get_diagnosands %>% 
+select(estimator_label, estimand_label, bias, rmse) %>% 
+kable(digits = 3, booktabs = TRUE)
 ```
 
 We see that the list experiment is still an unbiased estimator for the average difference in responses to the treatment list and the shorter control list (ATE). But under ceiling effects, it is no longer an unbiased estimator for the proportion of truthful Trump vote. Indeed, it is more unbiased than the direct question. The divergence illustrates a common feature of experimental designs for descriptive inference: the average treatment effect can be estimated without bias under SUTVA and randomization with these designs, but additional assumptions are required in order to add an interpretation of the ATE as the descriptive quantity of interest. The burden is on the researcher to demonstrate the credibility of these additional assumptions. The experimental design alone is not sufficient justification. 
@@ -298,7 +301,7 @@ Researchers may bolster the assumptions to identify the descriptive estimand thr
 <!-- ``` -->
 
 <!-- ```{r} -->
-<!-- diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimand_label, estimator_label, bias, rmse) %>% kable -->
+<!-- diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimand_label, estimator_label, bias, rmse) %>% kable(booktabs = TRUE)) -->
 <!-- ``` -->
 
 We see that the design is stil lunbiased for the ATE and now is unbiased for the proportion of truthful Trump vote. This is because there are no longer ceiling effects, which represented a violation of the no design effects assumption required to interpret the ATE as the proportion of truthful Trump vote. 
@@ -386,7 +389,7 @@ rr_diagnosis <- read_rds(rds_file_path)
 ```
 
 ```{r}
-kable(reshape_diagnosis(rr_diagnosis))
+kable(reshape_diagnosis(rr_diagnosis), booktabs = TRUE)
 ```
 
 #### Bias-variance tradeoff
@@ -413,7 +416,7 @@ rr_tradeoff_diagnosis <- read_rds(rds_file_path)
 <!--   # bias line -->
 <!--   geom_line(aes(x = )) -->
 <!--  -->
-<!-- # kable(reshape_diagnosis(rr_tradeoff_diagnosis)) -->
+<!-- # kable(reshape_diagnosis(rr_tradeoff_diagnosis), booktabs = TRUE) -->
 <!-- ``` -->
 
 
