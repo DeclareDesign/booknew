@@ -27,236 +27,169 @@ sims <- 500
 b_sims <- 20
 ```
 
+Often we are interested in features of a population, but data on the entire population is prohibitively expensive to collect. Instead, researchers obtain data on a small fraction of the population and use measurements taken on that sample to draw inferences about the population.
+
+Imagine we seek to estimate the average political ideology of adults residents of the small town of Portola, California (population 2,100). Households include between 1 and 3 adults; adults living in the same households typically have similar ideologies, but differ somewhat. The *latent* ideology of each subject is therefore composed of a household-level shock as well as an idiosyncratic individual-level shock. Our data strategy will involve administering a survey that ask subjects to place themselves on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We approximate this measurement procedure with a function that "cuts" the latent ideology into 7 separate groups.
+
+Our inquiry is "data-dependent", since we are interested the population mean of the measured variable $Y$: $\frac{1}{N} \sum_1^N Y_i = \bar{Y}$. Our first sampling strategy will be complete random sampling. We draw a sample of exactly $n = 100$, where every member of the population has an equal probability of inclusion in the sample, $\frac{n}{N}$. Our answer strategy is the sample mean estimator: $\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i$, implemented here as an ordinary least squares regression to facilitate the easy calculation of auxiliary statistics like the standard error of the estimate and the 95% confidence interval.
+
 ### Declaration
 
 ```{r}
-fixed_population <-
-  fabricate(N = 500, Y = sample(1:7, N, replace = TRUE))
+portola <-
+  fabricate(
+    households = add_level(N = 500, 
+                           n_adults = sample(1:3, N, replace = TRUE),
+                           household_shock = rnorm(N, mean = 1)),
+    adults = add_level(N = n_adults, 
+                       individual_shock = rnorm(N, sd = 0.1),
+                       Ystar = household_shock + individual_shock)
+    )
 
 design <- 
-  declare_population(data = fixed_population) + 
+  declare_population(data = portola) + 
+  declare_measurement(Y = as.numeric(
+    cut(Ystar, breaks = c(-Inf, seq(-2.5, 2.5), Inf), 
+        labels = 1:7))) +
   declare_estimand(Y_bar = mean(Y)) + 
   declare_sampling(n = 100) + 
   declare_estimator(Y ~ 1, model = lm_robust, estimand = "Y_bar")
 ```
-### Dag
+
+### DAG
 
 ```{r, echo=FALSE}
-dag <- dagify(Y ~ S)
+
+d_internal <-
+  declare_population(data = portola) +
+  declare_step(Y = as.numeric(cut(
+    Ystar, breaks = c(-Inf, seq(-2.5, 2.5), Inf),
+    labels = 1:7
+  )), handler = fabricate) +
+  declare_sampling(n = 100, drop_nonsampled = FALSE) +
+  declare_measurement(Q = 1) 
+
+
+dag <- dagify(Y ~ Q + Ystar,
+              Q ~ S)
 
 nodes <-
   tibble(
-    name = c("Y", "S"),
-    label = c("Y", "S"),
-    annotation = c("**Outcome**<br>measured only for sampled units",
-                   "**Sampling indicator**<br>randomly set by designer"),
-    x = c(5, 1),
-    y = c(2.5, 2.5),
-    nudge_direction = c("N", "N"),
+    name = c("Y", "S", "Q", "Ystar"),
+    label = c("Y", "S", "Q", "Y^*"),
+    annotation = c("**Measured outcome**<br>observed only for sampled units",
+                   "**Sampling indicator**<br>randomly set by designer",
+                   "**Survey Question**",
+                   "**Latent outcome**"),
+    x = c(5, 1, 5, 1),
+    y = c(1.5, 3.5, 3.5, 1.5), 
+    nudge_direction = c("S", "N", "N", "S"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes, d_internal)
 
 base_dag_plot %+% ggdd_df
 ```
 
-### Example
+#### Diagnosis
 
-### Simple random sampling
-
-Often we are interested in features of a population, but data on the entire population is prohibitively expensive to collect. Instead, researchers obtain data on a small fraction of the population and use measurements taken on that sample to draw inferences about the population.
-
-Imagine we seek to estimate the average political ideology of residents of the small town of Portola, California, on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We draw a simple random sample in which all residents have an equal chance of inclusion in the study. It's a straightforward design but formally declaring it will make it easy to assess its properties. 
-
-#### Design Declaration
-
-- **M**odel: 
-
-    Even for this most basic of designs, researchers bring to bear a background model of the world. As described in Chapter 1, the three elements of a model are the signature, probability distributions over variables, and functional equations among variables. The signature here is a specification of the variable of interest, $Y$, with a well defined domain (seven possible values between 1 and 7). In the code declaration below, we assume a uniform distribution over these 7 values. This choice is a speculation about the population distribution of $Y$; some features of the design diagnosis will depend on the choice of distribution. The functional equations seem absent here as there is only one variable in the model. We could consider an elaboration of the model that includes three variables: the true outcome, $Y$; the decision to measure the outcome, $M$; and the measured outcome, $Y^M$. We ignore this complication for now under the assumption that $Y = Y^M$, i.e., that $Y$ is measured perfectly. Finally, the model also includes information about the size of the population. Portola, California, has a population of approximately 2100 people as of 2010, so $N = 2100$.
-
-- **I**nquiry: 
-
-    Our inquiry is the population mean of $Y$: $\frac{1}{N} \sum_1^N Y_i = \bar{Y}$.
-    
-- **D**ata strategy: 
-
-    In simple random sampling, we draw a random sample without replacement of size $n$, where every member of the population has an equal probability of inclusion in the sample, $\frac{n}{N}$. When $N$ is very large relative to $n$, units are drawn approximately independently. In this design we measure $Y$ for $n=100$ units in the sample; the other $N-n$ units are not measured.
-
-- **A**nswer strategy: 
-
-    We estimate the population mean with the sample mean estimator: $\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i$. Even though our inquiry implies our answer should be a single number, an answer strategy typically also provides statistics that help us assess the uncertainty around that single number. To construct a 95\% confidence interval around our estimate, we calculate the standard error of the sample mean, then approximate the sampling distribution of the sample mean estimator using a formula that includes a finite population correction. In particular, we approximate the estimated sampling distribution by a $t$ distribution with $n - 1$ degrees of freedom. In the code for our answer strategy, we spell out each step in turn. 
-
-```{r}
-fixed_population <- declare_population(N = 500, Y = sample(1:7, N, replace = TRUE))()
-
-random_sampling_design <- 
-  declare_population(data = fixed_population) + 
-  declare_estimand(Ybar = mean(Y)) + 
-  declare_sampling(n = 100) + 
-  declare_estimator(Y ~ 1, model = lm_robust, estimand = "Ybar")
-```
-
-```{r, fig.width = 5, fig.height = 5, eval = FALSE}
-plot(random_sampling_design)
-```
-
-#### Takeaways
-
-With the design declared we can run a diagnosis and plot results from Monte Carlo simulations of the design:
+Two main diagnosands for the simple random sampling design are bias and rmse. We want to know if we get the right answer on average and we want to know, on average, how far off from the truth we are.
 
 ```{r, eval = FALSE}
-diagnosis <- diagnose_design(
-  design, sims = sims, bootstrap_sims = b_sims, diagnosands = diagnosands) 
+diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  rmse = sqrt(mean((estimate - estimand) ^ 2))
+)
+diagnosis <- diagnose_design(design, diagnosands = diagnosands) 
 ```
 
-The diagnosis indicates that under simple random sampling, the sample mean estimator of the population mean is unbiased. The graph on the left shows the sampling distribution of the estimator: it's centered directly on the true value of the inquiry. Confidence intervals **also** have a sampling distribution -- they change depending on the idiosyncrasies of each sample we happen to draw. The figure on the right shows that the 95% of the time the confidence intervals cover the true value of the estimand, as they should. As sample size grows, the sampling distribution of the estimator gets tighter, but the coverage of the confidence intervals stays at 95% -- just the properties we would want out of our answer strategy.
 
-Things work well here it seems. In the exercises we suggest some small modifications of the design that point to conditions under which things might break down.
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  rmse = sqrt(mean((estimate - estimand) ^ 2))
+)
+diagnosis <- diagnose_design(design, sims = sims, bootstrap_sims = b_sims, diagnosands = diagnosands) 
+```
 
-### Stratified and clustered random sampling
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("Random_Sampling"), "/simple_random_sampling_sims.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, path = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+```{r competerandomsampling}
+diagnosis %>%
+  reshape_diagnosis() %>%
+  select(Bias, RMSE) %>%
+  kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
+```
+
+The diagnosis in table \@ref(tab:completerandomsampling) indicates that under complete random sampling, the sample mean estimator of the population mean is unbiased and that the root mean squared error is manageable at 0.09.
+
+### Clustered random sampling
 
 Researchers often cannot randomly sample at the individual level because it may, among other reasons, be too costly or logistically impractical. Instead, they may choose to randomly sample households, political precincts, or any group of individuals in order to draw inferences about the population. This strategy may be cheaper and simpler but may also introduce risks of less precise estimates.
 
-Say we are interested in the average party ideology in the entire state of California. Using cluster sampling, we randomly sample counties within the state, and within each selected county, randomly sample individuals to survey.
-
-Assuming enough variation in the outcome of interest, the random assignment of equal-sized clusters yields unbiased but imprecise estimates. By sampling clusters, we select groups of individuals who may share common attributes. Unlike simple random sampling, we need to take  account of this intra-cluster correlation in our estimation of the standard error.^[The intra-cluster correlation coefficient (ICC) can be calculated directly and is a feature of this design.] The higher the degree of within-cluster similarity, the more variance we observe in cluster-level averages and the more imprecise are our estimates.^[In ordinary least square (OLS) models, we assume errors are independent (error terms between individual observations are uncorrelated with each other) and homoskedastic (the size of errors is homogeneous across individuals). In reality, this is often not the case with cluster sampling.] We address this by considering cluster-robust standard errors in our answer strategy below.
-
-#### Design Declaration
-
-- **M**odel: 
-
-We specify the variable of interest $Y$ (political ideology, say) as a discrete variable ranging from 1 (most liberal) to 7 (most conservative). We do not define a functional model since we are interested in the population mean of $Y$. The model also includes information about the number of sampled clusters and the number of individuals per cluster.
-
-- **I**nquiry: 
-
-Our estimand is the population mean of political identification $Y$. Because we employed random sampling, we can expect the value of the sample mean ($\widehat{\overline{y}}$) to approximate the true population parameter ($\widehat{\overline{Y}}$).
-
-- **D**ata strategy: 
-
-Sampling follows a two-stage strategy. We first draw a random sample 30 counties in California, and in each county select 20 individuals at random. This guarantees that each county has the same probability of being included in the sample and each resident within a county the same probability of being in the sample. In this design we estimate $Y$ for n = 600 respondents.
-
-- **A**nswer strategy: 
-
-We estimate the population mean with the sample mean estimator: $\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i$, and estimate standard errors under the assumption of independent and heteroskedastic errors as well as cluster-robust standard errors to take into account correlation of errors within clusters. Below we demonstrate the the imprecision of our estimated $\widehat{\overline{Y}}$ when we cluster standard errors and when we do not in the presence of an intracluster correlation coefficient (ICC) of 0.402.
-
+Let's modify our first design to sample at the household level, rather than at the individual individual level. We'll also add an additional estimator that clusters standard errors at the level of sampling, the household to compare to the estimator that ignores clustering. We'll also add a new diagnosand, coverage, which will indicate whether the confidence intervals we construct (which depend on the flavor of standard errors we estimate) indeed include the true value of the inquiry 95\% of the time.
 
 ```{r}
-N_blocks <- 1
-N_clusters_in_block <- 1000
-N_i_in_cluster <- 50
-n_clusters_in_block <- 30
-n_i_in_cluster <- 20
-icc <- 0.402
-
-# M: Model
-fixed_pop <-
-  fabricate(
-    block = add_level(N = N_blocks),
-    cluster = add_level(N = N_clusters_in_block),
-    subject = 
-      add_level(N = N_i_in_cluster,
-                latent = draw_normal_icc(mean = 0, 
-                                         N = N, 
-                                         clusters = cluster, 
-                                         ICC = icc),
-                Y = draw_ordered(x = latent, 
-                                 breaks = qnorm(seq(0, 1, length.out = 8)))
-      )
-  )
-
-cluster_sampling_design <- declare_population(data = fixed_pop) +
-  
-  # I: Inquiry
-  declare_estimand(Ybar = mean(Y)) +
-  
-  # D: Data Strategy
-  declare_sampling(strata = block, 
-                   clusters = cluster, n = n_clusters_in_block, 
-                   sampling_variable = "Cluster_Sampling_Prob") +
-  
-  declare_sampling(strata = cluster,   n = n_i_in_cluster, 
-                   sampling_variable = "Within_Cluster_Sampling_Prob") +
-  
-  # A: Answer Strategy
+design <-
+  declare_population(data = portola) +
+  declare_measurement(Y = as.numeric(cut(
+    Ystar, breaks = c(-Inf, seq(-2.5, 2.5), Inf),
+    labels = 1:7
+  ))) +
+  declare_estimand(Y_bar = mean(Y)) +
+  declare_sampling(clusters = households, n = 50) +
   declare_estimator(Y ~ 1,
                     model = lm_robust,
-                    clusters = cluster,
-                    estimand = "Ybar",
-                    label = "Clustered Standard Errors")
+                    estimand = "Y_bar",
+                    label = "Standard errors not clustered") +
+declare_estimator(
+  Y ~ 1,
+  clusters = households,
+  model = lm_robust,
+  estimand = "Y_bar",
+  label = "Standard errors clustered"
+)
+
+diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  rmse = sqrt(mean((estimate - estimand) ^ 2)),
+  coverage = mean(estimand <= conf.high & estimand >= conf.low)
+)
+diagnosis <- diagnose_design(design, diagnosands = diagnosands) 
 ```
 
-#### Takeaways
-
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis <- diagnose_design(cluster_sampling_design, sims = sims)
-```
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("Stratified_Clustered_Sampling"), "/cluster_sampling_sims.RDS")
+rds_file_path <- paste0(get_dropbox_path("Random_Sampling"), "/cluster_random_sampling_sims.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
   write_rds(diagnosis, path = rds_file_path)
 }
 diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r,eval = TRUE, echo = FALSE}
-kable(reshape_diagnosis(diagnosis), digits = 2, booktabs = TRUE)
+```{r clusterrandomsampling}
+diagnosis %>%
+  reshape_diagnosis() %>%
+  select(`Estimator Label`, Bias, RMSE, Coverage) %>%
+  kable(digits = 3, booktabs = TRUE, caption = "Cluster random sampling design diagnosis")
 ```
 
-To appreciate the role of clustering better we also plot simulated values of our estimand with standard errors not clustered and with clustered standard errors. To do this we first add an additional estimator to the design that does not take account of clusters. 
+The diagnosis shows the impact of clustering on the quality of our estimates. While the design remains unbiased for the population mean, the RMSE has gone up. We still interview (on average) 100 people in each sample, but since under the clustered design, we interview all adults in the household, the sampling distribution of the estimates is higher variance. The diagnosis also highlights the importance of matching your answer strategy to your data strategy. The sampling was clustered by household. The answer strategy that fails to account for this yields confidence intervals that are too small, as evidenced by the coverage rate well below the nominal 95\%. When we estimate clustered standard errors instead, the coverage improves.
 
-```{r plot setup, echo=TRUE, warning=FALSE}
-new_design <- cluster_sampling_design + declare_estimator(Y ~ 1,
-                                                          model = lm_robust,
-                                                          estimand = "Ybar",
-                                                          label = "Naive Standard Errors")
 
-```
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis <- diagnose_design(new_design, sims = sims)
-```
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("Stratified_Clustered_Sampling"), "/cluster_sampling_new_design_sims.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis, path = rds_file_path)
-}
-diagnosis <- read_rds(rds_file_path)
-```
+<!-- #### Exercises -->
 
-```{r plot, echo=FALSE, warning=FALSE}
-sims <- diagnosis$simulations
-sims$covered <- factor(1 + (sims$conf.low < sims$estimand & sims$estimand < sims$conf.high), 1:2, labels = c("Estimand not covered by confidence interval", "Estimand covered by confidence interval"))
-sims$estimator_label <- as.factor(sims$estimator_label)
-sims$estimator_label <- factor(sims$estimator_label, levels = rev(levels(sims$estimator_label)))
-sims$estimand_label  <- as.factor(sims$estimand_label)
-
-ggplot(sims, aes(x=estimate)) +
-  geom_errorbar(aes(ymin=conf.low, ymax=conf.high, color=covered), alpha=.4) +
-  geom_hline(aes(yintercept=mean(estimand))) +
-  geom_text(aes(x=x, y=y, label=label),
-            data=function(df){
-              data.frame(x=min(df$estimate),
-                         y=mean(df$estimand),
-                         label=sprintf('  Avg Estimand:\n  %4.3f', mean(df$estimand)),
-                         stringsAsFactors = FALSE)
-            }, hjust='left') +
-  facet_wrap(estimand_label~estimator_label) +
-  ylab("Estimate") +
-  scale_x_continuous(labels=NULL, breaks = NULL, name='') +
-  scale_color_discrete(drop=FALSE, name = '') +
-  coord_flip() +
-  dd_theme()
-```
-
-The figure above may give us the impression that our estimate with clustered standard errors is less precise, when in fact, it correctly accounts for the uncertainty surrounding our estimates. The blue lines in the graph demonstrate the estimates from simulations which contain our estimand. As our table and graphs show, the share of these simulations over the total number of simulations, also known as coverage, is (correctly) close to 95% in estimations with clustered standard errors and 54% in estimations without clustered standard errors. As expected, the mean estimate itself and the bias is the same in both specifications.
-
-#### Exercises
-
-1. Modify the declaration to change the distribution of $Y$ from being uniform to something else: perhaps imagine that more extreme ideologies are more prevalent than moderate ones. Is the sample mean estimator still unbiased? Interpret your answer.
-2. Change the sampling procedure to favor units with higher values of ideology. Is the sample mean estimator still unbiased? Interpret your answer.
-3. Modify the estimation function to use this formula for the standard error: $\widehat{se} \equiv \frac{\widehat\sigma}{\sqrt{n}}$. This equation differs from the one used in our declaration (it ignores the total population size $N$). Check that the coverage of this new design is incorrect when $N=n$. Assess how large $N$ has to be for the difference between these procedures not to matter. 
+<!-- 1. Modify the declaration to change the distribution of $Y$ from being uniform to something else: perhaps imagine that more extreme ideologies are more prevalent than moderate ones. Is the sample mean estimator still unbiased? Interpret your answer. -->
+<!-- 2. Change the sampling procedure to favor units with higher values of ideology. Is the sample mean estimator still unbiased? Interpret your answer. -->
+<!-- 3. Modify the estimation function to use this formula for the standard error: $\widehat{se} \equiv \frac{\widehat\sigma}{\sqrt{n}}$. This equation differs from the one used in our declaration (it ignores the total population size $N$). Check that the coverage of this new design is incorrect when $N=n$. Assess how large $N$ has to be for the difference between these procedures not to matter.  -->
 
 
 
