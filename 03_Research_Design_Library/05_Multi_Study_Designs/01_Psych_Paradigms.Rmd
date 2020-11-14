@@ -34,9 +34,8 @@ library(reshape2)
 ```
 
 
-In many research projects, we seek to evaluate multiple observable implications for a single theory. [Examples: Psychology; APSR articles that have an experiment plus observational work; replication efforts.]
-In such cases, a single piece of evidence does not constitute sufficient evidence to validate the theory as a whole. 
-Rather, we believe in the theory when multiple pieces of evidence support it.
+In many research projects, we seek to evaluate multiple observable implications for a single theory. In such cases, a single piece of evidence does not constitute sufficient evidence to validate the theory as a whole. Rather, we believe in the theory when multiple pieces of evidence support it.
+<!-- [Examples: Psychology; APSR articles that have an experiment plus observational work; replication efforts.] -->
 
 Conventions around what constitutes a convincing pattern of evidence vary. Some researchers will not believe a theory unless each piece of evidence in support of it is *statistically significant*. 
 <!-- Reviewer / skeptic: an observable implication is X.  -->
@@ -159,13 +158,13 @@ ggdd_df <- make_dag_df(dag, nodes, design1)
 base_dag_plot %+% ggdd_df
 ```
 
-```{r}
+```{r, echo = FALSE}
 ggdd_df <- make_dag_df(dag, nodes, design2)
 
 base_dag_plot %+% ggdd_df
 ```
 
-```{r}
+```{r, echo = FALSE}
 ggdd_df <- make_dag_df(dag, nodes, design3)
 
 base_dag_plot %+% ggdd_df
@@ -440,7 +439,9 @@ plot_data  %>%
   geom_point() +
   facet_grid( ~ model) +
   scale_x_continuous(name = "Number of studies in design", breaks = seq(2, 30, 2)) +
-  scale_y_continuous(name = "Probability observable implications support theory.")
+  scale_y_continuous(name = "Probability observable implications support theory.") + 
+  dd_theme() + 
+  theme(legend.position = "bottom")
 
 ```
 
