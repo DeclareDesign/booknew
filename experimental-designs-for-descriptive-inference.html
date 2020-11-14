@@ -58,7 +58,7 @@
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="part-iv-exercises.html"><span class="header-section-number">21</span> Part IV Exercises</a></li>
-<li><a class="" href="references-1.html">References</a></li>
+<li><a class="" href="references.html">References</a></li>
 </ul>
 
         <div class="book-extra">
@@ -77,46 +77,15 @@
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
+<!-- make sure to rename the section title below -->
 <div id="audit-experiments" class="section level2">
 <h2>
 <span class="header-section-number">15.1</span> Audit experiments<a class="anchor" aria-label="anchor" href="#audit-experiments"><i class="fas fa-link"></i></a>
 </h2>
+<p>An audit experiment (see <strong>Audit Experiment Design</strong>) that seeks to assess the effects of an email from a Latino name (versus a White name) on <em>whether</em> and <em>how well</em> election officials respond to requests for information. For example, do they use a positive or negative tone. These questions seem reasonable enough. The problem, however, is that if there are officials who don’t send responses, tone is undefined. More subtly, if there is an official that does send an email but would not have sent it in a different treatment condition, then tone is undefined for one of their potential outcomes.</p>
 <div id="declaration-5" class="section level3">
 <h3>
 <span class="header-section-number">15.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-5"><i class="fas fa-link"></i></a>
-</h3>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
-                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span>, <span class="cn">NA_real_</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R_Z_1</span> <span class="op">-</span> <span class="va">R_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>CATE_ar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Q_Z_1_R_1</span> <span class="op">-</span> <span class="va">Q_Z_0_R_1</span><span class="op">)</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R_Z_1</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">R_Z_0</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">R</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Q</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_R"</span>, label <span class="op">=</span> <span class="st">"ATE_R"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="va">Z</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, estimand <span class="op">=</span> <span class="st">"CATE_ar"</span>, label <span class="op">=</span> <span class="st">"CATE_ar"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="dag-4" class="section level3">
-<h3>
-<span class="header-section-number">15.1.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-4"><i class="fas fa-link"></i></a>
-</h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-187-1.svg" width="100%"></div>
-</div>
-<div id="example-6" class="section level3">
-<h3>
-<span class="header-section-number">15.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-6"><i class="fas fa-link"></i></a>
-</h3>
-<!-- make sure to rename the section title below -->
-<p>A basic requirement of a good research design is that the question it seeks to answer does in fact <em>have</em> an answer, at least under plausible models of the world. In our framework, this means that an inquiry <span class="math inline">\(I\)</span> must have an associated answer <span class="math inline">\(a^M\)</span>, which refers to the answer under the model. Interestingly, we sometimes might not be conscious that the questions we ask do not have answers. Fortunately, when we ask a computer to answer such a question, it complains.</p>
-<p>How could a question not have an answer? Answerless questions can arise when inquiries depend on variables that do not exist or are undefined for some units. In other words, when there is a mismatch between the model and the inquiry, we’re asking a question about something that doesn’t exist.</p>
-<p>Consider an audit experiment (see <strong>Audit Experiment Design</strong>) that seeks to assess the effects of an email from a Latino name (versus a White name) on <em>whether</em> and <em>how well</em> election officials respond to requests for information. For example, do they use a positive or negative tone. These questions seem reasonable enough. The problem, however, is that if there are officials who don’t send responses, tone is undefined. More subtly, if there is an official that does send an email but would not have sent it in a different treatment condition, then tone is undefined for one of their potential outcomes.</p>
-</div>
-<div id="design-declaration-2" class="section level3">
-<h3>
-<span class="header-section-number">15.1.4</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration-2"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li>
@@ -179,370 +148,49 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <p>We’ll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Model -------------------------------------------------------------------</span>
-<span class="va">population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>
-  N <span class="op">=</span> <span class="fl">500</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span><span class="op">)</span>, size <span class="op">=</span> <span class="va">N</span>, 
-                replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.40</span>, <span class="fl">.05</span>, <span class="fl">.10</span>, <span class="fl">.45</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">potential_outcomes</span> <span class="op">&lt;-</span> <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-  R_Z_0 <span class="op">=</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"C"</span><span class="op">)</span>,
-  R_Z_1 <span class="op">=</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>,
-  Y_Z_0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">R_Z_0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">R_Z_0</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fl">.1</span><span class="op">*</span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"C"</span><span class="op">)</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>,
-  Y_Z_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">R_Z_1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">R_Z_1</span><span class="op">)</span>, mean <span class="op">=</span> <span class="fl">.2</span><span class="op">*</span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"B"</span><span class="op">)</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># Inquiry -----------------------------------------------------------------</span>
-<span class="va">estimand_1</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>ATE_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R_Z_1</span> <span class="op">-</span> <span class="va">R_Z_0</span><span class="op">)</span><span class="op">)</span>
-<span class="va">estimand_2</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>ATE_Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span>
-<span class="va">estimand_3</span> <span class="op">&lt;-</span> <span class="fu">declare_estimand</span><span class="op">(</span>
-  ATE_Y_for_As <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span><span class="op">[</span><span class="va">type</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">]</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">[</span><span class="va">type</span> <span class="op">==</span> <span class="st">"A"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Data Strategy -----------------------------------------------------------</span>
-<span class="va">assignment</span> <span class="op">&lt;-</span> <span class="fu">declare_assignment</span><span class="op">(</span>m <span class="op">=</span> <span class="fl">250</span><span class="op">)</span>
-
-<span class="co"># Answer Strategy ---------------------------------------------------------</span>
-<span class="va">estimator_1</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="va">estimand_1</span>, label <span class="op">=</span> <span class="st">"ATE_R"</span><span class="op">)</span>
-<span class="va">estimator_2</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="va">estimand_2</span>, label <span class="op">=</span> <span class="st">"ATE_Y"</span><span class="op">)</span>
-<span class="va">estimator_3</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="va">estimand_3</span>, label <span class="op">=</span> <span class="st">"ATE_YA"</span><span class="op">)</span>
-
-<span class="co"># Design ------------------------------------------------------------------</span>
-<span class="va">design</span> <span class="op">&lt;-</span> 
-  <span class="va">population</span> <span class="op">+</span> 
-  <span class="va">potential_outcomes</span> <span class="op">+</span> 
-  <span class="va">assignment</span> <span class="op">+</span> 
-  <span class="va">estimand_1</span> <span class="op">+</span> <span class="va">estimand_2</span> <span class="op">+</span> <span class="va">estimand_3</span> <span class="op">+</span> 
-  <span class="fu">reveal_outcomes</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="va">estimator_1</span> <span class="op">+</span> <span class="va">estimator_2</span> <span class="op">+</span> <span class="va">estimator_3</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
+                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span>, <span class="cn">NA_real_</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R_Z_1</span> <span class="op">-</span> <span class="va">R_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>CATE_ar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Q_Z_1_R_1</span> <span class="op">-</span> <span class="va">Q_Z_0_R_1</span><span class="op">)</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R_Z_1</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">R_Z_0</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">R</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Q</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_R"</span>, label <span class="op">=</span> <span class="st">"ATE_R"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="va">Z</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, estimand <span class="op">=</span> <span class="st">"CATE_ar"</span>, label <span class="op">=</span> <span class="st">"CATE_ar"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="takeaways-2" class="section level3">
+<div id="dag-4" class="section level3">
 <h3>
-<span class="header-section-number">15.1.5</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-4"><i class="fas fa-link"></i></a>
 </h3>
-<p>We now diagnose the design:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
-<th style="text-align:left;">
-Bias
-</th>
-<th style="text-align:left;">
-RMSE
-</th>
-<th style="text-align:left;">
-Power
-</th>
-<th style="text-align:left;">
-Coverage
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-SD Estimate
-</th>
-<th style="text-align:left;">
-Mean Se
-</th>
-<th style="text-align:left;">
-Type S Rate
-</th>
-<th style="text-align:left;">
-Mean Estimand
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-ATE_R
-</td>
-<td style="text-align:left;">
-ATE_R
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-100
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-0.04
-</td>
-<td style="text-align:left;">
-0.20
-</td>
-<td style="text-align:left;">
-0.98
-</td>
-<td style="text-align:left;">
--0.05
-</td>
-<td style="text-align:left;">
-0.04
-</td>
-<td style="text-align:left;">
-0.04
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
--0.05
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-ATE_Y
-</td>
-<td style="text-align:left;">
-ATE_Y
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-100
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-0.91
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-0.54
-</td>
-<td style="text-align:left;">
-0.19
-</td>
-<td style="text-align:left;">
-0.15
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-ATE_Y_for_As
-</td>
-<td style="text-align:left;">
-ATE_YA
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:left;">
-100
-</td>
-<td style="text-align:left;">
-0.31
-</td>
-<td style="text-align:left;">
-0.34
-</td>
-<td style="text-align:left;">
-0.91
-</td>
-<td style="text-align:left;">
-0.52
-</td>
-<td style="text-align:left;">
-0.54
-</td>
-<td style="text-align:left;">
-0.19
-</td>
-<td style="text-align:left;">
-0.15
-</td>
-<td style="text-align:left;">
-0.04
-</td>
-<td style="text-align:left;">
-0.22
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-</tr>
-</tbody>
-</table></div>
-<p>We learn three things from the design diagnosis. First, as expected, our experiment is unbiased for the average treatment effect on response.</p>
-<p>Next, we see that our second inquiry, as well as our diagnostics for it, are undefined. The diagnosis tells us that our definition of potential outcomes produces a definition problem for the estimand. Note that the diagnosands that are defined, including power, depend only on the answer strategy and not on the estimand.</p>
-<p>Finally, our third estimand – the average effects for the <span class="math inline">\(A\)</span> types – is defined but our estimates are biased. The reason for this is that we cannot tell from the data which types are the <span class="math inline">\(A\)</span> types: we are not conditioning on the correct subset. Indeed, we are unable to condition on the correct subset. If a subject responds in the treatment group, we don’t know if she is an <span class="math inline">\(A\)</span> or a <span class="math inline">\(B\)</span> type; in the control group, we can’t tell if a responder is an <span class="math inline">\(A\)</span> or a <span class="math inline">\(C\)</span> type. Our difference-in-means estimator of the ATE on <span class="math inline">\(Y\)</span> among <span class="math inline">\(A\)</span>s will be off whenever <span class="math inline">\(A\)</span>s have different outcomes from <span class="math inline">\(B\)</span>s and <span class="math inline">\(C\)</span>s.</p>
-<p>In some cases, the problem might be resolved by changing the inquiry. Closely related estimands can often be defined, perhaps by redefining <span class="math inline">\(Y\)</span> (e.g., emails never sent have a tone of zero). Some redefinitions of the problem, as in the one we examine above, require estimating effects for unobserved subgroups which is a difficult challenge.</p>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-184-1.svg" width="100%"></div>
 </div>
-<div id="applications" class="section level3">
+<div id="example-5" class="section level3">
 <h3>
-<span class="header-section-number">15.1.6</span> Applications<a class="anchor" aria-label="anchor" href="#applications"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-5"><i class="fas fa-link"></i></a>
 </h3>
-<p>This kind of problem is surprisingly common. Here are three more distinct instances of the problem:</p>
-<ol style="list-style-type: decimal">
-<li>
-<span class="math inline">\(Y\)</span> is the decision to vote Democrat (<span class="math inline">\(Y=1\)</span>) or Republican (<span class="math inline">\(Y=0\)</span>), <span class="math inline">\(R\)</span> is the decision to turn out to vote and <span class="math inline">\(Z\)</span> is a campaign message. The decision to vote may depend on treatment but if subjects do not vote then <span class="math inline">\(Y\)</span> is undefined.</li>
-<li>
-<span class="math inline">\(Y\)</span> is the weight of infants, <span class="math inline">\(R\)</span> is whether a child is born and <span class="math inline">\(Z\)</span> is a maternal health intervention. Fertility may depend on treatment but the weight of unborn (possibly never conceived) babies is not defined.</li>
-<li>
-<span class="math inline">\(Y\)</span> is the charity to whom contributions are made during fundraising and <span class="math inline">\(R\)</span> is whether anything is contributed and <span class="math inline">\(Z\)</span> is an encouragement to contribute. The identity of beneficiaries is not defined if there are no contributions.</li>
-</ol>
-<p>All of these problem exhibit a form of post treatment bias (see section <strong>Post treatment bias</strong>) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn’t exist for some subjects.</p>
 </div>
-<div id="exercises-2" class="section level3">
+<div id="design-declaration" class="section level3">
 <h3>
-<span class="header-section-number">15.1.7</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.4</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration"><i class="fas fa-link"></i></a>
+</h3>
+<!-- We learn three things from the design diagnosis. First, as expected, our experiment is unbiased for the average treatment effect on response. -->
+<!-- Next, we see that our second inquiry, as well as our diagnostics for it, are undefined. The diagnosis tells us that our definition of potential outcomes produces a definition problem for the estimand. Note that the diagnosands that are defined, including power, depend only on the answer strategy and not on the estimand. -->
+<!-- Finally, our third estimand -- the average effects for the $A$ types -- is defined but our estimates are biased. The reason for this is that we cannot tell from the data which types are the $A$ types: we are not conditioning on the correct subset. Indeed, we are unable to condition on the correct subset. If a subject responds in the treatment group, we don't know if she is an $A$ or a $B$ type; in the control group, we can't tell if a responder is an $A$ or a $C$ type. Our difference-in-means estimator of the ATE on $Y$ among $A$s will be off whenever $A$s have different outcomes from $B$s and $C$s. -->
+<!-- In some cases, the problem might be resolved by changing the inquiry. Closely related estimands can often be defined, perhaps by redefining $Y$ (e.g., emails never sent have a tone of zero). Some redefinitions of the problem, as in the one we examine above, require estimating effects for unobserved subgroups which is a difficult challenge. -->
+<!-- ### Applications -->
+<!-- This kind of problem is surprisingly common. Here are three more distinct instances of the problem: -->
+<!-- 1. $Y$ is the decision to vote Democrat ($Y=1$) or Republican ($Y=0$), $R$ is the decision to turn out to vote and $Z$ is a campaign message. The decision to vote may depend on treatment but if subjects do not vote then $Y$ is undefined. -->
+<!-- 2. $Y$ is the weight of infants, $R$ is whether a child is born and $Z$ is a maternal health intervention. Fertility may depend on treatment but the weight of unborn (possibly never conceived) babies is not defined. -->
+<!-- 2. $Y$ is the charity to whom contributions are made during fundraising and $R$ is whether anything is contributed and $Z$ is an encouragement to contribute. The identity of beneficiaries is not defined if there are no contributions.  -->
+<!-- All of these problem exhibit a form of post treatment bias (see section **Post treatment bias**) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn't exist for some subjects. -->
+</div>
+<div id="exercises-1" class="section level3">
+<h3>
+<span class="header-section-number">15.1.5</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p>The amount of bias on the third estimand depends on both the distribution of types and the correlation of types with the potential outcomes of Y. Modify the declaration so that the estimator of the effect on Y is unbiased, changing only the distribution of types. Repeat the exercise, changing only the correlation of type with the potential outcomes of <span class="math inline">\(Y\)</span>.</p></li>
@@ -555,53 +203,8 @@ Z
 <h2>
 <span class="header-section-number">15.2</span> Experiments for sensitive questions<a class="anchor" aria-label="anchor" href="#experiments-for-sensitive-questions"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration-6" class="section level3">
-<h3>
-<span class="header-section-number">15.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-6"><i class="fas fa-link"></i></a>
-</h3>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
-    N <span class="op">=</span> <span class="fl">100</span>,
-    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
-    Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,
-    S <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">Y_star</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="fl">0L</span>,
-                  <span class="va">Y_star</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span>,
-    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">3</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>proportion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_measurement</span><span class="op">(</span>Y_direct <span class="op">=</span> <span class="va">Y_star</span> <span class="op">-</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y_list</span> <span class="op">~</span> <span class="va">Y_star</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>,
-                    model <span class="op">=</span> <span class="va">lm_robust</span>,
-                    estimand <span class="op">=</span> <span class="st">"proportion"</span>,
-                    label <span class="op">=</span> <span class="st">"direct"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_list</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"proportion"</span>, label <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="dag-5" class="section level3">
-<h3>
-<span class="header-section-number">15.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-5"><i class="fas fa-link"></i></a>
-</h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-198-1.svg" width="100%"></div>
-</div>
-<div id="example-7" class="section level3">
-<h3>
-<span class="header-section-number">15.2.3</span> Example<a class="anchor" aria-label="anchor" href="#example-7"><i class="fas fa-link"></i></a>
-</h3>
-<ul>
-<li>setup: a descriptive estimand, the proportion holding sensitive characteristic; two experimental designs to recover it, list experiments and randomized response</li>
-<li>if identification assumptions are violated (focus on ceiling/floor), estimates of ATE still unbiased but not for the descriptive estimand</li>
-<li>compare design where the ceiling/floor categories are minimized through Glynn (2013) design advice to use negatively-correlated items and a high prevalence and a low prevalence item</li>
-<li>both designs exhibit bias-variance tradeoff (more control of variance with RR)</li>
-</ul>
-</div>
-<div id="list-experiments" class="section level3">
-<h3>
-<span class="header-section-number">15.2.4</span> List experiments<a class="anchor" aria-label="anchor" href="#list-experiments"><i class="fas fa-link"></i></a>
-</h3>
-<p>Sometimes, subjects might not tell the truth when <em>directly</em> asked about certain attitudes or behaviors. Responses may be affected by sensitivity bias, or the tendency of survey subjects to dissemble for fear of negative repercussions if some reference group learns their true response <span class="citation">(Blair, Coppock, and Moor <a href="references-1.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span>. In such cases, standard survey estimates based on direct questions will be biased. One class of solutions to this problem is to obscure individual responses, providing protection from social or legal pressures. When we obscure responses systematically through an experiment, we can often still identify average quantities of interest. One such design is the list experiment (introduced by <span class="citation">Miller (<a href="references-1.html#ref-miller1984new" role="doc-biblioref">1984</a>)</span>), which asks respondents for the count of the number of `yes’ responses to a series of questions including the sensitive item, rather than for a yes or no answer on the sensitive item itself. List experiments give subjects cover by aggregating their answer to the sensitive item with responses to other questions.</p>
-<p>During the 2016 Presidential Election in the U.S., some observers were concerned that pre-election estimates of support for Donald Trump might have been downward biased by “Shy Trump Supporters” – survey respondents who supported Trump in their hearts, but were embarrassed to admit it to pollsters. To assess this possibility, <span class="citation">Coppock (<a href="references-1.html#ref-coppock2017did" role="doc-biblioref">2017</a>)</span> obtained estimates of Trump support that were free of social desirability bias using a list experiment. Subjects in the control and treatment groups were asked: “Here is a list of [three/four] things that some people would do and some people would not. Please tell me HOW MANY of them you would do. We do not want to know which ones of these you would do, just how many. Here are the [three/four] things:”</p>
+<p>Sometimes, subjects might not tell the truth when <em>directly</em> asked about certain attitudes or behaviors. Responses may be affected by sensitivity bias, or the tendency of survey subjects to dissemble for fear of negative repercussions if some reference group learns their true response <span class="citation">(Blair, Coppock, and Moor <a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span>. In such cases, standard survey estimates based on direct questions will be biased. One class of solutions to this problem is to obscure individual responses, providing protection from social or legal pressures. When we obscure responses systematically through an experiment, we can often still identify average quantities of interest. One such design is the list experiment (introduced by <span class="citation">Miller (<a href="references.html#ref-miller1984new" role="doc-biblioref">1984</a>)</span>), which asks respondents for the count of the number of `yes’ responses to a series of questions including the sensitive item, rather than for a yes or no answer on the sensitive item itself. List experiments give subjects cover by aggregating their answer to the sensitive item with responses to other questions.</p>
+<p>During the 2016 Presidential Election in the U.S., some observers were concerned that pre-election estimates of support for Donald Trump might have been downward biased by “Shy Trump Supporters” – survey respondents who supported Trump in their hearts, but were embarrassed to admit it to pollsters. To assess this possibility, <span class="citation">Coppock (<a href="references.html#ref-coppock2017did" role="doc-biblioref">2017</a>)</span> obtained estimates of Trump support that were free of social desirability bias using a list experiment. Subjects in the control and treatment groups were asked: “Here is a list of [three/four] things that some people would do and some people would not. Please tell me HOW MANY of them you would do. We do not want to know which ones of these you would do, just how many. Here are the [three/four] things:”</p>
 <div class="inline-table"><table class="table table-sm">
 <colgroup>
 <col width="36%">
@@ -633,10 +236,10 @@ Z
 <p>The treatment group averaged 1.843 items while the control group averaged 1.548 items, for a difference-in-means estimate 0.296. We will show this is an unbiased estimator for the average treatment effect between being asked to respond to the treated list and the control list (invoking the usual assumptions of randomized experiments, including SUTVA). But our estimand is the proportion of people who support Donald Trump. For the difference-in-means to be an unbiased estimator of the proportion of respondents who would say “yes” to the sensitive item, we invoke two additional assumptions: no design effects and no “liars” (see Imai 2011). The first highlights the fact that we need a good estimate of the average control item count from the control group (in this example 1.843). We use that to net out the control item count from responses to the treated group (what is left is the sensitive item proportion). When respondents provide a different control item count in the treated group than in the control group, for example because they evaluate items relatively and the inclusion of the sensitive item changes their answers (see Flavin and Keane 2011), the design breaks down. The no liars assumption says that respondents provide truthful answers to the sensitive item within the count. The justification for the assumption is that the plausible cover of being asked within a count makes it possible for respondents to answer truthfully.</p>
 <p>The estimate is, under these assumptions, free from sensitivity bias, but it’s also much higher variance. The 95% confidence interval for the list experiment estimate is nearly 14 percentage points wide, whereas the the 95% confidence interval for the (possibly biased!) direct question asked of the same sample is closer to 4 percentage points.</p>
 <p>The choice between list experiments and direct question is therefore a <strong>bias-variance tradeoff</strong>. List experiments may have less bias, but they are higher variance. Direct questions may be biased, but they have less variance.</p>
-<div id="declaration-7" class="section level4">
-<h4>
-<span class="header-section-number">15.2.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-7"><i class="fas fa-link"></i></a>
-</h4>
+<div id="declaration-6" class="section level3">
+<h3>
+<span class="header-section-number">15.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-6"><i class="fas fa-link"></i></a>
+</h3>
 <ul>
 <li>
 <p><strong>M</strong>odel: Our model includes subjects’ true support for Donald Trump and whether or not they are “shy”. These two variables combine to determine how subjects will respond when asked directly about Trump support.</p>
@@ -647,139 +250,74 @@ Z
 <li><p><strong>D</strong>ata strategy: First we sample 500 respondents from the U.S. population at random, then we randomly assign 250 of the 500 to treatment and the remainder to control. In the survey, we ask subjects both the direct question and the list experiment question.</p></li>
 <li><p><strong>A</strong>nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.</p></li>
 </ul>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Model -------------------------------------------------------------------</span>
-<span class="va">proportion_shy</span> <span class="op">&lt;-</span> <span class="fl">.06</span>
-
-<span class="va">list_design</span> <span class="op">&lt;-</span>
-  
-  <span class="co"># Model</span>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
-    N <span class="op">=</span> <span class="fl">5000</span>,
-    <span class="co"># true trump vote (unobservable)</span>
-    truthful_trump_vote <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="fl">.45</span>, <span class="va">N</span><span class="op">)</span>,
-    
-    <span class="co"># shy voter (unobservable)</span>
-    shy <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="va">proportion_shy</span>, <span class="va">N</span><span class="op">)</span>,
-    
-    <span class="co"># direct question response (1 if Trump supporter and not shy, 0 otherwise)</span>
-    Y_direct <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">truthful_trump_vote</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">shy</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,
-    
-    <span class="co"># nonsensitive list experiment items</span>
-    raise_minimum_wage <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="fl">.8</span>, <span class="va">N</span><span class="op">)</span>,
-    repeal_obamacare <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="fl">.6</span>, <span class="va">N</span><span class="op">)</span>,
-    ban_assault_weapons <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="fl">.5</span>, <span class="va">N</span><span class="op">)</span>
+    N <span class="op">=</span> <span class="fl">100</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,
+    S <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">Y_star</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="fl">0L</span>,
+                  <span class="va">Y_star</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span>,
+    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, size <span class="op">=</span> <span class="fl">3</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    Y_list_Z_0 <span class="op">=</span> <span class="va">raise_minimum_wage</span> <span class="op">+</span> <span class="va">repeal_obamacare</span> <span class="op">+</span> <span class="va">ban_assault_weapons</span>,
-    Y_list_Z_1 <span class="op">=</span> <span class="va">Y_list_Z_0</span> <span class="op">+</span> <span class="va">truthful_trump_vote</span>
-  <span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># Inquiry</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>proportion_truthful_trump_vote <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">truthful_trump_vote</span><span class="op">)</span>,
-                   ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_list_Z_1</span> <span class="op">-</span> <span class="va">Y_list_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># Data Strategy</span>
-  <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y_list</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># Answer Strategy</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
-    <span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, term <span class="op">=</span> <span class="st">"(Intercept)"</span>, estimand <span class="op">=</span> <span class="st">"proportion_truthful_trump_vote"</span>, label <span class="op">=</span> <span class="st">"direct"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
-    <span class="va">Y_list</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"proportion_truthful_trump_vote"</span>, <span class="st">"ATE"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">list_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references-1.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-203-1.svg" width="100%"></div>
+  <span class="fu">declare_estimand</span><span class="op">(</span>proportion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_measurement</span><span class="op">(</span>Y_direct <span class="op">=</span> <span class="va">Y_star</span> <span class="op">-</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y_list</span> <span class="op">~</span> <span class="va">Y_star</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>,
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    estimand <span class="op">=</span> <span class="st">"proportion"</span>,
+                    label <span class="op">=</span> <span class="st">"direct"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_list</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"proportion"</span>, label <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="violations-of-identifying-assumptions" class="section level4">
-<h4>
-<span class="header-section-number">15.2.4.2</span> Violations of identifying assumptions<a class="anchor" aria-label="anchor" href="#violations-of-identifying-assumptions"><i class="fas fa-link"></i></a>
-</h4>
-<p>In our model, the definition of the treated potential outcome, <code>Y_list_Z_1 = Y_list_Z_0 + truthful_trump_vote</code>, bakes in the no design effects and no liars assumptions. The first component is the control item count <code>Y_list_Z_0</code>, which ensures the respondent’s count of control items is the same in both groups. The second is the true trump vote, which assumes no liars.</p>
-<p>What do we learn from this experimental design if these assumptions do not hold? We examine the case of “ceiling effects,” in which respondents whose control item count is the maximum (in the example, they would vote yes to all three control items) withhold their true support for Trump in the treatment group. We thus redefine the treated potential outcome to be a function of the original count, but those who would respond 4 (all control items plus Trump support) instead respond 3. These are the “liars.”</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">list_design_ceiling</span> <span class="op">&lt;-</span> <span class="fu">replace_step</span><span class="op">(</span>
-  <span class="va">list_design</span>, step <span class="op">=</span> <span class="fl">2</span>, 
-  new_step <span class="op">=</span> <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    Y_list_Z_0 <span class="op">=</span> <span class="va">raise_minimum_wage</span> <span class="op">+</span> <span class="va">repeal_obamacare</span> <span class="op">+</span> <span class="va">ban_assault_weapons</span>,
-    Y_list_Z_1_no_liars <span class="op">=</span> <span class="va">Y_list_Z_0</span> <span class="op">+</span> <span class="va">truthful_trump_vote</span>,
-    Y_list_Z_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Y_list_Z_1_no_liars</span> <span class="op">==</span> <span class="fl">4</span>, <span class="fl">3</span>, <span class="va">Y_list_Z_1_no_liars</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis_list_ceiling</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">list_design_ceiling</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-estimator_label
-</th>
-<th style="text-align:left;">
-estimand_label
-</th>
-<th style="text-align:right;">
-bias
-</th>
-<th style="text-align:right;">
-rmse
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-list
-</td>
-<td style="text-align:left;">
-ATE
-</td>
-<td style="text-align:right;">
--0.022
-</td>
-<td style="text-align:right;">
-0.091
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-direct
-</td>
-<td style="text-align:left;">
-proportion_truthful_trump_vote
-</td>
-<td style="text-align:right;">
--0.026
-</td>
-<td style="text-align:right;">
-0.031
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-list
-</td>
-<td style="text-align:left;">
-proportion_truthful_trump_vote
-</td>
-<td style="text-align:right;">
--0.127
-</td>
-<td style="text-align:right;">
-0.153
-</td>
-</tr>
-</tbody>
-</table></div>
-<p>We see that the list experiment is still an unbiased estimator for the average difference in responses to the treatment list and the shorter control list (ATE). But under ceiling effects, it is no longer an unbiased estimator for the proportion of truthful Trump vote. Indeed, it is more unbiased than the direct question. The divergence illustrates a common feature of experimental designs for descriptive inference: the average treatment effect can be estimated without bias under SUTVA and randomization with these designs, but additional assumptions are required in order to add an interpretation of the ATE as the descriptive quantity of interest. The burden is on the researcher to demonstrate the credibility of these additional assumptions. The experimental design alone is not sufficient justification.</p>
+<div id="dag-5" class="section level3">
+<h3>
+<span class="header-section-number">15.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-5"><i class="fas fa-link"></i></a>
+</h3>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-191-1.svg" width="100%"></div>
+</div>
+<div id="example-6" class="section level3">
+<h3>
+<span class="header-section-number">15.2.3</span> Example<a class="anchor" aria-label="anchor" href="#example-6"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
+<p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-194-1.svg" width="100%"></div>
+<!-- #### Violations of identifying assumptions -->
+<!-- In our model, the definition of the treated potential outcome, `Y_list_Z_1 = Y_list_Z_0 + truthful_trump_vote`, bakes in the no design effects and no liars assumptions. The first component is the control item count `Y_list_Z_0`, which ensures the respondent's count of control items is the same in both groups. The second is the true trump vote, which assumes no liars.  -->
+<!-- What do we learn from this experimental design if these assumptions do not hold? We examine the case of "ceiling effects," in which respondents whose control item count is the maximum (in the example, they would vote yes to all three control items) withhold their true support for Trump in the treatment group. We thus redefine the treated potential outcome to be a function of the original count, but those who would respond 4 (all control items plus Trump support) instead respond 3. These are the "liars."  -->
+<!-- ```{r} -->
+<!-- list_design_ceiling <- replace_step( -->
+<!--   design, step = 2,  -->
+<!--   new_step = declare_potential_outcomes( -->
+<!--     Y_list_Z_0 = raise_minimum_wage + repeal_obamacare + ban_assault_weapons, -->
+<!--     Y_list_Z_1_no_liars = Y_list_Z_0 + truthful_trump_vote, -->
+<!--     Y_list_Z_1 = ifelse(Y_list_Z_1_no_liars == 4, 3, Y_list_Z_1_no_liars)) -->
+<!-- ) -->
+<!-- ``` -->
+<!-- ```{r, eval = do_diagnosis} -->
+<!-- diagnosis_list_ceiling <- diagnose_design(list_design_ceiling, sims = sims) -->
+<!-- ``` -->
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/list_ceiling_diagnosis.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(diagnosis_list_ceiling, path = rds_file_path) -->
+<!-- } -->
+<!-- diagnosis_list_ceiling <- read_rds(rds_file_path) -->
+<!-- ``` -->
+<!-- ```{r, echo = FALSE} -->
+<!-- diagnosis_list_ceiling %>%  -->
+<!-- get_diagnosands %>%  -->
+<!-- select(estimator_label, estimand_label, bias, rmse) %>%  -->
+<!-- kable(digits = 3, booktabs = TRUE) -->
+<!-- ``` -->
+<!-- We see that the list experiment is still an unbiased estimator for the average difference in responses to the treatment list and the shorter control list (ATE). But under ceiling effects, it is no longer an unbiased estimator for the proportion of truthful Trump vote. Indeed, it is more unbiased than the direct question. The divergence illustrates a common feature of experimental designs for descriptive inference: the average treatment effect can be estimated without bias under SUTVA and randomization with these designs, but additional assumptions are required in order to add an interpretation of the ATE as the descriptive quantity of interest. The burden is on the researcher to demonstrate the credibility of these additional assumptions. The experimental design alone is not sufficient justification.  -->
 <!-- See Blair and Imai (2012) and Li (2019) for methods for addressing violations no liars assumption through modeling and bounds. -->
 <!-- Li, Y. (n.d.). Relaxing the No Liars Assumption in List Experiment Analyses. Political Analysis, 1-16. doi:10.1017/pan.2019.7 -->
-</div>
-<div id="addressing-potential-assumption-violations-by-design" class="section level4">
-<h4>
-<span class="header-section-number">15.2.4.3</span> Addressing potential assumption violations by design<a class="anchor" aria-label="anchor" href="#addressing-potential-assumption-violations-by-design"><i class="fas fa-link"></i></a>
-</h4>
-<p>Researchers may bolster the assumptions to identify the descriptive estimand through changes to the data strategy or the answer strategy. Changes to the data strategy for the list experiment aim to reduce the risk of design effects and violations of the no liars assumptions. For example, when there is a risk of ceiling effects, <span class="citation">Glynn (<a href="references-1.html#ref-glynn2013can" role="doc-biblioref">2013</a>)</span> proposes selecting control items that are inversely correlated. With three items, if two of the items are perfectly negatively correlated (i.e., if you say “yes” to one item you say “no” to the other), then the control item count will always be below the maximum of three when ceiling effects bite. We illustrate this design change by replacing the population declaration for the design with ceiling effects. This change is in the population, but is really a part of the data strategy because it involves the choice of measurement tool (which control items the researcher selects to ask respondents).</p>
+<!-- #### Addressing potential assumption violations by design -->
+<!-- Researchers may bolster the assumptions to identify the descriptive estimand through changes to the data strategy or the answer strategy. Changes to the data strategy for the list experiment aim to reduce the risk of design effects and violations of the no liars assumptions. For example, when there is a risk of ceiling effects, @glynn2013can proposes selecting control items that are inversely correlated. With three items, if two of the items are perfectly negatively correlated (i.e., if you say "yes" to one item you say "no" to the other), then the control item count will always be below the maximum of three when ceiling effects bite. We illustrate this design change by replacing the population declaration for the design with ceiling effects. This change is in the population, but is really a part of the data strategy because it involves the choice of measurement tool (which control items the researcher selects to ask respondents).  -->
 <!-- ```{r} -->
 <!-- TODO: need to fix -->
 <!-- list_design_glynn <- replace_step( -->
@@ -815,280 +353,87 @@ proportion_truthful_trump_vote
 <!-- ```{r} -->
 <!-- diagnosis_list_glynn %>% get_diagnosands %>% filter(estimator_label == "list") %>% select(estimand_label, estimator_label, bias, rmse) %>% kable(booktabs = TRUE)) -->
 <!-- ``` -->
-<p>We see that the design is stil lunbiased for the ATE and now is unbiased for the proportion of truthful Trump vote. This is because there are no longer ceiling effects, which represented a violation of the no design effects assumption required to interpret the ATE as the proportion of truthful Trump vote.</p>
-<p>Changes the answer strategy have been proposed to address both the no design effects and no liars assumption. <span class="citation">Blair and Imai (<a href="references-1.html#ref-blair2012statistical" role="doc-biblioref">2012</a>)</span> propose a statistical test for the design effects assumption; if it does not pass, they suggest not analyzing the list experiment data (i.e., this is a procedure that makes up an answer strategy). Scholars have also identified improvements to the answer strategy to address violations of no liars: <span class="citation">Blair and Imai (<a href="references-1.html#ref-blair2012statistical" role="doc-biblioref">2012</a>)</span> provides a model that adjusts for ceiling and floor effects and <span class="citation">Li (<a href="references-1.html#ref-li2019relaxing" role="doc-biblioref">2019</a>)</span> provides a bounds approach that relaxes the assumption.</p>
-</div>
-</div>
-<div id="randomized-response-technique" class="section level3">
-<h3>
-<span class="header-section-number">15.2.5</span> Randomized response technique<a class="anchor" aria-label="anchor" href="#randomized-response-technique"><i class="fas fa-link"></i></a>
-</h3>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>
-
-<span class="va">rr_forced_known</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">fit</span>  <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/rr/man/rrreg.html">rrreg</a></span><span class="op">(</span><span class="va">Y_forced_known</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">data</span>, p <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, p0 <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">6</span>, p1 <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">6</span>, design <span class="op">=</span> <span class="st">"forced-known"</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">pred</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit</span>, avg <span class="op">=</span> <span class="cn">TRUE</span>, quasi.bayes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"try-error"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">pred</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"try-error"</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">pred</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"estimate"</span>, <span class="st">"std.error"</span>, <span class="st">"conf.low"</span>, <span class="st">"conf.high"</span><span class="op">)</span>
-    <span class="va">pred</span><span class="op">$</span><span class="va">p.value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">pred</span>, <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">/</span> <span class="va">std.error</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="cn">NA</span>, std.error <span class="op">=</span> <span class="cn">NA</span>, conf.low <span class="op">=</span> <span class="cn">NA</span>, conf.high <span class="op">=</span> <span class="cn">NA</span>, p.value <span class="op">=</span> <span class="cn">NA</span>, error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">pred</span>
-<span class="op">}</span>
-
-<span class="va">rr_mirrored</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">fit</span>  <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/rr/man/rrreg.html">rrreg</a></span><span class="op">(</span><span class="va">Y_mirrored</span> <span class="op">~</span> <span class="fl">1</span>, data <span class="op">=</span> <span class="va">data</span>, p <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, design <span class="op">=</span> <span class="st">"mirrored"</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">pred</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fit</span>, avg <span class="op">=</span> <span class="cn">TRUE</span>, quasi.bayes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"try-error"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">pred</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"try-error"</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">pred</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"estimate"</span>, <span class="st">"std.error"</span>, <span class="st">"conf.low"</span>, <span class="st">"conf.high"</span><span class="op">)</span>
-    <span class="va">pred</span><span class="op">$</span><span class="va">p.value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">pred</span>, <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">pnorm</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">/</span> <span class="va">std.error</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>estimate <span class="op">=</span> <span class="cn">NA</span>, std.error <span class="op">=</span> <span class="cn">NA</span>, conf.low <span class="op">=</span> <span class="cn">NA</span>, conf.high <span class="op">=</span> <span class="cn">NA</span>, p.value <span class="op">=</span> <span class="cn">NA</span>, error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">pred</span>
-<span class="op">}</span>
-
-<span class="va">proportion_shy</span> <span class="op">&lt;-</span> <span class="fl">.06</span>
-
-<span class="va">rr_design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
-    N <span class="op">=</span> <span class="fl">100</span>, 
-    
-    <span class="co"># true trump vote (unobservable)</span>
-    truthful_trump_vote <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="fl">.45</span>, <span class="va">N</span><span class="op">)</span>,
-    
-    <span class="co"># shy voter (unobservable)</span>
-    shy <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span><span class="va">proportion_shy</span>, <span class="va">N</span><span class="op">)</span>,
-    
-    <span class="co"># Direct question response (1 if Trump supporter and not shy, 0 otherwise)</span>
-    Y_direct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">truthful_trump_vote</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">shy</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">declare_estimand</span><span class="op">(</span>sensitive_item_proportion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">truthful_trump_vote</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y_forced_known</span> <span class="op">~</span> <span class="op">(</span><span class="va">dice</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0</span> <span class="op">+</span> <span class="op">(</span><span class="va">dice</span> <span class="op">%in%</span> <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">*</span> <span class="va">truthful_trump_vote</span> <span class="op">+</span> <span class="op">(</span><span class="va">dice</span> <span class="op">==</span> <span class="fl">6</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1</span>, conditions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, assignment_variable <span class="op">=</span> <span class="st">"dice"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y_mirrored</span> <span class="op">~</span> <span class="op">(</span><span class="va">coin</span> <span class="op">==</span> <span class="st">"heads"</span><span class="op">)</span> <span class="op">*</span> <span class="va">truthful_trump_vote</span> <span class="op">+</span> <span class="op">(</span><span class="va">coin</span> <span class="op">==</span> <span class="st">"tails"</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">truthful_trump_vote</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"heads"</span>, <span class="st">"tails"</span><span class="op">)</span>, assignment_variable <span class="op">=</span> <span class="st">"coin"</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob_each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">6</span>, <span class="fl">6</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, assignment_variable <span class="op">=</span> <span class="st">"dice"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob_each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">/</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"heads"</span>, <span class="st">"tails"</span><span class="op">)</span>, assignment_variable <span class="op">=</span> <span class="st">"coin"</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y_forced_known</span>, <span class="va">dice</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y_mirrored</span>, <span class="va">coin</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">rr_forced_known</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"forced_known"</span>, estimand <span class="op">=</span> <span class="st">"sensitive_item_proportion"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">rr_mirrored</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"mirrored"</span>, estimand <span class="op">=</span> <span class="st">"sensitive_item_proportion"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, term <span class="op">=</span> <span class="st">"(Intercept)"</span>, label <span class="op">=</span> <span class="st">"direct"</span>, estimand <span class="op">=</span> <span class="st">"sensitive_item_proportion"</span><span class="op">)</span>
-
-<span class="va">rr_design</span> <span class="op">&lt;-</span> <span class="fu">set_diagnosands</span><span class="op">(</span><span class="va">rr_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
-mean_estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span>,
-  bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
-  rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
-  power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>
-<span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rr_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">rr_design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="va">rr_diagnosis</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="inline-table"><table class="table table-sm">
-<thead><tr>
-<th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-Bias
-</th>
-<th style="text-align:left;">
-RMSE
-</th>
-<th style="text-align:left;">
-Power
-</th>
-</tr></thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-rr_design
-</td>
-<td style="text-align:left;">
-sensitive_item_proportion
-</td>
-<td style="text-align:left;">
-direct
-</td>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:left;">
-10
-</td>
-<td style="text-align:left;">
-0.43
-</td>
-<td style="text-align:left;">
--0.02
-</td>
-<td style="text-align:left;">
-0.03
-</td>
-<td style="text-align:left;">
-1.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-rr_design
-</td>
-<td style="text-align:left;">
-sensitive_item_proportion
-</td>
-<td style="text-align:left;">
-forced_known
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-10
-</td>
-<td style="text-align:left;">
-0.45
-</td>
-<td style="text-align:left;">
--0.00
-</td>
-<td style="text-align:left;">
-0.02
-</td>
-<td style="text-align:left;">
-1.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-rr_design
-</td>
-<td style="text-align:left;">
-sensitive_item_proportion
-</td>
-<td style="text-align:left;">
-mirrored
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-10
-</td>
-<td style="text-align:left;">
-0.42
-</td>
-<td style="text-align:left;">
--0.03
-</td>
-<td style="text-align:left;">
-0.09
-</td>
-<td style="text-align:left;">
-0.90
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.04)
-</td>
-<td style="text-align:left;">
-(0.03)
-</td>
-<td style="text-align:left;">
-(0.02)
-</td>
-<td style="text-align:left;">
-(0.10)
-</td>
-</tr>
-</tbody>
-</table></div>
-<div id="bias-variance-tradeoff" class="section level4">
-<h4>
-<span class="header-section-number">15.2.5.1</span> Bias-variance tradeoff<a class="anchor" aria-label="anchor" href="#bias-variance-tradeoff"><i class="fas fa-link"></i></a>
-</h4>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">rr_designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">rr_design</span>, proportion_shy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">0.5</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>, N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">500</span>, to <span class="op">=</span> <span class="fl">5000</span>, by <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span>
-<span class="va">rr_tradeoff_diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">rr_designs</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
+<!-- We see that the design is stil lunbiased for the ATE and now is unbiased for the proportion of truthful Trump vote. This is because there are no longer ceiling effects, which represented a violation of the no design effects assumption required to interpret the ATE as the proportion of truthful Trump vote.  -->
+<!-- Changes the answer strategy have been proposed to address both the no design effects and no liars assumption. @blair2012statistical propose a statistical test for the design effects assumption; if it does not pass, they suggest not analyzing the list experiment data (i.e., this is a procedure that makes up an answer strategy). Scholars have also identified improvements to the answer strategy to address violations of no liars: @blair2012statistical provides a model that adjusts for ceiling and floor effects and @li2019relaxing provides a bounds approach that relaxes the assumption. -->
+<!-- ### Randomized response technique -->
+<!-- ```{r} -->
+<!-- library(rr) -->
+<!-- rr_forced_known <- function(data) { -->
+<!--   fit  <- try(rrreg(Y_forced_known ~ 1, data = data, p = 2/3, p0 = 1/6, p1 = 1/6, design = "forced-known")) -->
+<!--   pred <- try(as.data.frame(predict(fit, avg = TRUE, quasi.bayes = TRUE))) -->
+<!--   if(class(fit) != "try-error" & class(pred) != "try-error") { -->
+<!--     names(pred) <- c("estimate", "std.error", "conf.low", "conf.high") -->
+<!--     pred$p.value <- with(pred, 2 * pnorm(-abs(estimate / std.error))) -->
+<!--   } else { -->
+<!--     pred <- data.frame(estimate = NA, std.error = NA, conf.low = NA, conf.high = NA, p.value = NA, error = TRUE) -->
+<!--   } -->
+<!--   pred -->
+<!-- } -->
+<!-- rr_mirrored <- function(data) { -->
+<!--   fit  <- try(rrreg(Y_mirrored ~ 1, data = data, p = 2/3, design = "mirrored")) -->
+<!--   pred <- try(as.data.frame(predict(fit, avg = TRUE, quasi.bayes = TRUE))) -->
+<!--   if(class(fit) != "try-error" & class(pred) != "try-error") { -->
+<!--     names(pred) <- c("estimate", "std.error", "conf.low", "conf.high") -->
+<!--     pred$p.value <- with(pred, 2 * pnorm(-abs(estimate / std.error))) -->
+<!--   } else { -->
+<!--     pred <- data.frame(estimate = NA, std.error = NA, conf.low = NA, conf.high = NA, p.value = NA, error = TRUE) -->
+<!--   } -->
+<!--   pred -->
+<!-- } -->
+<!-- proportion_shy <- .06 -->
+<!-- rr_design <- -->
+<!--   declare_population( -->
+<!--     N = 100,  -->
+<!--     # true trump vote (unobservable) -->
+<!--     truthful_trump_vote = draw_binary(.45, N), -->
+<!--     # shy voter (unobservable) -->
+<!--     shy = draw_binary(proportion_shy, N), -->
+<!--     # Direct question response (1 if Trump supporter and not shy, 0 otherwise) -->
+<!--     Y_direct = as.numeric(truthful_trump_vote == 1 & shy == 0)) + -->
+<!--   declare_estimand(sensitive_item_proportion = mean(truthful_trump_vote)) + -->
+<!--   declare_potential_outcomes(Y_forced_known ~ (dice == 1) * 0 + (dice %in% 2:5) * truthful_trump_vote + (dice == 6) * 1, conditions = 1:6, assignment_variable = "dice") + -->
+<!--   declare_potential_outcomes(Y_mirrored ~ (coin == "heads") * truthful_trump_vote + (coin == "tails") * (1 - truthful_trump_vote), conditions = c("heads", "tails"), assignment_variable = "coin") + -->
+<!--   declare_assignment(prob_each = rep(1/6, 6), conditions = 1:6, assignment_variable = "dice") + -->
+<!--   declare_assignment(prob_each = c(2/3, 1/3), conditions = c("heads", "tails"), assignment_variable = "coin") + -->
+<!--   reveal_outcomes(Y_forced_known, dice) + -->
+<!--   reveal_outcomes(Y_mirrored, coin) + -->
+<!--   declare_estimator(handler = tidy_estimator(rr_forced_known), label = "forced_known", estimand = "sensitive_item_proportion") + -->
+<!--   declare_estimator(handler = tidy_estimator(rr_mirrored), label = "mirrored", estimand = "sensitive_item_proportion") + -->
+<!--   declare_estimator(Y_direct ~ 1, model = lm_robust, term = "(Intercept)", label = "direct", estimand = "sensitive_item_proportion") -->
+<!-- rr_design <- set_diagnosands(rr_design, diagnosands = declare_diagnosands( -->
+<!-- mean_estimate = mean(estimate), -->
+<!--   bias = mean(estimate - estimand), -->
+<!--   rmse = sqrt(mean((estimate - estimand)^2)), -->
+<!--   power = mean(p.value <= 0.05) -->
+<!-- )) -->
+<!-- ``` -->
+<!-- ```{r, eval = do_diagnosis} -->
+<!-- rr_diagnosis <- diagnose_design(rr_design, sims = sims, bootstrap_sims = b_sims) -->
+<!-- ``` -->
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/rr_diagnosis.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(rr_diagnosis, path = rds_file_path) -->
+<!-- } -->
+<!-- rr_diagnosis <- read_rds(rds_file_path) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- kable(reshape_diagnosis(rr_diagnosis), booktabs = TRUE) -->
+<!-- ``` -->
+<!-- #### Bias-variance tradeoff -->
+<!-- ```{r, eval = do_diagnosis} -->
+<!-- rr_designs <- redesign(rr_design, proportion_shy = seq(from = 0, to = 0.5, by = 0.05), N = seq(from = 500, to = 5000, by = 500)) -->
+<!-- rr_tradeoff_diagnosis <- diagnose_design(rr_designs, sims = sims, bootstrap_sims = b_sims) -->
+<!-- ``` -->
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/rr_tradeoff_diagnosis2.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(rr_tradeoff_diagnosis, path = rds_file_path) -->
+<!-- } -->
+<!-- rr_tradeoff_diagnosis <- read_rds(rds_file_path) -->
+<!-- ``` -->
 <!-- ```{r} -->
 <!-- # make a plot -->
 <!-- rr_tradeoff_diagnosis %>%  -->
@@ -1100,10 +445,9 @@ NA
 <!-- # kable(reshape_diagnosis(rr_tradeoff_diagnosis), booktabs = TRUE) -->
 <!-- ``` -->
 </div>
-</div>
-<div id="references" class="section level3">
+<div id="further-readings" class="section level3">
 <h3>
-<span class="header-section-number">15.2.6</span> References<a class="anchor" aria-label="anchor" href="#references"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2.4</span> Further readings<a class="anchor" aria-label="anchor" href="#further-readings"><i class="fas fa-link"></i></a>
 </h3>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -1126,11 +470,11 @@ NA
 <p>The right number of <strong>attributes</strong> is governed by the “masking/satisficing” tradeoff. If you don’t include an important attribute (like partisanship in a candidate choice experiment), you’re worried that subjects will partially infer partisanship from other attributes (like race or gender). If so, partisanship is “masked”, and the estimates for the effects of race or gender will be biased by this “omitted variable.” But if you add too many attributes in order to avoid masking, you may induce “satisficing” among subjects, whereby they only take in a little bit of information, enough to make a “good enough” choice among the candidates.</p>
 <p>The right number of <strong>levels</strong> is governed by your sample size. If an attribute has three levels, it’s like you’re conducting a three-arm trial, so you’ll want to have enough subjects for each arm. The more levels, the lower the power.</p>
 <p>The right number of <strong>choice tasks</strong> depends on your survey budget. You can always add more pairs of profiles and the only cost is the opportunity cost of asking a different question of the survey that may serve some higher scientific purpose. If you’re worried that respondents will get bored with the task, you can always throw out profile pairs that come later in the survey. <span class="citation">(<span class="citeproc-not-found" data-reference-id="bansak2018number"><strong>???</strong></span>)</span> suggest that you can ask many pairs without much loss of data quality.</p>
-<div id="declaration-8" class="section level3">
+<div id="declaration-7" class="section level3">
 <h3>
-<span class="header-section-number">15.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># applies the function to each pair</span>
 <span class="va">Y_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">data</span> <span class="op">%&gt;%</span>
@@ -1161,13 +505,13 @@ NA
 </div>
 <div id="dag-6" class="section level3">
 <h3>
-<span class="header-section-number">15.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-6"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-6"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-220-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-201-1.svg" width="100%"></div>
 </div>
-<div id="example-8" class="section level3">
+<div id="example-7" class="section level3">
 <h3>
-<span class="header-section-number">15.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-8"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-7"><i class="fas fa-link"></i></a>
 </h3>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -1179,11 +523,11 @@ NA
 <h2>
 <span class="header-section-number">15.4</span> Behavioral games<a class="anchor" aria-label="anchor" href="#behavioral-games"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration-9" class="section level3">
+<div id="declaration-8" class="section level3">
 <h3>
-<span class="header-section-number">15.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-9"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     games <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,
@@ -1211,13 +555,13 @@ NA
 </div>
 <div id="dag-7" class="section level3">
 <h3>
-<span class="header-section-number">15.4.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-227-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-208-1.svg" width="100%"></div>
 </div>
-<div id="example-9" class="section level3">
+<div id="example-8" class="section level3">
 <h3>
-<span class="header-section-number">15.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-9"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-8"><i class="fas fa-link"></i></a>
 </h3>
 
 </div>
@@ -1233,36 +577,32 @@ NA
 <li>
 <a class="nav-link" href="#audit-experiments"><span class="header-section-number">15.1</span> Audit experiments</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-5"><span class="header-section-number">15.1.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-4"><span class="header-section-number">15.1.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-6"><span class="header-section-number">15.1.3</span> Example</a></li>
-<li><a class="nav-link" href="#design-declaration-2"><span class="header-section-number">15.1.4</span> Design Declaration</a></li>
-<li><a class="nav-link" href="#takeaways-2"><span class="header-section-number">15.1.5</span> Takeaways</a></li>
-<li><a class="nav-link" href="#applications"><span class="header-section-number">15.1.6</span> Applications</a></li>
-<li><a class="nav-link" href="#exercises-2"><span class="header-section-number">15.1.7</span> Exercises</a></li>
+<li><a class="nav-link" href="#dag-4"><span class="header-section-number">15.1.2</span> DAG</a></li>
+<li><a class="nav-link" href="#example-5"><span class="header-section-number">15.1.3</span> Example</a></li>
+<li><a class="nav-link" href="#design-declaration"><span class="header-section-number">15.1.4</span> Design Declaration</a></li>
+<li><a class="nav-link" href="#exercises-1"><span class="header-section-number">15.1.5</span> Exercises</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#experiments-for-sensitive-questions"><span class="header-section-number">15.2</span> Experiments for sensitive questions</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-6"><span class="header-section-number">15.2.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-5"><span class="header-section-number">15.2.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-7"><span class="header-section-number">15.2.3</span> Example</a></li>
-<li><a class="nav-link" href="#list-experiments"><span class="header-section-number">15.2.4</span> List experiments</a></li>
-<li><a class="nav-link" href="#randomized-response-technique"><span class="header-section-number">15.2.5</span> Randomized response technique</a></li>
-<li><a class="nav-link" href="#references"><span class="header-section-number">15.2.6</span> References</a></li>
+<li><a class="nav-link" href="#dag-5"><span class="header-section-number">15.2.2</span> DAG</a></li>
+<li><a class="nav-link" href="#example-6"><span class="header-section-number">15.2.3</span> Example</a></li>
+<li><a class="nav-link" href="#further-readings"><span class="header-section-number">15.2.4</span> Further readings</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#conjoint-experiments"><span class="header-section-number">15.3</span> Conjoint experiments</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-8"><span class="header-section-number">15.3.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-6"><span class="header-section-number">15.3.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-8"><span class="header-section-number">15.3.3</span> Example</a></li>
+<li><a class="nav-link" href="#declaration-7"><span class="header-section-number">15.3.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-6"><span class="header-section-number">15.3.2</span> DAG</a></li>
+<li><a class="nav-link" href="#example-7"><span class="header-section-number">15.3.3</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#behavioral-games"><span class="header-section-number">15.4</span> Behavioral games</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-9"><span class="header-section-number">15.4.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-7"><span class="header-section-number">15.4.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-9"><span class="header-section-number">15.4.3</span> Example</a></li>
+<li><a class="nav-link" href="#declaration-8"><span class="header-section-number">15.4.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-7"><span class="header-section-number">15.4.2</span> DAG</a></li>
+<li><a class="nav-link" href="#example-8"><span class="header-section-number">15.4.3</span> Example</a></li>
 </ul>
 </li>
 </ul>
