@@ -67,6 +67,7 @@ The focus of the study will be on the causal effects of the nationalism, feminis
 ```{r, echo = FALSE}
 rescale <- function(x) (x - min(x)) / (max(x) - min(x))
 likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
+slope <- function(x, y) cov(x, y)/var(y)
 ```
 
 ```{r}
@@ -122,31 +123,34 @@ In the code below, we specify how each treatment effect changes with its corresp
 inquiry <-  
   declare_estimands(
     # Average effects
-    ATE_nationalism = mean(blm_support_Z_nationalism - blm_support_Z_general),
-    ATE_feminism = mean(blm_support_Z_feminism - blm_support_Z_general),
-    ATE_intersectional = mean(blm_support_Z_intersectional - blm_support_Z_general),
+    ATE_nationalism = 
+      mean(blm_support_Z_nationalism - blm_support_Z_general),
+    ATE_feminism = 
+      mean(blm_support_Z_feminism - blm_support_Z_general),
+    ATE_intersectional = 
+      mean(blm_support_Z_intersectional - blm_support_Z_general),
     
     # Overall heterogeneity w.r.t. blm_familiarity
     DID_nationalism_familiarity = 
-      cov(blm_support_Z_nationalism - blm_support_Z_general, blm_familiarity)/
-      var(blm_familiarity),
+      slope(blm_support_Z_nationalism - blm_support_Z_general, 
+            blm_familiarity),
     DID_feminism_familiarity = 
-      cov(blm_support_Z_feminism - blm_support_Z_general, blm_familiarity)/
-      var(blm_familiarity),
+      slope(blm_support_Z_feminism - blm_support_Z_general, 
+            blm_familiarity),
     DID_intersectional_familiarity = 
-      cov(blm_support_Z_intersectional - blm_support_Z_general, blm_familiarity)/
-      var(blm_familiarity),
+      slope(blm_support_Z_intersectional - blm_support_Z_general, 
+            blm_familiarity),
     
     # Treatment-specific heterogeneity
     DID_nationalism_linked_fate = 
-      cov(blm_support_Z_nationalism - blm_support_Z_general, linked_fate)/
-      var(linked_fate),
+      slope(blm_support_Z_nationalism - blm_support_Z_general, 
+            linked_fate),
     DID_feminism_gender = 
-      cov(blm_support_Z_feminism - blm_support_Z_general, female)/
-      var(female),
+      slope(blm_support_Z_feminism - blm_support_Z_general,
+            female),
     DID_intersectional_lgbtq = 
-      cov(blm_support_Z_intersectional - blm_support_Z_general, lgbtq)/
-      var(lgbtq)
+      slope(blm_support_Z_intersectional - blm_support_Z_general, 
+            lgbtq)
   )
 ```
 
@@ -159,7 +163,11 @@ After subjects' background characteristics are measured, they were assigned to o
 
 ```{r}
 data_strategy <- 
-  declare_assignment(conditions = c("general", "nationalism", "feminism", "intersectional"), simple = TRUE) + 
+  declare_assignment(
+    conditions = 
+      c("general", "nationalism", "feminism", "intersectional"), 
+    simple = TRUE
+  ) + 
   reveal_outcomes(blm_support, Z) 
 ```
 
@@ -177,13 +185,15 @@ answer_strategy <-
     blm_support ~ Z,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
     model = lm_robust,
-    estimand = c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
+    estimand = 
+      c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     label = "OLS"
   ) +
   declare_estimator(
     blm_support ~ Z + age + female + as.factor(linked_fate) + lgbtq,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
-    estimand = c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
+    estimand = 
+      c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     model = lm_robust,
     label = "OLS with controls"
   ) +
