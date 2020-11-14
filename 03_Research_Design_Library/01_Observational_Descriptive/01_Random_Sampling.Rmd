@@ -30,7 +30,8 @@ b_sims <- 20
 ### Declaration
 
 ```{r}
-fixed_population <- declare_population(N = 500, Y = sample(1:7, N, replace = TRUE))()
+fixed_population <-
+  fabricate(N = 500, Y = sample(1:7, N, replace = TRUE))
 
 design <- 
   declare_population(data = fixed_population) + 
@@ -150,14 +151,19 @@ icc <- 0.402
 
 # M: Model
 fixed_pop <-
-  declare_population(
+  fabricate(
     block = add_level(N = N_blocks),
     cluster = add_level(N = N_clusters_in_block),
-    subject = add_level(N = N_i_in_cluster,
-                        latent = draw_normal_icc(mean = 0, N = N, clusters = cluster, ICC = icc),
-                        Y = draw_ordered(x = latent, breaks = qnorm(seq(0, 1, length.out = 8)))
-    )
-  )()
+    subject = 
+      add_level(N = N_i_in_cluster,
+                latent = draw_normal_icc(mean = 0, 
+                                         N = N, 
+                                         clusters = cluster, 
+                                         ICC = icc),
+                Y = draw_ordered(x = latent, 
+                                 breaks = qnorm(seq(0, 1, length.out = 8)))
+      )
+  )
 
 cluster_sampling_design <- declare_population(data = fixed_pop) +
   

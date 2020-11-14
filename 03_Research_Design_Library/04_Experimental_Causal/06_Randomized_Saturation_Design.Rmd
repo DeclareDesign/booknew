@@ -35,22 +35,38 @@ Randomized saturation designs are used to measure the diffusion of treatment eff
 
 ```{r}
 design <- 
-  declare_population(network = add_level(N = 4), unit = add_level(N = 4, U = rnorm(N))) +
-  declare_assignment(assignment_variable = "S", clusters = network, conditions = c("low","high")) +
-  declare_assignment(prob = .25, blocks = network, assignment_variable = "Z_S_low") +
-  declare_assignment(prob = .75, blocks = network, assignment_variable = "Z_S_high") +
+  declare_population(network = add_level(N = 4), 
+                     unit = add_level(N = 4, U = rnorm(N))) +
+  declare_assignment(assignment_variable = "S", 
+                     clusters = network, 
+                     conditions = c("low","high")) +
+  declare_assignment(prob = 0.25, 
+                     blocks = network, 
+                     assignment_variable = "Z_S_low") +
+  declare_assignment(prob = 0.75, 
+                     blocks = network, 
+                     assignment_variable = "Z_S_high") +
   declare_step(spillover_low = ave(Z_S_low, network, FUN = mean), 
                spillover_high = ave(Z_S_high, network, FUN = mean),handler = fabricate)  +
-  declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") + Z * spillover_high * (S == "high") + U,
-                             conditions = list(Z = c(0,1), S = c("low","high"))) +
+  declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") + 
+                               Z * spillover_high * (S == "high") + U,
+                             conditions = list(Z = c(0, 1),  S = c("low", "high"))) +
   declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
   reveal_outcomes(Z,S) +
-  declare_step(ipw = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") + Z_S_high_cond_prob * (S == "high"))),
+  declare_step(ipw = 1 / (
+    S_cond_prob * (Z_S_low_cond_prob * (S == "low") + 
+                     Z_S_high_cond_prob * (S == "high"))),
     handler = fabricate) +
-  reveal_outcomes(Y,c(Z, S)) +
-declare_estimator(Y ~ Z * S, clusters = network, model = lm_robust, term = c("Z", "Shigh"), 
-                  estimand = c("ate_no_spill", "ate_saturation"),weight = ipw)
+  reveal_outcomes(Y, c(Z, S)) +
+  declare_estimator(
+    Y ~ Z * S,
+    clusters = network,
+    model = lm_robust,
+    term = c("Z", "Shigh"),
+    estimand = c("ate_no_spill", "ate_saturation"),
+    weight = ipw
+  )
 ```
 
 ```{r saturation, echo = FALSE}
@@ -183,7 +199,10 @@ N_groups <- 15
 G_per_saturation <- c(5,5,5)
 
 design <- 
-  declare_population(N = N_individuals, X = 1:N, U = rnorm(N), G = ntile(X, N_groups)) + 
+  declare_population(N = N_individuals, 
+                     X = 1:N, 
+                     U = rnorm(N),
+                     G = ntile(X, N_groups)) + 
   declare_assignment(assignment_variable = "S", 
                      clusters = G, 
                      conditions = c("low","med","high"),
@@ -241,14 +260,14 @@ design <-
 
 Here's what our hypothetical country looks like:
 
-```{r}
+```{r, echo=FALSE}
 draw_data(design) %>% 
   ggplot(aes(x = 1, y = X, color = as.factor(G))) +
   geom_point() +
   scale_color_discrete("Ballot station") +
   scale_y_continuous("Latitude") +
   scale_x_continuous("Longitude") +
-  geom_hline(yintercept = seq(1,N_individuals,by = N_individuals / N_groups) - .5)
+  geom_hline(yintercept = seq(1, N_individuals, by = N_individuals / N_groups) - .5)
 ```
 
 Let's diagnose
@@ -286,12 +305,18 @@ from one neighbor to the next. Say, because there are roads traveling north and
 fraudsters disregard boundaries (in reality, they are unlikely to do so).
 
 ```{r}
-distal_design <- replace_step(design = design, step = "spillover",
-                              new_step = declare_step(next_neighbor = c(N,1:(N-1)),
-                                                      spillover_low = Z_S_low[next_neighbor],
-                                                      spillover_med = Z_S_med[next_neighbor],
-                                                      spillover_high = Z_S_high[next_neighbor],
-                                                      handler = fabricate) )
+distal_design <-
+  replace_step(
+    design = design,
+    step = "spillover",
+    new_step = declare_step(
+      next_neighbor = c(N, 1:(N - 1)),
+      spillover_low = Z_S_low[next_neighbor],
+      spillover_med = Z_S_med[next_neighbor],
+      spillover_high = Z_S_high[next_neighbor],
+      handler = fabricate
+    )
+  )
 ```
 
 

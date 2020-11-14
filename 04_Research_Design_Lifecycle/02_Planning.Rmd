@@ -75,7 +75,8 @@ model <-
     N = 800,
     female = rbinom(N, 1, prob = 0.51),
     lgbtq = rbinom(N, 1, prob = 0.05),
-    linked_fate = sample(1:5, N, replace = TRUE, prob = c(0.05, 0.05, 0.15, 0.25, 0.5)),
+    linked_fate = sample(1:5, N, replace = TRUE, 
+                         prob = c(0.05, 0.05, 0.15, 0.25, 0.5)),
     age = sample(18:80, N, replace = TRUE),
     religiosity = sample(1:6, N, replace = TRUE),
     income = sample(1:12, N, replace = TRUE),
@@ -83,18 +84,29 @@ model <-
     blm_familiarity = sample(1:4, N, replace = TRUE),
     U = runif(N),
     blm_support_latent = rescale(
-      U + 0.1 * blm_familiarity + 0.45 * linked_fate + 0.001 * age + 
-        0.25 * lgbtq + 0.01 * income + 0.1 * college + -0.1 * religiosity)
+      U + 0.1 * blm_familiarity + 
+        0.45 * linked_fate + 
+        0.001 * age + 
+        0.25 * lgbtq + 
+        0.01 * income + 
+        0.1 * college + 
+        -0.1 * religiosity)
   ) + 
   declare_potential_outcomes(
     blm_support_Z_general = 
       likert_cut(blm_support_latent),
     blm_support_Z_nationalism = 
-      likert_cut(blm_support_latent + 0.01 + 0.01 * linked_fate + 0.01 * blm_familiarity),
+      likert_cut(blm_support_latent + 0.01 + 
+                   0.01 * linked_fate + 
+                   0.01 * blm_familiarity),
     blm_support_Z_feminism = 
-      likert_cut(blm_support_latent - 0.02 + 0.07 * female + 0.01 * blm_familiarity),
+      likert_cut(blm_support_latent - 0.02 + 
+                   0.07 * female + 
+                   0.01 * blm_familiarity),
     blm_support_Z_intersectional = 
-      likert_cut(blm_support_latent  - 0.05 + 0.15 * lgbtq + 0.01 * blm_familiarity)
+      likert_cut(blm_support_latent  - 0.05 + 
+                   0.15 * lgbtq + 
+                   0.01 * blm_familiarity)
   )
 ```
 
@@ -109,7 +121,6 @@ In the code below, we specify how each treatment effect changes with its corresp
 ```{r}
 inquiry <-  
   declare_estimands(
-    
     # Average effects
     ATE_nationalism = mean(blm_support_Z_nationalism - blm_support_Z_general),
     ATE_feminism = mean(blm_support_Z_feminism - blm_support_Z_general),
@@ -117,19 +128,25 @@ inquiry <-
     
     # Overall heterogeneity w.r.t. blm_familiarity
     DID_nationalism_familiarity = 
-      cov(blm_support_Z_nationalism - blm_support_Z_general, blm_familiarity)/var(blm_familiarity),
+      cov(blm_support_Z_nationalism - blm_support_Z_general, blm_familiarity)/
+      var(blm_familiarity),
     DID_feminism_familiarity = 
-      cov(blm_support_Z_feminism - blm_support_Z_general, blm_familiarity)/var(blm_familiarity),
+      cov(blm_support_Z_feminism - blm_support_Z_general, blm_familiarity)/
+      var(blm_familiarity),
     DID_intersectional_familiarity = 
-      cov(blm_support_Z_intersectional - blm_support_Z_general, blm_familiarity)/var(blm_familiarity),
+      cov(blm_support_Z_intersectional - blm_support_Z_general, blm_familiarity)/
+      var(blm_familiarity),
     
     # Treatment-specific heterogeneity
     DID_nationalism_linked_fate = 
-      cov(blm_support_Z_nationalism - blm_support_Z_general, linked_fate)/var(linked_fate),
+      cov(blm_support_Z_nationalism - blm_support_Z_general, linked_fate)/
+      var(linked_fate),
     DID_feminism_gender = 
-      cov(blm_support_Z_feminism - blm_support_Z_general, female)/var(female),
+      cov(blm_support_Z_feminism - blm_support_Z_general, female)/
+      var(female),
     DID_intersectional_lgbtq = 
-      cov(blm_support_Z_intersectional - blm_support_Z_general, lgbtq)/var(lgbtq)
+      cov(blm_support_Z_intersectional - blm_support_Z_general, lgbtq)/
+      var(lgbtq)
   )
 ```
 
@@ -172,9 +189,13 @@ answer_strategy <-
   ) +
     declare_estimator(
     blm_support ~ Z*blm_familiarity,
-    term = c("Znationalism:blm_familiarity", "Zfeminism:blm_familiarity", "Zintersectional:blm_familiarity"),
+    term = c("Znationalism:blm_familiarity", 
+             "Zfeminism:blm_familiarity", 
+             "Zintersectional:blm_familiarity"),
     model = lm_robust,
-    estimand = c("DID_nationalism_familiarity", "DID_feminism_familiarity", "DID_intersectional_familiarity"),
+    estimand = c("DID_nationalism_familiarity", 
+                 "DID_feminism_familiarity", 
+                 "DID_intersectional_familiarity"),
     label = "DID_familiarity"
   ) +
   declare_estimator(
@@ -217,9 +238,11 @@ Table \@ref(tab:bonillatilleryregtable) shows a mock analysis average effects (e
 
 ```{r bonillatilleryregtable, echo = FALSE, results = "asis"}
 fit_1 <- lm_robust(blm_support ~ Z, data = mock_data)
-fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + religiosity + income + college + linked_fate + blm_familiarity, data = mock_data)
-fit_3 <- lm_robust(blm_support ~ Z*linked_fate, data = mock_data)
-fit_4 <- lm_robust(blm_support ~ Z*blm_familiarity, data = mock_data)
+fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age + 
+                     religiosity + income + college + linked_fate + 
+                     blm_familiarity, data = mock_data)
+fit_3 <- lm_robust(blm_support ~ Z * linked_fate, data = mock_data)
+fit_4 <- lm_robust(blm_support ~ Z * blm_familiarity, data = mock_data)
 
 bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, digits = 3, caption = "Mock regression table from Bonilla and Tillery design.")
 ```
@@ -300,7 +323,8 @@ diagnosis %>%
   ) %>% 
   mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
          estimator_label = str_replace_all(estimator_label, "_", " ")) %>% 
-  kable(digits = 3, col.names = c("Estimand", "Estimator", "Bias", "Power"), caption = "Design diagnosis for Bonilla and Tillery design.")
+  kable(digits = 3, col.names = c("Estimand", "Estimator", "Bias", "Power"), 
+        caption = "Design diagnosis for Bonilla and Tillery design.")
 ```
 
 

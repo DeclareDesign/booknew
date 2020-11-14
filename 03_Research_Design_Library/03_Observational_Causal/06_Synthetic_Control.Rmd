@@ -41,7 +41,9 @@ synth_weights_tidy <- function(data, predictors, time.predictors.prior, dependen
   capture.output(fit <- synth(data.prep.obj = dataprep.out))
   tab <- synth.tab(dataprep.res = dataprep.out, synth.res = fit) 
   
-  weights_df <- tab$tab.w %>% mutate(synth_weights = w.weights) %>% dplyr::select(synth_weights, !!unit.variable := unit.numbers)
+  weights_df <- tab$tab.w %>% mutate(synth_weights = w.weights) %>% 
+    dplyr::select(synth_weights, !!unit.variable := unit.numbers)
+  
   data %>%
     left_join(weights_df) %>%
     mutate(synth_weights = replace_na(synth_weights, 1))
@@ -61,7 +63,8 @@ design <-
   declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + Z + U) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 3) + 
   declare_step(handler = mutate, Z = unit == "01") + 
-  reveal_outcomes(Y = if_else(Z == 0 | period < 3, Y_Z_0, Y_Z_1), handler = mutate) +
+  reveal_outcomes(Y = if_else(Z == 0 | period < 3, Y_Z_0, Y_Z_1), 
+                  handler = mutate) +
   declare_step(predictors = "X",
                time.predictors.prior = 1:2,
                dependent = "Y",
@@ -70,7 +73,8 @@ design <-
                treatment.identifier = 1,
                controls.identifier = 2:10, 
                handler = synth_weights_tidy) +
-  declare_estimator(Y ~ Z, subset = time >= 3, weights = synth_weights, model = lm_robust, label = "synth")
+  declare_estimator(Y ~ Z, subset = time >= 3, weights = synth_weights, 
+                    model = lm_robust, label = "synth")
 ```
 
 

@@ -51,25 +51,35 @@ design <-
 - **A**nswer strategy: The answer strategy involves taking a weighted average of $Y$ in the sample, where each unit's weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, $X = 0$, get a weight of 100/10 = 10, while the overrepresented group, $X = 1$, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents. 
 
 ```{r}
-fixed_population <- declare_population(
-  group = add_level(N = 2, X = c(0,1), population_n = c(100,50)),
-  individual = add_level(N = population_n, Y = X + sample(0:1, N, replace = TRUE)))()
+fixed_population <-
+  fabricate(
+    group = add_level(
+      N = 2,
+      X = c(0, 1),
+      population_n = c(100, 50)
+    ),
+    individual = add_level(N = population_n,
+                           Y = X + sample(0:1, N, replace = TRUE))
+  )
 
-design <- 
-  declare_population(data = fixed_population) + 
-  declare_estimand(Ybar = mean(Y)) + 
-  declare_sampling(strata_n = c(10,10), strata = X) + 
+design <-
+  declare_population(data = fixed_population) +
+  declare_estimand(Ybar = mean(Y)) +
+  declare_sampling(strata_n = c(10, 10), strata = X) +
   declare_step(handler = group_by, groups = X) +
-  declare_step(handler = mutate, 
-               sample_n = n(), 
+  declare_step(handler = mutate,
+               sample_n = n(),
                weight = population_n / sample_n) +
-  declare_estimator(Y ~ 1, term = "(Intercept)", model = lm_robust, weights = weight, estimand = "Ybar")
+  declare_estimator(
+    Y ~ 1,
+    term = "(Intercept)",
+    model = lm_robust,
+    weights = weight,
+    estimand = "Ybar"
+  )
 ```
 
-
-
 ### Dag
-
 
 ```{r, echo=FALSE}
 dag <- dagify(Y ~ S + X,
@@ -119,128 +129,104 @@ b_sims <- 20
 library(lme4)
 library(prediction)
 ```
-### Example
 
-You can use the global bib file via rmarkdown cites like this: @imai2008
+MRP based on Lax and Philips APSR 2009
 
-```{r, echo = FALSE}
-delaware_senate_districts_df <- read_rds("data/delaware.RDS")
-kable(head(delaware_senate_districts_df))
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- delaware_senate_districts_df <- read_rds("data/delaware.RDS") -->
+<!-- kable(head(delaware_senate_districts_df)) -->
+<!-- ``` -->
 
-```{r, eval = FALSE}
+<!-- ```{r, eval = FALSE} -->
 
-# US population
-delaware_population_df <- fabricate(
-  data = delaware_senate_districts_df,
-  individuals = add_level(
-    N = population_size,
-    race_white = rbinom(N, 1, prob = prop_white),
-    race_black = rbinom(N, 1, prob = prop_black),
-    race_asian = rbinom(N, 1, prob = prop_black),
-    race_hispanic_other = rbinom(N, 1, prob = prop_hispanic_other),
-    pid_republican = rbinom(N, 1, prob = prop_republican),
-    pid_democrat = rbinom(N, 1, prob = prop_democrat)
-  )
-) %>% 
-  select(-starts_with("prop_"), -population_size)
+<!-- # US population -->
+<!-- delaware_population_df <- fabricate( -->
+<!--   data = delaware_senate_districts_df, -->
+<!--   individuals = add_level( -->
+<!--     N = population_size, -->
+<!--     race_white = rbinom(N, 1, prob = prop_white), -->
+<!--     race_black = rbinom(N, 1, prob = prop_black), -->
+<!--     race_asian = rbinom(N, 1, prob = prop_black), -->
+<!--     race_hispanic_other = rbinom(N, 1, prob = prop_hispanic_other), -->
+<!--     pid_republican = rbinom(N, 1, prob = prop_republican), -->
+<!--     pid_democrat = rbinom(N, 1, prob = prop_democrat) -->
+<!--   ) -->
+<!-- ) %>%  -->
+<!--   select(-starts_with("prop_"), -population_size) -->
 
-# population weights for MRP
-mrp_weights <- delaware_population_df %>%
-  group_by(district, race_white, race_black, race_asian, race_hispanic_other, pid_republican, pid_democrat) %>% 
-  summarize(n_cell = n()) %>% 
-  group_by(district) %>% 
-  mutate(proportion_cell = n_cell/sum(n_cell)) %>% 
-  select(-n_cell) %>% 
-  ungroup 
+<!-- # population weights for MRP -->
+<!-- mrp_weights <- delaware_population_df %>% -->
+<!--   group_by(district, race_white, race_black, race_asian, race_hispanic_other, pid_republican, pid_democrat) %>%  -->
+<!--   summarize(n_cell = n()) %>%  -->
+<!--   group_by(district) %>%  -->
+<!--   mutate(proportion_cell = n_cell/sum(n_cell)) %>%  -->
+<!--   select(-n_cell) %>%  -->
+<!--   ungroup  -->
 
-delaware_population_df <- mrp_weights %>% 
-  select(district, proportion_cell) %>% 
-  right_join(delaware_population_df)
+<!-- delaware_population_df <- mrp_weights %>%  -->
+<!--   select(district, proportion_cell) %>%  -->
+<!--   right_join(delaware_population_df) -->
 
-# Lax and Philips APSR 2009
-# Policies are coded dichotomously, 1 for the progay policy and 0 otherwise: Adoption (9 states allow second-parent adoption in all jurisdictions)
+<!-- # Lax and Philips APSR 2009 -->
+<!-- # Policies are coded dichotomously, 1 for the progay policy and 0 otherwise: Adoption (9 states allow second-parent adoption in all jurisdictions) -->
 
-design <-
-  declare_population(
-    data = delaware_population_df, 
-    
-    districts = modify_level(district_effect = rnorm(N)),
-    
-    individuals = modify_level(
-      noise = rnorm(N, mean = district_effect),
-      policy_support = rbinom(N, 1, prob = pnorm(
-        0.25 + 0.2 * race_white - 0.1 * race_black - 0.2 * race_hispanic_other - 
-          0.1 * pid_democrat + 0.15 * pid_republican + noise))
-    )
-  ) + 
-  
-  declare_estimand(handler = function(data) {
-    data %>%
-      group_by(district) %>%
-      summarize(estimand = mean(policy_support)) %>%
-      ungroup %>% 
-      mutate(estimand_label = "mean_policy_support")
-  }) +
-  
-  declare_sampling(n = 500) +
-  
-  declare_estimator(handler = tidy_estimator(function(data) {
-    data %>%
-      group_by(district) %>%
-      summarize(estimate = mean(policy_support))
-  }), label = "strata_means", estimand = "mean_policy_support") + 
+<!-- design <- -->
+<!--   declare_population( -->
+<!--     data = delaware_population_df,  -->
 
-  # this estimator owes code to https://timmastny.rbind.io/blog/multilevel-mrp-tidybayes-brms-stan/
-  declare_estimator(handler = tidy_estimator(function(data) {
+<!--     districts = modify_level(district_effect = rnorm(N)), -->
 
-    model_fit <- glmer(
-      formula = policy_support ~ race_white + race_black + race_asian + race_hispanic_other +
-        pid_democrat + pid_republican + (1 | district),
-      data = data, family = binomial(link = "logit"))
+<!--     individuals = modify_level( -->
+<!--       noise = rnorm(N, mean = district_effect), -->
+<!--       policy_support = rbinom(N, 1, prob = pnorm( -->
+<!--         0.25 + 0.2 * race_white - 0.1 * race_black - 0.2 * race_hispanic_other -  -->
+<!--           0.1 * pid_democrat + 0.15 * pid_republican + noise)) -->
+<!--     ) -->
+<!--   ) +  -->
 
-    data %>%
-      mutate(
-        support_predicted =
-          prediction(model_fit, data = ., allow.new.levels = TRUE, type = "response"),
-        support_predicted_weighted = support_predicted * proportion_cell
-      ) %>%
-      group_by(district) %>%
-      summarize(estimate = sum(support_predicted_weighted))
+<!--   declare_estimand(handler = function(data) { -->
+<!--     data %>% -->
+<!--       group_by(district) %>% -->
+<!--       summarize(estimand = mean(policy_support)) %>% -->
+<!--       ungroup %>%  -->
+<!--       mutate(estimand_label = "mean_policy_support") -->
+<!--   }) + -->
 
-  }), label = "mrp_mle", estimand = "mean_policy_support")
+<!--   declare_sampling(n = 500) + -->
 
-dat <- draw_data(design)
+<!--   declare_estimator(handler = tidy_estimator(function(data) { -->
+<!--     data %>% -->
+<!--       group_by(district) %>% -->
+<!--       summarize(estimate = mean(policy_support)) -->
+<!--   }), label = "strata_means", estimand = "mean_policy_support") +  -->
 
-draw_estimates(design)
+<!--   # this estimator owes code to https://timmastny.rbind.io/blog/multilevel-mrp-tidybayes-brms-stan/ -->
+<!--   declare_estimator(handler = tidy_estimator(function(data) { -->
 
-sims <- simulate_design(design, sims = 3)
+<!--     model_fit <- glmer( -->
+<!--       formula = policy_support ~ race_white + race_black + race_asian + race_hispanic_other + -->
+<!--         pid_democrat + pid_republican + (1 | district), -->
+<!--       data = data, family = binomial(link = "logit")) -->
 
-diag <- diagnose_design(design, sims = 100, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)), add_grouping_variables = "state")
-```
+<!--     data %>% -->
+<!--       mutate( -->
+<!--         support_predicted = -->
+<!--           prediction(model_fit, data = ., allow.new.levels = TRUE, type = "response"), -->
+<!--         support_predicted_weighted = support_predicted * proportion_cell -->
+<!--       ) %>% -->
+<!--       group_by(district) %>% -->
+<!--       summarize(estimate = sum(support_predicted_weighted)) -->
 
+<!--   }), label = "mrp_mle", estimand = "mean_policy_support") -->
 
-This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_pilot <- simulate_design(design, sims = sims)
-```
+<!-- dat <- draw_data(design) -->
 
-Right after you do simulations, you want to save the simulations rds. 
+<!-- draw_estimates(design) -->
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("section_template"), "/simulations_pilot.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_pilot, path = rds_file_path)
-}
-simulations_pilot <- read_rds(rds_file_path)
-```
+<!-- sims <- simulate_design(design, sims = 3) -->
 
-Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
-
-```{r}
-kable(head(simulations_pilot))
-```
+<!-- diag <- diagnose_design(design, sims = 100, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)), add_grouping_variables = "state") -->
+<!-- ``` -->
 
 
 

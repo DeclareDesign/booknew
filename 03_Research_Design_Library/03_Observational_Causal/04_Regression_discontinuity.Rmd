@@ -121,7 +121,9 @@ declare_population(
   noise = rnorm(N, 0, .1),
   Z = 1 * (X > 0)
 ) +
-  declare_potential_outcomes(Y ~ Z * treatment(X) + (1 - Z) * control(X) + noise) +
+  declare_potential_outcomes(Y ~ Z * treatment(X) + 
+                               (1 - Z) * control(X) + 
+                               noise) +
   
   # Inquiry -----------------------------------------------------------------
 declare_estimand(LATE = treatment(0) - control(0)) +

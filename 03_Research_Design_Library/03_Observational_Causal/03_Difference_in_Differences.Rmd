@@ -22,17 +22,18 @@ source("scripts/before_chapter_script.R")
 ### Declaration
 
 ```{r}
-
 design <- 
   declare_population(
     unit = add_level(N = 2, X = rnorm(N, sd = 0.5)),
     period = add_level(N = 2, nest = FALSE),
-    unit_period = cross_levels(by = join(unit, period), U = rnorm(N, sd = 0.01))
+    unit_period = cross_levels(by = join(unit, period), 
+                               U = rnorm(N, sd = 0.01))
   ) + 
   declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + Z + U) + 
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 2) + 
   declare_step(Z = X == max(X), handler = mutate) + 
-  reveal_outcomes(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1), handler = mutate) +
+  reveal_outcomes(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1), 
+                  handler = mutate) +
   declare_estimator(Y ~ Z * period, model = lm_robust, se_type = "none")
 ```
 

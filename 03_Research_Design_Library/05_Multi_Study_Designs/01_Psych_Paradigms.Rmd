@@ -71,16 +71,43 @@ generate_study_sample <- function(n, rho, tau, gamma, data){
             U = rnorm(N), Y = tau * X + gamma * M * X + U)
 }
 
-three_study_design <- 
+three_study_design <-
   # Study 1 -- Bivariate correlation between X and Y
-  declare_population(n = n1, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-  declare_estimator(Y ~ X, term = "X", model = lm_robust, label = "Study 1") +
+  declare_population(
+    n = n1,
+    tau = tau,
+    gamma = gamma,
+    rho = rho,
+    handler = generate_study_sample
+  ) +
+  declare_estimator(Y ~ X,
+                    term = "X",
+                    model = lm_robust,
+                    label = "Study 1") +
   # Study 2 -- Bivariate correlation between M and X
-  declare_population(n = n2, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-  declare_estimator(M ~ X, term = "X", model = lm_robust, label = "Study 2") +
-  # Study 3 -- Interaction in X and M 
-  declare_population(n = n3, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-  declare_estimator(Y ~ X + M + X:M, term = "X:M", model = lm_robust, label = "Study 3") 
+  declare_population(
+    n = n2,
+    tau = tau,
+    gamma = gamma,
+    rho = rho,
+    handler = generate_study_sample
+  ) +
+  declare_estimator(M ~ X,
+                    term = "X",
+                    model = lm_robust,
+                    label = "Study 2") +
+  # Study 3 -- Interaction in X and M
+  declare_population(
+    n = n3,
+    tau = tau,
+    gamma = gamma,
+    rho = rho,
+    handler = generate_study_sample
+  ) +
+  declare_estimator(Y ~ X + M + X:M,
+                    term = "X:M",
+                    model = lm_robust,
+                    label = "Study 3") 
 ```
 
 ### DAG
@@ -177,13 +204,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 null_simulations <- read_rds(rds_file_path)
 ```
 
-In the first three rows of the table, the theory is correct in that `tau`,  
-`gamma`, and  `rho` are positive, in the second three rows it is incorrect because 
-both the main effect and interaction are zero. The "power" column tells us the 
-proportion of simulations in which the effect is significant at the $\alpha = .05$ level, the "all significant" column tells us the proportion of simulations in which all
-of the studies have significant effects, the "positive" column tells us how often
-the study found a positively signed result, while the "all positive column" tells
-us the proportion of simulations where all studies had a positively signed result.
+In the first three rows of the table, the theory is correct in that `tau`, `gamma`, and  `rho` are positive, in the second three rows it is incorrect because both the main effect and interaction are zero. The "power" column tells us the proportion of simulations in which the effect is significant at the $\alpha = .05$ level, the "all significant" column tells us the proportion of simulations in which all of the studies have significant effects, the "positive" column tells us how often the study found a positively signed result, while the "all positive column" tells us the proportion of simulations where all studies had a positively signed result.
 
 ```{r,echo = FALSE}
 three_study_diagnosands <- 
@@ -255,27 +276,65 @@ tau <- .2
 
 N_studies <- 30
 
-replication_design <- 
-  declare_population(n = 100, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-  declare_estimator(Y ~ X, term = "X", model = lm_robust, label = paste0("Study 1")) 
 
-for(i in 2:N_studies){
-  replication_design <- 
+replication_design <-
+  declare_population(
+    n = 100,
+    tau = tau,
+    gamma = gamma,
+    rho = rho,
+    handler = generate_study_sample
+  ) +
+  declare_estimator(Y ~ X,
+                    term = "X",
+                    model = lm_robust,
+                    label = paste0("Study 1")) 
+
+for(i in 2:N_studies) {
+  replication_design <-
     replication_design +
-    declare_population(n = 100, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-    declare_estimator(Y ~ X, term = "X", model = lm_robust, label = paste0("Study ",i)) 
+    declare_population(
+      n = 100,
+      tau = tau,
+      gamma = gamma,
+      rho = rho,
+      handler = generate_study_sample
+    ) +
+    declare_estimator(Y ~ X,
+                      term = "X",
+                      model = lm_robust,
+                      label = paste0("Study ", i))
 }
 
-tau <- 0
-null_replication_design <- 
-  declare_population(n = 100, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-  declare_estimator(Y ~ X, term = "X", model = lm_robust, label = paste0("Study 1")) 
 
-for(i in 2:N_studies){
-  null_replication_design <- 
+tau <- 0
+null_replication_design <-
+  declare_population(
+    n = 100,
+    tau = tau,
+    gamma = gamma,
+    rho = rho,
+    handler = generate_study_sample
+  ) +
+  declare_estimator(Y ~ X,
+                    term = "X",
+                    model = lm_robust,
+                    label = paste0("Study 1"))
+
+for (i in 2:N_studies) {
+  null_replication_design <-
     null_replication_design +
-    declare_population(n = 100, tau = tau, gamma = gamma, rho = rho, handler = generate_study_sample) +
-    declare_estimator(Y ~ X, term = "X", model = lm_robust, label = paste0("Study ",i)) 
+    declare_population(
+      n = 100,
+      tau = tau,
+      gamma = gamma,
+      rho = rho,
+      handler = generate_study_sample
+    ) +
+    declare_estimator(Y ~ X,
+                      term = "X",
+                      model = lm_robust,
+                      label = paste0("Study ", i))
 }
 ```
 
@@ -343,64 +402,46 @@ get_N_study_diagnosands <- function(simulations, N){
     summarize_all("mean")
 }
 
-replication_diagnosands <- 
-  lapply(1:N_studies, get_N_study_diagnosands, 
-         simulations = replication_simulations) %>% 
+replication_diagnosands <-
+  lapply(1:N_studies, get_N_study_diagnosands,
+         simulations = replication_simulations) %>%
   do.call(what = "rbind")
 replication_diagnosands$N_studies <- 1:nrow(replication_diagnosands)
 
-null_replication_diagnosands <- 
-  lapply(1:N_studies, get_N_study_diagnosands, 
-         simulations = null_replication_simulations) %>% 
+null_replication_diagnosands <-
+  lapply(1:N_studies, get_N_study_diagnosands,
+         simulations = null_replication_simulations) %>%
   do.call(what = "rbind")
-null_replication_diagnosands$N_studies <- 1:nrow(null_replication_diagnosands)
+null_replication_diagnosands$N_studies <-
+  1:nrow(null_replication_diagnosands)
 
-plot_data <- 
+plot_data <-
   rbind(
-  melt(replication_diagnosands, id.vars = "N_studies") %>% mutate(tau = .2),
-  melt(null_replication_diagnosands, id.vars = "N_studies") %>% mutate(tau = 0))
+    melt(replication_diagnosands, id.vars = "N_studies") %>% mutate(tau = .2),
+    melt(null_replication_diagnosands, id.vars = "N_studies") %>% mutate(tau = 0)
+  )
 
-plot_data  %>% 
-  filter(N_studies != 1) %>% 
-  filter(variable %in% c("all_significant","all_positive")) %>% 
-  mutate(label = case_when(
-    variable == "all_significant" ~ "Pr(All N studies have significant results)",
-    variable == "all_positive" ~ "Pr(All N studies have positive results)",
-    variable == "prop_sig_95" ~ "Pr(At least 95% of studies have significant results)"
-  ),
-  model = case_when(tau > 0 ~ "Model: all effects positive\n(Theory is correct)", tau == 0 ~ "Model: all effects zero\n(Theory is incorrect)")) %>% 
+
+plot_data  %>%
+  filter(N_studies != 1) %>%
+  filter(variable %in% c("all_significant", "all_positive")) %>%
+  mutate(
+    label = case_when(
+      variable == "all_significant" ~ "Pr(All N studies have significant results)",
+      variable == "all_positive" ~ "Pr(All N studies have positive results)",
+      variable == "prop_sig_95" ~ "Pr(At least 95% of studies have significant results)"
+    ),
+    model = case_when(
+      tau > 0 ~ "Model: all effects positive\n(Theory is correct)",
+      tau == 0 ~ "Model: all effects zero\n(Theory is incorrect)"
+    )
+  ) %>%
   ggplot(aes(x = N_studies, y = value, color = label)) +
-  geom_point() + 
-  facet_grid(~model) +
-  scale_x_continuous(name = "Number of studies in design",breaks = seq(2,30,2)) +
+  geom_point() +
+  facet_grid( ~ model) +
+  scale_x_continuous(name = "Number of studies in design", breaks = seq(2, 30, 2)) +
   scale_y_continuous(name = "Probability observable implications support theory.")
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
