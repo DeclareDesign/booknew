@@ -464,47 +464,33 @@ design <-
 <h2>
 <span class="header-section-number">14.3</span> Inference about unobserved variables<a class="anchor" aria-label="anchor" href="#inference-about-unobserved-variables"><i class="fas fa-link"></i></a>
 </h2>
+<p>The purpose of this unwritten entry is to show how a latent variable (<code>Y_star</code>) can be measured with three procedures (<code>Y_1</code>, <code>Y_2</code>, <code>Y_3</code>), which are then averaged into an index.</p>
+<p>We’ll of course be “biased” for the true latent variable. Could a reasonable diagnosand here be the average correlation of the estimated index with the latent value?</p>
 <div id="declaration-3" class="section level3">
 <h3>
 <span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-3"><i class="fas fa-link"></i></a>
 </h3>
-<!--
-JC Comment: This setup seems a bit odd to me. I don't think anyone ever has the true average amount or score of democracy in mind as their inquiry, or thinks they're getting it by averaging indicators. It seems a bit trivial to show that anyone who sets out to do so gets the answer wrong if they don't anticipate an intercept in the DGP of one of the measures or make the wrong distributional assumptions. My sense is that there are two kinds of estimands people are usually interested in with designs such as these. First, do the things I measured "load" onto the underlying thing in the way I expect; second, do the relative levels stack up as they should (e.g., if Togo is truly less democratic than Benin then I want this to show up in the ordering). I've had a go at one design below that focuses on the second kind of estimand. Not entirely sure about it but I think it may be a step in the right direction and shows off DD flexibility.
-
-
-```r
-design <-
-  declare_population(N = 100, Y_star = rnorm(N)) +
-  declare_estimand(Y_bar = mean(Y_star)) + 
-  declare_measurement(Y_1 = 0.1 * Y_star + rnorm(N, sd = 0.25),
-                      Y_2 = Y_star + rnorm(N, sd = 0.25),
-                      Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.25),
-                      Y_idx = (Y_1 + Y_2 + Y_3) / 3) + 
-  declare_estimator(Y_idx ~ 1, model = lm_robust, estimand = "Y_bar")
-```
--->
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, true_rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rank.html">rank</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_measurement</span><span class="op">(</span>Y_1 <span class="op">=</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
                       Y_2 <span class="op">=</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
                       Y_3 <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
-                      Y_idx <span class="op">=</span> <span class="op">(</span><span class="va">Y_1</span> <span class="op">+</span> <span class="va">Y_2</span> <span class="op">+</span> <span class="va">Y_3</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span>, 
-                      ranking <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rank.html">rank</a></span><span class="op">(</span><span class="va">Y_idx</span><span class="op">)</span><span class="op">)</span> 
-
-<span class="co"># simulate_design(design) %&gt;% </span>
-<span class="co">#   summarize(ranking_correct = mean(true_rank == ranking))</span></code></pre></div>
+                      Y_idx <span class="op">=</span> <span class="op">(</span><span class="va">Y_1</span> <span class="op">+</span> <span class="va">Y_2</span> <span class="op">+</span> <span class="va">Y_3</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_idx</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dag-2" class="section level3">
 <h3>
 <span class="header-section-number">14.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-2"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-169-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-168-1.svg" width="100%"></div>
 </div>
 <div id="example-3" class="section level3">
 <h3>
 <span class="header-section-number">14.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-3"><i class="fas fa-link"></i></a>
 </h3>
+<p>Perhaps a good psychometric example would be worthwhile to explore here? Or an education example?</p>
 <!-- make sure to rename the section title below -->
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
