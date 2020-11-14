@@ -32,7 +32,6 @@ b_sims <- 20
 
 ## Conjoint experiments
 
-
 Conjoint survey experiments have become hugely popular in political science and beyond for studying multidimensional choice. In popular "forced-choice" design variant, subjects are presented with a choice task: a pair of profiles (of candidates, of immigrants, of policies) and are asked to make a binary choice between them.  
 
 When you're designing a conjoint, you have to make (at least) three choices:
@@ -46,7 +45,6 @@ The right number of **attributes** is governed by the "masking/satisficing" trad
 The right number of **levels** is governed by your sample size. If an attribute has three levels, it's like you're conducting a three-arm trial, so you'll want to have enough subjects for each arm. The more levels, the lower the power.
 
 The right number of **choice tasks** depends on your survey budget. You can always add more pairs of profiles and the only cost is the opportunity cost of asking a different question of the survey that may serve some higher scientific purpose.  If you're worried that respondents will get bored with the task, you can always throw out profile pairs that come later in the survey. @bansak2018number suggest that you can ask many pairs without much loss of data quality.
-
 
 ### Declaration
 
@@ -80,8 +78,7 @@ design <-
                     model = lm_robust, term = TRUE)
 ```
 
-### Dag
-
+### DAG
 
 ```{r, echo = FALSE}
 dag <- dagify(Y ~ E,
@@ -107,7 +104,6 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 
 base_dag_plot %+% ggdd_df
 ```
-
 
 ### Example
 

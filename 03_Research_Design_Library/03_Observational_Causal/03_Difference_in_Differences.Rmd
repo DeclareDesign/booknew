@@ -17,6 +17,18 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+
+```{r difference_in_difference, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 1000
+b_sims <- 1000
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
 ## Difference-in-differences
 
 ### Declaration
@@ -37,13 +49,11 @@ design <-
   declare_estimator(Y ~ Z * period, model = lm_robust, se_type = "none")
 ```
 
-### Dag
-
+### DAG
 
 ```{r, echo=FALSE}
 dag <- dagify(Y ~ X + period + Z + U,
               Z ~ X)
-
 
 nodes <-
   tibble(
@@ -64,22 +74,10 @@ nodes <-
 
 ggdd_df <- make_dag_df(dag, nodes, design)
 
-base_dag_plot %+% ggdd_df
+base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(0.5, 4), xlim = c(1 - epsilon, 5.25 + epsilon))
 ```
 
 ### Example
-
-
-```{r difference_in_difference, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 1000
-b_sims <- 1000
-```
-
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-```
 
 ### Two-period two-group setting
 
@@ -95,30 +93,47 @@ two_period_two_group_design <-
     units = add_level(N = N_units, unit_shock = rnorm(N, sd = 0.5)),
     periods = add_level(N = N_time_periods, nest = FALSE,
                         time = (1:N_time_periods) - N_time_periods + 1),
-    unit_period = cross_levels(by = join(units, periods), unit_time_shock = rnorm(N, sd = 0.01))
+    unit_period = 
+      cross_levels(by = join(units, periods), 
+                   unit_time_shock = rnorm(N, sd = 0.01))
   ) + 
   
-  # internal note: the unbiasedness obtains whether or not there is a unit-time shock
   declare_potential_outcomes(
-    Y_Z_0 = unit_shock + 0.5 * time + unit_time_shock, # common pretreatment trend
+    Y_Z_0 = unit_shock + 0.5 * time + unit_time_shock, 
     Y_Z_1 = Y_Z_0 + 1) +
   
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = time == 1) + 
   
-  declare_assignment(Z = unit_shock == max(unit_shock), handler = mutate) + 
+  declare_assignment(
+    Z = unit_shock == max(unit_shock), 
+    handler = mutate
+  ) + 
   
   reveal_outcomes(
-    Y = case_when(Z == 0 | time < 1 ~ Y_Z_0, TRUE ~ Y_Z_1), handler = mutate) +
+    Y = case_when(Z == 0 | time < 1 ~ Y_Z_0, TRUE ~ Y_Z_1), 
+    handler = mutate) +
   
-  declare_estimator(estimate = (mean(Y[Z == 1 & time == 1]) - mean(Y[Z == 0 & time == 1])) -
-                      (mean(Y[Z == 1 & time == 0]) - mean(Y[Z == 0 & time == 0])),
-                    estimator_label = "DiD", handler = summarize, label = "DiD") +
+  declare_estimator(
+    estimate = (mean(Y[Z == 1 & time == 1]) - 
+                  mean(Y[Z == 0 & time == 1])) -
+      (mean(Y[Z == 1 & time == 0]) - mean(Y[Z == 0 & time == 0])),
+    estimator_label = "DiD", 
+    handler = summarize, 
+    label = "DiD") +
   
-  declare_estimator(estimate = mean(Y[Z == 1 & time == 1]) - mean(Y[Z == 1 & time == 0]),
-                    estimator_label = "Diff", handler = summarize, label = "Over-Time") +
+  declare_estimator(
+    estimate = mean(Y[Z == 1 & time == 1]) - 
+      mean(Y[Z == 1 & time == 0]),
+    estimator_label = "Diff", 
+    handler = summarize, 
+    label = "Over-Time") +
   
-  declare_estimator(estimate = mean(Y[Z == 1 & time == 1]) - mean(Y[Z == 0 & time == 1]),
-                    estimator_label = "DiM", handler = summarize, label = "DiM")
+  declare_estimator(
+    estimate = mean(Y[Z == 1 & time == 1]) - 
+      mean(Y[Z == 0 & time == 1]),
+    estimator_label = "DiM", 
+    handler = summarize, 
+    label = "DiM")
 ```
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
@@ -161,7 +176,7 @@ draw_data(three_period_two_group_design) %>%
 ```
 
 - Formal test (DID on T = -1 and T = 0 periods, i.e. a year backward from the DiD)
-- There is a result that shows that the two-step procedure of the parallel trends assumption then DID if test passes that shows poor coverage of SEs in final DID (https://arxiv.org/abs/1804.01208). Cite here.
+- There is a result that shows that the two-step procedure of the parallel trends assumption then DID if test passes that shows poor coverage of SEs in final DID (https://arxiv.org/abs/1804.01208).
 
 ### Multi-period design
 
@@ -174,30 +189,36 @@ N_time_periods <- 20
 multi_period_design <- 
   
   declare_population(
-    units = add_level(N = N_units, 
-                      unit_shock = rnorm(N), 
-                      unit_treated = 1*(unit_shock > median(unit_shock)), 
-                      unit_treatment_start = 
-                        sample(2:(N_time_periods - 1) - N_time_periods + 1, N, replace = TRUE)),
-    periods = add_level(N = N_time_periods, nest = FALSE, 
-                        time = (1:N_time_periods) - N_time_periods + 1),
-    unit_period = cross_levels(by = join(units, periods),
-                               noise = rnorm(N), 
-                               pretreatment = 1*(time < unit_treatment_start))
+    units = add_level(
+      N = N_units, 
+      unit_shock = rnorm(N), 
+      unit_treated = 1*(unit_shock > median(unit_shock)), 
+      unit_treatment_start = 
+        sample(2:(N_time_periods - 1) - N_time_periods + 1, N, 
+               replace = TRUE)),
+    periods = add_level(
+      N = N_time_periods, nest = FALSE, 
+      time = (1:N_time_periods) - N_time_periods + 1),
+    unit_period = 
+      cross_levels(by = join(units, periods),
+                   noise = rnorm(N), 
+                   pretreatment = 1*(time < unit_treatment_start))
   ) + 
   
   declare_potential_outcomes(
-    Y_Z_0 = unit_shock + 0.5 * time + noise, # common pretreatment trend
+    Y_Z_0 = unit_shock + 0.5 * time + noise, 
     Y_Z_1 = Y_Z_0 + 0.2) +
   
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = time == 1) + 
   
-  declare_assignment(Z = 1*(unit_treated & pretreatment == FALSE), handler = fabricate) + 
+  declare_assignment(Z = 1*(unit_treated & pretreatment == FALSE), 
+                     handler = fabricate) + 
   reveal_outcomes(Y, Z) + 
   
   declare_estimator(Y ~ Z + time, fixed_effects = ~ units + periods, 
-                    model = lm_robust, label = "twoway-fe", estimand = "ATE") 
-  
+                    model = lm_robust, 
+                    label = "twoway-fe", 
+                    estimand = "ATE") 
 ```
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
@@ -217,7 +238,7 @@ diagnosis_multi_period_multi_group <- read_rds(rds_file_path)
 kable(get_diagnosands(diagnosis_multi_period_multi_group), booktabs = TRUE)
 ```
 
-- Show that in case where some units switch back and forth between T and C during panel there is bias (point to Imai and Kim appear with weighted FE estimator to fix this)
+- Show that in case where some units switch back and forth between T and C during panel there is bias (point to Imai and Kim with weighted FE estimator to fix this)
 
 
 

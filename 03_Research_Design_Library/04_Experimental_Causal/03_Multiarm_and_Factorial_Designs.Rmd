@@ -1,7 +1,7 @@
 ---
 title: "Multiarm Designs"
 output: html_document
-bibliography: ../../bib/book.bib 
+bibliography: ../../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -17,15 +17,6 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-## Multiarm Designs
-
-
-### Declaration
-
-### Dag
-
-### Example
-
 <!-- make sure to rename the section title below -->
 
 ```{r multiarm_design, echo = FALSE, output = FALSE, purl = FALSE}
@@ -40,37 +31,11 @@ b_sims <- 20
 library(blockTools)
 ```
 
-You can use the global bib file via rmarkdown cites like this: @imai2008
-
-```{r}
-design <-
-  declare_population(N = 100, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + U) +
-  declare_assignment(prob = 0.5) +
-  reveal_outcomes(Y, Z) +
-  declare_estimator(Y ~ Z, model = difference_in_means)
-```
+## Multiarm Designs
 
 
-This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_pilot <- simulate_design(design, sims = sims)
-```
+### Declaration
 
-Right after you do simulations, you want to save the simulations rds. 
+### DAG
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("section_template"), "/simulations_pilot.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_pilot, path = rds_file_path)
-}
-simulations_pilot <- read_rds(rds_file_path)
-```
-
-Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
-
-```{r}
-kable(head(simulations_pilot, 5), booktabs = TRUE)
-```
-
+### Example

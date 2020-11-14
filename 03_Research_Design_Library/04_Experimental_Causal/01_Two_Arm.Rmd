@@ -1,7 +1,7 @@
 ---
 title: "Two arm trials"
 output: html_document
-bibliography: ../../bib/book.bib 
+bibliography: ../../bib/book.bib
 ---
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
@@ -17,6 +17,19 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
+<!-- make sure to rename the section title below -->
+
+```{r two_arm_trials, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+```
+
 ## Two arm trials
 
 ### Declaration
@@ -29,10 +42,11 @@ design <-
   declare_assignment(prob = 0.5) +
   declare_estimator(Y ~ Z, estimand = "ATE")
 ```
-### Dag
+
+### DAG
 
 ```{r, echo=FALSE}
-dag <- 
+dag <-
 dagify(
   Y ~ Z + U
 )
@@ -48,7 +62,7 @@ nodes <-
       "**Random assignment**<br>",
       "**Unknown heterogeneity**"),
     x = c(5, 1, 5),
-    y = c(2.5, 2.5, 4), 
+    y = c(2.5, 2.5, 4),
     nudge_direction = c("S", "S", "N"),
     answer_strategy = "uncontrolled"
   )
@@ -59,53 +73,3 @@ base_dag_plot %+% ggdd_df
 ```
 
 ### Example
-
-
-<!-- make sure to rename the section title below -->
-
-```{r two_arm_trials, echo = FALSE, output = FALSE, purl = FALSE}
-# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
-do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
-```
-
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-library(blockTools)
-```
-
-You can use the global bib file via rmarkdown cites like this: @imai2008
-
-```{r}
-design <-
-  declare_population(N = 100, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + U) +
-  declare_assignment(prob = 0.5) +
-  reveal_outcomes(Y, Z) +
-  declare_estimator(Y ~ Z, model = difference_in_means)
-```
-
-
-This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_pilot <- simulate_design(design, sims = sims)
-```
-
-Right after you do simulations, you want to save the simulations rds. 
-
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("section_template"), "/simulations_pilot.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_pilot, path = rds_file_path)
-}
-simulations_pilot <- read_rds(rds_file_path)
-```
-
-Now all that simulating, saving, and loading is done, and we can use the simulations for whatever you want.
-
-```{r}
-kable(head(simulations_pilot, 5), booktabs = TRUE)
-```
-

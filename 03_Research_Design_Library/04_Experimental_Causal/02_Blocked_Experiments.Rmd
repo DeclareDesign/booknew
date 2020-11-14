@@ -1,5 +1,5 @@
 ---
-title: "Two arm trials"
+title: "Blocked trials"
 output: html_document
 bibliography: ../../bib/book.bib 
 ---
@@ -19,7 +19,6 @@ source("scripts/before_chapter_script.R")
 
 ## Blocked trials
 
-
 ### Declaration
 
 ```{r}
@@ -37,14 +36,9 @@ design <-
                     label = "Blocked DIM")
 ```
 
+### DAG
 
-
-
-
-### Dag
-
-
-```{r,echo=FALSE}
+```{r,echo=FALSE, fig.width = 7, fig.height = 3.5}
 dag <- dagify(
   Y ~ Z + X + U,
   Z ~ X
@@ -66,14 +60,14 @@ nodes <-
   )
 ggdd_df <- make_dag_df(dag, nodes, design)
 
-base_dag_plot %+% ggdd_df
+base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.5 - epsilon, 5.25 + epsilon))
 ```
 
 
 ### Example
 
 
-### Two-arm trials and designs with blocking and clustering
+### Blocked clustered trials
 
 ```{r}
 design <-
