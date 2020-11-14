@@ -11,8 +11,8 @@ source("vayr.R")
 source("ggplot_dd_theme.R")
 
 des <- 
-    declare_population(N = 100, u = rnorm(N)) + 
-    declare_potential_outcomes(Y ~ Z + u) + 
+    declare_population(N = 100, U = rnorm(N)) + 
+    declare_potential_outcomes(Y ~ Z + U) + 
     declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
     declare_assignment(m = 50) + 
     declare_estimator(Y ~ Z)

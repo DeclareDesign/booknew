@@ -54,8 +54,8 @@ sd_estimator <- function(data){
 }
 
 design <- 
-  declare_population(N = 50, u = rnorm(N, mean = 0, sd = 1)) + 
-  declare_potential_outcomes(Y ~ 0.2 * Z + u) + 
+  declare_population(N = 50, U = rnorm(N, mean = 0, sd = 1)) + 
+  declare_potential_outcomes(Y ~ 0.2 * Z + U) + 
   declare_assignment() + 
   declare_estimator(Y ~ Z) + 
   declare_estimator(handler = label_estimator(sd_estimator), label = "sd_estimator")
