@@ -78,285 +78,82 @@
 <h2>
 <span class="header-section-number">14.1</span> Random sampling<a class="anchor" aria-label="anchor" href="#random-sampling"><i class="fas fa-link"></i></a>
 </h2>
+<p>Often we are interested in features of a population, but data on the entire population is prohibitively expensive to collect. Instead, researchers obtain data on a small fraction of the population and use measurements taken on that sample to draw inferences about the population.</p>
+<p>Imagine we seek to estimate the average political ideology of adults residents of the small town of Portola, California (population 2,100). Households include between 1 and 3 adults; adults living in the same households typically have similar ideologies, but differ somewhat. The <em>latent</em> ideology of each subject is therefore composed of a household-level shock as well as an idiosyncratic individual-level shock. Our data strategy will involve administering a survey that ask subjects to place themselves on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We approximate this measurement procedure with a function that “cuts” the latent ideology into 7 separate groups.</p>
+<p>Our inquiry is “data-dependent”, since we are interested the population mean of the measured variable <span class="math inline">\(Y\)</span>: <span class="math inline">\(\frac{1}{N} \sum_1^N Y_i = \bar{Y}\)</span>. Our first sampling strategy will be complete random sampling. We draw a sample of exactly <span class="math inline">\(n = 100\)</span>, where every member of the population has an equal probability of inclusion in the sample, <span class="math inline">\(\frac{n}{N}\)</span>. Our answer strategy is the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>, implemented here as an ordinary least squares regression to facilitate the easy calculation of auxiliary statistics like the standard error of the estimate and the 95% confidence interval.</p>
 <div id="declaration-1" class="section level3">
 <h3>
 <span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-1"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span>
-  <span class="fu">fabricate</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">portola</span> <span class="op">&lt;-</span>
+  <span class="fu">fabricate</span><span class="op">(</span>
+    households <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, 
+                           n_adults <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+                           household_shock <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
+    adults <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">n_adults</span>, 
+                       individual_shock <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,
+                       Ystar <span class="op">=</span> <span class="va">household_shock</span> <span class="op">+</span> <span class="va">individual_shock</span><span class="op">)</span>
+    <span class="op">)</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_population</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">portola</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_measurement</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">Ystar</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="cn">Inf</span><span class="op">)</span>, 
+        labels <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dag" class="section level3">
 <h3>
-<span class="header-section-number">14.1.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag"><i class="fas fa-link"></i></a>
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-149-1.svg" width="100%"></div>
-</div>
-<div id="example-2" class="section level3">
-<h3>
-<span class="header-section-number">14.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-2"><i class="fas fa-link"></i></a>
-</h3>
-</div>
-<div id="simple-random-sampling" class="section level3">
-<h3>
-<span class="header-section-number">14.1.4</span> Simple random sampling<a class="anchor" aria-label="anchor" href="#simple-random-sampling"><i class="fas fa-link"></i></a>
-</h3>
-<p>Often we are interested in features of a population, but data on the entire population is prohibitively expensive to collect. Instead, researchers obtain data on a small fraction of the population and use measurements taken on that sample to draw inferences about the population.</p>
-<p>Imagine we seek to estimate the average political ideology of residents of the small town of Portola, California, on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We draw a simple random sample in which all residents have an equal chance of inclusion in the study. It’s a straightforward design but formally declaring it will make it easy to assess its properties.</p>
-<div id="design-declaration" class="section level4">
+<div id="diagnosis" class="section level4">
 <h4>
-<span class="header-section-number">14.1.4.1</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.2.1</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis"><i class="fas fa-link"></i></a>
 </h4>
-<ul>
-<li>
-<p><strong>M</strong>odel:</p>
-<p>Even for this most basic of designs, researchers bring to bear a background model of the world. As described in Chapter 1, the three elements of a model are the signature, probability distributions over variables, and functional equations among variables. The signature here is a specification of the variable of interest, <span class="math inline">\(Y\)</span>, with a well defined domain (seven possible values between 1 and 7). In the code declaration below, we assume a uniform distribution over these 7 values. This choice is a speculation about the population distribution of <span class="math inline">\(Y\)</span>; some features of the design diagnosis will depend on the choice of distribution. The functional equations seem absent here as there is only one variable in the model. We could consider an elaboration of the model that includes three variables: the true outcome, <span class="math inline">\(Y\)</span>; the decision to measure the outcome, <span class="math inline">\(M\)</span>; and the measured outcome, <span class="math inline">\(Y^M\)</span>. We ignore this complication for now under the assumption that <span class="math inline">\(Y = Y^M\)</span>, i.e., that <span class="math inline">\(Y\)</span> is measured perfectly. Finally, the model also includes information about the size of the population. Portola, California, has a population of approximately 2100 people as of 2010, so <span class="math inline">\(N = 2100\)</span>.</p>
-</li>
-<li>
-<p><strong>I</strong>nquiry:</p>
-<p>Our inquiry is the population mean of <span class="math inline">\(Y\)</span>: <span class="math inline">\(\frac{1}{N} \sum_1^N Y_i = \bar{Y}\)</span>.</p>
-</li>
-<li>
-<p><strong>D</strong>ata strategy:</p>
-<p>In simple random sampling, we draw a random sample without replacement of size <span class="math inline">\(n\)</span>, where every member of the population has an equal probability of inclusion in the sample, <span class="math inline">\(\frac{n}{N}\)</span>. When <span class="math inline">\(N\)</span> is very large relative to <span class="math inline">\(n\)</span>, units are drawn approximately independently. In this design we measure <span class="math inline">\(Y\)</span> for <span class="math inline">\(n=100\)</span> units in the sample; the other <span class="math inline">\(N-n\)</span> units are not measured.</p>
-</li>
-<li>
-<p><strong>A</strong>nswer strategy:</p>
-<p>We estimate the population mean with the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>. Even though our inquiry implies our answer should be a single number, an answer strategy typically also provides statistics that help us assess the uncertainty around that single number. To construct a 95% confidence interval around our estimate, we calculate the standard error of the sample mean, then approximate the sampling distribution of the sample mean estimator using a formula that includes a finite population correction. In particular, we approximate the estimated sampling distribution by a <span class="math inline">\(t\)</span> distribution with <span class="math inline">\(n - 1\)</span> degrees of freedom. In the code for our answer strategy, we spell out each step in turn.</p>
-</li>
-</ul>
+<p>Two main diagnosands for the simple random sampling design are bias and rmse. We want to know if we get the right answer on average and we want to know, on average, how far off from the truth we are.</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">random_sampling_design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_population</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>Ybar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Ybar"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
+  bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
+  rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span> </code></pre></div>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">random_sampling_design</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="takeaways" class="section level4">
-<h4>
-<span class="header-section-number">14.1.4.2</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways"><i class="fas fa-link"></i></a>
-</h4>
-<p>With the design declared we can run a diagnosis and plot results from Monte Carlo simulations of the design:</p>
+<code class="sourceCode R"><span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
+  bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
+  rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span> </code></pre></div>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span>
-  <span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span> </code></pre></div>
-<p>The diagnosis indicates that under simple random sampling, the sample mean estimator of the population mean is unbiased. The graph on the left shows the sampling distribution of the estimator: it’s centered directly on the true value of the inquiry. Confidence intervals <strong>also</strong> have a sampling distribution – they change depending on the idiosyncrasies of each sample we happen to draw. The figure on the right shows that the 95% of the time the confidence intervals cover the true value of the estimand, as they should. As sample size grows, the sampling distribution of the estimator gets tighter, but the coverage of the confidence intervals stays at 95% – just the properties we would want out of our answer strategy.</p>
-<p>Things work well here it seems. In the exercises we suggest some small modifications of the design that point to conditions under which things might break down.</p>
-</div>
-</div>
-<div id="stratified-and-clustered-random-sampling" class="section level3">
-<h3>
-<span class="header-section-number">14.1.5</span> Stratified and clustered random sampling<a class="anchor" aria-label="anchor" href="#stratified-and-clustered-random-sampling"><i class="fas fa-link"></i></a>
-</h3>
-<p>Researchers often cannot randomly sample at the individual level because it may, among other reasons, be too costly or logistically impractical. Instead, they may choose to randomly sample households, political precincts, or any group of individuals in order to draw inferences about the population. This strategy may be cheaper and simpler but may also introduce risks of less precise estimates.</p>
-<p>Say we are interested in the average party ideology in the entire state of California. Using cluster sampling, we randomly sample counties within the state, and within each selected county, randomly sample individuals to survey.</p>
-<p>Assuming enough variation in the outcome of interest, the random assignment of equal-sized clusters yields unbiased but imprecise estimates. By sampling clusters, we select groups of individuals who may share common attributes. Unlike simple random sampling, we need to take account of this intra-cluster correlation in our estimation of the standard error.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;The intra-cluster correlation coefficient (ICC) can be calculated directly and is a feature of this design.&lt;/p&gt;"><sup>22</sup></a> The higher the degree of within-cluster similarity, the more variance we observe in cluster-level averages and the more imprecise are our estimates.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;In ordinary least square (OLS) models, we assume errors are independent (error terms between individual observations are uncorrelated with each other) and homoskedastic (the size of errors is homogeneous across individuals). In reality, this is often not the case with cluster sampling.&lt;/p&gt;"><sup>23</sup></a> We address this by considering cluster-robust standard errors in our answer strategy below.</p>
-<div id="design-declaration-1" class="section level4">
-<h4>
-<span class="header-section-number">14.1.5.1</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration-1"><i class="fas fa-link"></i></a>
-</h4>
-<ul>
-<li>
-<strong>M</strong>odel:</li>
-</ul>
-<p>We specify the variable of interest <span class="math inline">\(Y\)</span> (political ideology, say) as a discrete variable ranging from 1 (most liberal) to 7 (most conservative). We do not define a functional model since we are interested in the population mean of <span class="math inline">\(Y\)</span>. The model also includes information about the number of sampled clusters and the number of individuals per cluster.</p>
-<ul>
-<li>
-<strong>I</strong>nquiry:</li>
-</ul>
-<p>Our estimand is the population mean of political identification <span class="math inline">\(Y\)</span>. Because we employed random sampling, we can expect the value of the sample mean (<span class="math inline">\(\widehat{\overline{y}}\)</span>) to approximate the true population parameter (<span class="math inline">\(\widehat{\overline{Y}}\)</span>).</p>
-<ul>
-<li>
-<strong>D</strong>ata strategy:</li>
-</ul>
-<p>Sampling follows a two-stage strategy. We first draw a random sample 30 counties in California, and in each county select 20 individuals at random. This guarantees that each county has the same probability of being included in the sample and each resident within a county the same probability of being in the sample. In this design we estimate <span class="math inline">\(Y\)</span> for n = 600 respondents.</p>
-<ul>
-<li>
-<strong>A</strong>nswer strategy:</li>
-</ul>
-<p>We estimate the population mean with the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>, and estimate standard errors under the assumption of independent and heteroskedastic errors as well as cluster-robust standard errors to take into account correlation of errors within clusters. Below we demonstrate the the imprecision of our estimated <span class="math inline">\(\widehat{\overline{Y}}\)</span> when we cluster standard errors and when we do not in the presence of an intracluster correlation coefficient (ICC) of 0.402.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">N_blocks</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-<span class="va">N_clusters_in_block</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
-<span class="va">N_i_in_cluster</span> <span class="op">&lt;-</span> <span class="fl">50</span>
-<span class="va">n_clusters_in_block</span> <span class="op">&lt;-</span> <span class="fl">30</span>
-<span class="va">n_i_in_cluster</span> <span class="op">&lt;-</span> <span class="fl">20</span>
-<span class="va">icc</span> <span class="op">&lt;-</span> <span class="fl">0.402</span>
-
-<span class="co"># M: Model</span>
-<span class="va">fixed_pop</span> <span class="op">&lt;-</span>
-  <span class="fu">fabricate</span><span class="op">(</span>
-    block <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_blocks</span><span class="op">)</span>,
-    cluster <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_clusters_in_block</span><span class="op">)</span>,
-    subject <span class="op">=</span> 
-      <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N_i_in_cluster</span>,
-                latent <span class="op">=</span> <span class="fu">draw_normal_icc</span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">0</span>, 
-                                         N <span class="op">=</span> <span class="va">N</span>, 
-                                         clusters <span class="op">=</span> <span class="va">cluster</span>, 
-                                         ICC <span class="op">=</span> <span class="va">icc</span><span class="op">)</span>,
-                Y <span class="op">=</span> <span class="fu">draw_ordered</span><span class="op">(</span>x <span class="op">=</span> <span class="va">latent</span>, 
-                                 breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-      <span class="op">)</span>
-  <span class="op">)</span>
-
-<span class="va">cluster_sampling_design</span> <span class="op">&lt;-</span> <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_pop</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># I: Inquiry</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>Ybar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># D: Data Strategy</span>
-  <span class="fu">declare_sampling</span><span class="op">(</span>strata <span class="op">=</span> <span class="va">block</span>, 
-                   clusters <span class="op">=</span> <span class="va">cluster</span>, n <span class="op">=</span> <span class="va">n_clusters_in_block</span>, 
-                   sampling_variable <span class="op">=</span> <span class="st">"Cluster_Sampling_Prob"</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="fu">declare_sampling</span><span class="op">(</span>strata <span class="op">=</span> <span class="va">cluster</span>,   n <span class="op">=</span> <span class="va">n_i_in_cluster</span>, 
-                   sampling_variable <span class="op">=</span> <span class="st">"Within_Cluster_Sampling_Prob"</span><span class="op">)</span> <span class="op">+</span>
-  
-  <span class="co"># A: Answer Strategy</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>,
-                    model <span class="op">=</span> <span class="va">lm_robust</span>,
-                    clusters <span class="op">=</span> <span class="va">cluster</span>,
-                    estimand <span class="op">=</span> <span class="st">"Ybar"</span>,
-                    label <span class="op">=</span> <span class="st">"Clustered Standard Errors"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="takeaways-1" class="section level4">
-<h4>
-<span class="header-section-number">14.1.5.2</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways-1"><i class="fas fa-link"></i></a>
-</h4>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">cluster_sampling_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">%&gt;%</span>
+  <span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">Bias</span>, <span class="va">RMSE</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kable</span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span>, caption <span class="op">=</span> <span class="st">"Complete random sampling design diagnosis"</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:competerandomsampling">Table 14.1: </span>Complete random sampling design diagnosis
+</caption>
 <thead><tr>
-<th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Estimand Label
-</th>
-<th style="text-align:left;">
-Estimator Label
-</th>
-<th style="text-align:left;">
-Term
-</th>
-<th style="text-align:left;">
-N Sims
-</th>
 <th style="text-align:left;">
 Bias
 </th>
 <th style="text-align:left;">
 RMSE
 </th>
-<th style="text-align:left;">
-Power
-</th>
-<th style="text-align:left;">
-Coverage
-</th>
-<th style="text-align:left;">
-Mean Estimate
-</th>
-<th style="text-align:left;">
-SD Estimate
-</th>
-<th style="text-align:left;">
-Mean Se
-</th>
-<th style="text-align:left;">
-Type S Rate
-</th>
-<th style="text-align:left;">
-Mean Estimand
-</th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-cluster_sampling_design
+-0.00
 </td>
 <td style="text-align:left;">
-Ybar
-</td>
-<td style="text-align:left;">
-Clustered Standard Errors
-</td>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:left;">
-500
-</td>
-<td style="text-align:left;">
-0.01
-</td>
-<td style="text-align:left;">
-0.25
-</td>
-<td style="text-align:left;">
-1.00
-</td>
-<td style="text-align:left;">
-0.95
-</td>
-<td style="text-align:left;">
-3.97
-</td>
-<td style="text-align:left;">
-0.25
-</td>
-<td style="text-align:left;">
-0.25
-</td>
-<td style="text-align:left;">
-0.00
-</td>
-<td style="text-align:left;">
-3.97
+0.09
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
-(0.00)
-</td>
 <td style="text-align:left;">
 (0.00)
 </td>
@@ -366,35 +163,137 @@ Clustered Standard Errors
 </tr>
 </tbody>
 </table></div>
-<p>To appreciate the role of clustering better we also plot simulated values of our estimand with standard errors not clustered and with clustered standard errors. To do this we first add an additional estimator to the design that does not take account of clusters.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">new_design</span> <span class="op">&lt;-</span> <span class="va">cluster_sampling_design</span> <span class="op">+</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>,
-                                                          model <span class="op">=</span> <span class="va">lm_robust</span>,
-                                                          estimand <span class="op">=</span> <span class="st">"Ybar"</span>,
-                                                          label <span class="op">=</span> <span class="st">"Naive Standard Errors"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">new_design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/plot-1.svg" width="100%"></div>
-<p>The figure above may give us the impression that our estimate with clustered standard errors is less precise, when in fact, it correctly accounts for the uncertainty surrounding our estimates. The blue lines in the graph demonstrate the estimates from simulations which contain our estimand. As our table and graphs show, the share of these simulations over the total number of simulations, also known as coverage, is (correctly) close to 95% in estimations with clustered standard errors and 54% in estimations without clustered standard errors. As expected, the mean estimate itself and the bias is the same in both specifications.</p>
+<p>The diagnosis in table <a href="#tab:completerandomsampling"><strong>??</strong></a> indicates that under complete random sampling, the sample mean estimator of the population mean is unbiased and that the root mean squared error is manageable at 0.09.</p>
 </div>
-<div id="exercises" class="section level4">
-<h4>
-<span class="header-section-number">14.1.5.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises"><i class="fas fa-link"></i></a>
-</h4>
-<ol style="list-style-type: decimal">
-<li>Modify the declaration to change the distribution of <span class="math inline">\(Y\)</span> from being uniform to something else: perhaps imagine that more extreme ideologies are more prevalent than moderate ones. Is the sample mean estimator still unbiased? Interpret your answer.</li>
-<li>Change the sampling procedure to favor units with higher values of ideology. Is the sample mean estimator still unbiased? Interpret your answer.</li>
-<li>Modify the estimation function to use this formula for the standard error: <span class="math inline">\(\widehat{se} \equiv \frac{\widehat\sigma}{\sqrt{n}}\)</span>. This equation differs from the one used in our declaration (it ignores the total population size <span class="math inline">\(N\)</span>). Check that the coverage of this new design is incorrect when <span class="math inline">\(N=n\)</span>. Assess how large <span class="math inline">\(N\)</span> has to be for the difference between these procedures not to matter.</li>
-</ol>
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
+<div id="clustered-random-sampling" class="section level3">
+<h3>
+<span class="header-section-number">14.1.3</span> Clustered random sampling<a class="anchor" aria-label="anchor" href="#clustered-random-sampling"><i class="fas fa-link"></i></a>
+</h3>
+<p>Researchers often cannot randomly sample at the individual level because it may, among other reasons, be too costly or logistically impractical. Instead, they may choose to randomly sample households, political precincts, or any group of individuals in order to draw inferences about the population. This strategy may be cheaper and simpler but may also introduce risks of less precise estimates.</p>
+<p>Let’s modify our first design to sample at the household level, rather than at the individual individual level. We’ll also add an additional estimator that clusters standard errors at the level of sampling, the household to compare to the estimator that ignores clustering. We’ll also add a new diagnosand, coverage, which will indicate whether the confidence intervals we construct (which depend on the flavor of standard errors we estimate) indeed include the true value of the inquiry 95% of the time.</p>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">portola</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_measurement</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span>
+    <span class="va">Ystar</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="cn">Inf</span><span class="op">)</span>,
+    labels <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">7</span>
+  <span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_sampling</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">households</span>, n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>,
+                    model <span class="op">=</span> <span class="va">lm_robust</span>,
+                    estimand <span class="op">=</span> <span class="st">"Y_bar"</span>,
+                    label <span class="op">=</span> <span class="st">"Standard errors not clustered"</span><span class="op">)</span> <span class="op">+</span>
+<span class="fu">declare_estimator</span><span class="op">(</span>
+  <span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>,
+  clusters <span class="op">=</span> <span class="va">households</span>,
+  model <span class="op">=</span> <span class="va">lm_robust</span>,
+  estimand <span class="op">=</span> <span class="st">"Y_bar"</span>,
+  label <span class="op">=</span> <span class="st">"Standard errors clustered"</span>
+<span class="op">)</span>
+
+<span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
+  bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
+  rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,
+  coverage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimand</span> <span class="op">&lt;=</span> <span class="va">conf.high</span> <span class="op">&amp;</span> <span class="va">estimand</span> <span class="op">&gt;=</span> <span class="va">conf.low</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span> </code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">%&gt;%</span>
+  <span class="fu">reshape_diagnosis</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">select</span><span class="op">(</span><span class="va">`Estimator Label`</span>, <span class="va">Bias</span>, <span class="va">RMSE</span>, <span class="va">Coverage</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kable</span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">3</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span>, caption <span class="op">=</span> <span class="st">"Cluster random sampling design diagnosis"</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:clusterrandomsampling">Table 14.2: </span>Cluster random sampling design diagnosis
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Estimator Label
+</th>
+<th style="text-align:left;">
+Bias
+</th>
+<th style="text-align:left;">
+RMSE
+</th>
+<th style="text-align:left;">
+Coverage
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Standard errors clustered
+</td>
+<td style="text-align:left;">
+-0.01
+</td>
+<td style="text-align:left;">
+0.15
+</td>
+<td style="text-align:left;">
+0.98
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Standard errors not clustered
+</td>
+<td style="text-align:left;">
+-0.01
+</td>
+<td style="text-align:left;">
+0.15
+</td>
+<td style="text-align:left;">
+0.83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.02)
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>The diagnosis shows the impact of clustering on the quality of our estimates. While the design remains unbiased for the population mean, the RMSE has gone up. We still interview (on average) 100 people in each sample, but since under the clustered design, we interview all adults in the household, the sampling distribution of the estimates is higher variance. The diagnosis also highlights the importance of matching your answer strategy to your data strategy. The sampling was clustered by household. The answer strategy that fails to account for this yields confidence intervals that are too small, as evidenced by the coverage rate well below the nominal 95%. When we estimate clustered standard errors instead, the coverage improves.</p>
+<!-- #### Exercises -->
+<!-- 1. Modify the declaration to change the distribution of $Y$ from being uniform to something else: perhaps imagine that more extreme ideologies are more prevalent than moderate ones. Is the sample mean estimator still unbiased? Interpret your answer. -->
+<!-- 2. Change the sampling procedure to favor units with higher values of ideology. Is the sample mean estimator still unbiased? Interpret your answer. -->
+<!-- 3. Modify the estimation function to use this formula for the standard error: $\widehat{se} \equiv \frac{\widehat\sigma}{\sqrt{n}}$. This equation differs from the one used in our declaration (it ignores the total population size $N$). Check that the coverage of this new design is incorrect when $N=n$. Assess how large $N$ has to be for the difference between these procedures not to matter.  -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
 </div>
 </div>
 <div id="poststratification" class="section level2">
 <h2>
 <span class="header-section-number">14.2</span> Poststratification<a class="anchor" aria-label="anchor" href="#poststratification"><i class="fas fa-link"></i></a>
 </h2>
-<p>Poststratification is a tool for learning about a population when you have a sample whose units were drawn with unequal (and usually unknown) probabilities. In essence, if you know features of the population that you can measure in your own sample, you can reweight your sample to look like the population—at least along the dimensions you can measure. In its simplest form, poststratification just involves counting and dividing. Say you want to poststratify your sample so that, in terms of gender and age, it looks like all people in their twenties in the United States population in 2010. That gives twenty groups—one for each age and each gender—whose size you need to count in the 2010 Decennial census and in your sample. Then, simply weight each person in the sample by the size of their group in the population divided by the size of their group in the sample. As we illustrate with the declaration below, it turns out that these weights are equivalent to the inverse sampling probabilities one would obtain were one to construct the sample using groups as strata. That’s where the “stratification” in poststratification comes from—it’s “post” because the weights are constructed after the sampling has already taken place. In the online example, we illustrate how Bayesian multi-level regression poststratification (MRP) can help to deal with the fact that, as the number of group-defining features increases, the sample may contain no information at all about some of the groups defined by the combination of those features.</p>
+<p>Poststratification is a tool for learning about a population when you have a sample whose units were drawn with unequal (and usually unknown) probabilities. In essence, if you know features of the population that you can measure in your own sample, you can reweight your sample to look like the population—at least along the dimensions you can measure. In its simplest form, poststratification just involves counting and dividing. Say you want to poststratify your sample so that, in terms of gender and age, it looks like all people in their twenties in the United States population in 2010. That gives twenty groups—one for each age and each gender—whose size you need to count in the 2010 Decennial census and in your sample. Then, simply weight each person in the sample by the size of their group in the population divided by the size of their group in the sample. As we illustrate with the declaration below, it turns out that these weights are equivalent to the inverse sampling probabilities one would obtain were one to construct the sample using groups as strata. That’s where the “stratification” in poststratification comes from—it’s “post” because the weights are constructed after the sampling has already taken place. In the online example, we illustrate how multi-level regression and poststratification (MRP) can help address the problem that, as the number of group-defining features increases, the sample may contain no information at all about some of the groups defined by the combination of those features. A multi-level regression model helps by partially pooling across strata to combat this sparsity problem.</p>
 <div id="declaration-2" class="section level3">
 <h3>
 <span class="header-section-number">14.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-2"><i class="fas fa-link"></i></a>
@@ -424,7 +323,7 @@ design <-
 <li><p><strong>D</strong>ata strategy: Ten individuals from each group are included in the sample. Thus, whereas 2/3 of the population belong to the <span class="math inline">\(X = 0\)</span> group, only 1/2 of the sample does. Conversely, while only 1/3 of the population belongs to the <span class="math inline">\(X = 1\)</span> group, 1/2 of the sample does.</p></li>
 <li><p><strong>A</strong>nswer strategy: The answer strategy involves taking a weighted average of <span class="math inline">\(Y\)</span> in the sample, where each unit’s weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, <span class="math inline">\(X = 0\)</span>, get a weight of 100/10 = 10, while the overrepresented group, <span class="math inline">\(X = 1\)</span>, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents.</p></li>
 </ul>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -456,11 +355,11 @@ design <-
 <h3>
 <span class="header-section-number">14.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-165-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-161-1.svg" width="100%"></div>
 </div>
-<div id="exercises-1" class="section level3">
+<div id="exercises" class="section level3">
 <h3>
-<span class="header-section-number">14.2.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li>Add an unweighted estimator to the design and diagnose it. Explain why the unweighted estimator is biased, as well as the direction of the bias.</li>
@@ -474,9 +373,9 @@ design <-
 </li>
 </ul>
 </div>
-<div id="example-3" class="section level3">
+<div id="example-2" class="section level3">
 <h3>
-<span class="header-section-number">14.2.4</span> Example<a class="anchor" aria-label="anchor" href="#example-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.4</span> Example<a class="anchor" aria-label="anchor" href="#example-2"><i class="fas fa-link"></i></a>
 </h3>
 <!-- make sure to rename the section title below -->
 <p>MRP based on Lax and Philips APSR 2009</p>
@@ -584,7 +483,7 @@ design <-
   declare_estimator(Y_idx ~ 1, model = lm_robust, estimand = "Y_bar")
 ```
 -->
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, true_rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rank.html">rank</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_measurement</span><span class="op">(</span>Y_1 <span class="op">=</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
@@ -600,11 +499,11 @@ design <-
 <h3>
 <span class="header-section-number">14.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-2"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-173-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-169-1.svg" width="100%"></div>
 </div>
-<div id="example-4" class="section level3">
+<div id="example-3" class="section level3">
 <h3>
-<span class="header-section-number">14.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-4"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-3"><i class="fas fa-link"></i></a>
 </h3>
 <!-- make sure to rename the section title below -->
 
@@ -626,16 +525,15 @@ design <-
 <span class="header-section-number">14.4.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-3"><i class="fas fa-link"></i></a>
 </h3>
 </div>
-<div id="example-5" class="section level3">
+<div id="example-4" class="section level3">
 <h3>
-<span class="header-section-number">14.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-5"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-4"><i class="fas fa-link"></i></a>
 </h3>
 <!-- make sure to rename the section title below -->
 
 </div>
 </div>
 </div>
-
   <div class="chapter-nav">
 <div class="prev"><a href="research-design-library.html"><span class="header-section-number">13</span> Research Design Library</a></div>
 <div class="next"><a href="experimental-designs-for-descriptive-inference.html"><span class="header-section-number">15</span> Experimental designs for descriptive inference</a></div>
@@ -646,32 +544,30 @@ design <-
 <li>
 <a class="nav-link" href="#random-sampling"><span class="header-section-number">14.1</span> Random sampling</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-1"><span class="header-section-number">14.1.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag"><span class="header-section-number">14.1.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-2"><span class="header-section-number">14.1.3</span> Example</a></li>
-<li><a class="nav-link" href="#simple-random-sampling"><span class="header-section-number">14.1.4</span> Simple random sampling</a></li>
-<li><a class="nav-link" href="#stratified-and-clustered-random-sampling"><span class="header-section-number">14.1.5</span> Stratified and clustered random sampling</a></li>
+<li><a class="nav-link" href="#dag"><span class="header-section-number">14.1.2</span> DAG</a></li>
+<li><a class="nav-link" href="#clustered-random-sampling"><span class="header-section-number">14.1.3</span> Clustered random sampling</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#poststratification"><span class="header-section-number">14.2</span> Poststratification</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-2"><span class="header-section-number">14.2.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-1"><span class="header-section-number">14.2.2</span> Dag</a></li>
-<li><a class="nav-link" href="#exercises-1"><span class="header-section-number">14.2.3</span> Exercises</a></li>
-<li><a class="nav-link" href="#example-3"><span class="header-section-number">14.2.4</span> Example</a></li>
+<li><a class="nav-link" href="#exercises"><span class="header-section-number">14.2.3</span> Exercises</a></li>
+<li><a class="nav-link" href="#example-2"><span class="header-section-number">14.2.4</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#inference-about-unobserved-variables"><span class="header-section-number">14.3</span> Inference about unobserved variables</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-3"><span class="header-section-number">14.3.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-2"><span class="header-section-number">14.3.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-4"><span class="header-section-number">14.3.3</span> Example</a></li>
+<li><a class="nav-link" href="#example-3"><span class="header-section-number">14.3.3</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#structural-estimation"><span class="header-section-number">14.4</span> Structural estimation</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-4"><span class="header-section-number">14.4.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-3"><span class="header-section-number">14.4.2</span> Dag</a></li>
-<li><a class="nav-link" href="#example-5"><span class="header-section-number">14.4.3</span> Example</a></li>
+<li><a class="nav-link" href="#example-4"><span class="header-section-number">14.4.3</span> Example</a></li>
 </ul>
 </li>
 </ul>
