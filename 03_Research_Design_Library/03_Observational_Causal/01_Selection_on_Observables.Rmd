@@ -32,6 +32,15 @@ b_sims <- 20
 
 ## Selection on observables
 
+
+Main points to hit here:
+
+1. If you can satisfy the back-door criterion, you can can assert selection-on-observables
+2. The next problem is how to adjust (matching procedure, functional form)
+3. If you adjust for post-treatment variables, bias may result
+4. Sometimes you simply can't satisfy selection on observables.
+
+
 ### Declaration
 
 ```{r}
@@ -39,34 +48,36 @@ design <-
   declare_population(N = 100, 
                      X_1 = rnorm(N),
                      X_2 = rnorm(N),
-                     Z = if_else(X_1 + X_2 > 0, 1, 0),
+                     D = if_else(X_1 + X_2 > 0, 1, 0),
                      U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + X_1 + X_2 + U) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  reveal_outcomes() +
-  declare_estimator(Y ~ X_1 + X_2, model = lm_robust, estimand = "LATE") 
+  declare_potential_outcomes(Y ~ D + X_1 + X_2 + U,
+                             assignment_variable = D) +
+  declare_estimand(ATE = mean(Y_D_1 - Y_D_0)) +
+  reveal_outcomes(Y, D) +
+  declare_estimator(Y ~ D + X_1 + X_2, model = lm_robust, 
+                    estimand = "ATE") 
 ```
 
 
 ### DAG
 
 ```{r, echo = FALSE}
-dag <- dagify(Y ~ X_1 + X_2 + Z + U,
-              Z ~ X_1 + X_2)
+dag <- dagify(Y ~ X_1 + X_2 + D + U,
+              D ~ X_1 + X_2)
 nodes <-
   tibble(
-    name = c("X_1", "X_2", "U", "Z", "Y"),
-    label = c("X<sup>1</sup>", "X<sup>2</sup>", "U", "Z", "Y"),
+    name = c("X_1", "X_2", "U", "D", "Y"),
+    label = c("X<sup>1</sup>", "X<sup>2</sup>", "U", "D", "Y"),
     annotation = c(
       "**Control variable 1**",
       "**Control variable 2**",
       "**Unknown heterogeneity**",
-      "**Treatment assignment**",
+      "**Treatment**",
       "**Outcome variable**"
     ),
     x = c(1, 1, 5, 3, 5),
     y = c(1, 4, 4, 2.5, 2.5),
-    nudge_direction = c("S", "N", "N", "N", "S"),
+    nudge_direction = c("S", "N", "N", "W", "S"),
     answer_strategy = c("controlled", "controlled",  "uncontrolled", "uncontrolled", "uncontrolled")
   )
 
@@ -81,114 +92,100 @@ base_dag_plot %+% ggdd_df
 
 (matching and regression etc.)
 
-
-
-### Classic Confounding
-
-- We want to know the effect of Z on Y, but it's confounded by X
-- DIM is biased, OLS is unbiased because we happen to get the functional forms right enough.
-
-
-```{r, echo=FALSE, fig.align='center', fig.cap = 'DAG with one observed confounder', out.width = '40%'}
-knitr::include_graphics("figures/regression_dag_1.png")
-```
-
-```{r}
-design_1 <-
-  declare_population(N = 100, 
-                     U_z = rnorm(N),
-                     U_x = rnorm(N),
-                     U_y = rnorm(N),
-                     X = U_x) +
-  declare_potential_outcomes(Y ~ 0.5*Z + X + U_y) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_assignment(prob_unit = pnorm(U_z + U_x), simple = TRUE) +
-  declare_estimator(Y ~ Z, estimand = "ATE", label = "DIM") +
-  declare_estimator(Y ~ Z + X, model = lm, estimand = "ATE", label = "OLS")
-```
-
-```{r}
-dx_1 <- diagnose_design(design_1, sims = sims, bootstrap_sims = b_sims)
-dx_1
-```
-
-### What if the functional form is wrong?
-
-- the functional form is wrong, so even though we're controlling for all confounders, there's still bias.
-- Solution: matching might do a better job since it's sort of a "nonparametric" form of covariate control.
-
-```{r}
-design_2 <-
-  declare_population(N = 100, 
-                     U_z = rnorm(N),
-                     U_x = rnorm(N),
-                     U_y = rnorm(N),
-                     X = U_x) +
-  declare_potential_outcomes(Y ~ 0.5*Z + X + X^2 + U_y) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_assignment(prob_unit = pnorm(U_z + U_x + U_x^2), simple = TRUE) +
-  declare_estimator(Y ~ Z, estimand = "ATE", label = "DIM") +
-  declare_estimator(Y ~ Z + X, model = lm, estimand = "ATE", label = "OLS")
-```
-
-```{r}
-dx_2 <- diagnose_design(design_2, sims = sims, bootstrap_sims = b_sims)
-dx_2
-```
-
 ### What if you have unobserved confounding?
 
-```{r, echo=FALSE, fig.align='center', fig.cap = 'DAG with unobserved confounding', out.width = '40%'}
-knitr::include_graphics("figures/regression_dag_2.png", )
-```
 
 ```{r}
-design_3 <-
+design <-
   declare_population(N = 100, 
-                     U_z = rnorm(N),
-                     U_x = rnorm(N),
-                     U_y = correlate(rnorm, given = U_z, rho = 0.9),
-                     X = U_x) +
-  declare_potential_outcomes(Y ~ 0.5*Z + X + U_y) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_assignment(prob_unit = pnorm(U_z + U_x), simple = TRUE) +
-  declare_estimator(Y ~ Z, estimand = "ATE", label = "DIM") +
-  declare_estimator(Y ~ Z + X, model = lm, estimand = "ATE", label = "OLS")
+                     X_1 = rnorm(N),
+                     X_2 = rnorm(N),
+                     U = rnorm(N),
+                     D = if_else(X_1 + X_2 + U > 0, 1, 0)) +
+  declare_potential_outcomes(Y ~ D + X_1 + X_2 + U,
+                             assignment_variable = D) +
+  declare_estimand(ATE = mean(Y_D_1 - Y_D_0)) +
+  reveal_outcomes(Y, D) +
+  declare_estimator(Y ~ D + X_1 + X_2, model = lm_robust, 
+                    estimand = "ATE") 
 ```
+
+
+```{r, echo = FALSE}
+dag <- dagify(Y ~ X_1 + X_2 + D + U,
+              D ~ X_1 + X_2 + U)
+nodes <-
+  tibble(
+    name = c("X_1", "X_2", "U", "D", "Y"),
+    label = c("X<sup>1</sup>", "X<sup>2</sup>", "U", "D", "Y"),
+    annotation = c(
+      "**Control variable 1**",
+      "**Control variable 2**",
+      "**Unknown heterogeneity**",
+      "**Treatment**",
+      "**Outcome variable**"
+    ),
+    x = c(1, 1, 5, 3, 5),
+    y = c(1, 4, 4, 2.5, 2.5),
+    nudge_direction = c("S", "N", "N", "W", "S"),
+    answer_strategy = c("controlled", "controlled",  "uncontrolled", "uncontrolled", "uncontrolled")
+  )
+
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
+
+
+
+### What if an observed covariate is post-treatment?
+
 
 ```{r}
-dx_3 <- diagnose_design(design_3, sims = sims, bootstrap_sims = b_sims)
-dx_3
-```
-
-
-### What if the observed covariate is post-treatment?
-
-```{r, echo=FALSE, fig.align='center', fig.cap = 'DAG with one observed mediator', out.width = '40%'}
-knitr::include_graphics("figures/regression_dag_3.png", )
-```
-
-
-```{r}
-design_4 <-
+design <-
   declare_population(N = 100, 
-                     U_z = rnorm(N),
-                     U_m = rnorm(N),
-                     U_y = rnorm(N)) +
-  declare_potential_outcomes(M ~ 0.5*Z + U_m) +
-  declare_potential_outcomes(Y ~ 0.5*Z + (0.5*Z + U_m) + U_y) +
-  declare_assignment(prob_unit = pnorm(U_z), simple = TRUE) +
-  reveal_outcomes(c(M, Y), Z) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_estimator(Y ~ Z, estimand = "ATE", label = "DIM") +
-  declare_estimator(Y ~ Z + M, model = lm, estimand = "ATE", label = "OLS")
+                     X_2 = rnorm(N),
+                     D = if_else( X_2 > 0, 1, 0),
+                     U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ D + X_2 + U,
+                             assignment_variable = D) +
+  declare_estimand(ATE = mean(Y_D_1 - Y_D_0)) +
+  reveal_outcomes(Y, D) +
+  declare_measurement(X_1 =  D + rnorm(N)) +
+  declare_estimator(Y ~ D + X_1 + X_2, model = lm_robust, 
+                    estimand = "ATE") 
 ```
 
-```{r}
-dx_4 <- diagnose_design(design_4, sims = sims, bootstrap_sims = b_sims)
-dx_4
-```
 
+### DAG
+
+```{r, echo = FALSE}
+dag <- dagify(Y ~ X_2 +  X_1 + D + U,
+              X_1 ~ D,
+              D ~ X_2)
+nodes <-
+  tibble(
+    name = c("X_1", "X_2", "U", "D", "Y"),
+    label = c("X<sup>1</sup>", "X<sup>2</sup>", "U", "D", "Y"),
+    annotation = c(
+      "**Control variable 1**",
+      "**Control variable 2**",
+      "**Unknown heterogeneity**",
+      "**Treatment**",
+      "**Outcome variable**"
+    ),
+    x = c(4, 1, 5, 3, 5),
+    y = c(1, 4, 4, 2.5, 2.5),
+    nudge_direction = c("S", "N", "N", "W", "S"),
+    answer_strategy = c("controlled", "controlled",  "uncontrolled", "uncontrolled", "uncontrolled")
+  )
+
+
+ggdd_df <- make_dag_df(dag, nodes, design)
+
+base_dag_plot %+% ggdd_df
+```
 
 ### Further reading
 
