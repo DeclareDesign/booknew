@@ -101,7 +101,7 @@
 <p>These hypotheses reflect a model of coalition politics that emphasizes the tensions induced by overlapping identities. Framing the BLM movement as feminist or pro-LGBTQ may increase support among Black women or Black LGBTQ identifiers, but that increase may come at the expense of support among Black men or Blacks who do not identify as LGBTQ. Similarly, this model predicts that subjects with stronger attachment to their Black identity will have a larger response to a Black nationalist framing of BLM than those with weaker attachments.</p>
 <p>The model also includes beliefs about the distributions of gender, LGBTQ status, and Black identity strength. In the Data strategy, Black identity will be measured with the standard linked fate measure. Other background characteristics that may be correlated with support for BLM include age, religiosity, income, education, and familiarity with the movement, so these are included in the model as well.</p>
 <p>The focus of the study will be on the causal effects of the nationalism, feminism, and intersectional frames relative to a general description of the Black Lives Matter movement. Model beliefs about treatment effect heterogeneity are embedded in the <code>declare_potential_outcomes</code> call. The effect of the nationalism treatment is hypothesized to be stronger, the greater subjects’ sense of linked fate; the effect of the feminism treatment should be negative for men but positive for women; the effect of the intersectionality treatment should be positive for LGBTQ identifies, but negative for non-identifiers.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rescale</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="va">likert_cut</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">100</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>
 
@@ -153,7 +153,7 @@
 <p>We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation.</p>
 </blockquote>
 <p>In the code below, we specify how each treatment effect changes with its corresponding covariate <span class="math inline">\(X\)</span> with <span class="math inline">\(\frac{\mathrm{cov}(\tau_i, X)}{\mathbb{V}(X)}\)</span>, which is identical to the difference-in-difference for the binary covariates (<code>female</code> and <code>lgbtq</code>) and is the slope of the best linear predictor of how the effect changes over the range of <code>linked_fate</code>, and <code>blm_familiarity</code> which we are treating as quasi-continuous here.</p>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">slope</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 
 <span class="va">inquiry</span> <span class="op">&lt;-</span>  
@@ -195,7 +195,7 @@
 </h4>
 <p>The subjects for this study are 800 Black Americans recruited by the survey firm Qualtrics using a quota sampling procedure. We elide this sampling step in our declaration – the 800 subjects are described by the <code>declare_population</code> call. The reason is that, as is common practice in the analysis of survey experiments on convenience samples, authors do not formally extrapolate out from their data to make generalizations about the population of Black Americans. The inquiries they study are sample average effects. If the authors had used a different sampling strategy, using random sampling through random digit dialing for example, we would have defined the population from which they were sampling and the random sampling procedure.</p>
 <p>After subjects’ background characteristics are measured, they were assigned to one of four treatment conditions. Since the survey was conducted on Qualtrics, we assume that the authors used the built-in randomization tools, which typically use simple (Bernoulli) random assignment.</p>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_assignment</span><span class="op">(</span>
     conditions <span class="op">=</span> 
@@ -213,7 +213,7 @@
 <p>We will run an OLS regression predicting the support for, effectiveness of, and trust in BLM on each treatment condition. […] We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation. We plan to conduct analyses without controls. As we will check for between group balance, we may also run OLS analyses with demographic controls (age, linked fate, gender, sexual orientation, religiosity, income, education, and ethnic or multi-racial backgrounds), and will report differences in OLS results.</p>
 </blockquote>
 <p>In DeclareDesign, this corresponds to five estimators, with two shooting at the ATEs and three shooting at the differences-in-CATEs. We use OLS for all five – the majority of the code is bookkeeping to ensure we match the right regression coefficient with the appropriate estimand.</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span>,
@@ -269,12 +269,12 @@
 <span class="header-section-number">21.1.1.5</span> Mock analysis<a class="anchor" aria-label="anchor" href="#mock-analysis"><i class="fas fa-link"></i></a>
 </h4>
 <p>Putting it all together, we can declare the complete design and draw mock data from it.</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 <span class="va">mock_data</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:unnamed-chunk-369">Table 21.1: </span>Mock analysis from Bonilla and Tillery design.
+<span id="tab:unnamed-chunk-372">Table 21.1: </span>Mock analysis from Bonilla and Tillery design.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
