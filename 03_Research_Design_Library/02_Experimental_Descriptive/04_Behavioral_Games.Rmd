@@ -50,10 +50,21 @@ design <-
   ) +
   declare_estimand(mean_fairness = mean(fairness),
                    mean_cutoff = mean(cutoff)) +
-  declare_assignment(blocks = games, conditions = c("proposer", "responder"), assignment_variable = "role") + 
-  declare_step(id_cols = games, names_from = role, values_from = c(prosociality, fairness, cutoff), handler = pivot_wider) + 
-  declare_measurement(proposal = fairness_proposer * 0.5, 
-                      response = if_else(proposal >= cutoff_responder, 1, 0)) + 
+  declare_assignment(
+    blocks = games, 
+    conditions = c("proposer", "responder"),
+    assignment_variable = "role"
+  ) + 
+  declare_step(
+    id_cols = games, 
+    names_from = role, 
+    values_from = c(prosociality, fairness, cutoff), 
+    handler = pivot_wider
+  ) + 
+  declare_measurement(
+    proposal = fairness_proposer * 0.5, 
+    response = if_else(proposal >= cutoff_responder, 1, 0)
+  ) + 
   declare_estimator(proposal ~ 1,
                     model = lm_robust,
                     estimand = "mean_fairness",

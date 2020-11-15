@@ -287,7 +287,7 @@ data_strategy <-
 
 ### Answer strategy
 
-The @Gulzar2020 design supports many alternative answer strategies. Here, we focus on two answer strategies in particular. First, we compare the rate of running in untreated villages to the rate among the sampled units among all treatment villages, using an OLS regression with standard errors clustered at the village level.^[The implemented design also included a village-level treatment that complicates (in interesting ways!) the interpretation of the untreated units in the treated villages]. Second, we compare the rates of running in the personal and social conditions for the sampled units only, again using an OLS regression with standard errors clustered at the village level.
+The @Gulzar2020 design supports many alternative answer strategies. Here, we focus on two answer strategies in particular. First, we compare the rate of running in untreated villages to the rate among the sampled units among all treatment villages, using an OLS regression with standard errors clustered at the village level.^[The implemented design also included a village-level treatment that complicates (in interesting ways!) the interpretation of the untreated units in the treated villages] Second, we compare the rates of running in the personal and social conditions for the sampled units only, again using an OLS regression with standard errors clustered at the village level.
 
 ```{r}
 answer_strategy <- 
@@ -316,10 +316,6 @@ With these elements in hand, we can declare the full design and display one draw
 ```{r}
 design <- 
   model + inquiry + data_strategy + answer_strategy
-```
-
-```{r, eval = FALSE}
-dat <- draw_data(design)
 ```
 
 ```{r, echo = FALSE, eval = do_diagnosis}
@@ -353,6 +349,10 @@ summary_df <- read_rds(rds_file_path_summary_df)
 ```
 
 We print the first six rows of the simulated data in Table \@ref(tab:gulzarkhansimdata):
+
+```{r, eval = FALSE}
+dat <- draw_data(design)
+```
 
 ```{r gulzarkhansimdata, echo = FALSE}
 dat_head %>% 

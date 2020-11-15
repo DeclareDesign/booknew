@@ -118,7 +118,7 @@ Why would we ever be content to study a sample and not the full population? For 
 
 Owing to the natural appeal of design-based inference, we start off with randomized designs before proceeding to nonrandomized designs. Randomized sampling designs typically begin with a list of all units in a population, then choose a subset to sample using a random process. These random processes can be simple (every unit has an equal probability of inclusion) or complex (first we select regions at random, then villages at random within selected regions, then households within selected villages, then individuals within selected households).
 
-Table \@ref(samplingtypes) collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling. The most basic form is simple random sample, also called "coin flip" or Bernoulli random sampling. Under simple random assignment, all units in the population have the same probability $p$ of being included in the sample. It is sometimes called coin flip random sampling because it is as though for each unit, we flip a weighted coin that has probability $p$ of landing heads-up. While quite straightforward, a drawback of simple random sampling is that we can't be sure of the number of sampled units in advance. On average, we'll sample $N*p$ units, sometimes slightly more units will be sampled and sometimes fewer.
+Table \@ref(tab:samplingtypes) collects all of these kinds of random sampling together and offers an example of functions in the `randomizr` package you can use to conduct these kinds of sampling. The most basic form is simple random sample, also called "coin flip" or Bernoulli random sampling. Under simple random assignment, all units in the population have the same probability $p$ of being included in the sample. It is sometimes called coin flip random sampling because it is as though for each unit, we flip a weighted coin that has probability $p$ of landing heads-up. While quite straightforward, a drawback of simple random sampling is that we can't be sure of the number of sampled units in advance. On average, we'll sample $N*p$ units, sometimes slightly more units will be sampled and sometimes fewer.
 
 
 | Design | Description | Randomizr function |
@@ -132,7 +132,7 @@ Table \@ref(samplingtypes) collects all of these kinds of random sampling togeth
 
 Table: (\#tab:samplingtypes) Kinds of random sampling
 
-Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$.^[To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, prob = 0.5))` a few times and compare the results with `table(complete_rs(N = 100, n = 50))`]. Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or fewer than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
+Complete random sampling addresses this problem. Under complete random sampling, exactly $n$ of $N$ units are sampled. Each unit still has an inclusion probability of $p = n/N$, but in contrast to simple random sampling, we are guaranteed that the final sample will be of size $n$.^[To convince yourself of the difference between simple and complete random sampling, run `table(simple_rs(N = 100, prob = 0.5))` a few times and compare the results with `table(complete_rs(N = 100, n = 50))`] Complete random sampling represents an improvement over simple random sampling because it rules out samples in which more or fewer than $N*p$ units are sampled. One circumstance in which we might nevertheless go with simple random sampling is when the size of the population is not known in advance and sampling choices have to be made "on the fly."
 
 Complete random sampling solves the problem of fixing the total number of sampled units, but it doesn't address the problem that the total number of units with particular characteristics will not be fixed.  Imagine a population with $N_{y}$ young people and $N_{o}$ old people. If we sample exactly $n$ from the population $N_{y} + N_{o}$, the number of sampled young people ($n_y$) and sampled old people ($n_{o}$) will bounce around from sample to sample. We can solve this problem by conducting complete random sampling *within* each group of units. This procedure goes by the name stratified random sampling, since the sampling is conducted separately within the strata of units.^[To convince yourself of the difference between complete and stratified sampling, run `age <- rep(c("Y", "O"), 50); table(age, complete_rs(N = 100, n = 50))` a few times and compare the results with `table(age, strata_rs(strata = age))`] In our example, our strata were formed by a dichotomoous grouping of people into "young" and "old" categories, but in general, the sampling strata can be formed by any information we have about units before they are sampled. Stratification offers at least three major benefits. First, we defend against sampling surprisingly too few units in some stratum by "bad luck." Second (as discussed in the chapter on answer strategies) stratification tends to produce lower variance estimates of most inquiries. Finally, stratification allows researchers to "oversample"  subgroups of particular interest.
 
@@ -564,10 +564,9 @@ ggplot(gg_df, aes(X, Y)) +
 
 Thus far we have considered assignment strategies that allocate subjects to either treatment or control. All of the designs we have considered so far generalize quite nicely to multiarm trials. Trials that have three, four, or many more arms can of course be simple, complete, blocked, clustered, or feature variable saturation. Figure \@ref(fig:multiarmquilt) shows blocked versions of a three-arm trial, a factorial trial, and a four-arm trial.
 
-In the three-arm trial on the left, subjects can be assiged to a control condition or one of two treatments. This design enables three comparisons: a comparison of each treatment to the control condition, but also a comparison of the two treatment conditions to each other. In the four-arm trial on the right, subjects can be assigned to a control condition or one of three treatments. This design supports six comparisons: each of the treatments to control, and all three of the pairwise comparisons across treatments.
+In the three-arm trial on the left, subjects can be assigned to a control condition or one of two treatments. This design enables three comparisons: a comparison of each treatment to the control condition, but also a comparison of the two treatment conditions to each other. In the four-arm trial on the right, subjects can be assigned to a control condition or one of three treatments. This design supports six comparisons: each of the treatments to control, and all three of the pairwise comparisons across treatments.
 
 The two-by-two factorial design in the center panel shares similarities with both the three-arm and the four-arm trials. Like the three arm, it considers two treatments T1 and T2, but it also includes a fourth condition in which both treatments are applied. Factorial designs can be analyzed like a four-arm trial, but the structure of the design also enables more subtle analyses. In particular, the factorial structures allows researchers to investigate whether the effects of one treatment depend on the level of the other treatment.
-
 
 ```{r multiarmquilt, fig.cap = "Multi-arm random assignment.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
@@ -610,9 +609,11 @@ gg_df %>%
 
 ### Complex designs
 
+To be written:
+
 * Patient preference trials
-* Stepped-wedge assignment
-* Multi arm bandits
+* Stepped-wedge assignment (see Figure \@ref(fig:stepwedgera)).
+* Multiarm bandits
 
 ```{r stepwedgera, fig.cap = "Step-wedge random assignment.", fig.width = 6.5, fig.height = 2.5, echo = FALSE}
 set.seed(343)
@@ -653,13 +654,15 @@ gg_df %>%
 
 ### Non randomized assignment
 
+To be written:
+
 * Alphabetical assignment
 * RDD
 * Bayesian optimal assignment
 
-
 ### Example: sociology natural experiment from government or official cutoff
 
+To be written.
 
 ## Measurement
 

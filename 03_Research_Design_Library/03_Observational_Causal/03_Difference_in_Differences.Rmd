@@ -139,7 +139,8 @@ two_period_two_group_design <-
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
 diagnosis_two_period_two_group <- diagnose_design(
-  two_period_two_group_design, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)),
+  two_period_two_group_design, 
+  diagnosands = declare_diagnosands(bias = mean(estimate - estimand)),
   sims = sims, bootstrap_sims = b_sims)
 ```
 
@@ -152,7 +153,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis_two_period_two_group <- read_rds(rds_file_path)
 ```
 
-```{r}
+```{r, echo = FALSE}
 kable(get_diagnosands(diagnosis_two_period_two_group), booktabs = TRUE, digits = 3)
 ```
 
@@ -162,10 +163,11 @@ kable(get_diagnosands(diagnosis_two_period_two_group), booktabs = TRUE, digits =
 
 ```{r}
 # add an additional pretreatment time period in order to visually test for parallel pre-trends
-three_period_two_group_design <- redesign(two_period_two_group_design, N_time_periods = 3)
+three_period_two_group_design <- 
+  redesign(two_period_two_group_design, N_time_periods = 3)
 ```
 
-```{r}
+```{r, echo = FALSE}
 draw_data(three_period_two_group_design) %>% 
   group_by(D, time) %>% 
   summarize(Y = mean(Y)) %>% 
@@ -222,7 +224,7 @@ multi_period_design <-
                     estimand = "ATE") 
 ```
 
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
+```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
 diagnosis_multi_period_multi_group <- diagnose_design(multi_period_design, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)), sims = sims, bootstrap_sims = b_sims)
 ```
 
@@ -235,7 +237,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis_multi_period_multi_group <- read_rds(rds_file_path)
 ```
 
-```{r}
+```{r, echo = FALSE}
 kable(get_diagnosands(diagnosis_multi_period_multi_group), digits = 3, booktabs = TRUE)
 ```
 
