@@ -64,13 +64,10 @@ The model also includes beliefs about the distributions of gender, LGBTQ status,
 
 The focus of the study will be on the causal effects of the nationalism, feminism, and intersectional frames relative to a general description of the Black Lives Matter movement. Model beliefs about treatment effect heterogeneity are embedded in the `declare_potential_outcomes` call. The effect of the nationalism treatment is hypothesized to be stronger, the greater subjects' sense of linked fate; the effect of the feminism treatment should be negative for men but postive for women; the effect of the intersectionality treatment should be positive for LGBTQ identifies, but negative for non-identifiers. 
 
-```{r, echo = FALSE}
+```{r}
 rescale <- function(x) (x - min(x)) / (max(x) - min(x))
 likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
-slope <- function(x, y) cov(x, y)/var(y)
-```
 
-```{r}
 model <- 
   declare_population(
     N = 800,
@@ -117,9 +114,11 @@ The inquiries for this study naturally include the average affects of all three 
 
 > We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation.
   
-In the code below, we specify how each treatment effect changes with its corresponding covariate $X$ with $\frac{cov(\tau_i, X)}{X}$, which is identical to the difference-in-difference for the binary covariates (`female` and `lgbtq`) and is the slope of the best linear predictor of how the effect changes over the range of `linked_fate`, and `blm_familiarity` which we are treating as quasi-continuous here. 
+In the code below, we specify how each treatment effect changes with its corresponding covariate $X$ with $\frac{\mathrm{cov}(\tau_i, X)}{\V(X)}$, which is identical to the difference-in-difference for the binary covariates (`female` and `lgbtq`) and is the slope of the best linear predictor of how the effect changes over the range of `linked_fate`, and `blm_familiarity` which we are treating as quasi-continuous here. 
 
 ```{r}
+slope <- function(y, x) cov(y, x) / var(x)
+
 inquiry <-  
   declare_estimands(
     # Average effects
