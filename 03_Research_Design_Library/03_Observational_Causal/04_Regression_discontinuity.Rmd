@@ -63,10 +63,15 @@ design <-
     X = runif(N, 0, 1) + U - cutoff,
     D = 1 * (X > 0)
   ) +
-  declare_potential_outcomes(Y ~ D * treatment(X) + (1 - D) * control(X) + U, assignment_variable = D) +
+  declare_potential_outcomes(
+    Y ~ D * treatment(X) + (1 - D) * control(X) + U,
+    assignment_variable = D
+  ) +
   declare_estimand(LATE = treatment(0) - control(0)) +
   reveal_outcomes(Y, D) +
-  declare_estimator(Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE")
+  declare_estimator(
+    Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE"
+  )
 
 mock_data <- draw_data(design)
 X <- seq(-.5, .5, .005)
@@ -125,10 +130,17 @@ design <-
     X = runif(N, 0, 1) + U - cutoff,
     D = 1 * (X > 0)
   ) +
-  declare_potential_outcomes(Y ~ D * treatment(X) + (1 - D) * control(X) + U, assignment_variable = D) +
+  declare_potential_outcomes(
+    Y ~ D * treatment(X) + (1 - D) * control(X) + U, 
+    assignment_variable = D
+  ) +
   declare_estimand(LATE = treatment(0) - control(0)) +
   reveal_outcomes(Y, D) +
-  declare_estimator(Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE")
+  declare_estimator(
+    Y ~ poly(X, 4) * D, 
+    model = lm_robust, 
+    estimand = "LATE"
+  )
 ```
 
 

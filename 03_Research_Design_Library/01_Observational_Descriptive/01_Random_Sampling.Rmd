@@ -105,7 +105,7 @@ diagnosis <- diagnose_design(design, diagnosands = diagnosands)
 ```
 
 
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
+```{r, echo = FALSE eval = do_diagnosis & !exists("do_bookdown")}
 diagnosands <- declare_diagnosands(
   bias = mean(estimate - estimand),
   rmse = sqrt(mean((estimate - estimand) ^ 2))
@@ -122,7 +122,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r completerandomsampling}
+```{r completerandomsampling, echo = FALSE}
 diagnosis %>%
   reshape_diagnosis() %>%
   select(Bias, RMSE) %>%
@@ -175,7 +175,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
-```{r clusterrandomsampling}
+```{r clusterrandomsampling, echo = FALSE}
 diagnosis %>%
   reshape_diagnosis() %>%
   select(`Estimator Label`, Bias, RMSE, Coverage) %>%

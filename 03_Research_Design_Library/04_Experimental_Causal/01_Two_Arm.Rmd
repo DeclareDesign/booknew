@@ -45,7 +45,7 @@ design <-
 
 ### DAG
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.height = 3.5, fig.width = 7}
 dag <-
 dagify(
   Y ~ Z + U
@@ -69,7 +69,7 @@ nodes <-
 
 ggdd_df <- make_dag_df(dag, nodes, design)
 
-base_dag_plot %+% ggdd_df
+base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2, 4.5), xlim = c(0.5, 5.5))
 ```
 
 ### Example
