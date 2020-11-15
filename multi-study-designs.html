@@ -56,8 +56,10 @@
 <li><a class="active" href="multi-study-designs.html"><span class="header-section-number">18</span> Multi-study designs</a></li>
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
-<li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">21</span> Part IV Exercises</a></li>
+<li><a class="" href="before.html"><span class="header-section-number">20</span> Before</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">21</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">22</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">23</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -100,7 +102,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n3</span> <span class="op">&lt;-</span> <span class="fl">100</span>
@@ -167,11 +169,13 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulate design</span>
 <span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
+
 <span class="co"># Simulate null design</span>
-<span class="va">null_three_study_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">three_study_design</span>, tau <span class="op">=</span> <span class="fl">0</span>, gamma <span class="op">=</span> <span class="fl">0</span>, rho <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">null_three_study_design</span> <span class="op">&lt;-</span> 
+  <span class="fu">redesign</span><span class="op">(</span><span class="va">three_study_design</span>, tau <span class="op">=</span> <span class="fl">0</span>, gamma <span class="op">=</span> <span class="fl">0</span>, rho <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="va">null_simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">null_three_study_design</span><span class="op">)</span></code></pre></div>
 <p>In the first three rows of the table, the theory is correct in that <code>tau</code>, <code>gamma</code>, and <code>rho</code> are positive, in the second three rows it is incorrect because both the main effect and interaction are zero. The “power” column tells us the proportion of simulations in which the effect is significant at the <span class="math inline">\(\alpha = .05\)</span> level, the “all significant” column tells us the proportion of simulations in which all of the studies have significant effects, the “positive” column tells us how often the study found a positively signed result, while the “all positive column” tells us the proportion of simulations where all studies had a positively signed result.</p>
 <div class="inline-table"><table class="table table-sm">
@@ -353,7 +357,7 @@ you are wrong.</p></li>
 to depend on the number of studies we considered. In the graph below, we look
 at twenty-nine different <span class="math inline">\(N\)</span>-study designs, all of which seek to confirm a theory
 by replicating evidence for it <span class="math inline">\(N\)</span> times. The first design is made of two studies,
-each independtly evaluating the hypothesis that <span class="math inline">\(Y\)</span> is positively correlated with <span class="math inline">\(X\)</span>.
+each independently evaluating the hypothesis that <span class="math inline">\(Y\)</span> is positively correlated with <span class="math inline">\(X\)</span>.
 Again, we consider how conditioning an inference about the theory on whether
 all results are significant or all results are positive affects error rates.</p>
 <ul>
@@ -409,7 +413,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 <p>The starting point is a fixed budget and considering two possible designs: (1) a single large study in one context or (2) a set of five studies in five different contexts with the same intervention and outcome measures.</p>
 <p>When there are heterogeneous effects, you can get good predictions out of sample even when average effects differ substantially (and you do better with multiple sites when sites in the the population have different proportions of subject types that are correlated with heterogeneous effects).</p>
 <p>Two notable features of the design:
-- there must be heterogeneous effects for this to work (otherwise our estimates get biased toward zero due to overfitting to the het variables).
+- there must be heterogeneous effects for this to work (otherwise our estimates get biased toward zero due to overfitting to the variables).
 - we have to have information about the covariate in the population and the sample (here we used the proportion of people in each heterogeneous types).</p>
 <!-- Findings: -->
 <!-- - these two strategies are both unbiased -->
@@ -420,7 +424,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 <!-- two kinds of populations, one in which the study type determines the subject types and you select on study type -->
 <!--   a second kind where study type determines study shock  -->
 <!--   in second type if you adjust for subject type then you will be able to unbiased recover global -->
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_site_design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     site <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -458,7 +462,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 <span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">single_site_design</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
 
 <span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">multi_site_design</span>, n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_small_large</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">

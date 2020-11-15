@@ -56,8 +56,10 @@
 <li><a class="" href="multi-study-designs.html"><span class="header-section-number">18</span> Multi-study designs</a></li>
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
-<li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">21</span> Part IV Exercises</a></li>
+<li><a class="" href="before.html"><span class="header-section-number">20</span> Before</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">21</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">22</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">23</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -91,7 +93,7 @@
 <h3>
 <span class="header-section-number">16.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-9"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -121,7 +123,7 @@
 <h3>
 <span class="header-section-number">16.1.4</span> What if you have unobserved confounding?<a class="anchor" aria-label="anchor" href="#what-if-you-have-unobserved-confounding"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -140,7 +142,7 @@
 <h3>
 <span class="header-section-number">16.1.5</span> What if an observed covariate is post-treatment?<a class="anchor" aria-label="anchor" href="#what-if-an-observed-covariate-is-post-treatment"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -179,7 +181,7 @@
 <h3>
 <span class="header-section-number">16.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-10"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">D</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, 
@@ -249,7 +251,7 @@
 <h3>
 <span class="header-section-number">16.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-11"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
@@ -283,7 +285,7 @@
 <ul>
 <li>Show that comparison of T and C in period 2 is biased and comparison of T between period 1 and 2 is biased, but DiD unbiased in presence of confounding in treatment assignment (unit with higher unit shock is always treated) and time trends</li>
 </ul>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_units</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 <span class="va">N_time_periods</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 
@@ -334,12 +336,11 @@
     estimator_label <span class="op">=</span> <span class="st">"DiM"</span>, 
     handler <span class="op">=</span> <span class="va">summarize</span>, 
     label <span class="op">=</span> <span class="st">"DiM"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_two_period_two_group</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span>
-  <span class="va">two_period_two_group_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>,
+  <span class="va">two_period_two_group_design</span>, 
+  diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>,
   sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_two_period_two_group</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -432,18 +433,10 @@ DiM
 <ul>
 <li>Introduce assumption and visual test</li>
 </ul>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># add an additional pretreatment time period in order to visually test for parallel pre-trends</span>
-<span class="va">three_period_two_group_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">two_period_two_group_design</span>, N_time_periods <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">three_period_two_group_design</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">D</span>, <span class="va">time</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">summarize</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span><span class="op">(</span>D_color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">D</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Untreated"</span>, <span class="st">"Treated"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Y</span>, color <span class="op">=</span> <span class="va">D_color</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">scale_color_discrete</span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_x_discrete</span><span class="op">(</span><span class="st">"Time"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">three_period_two_group_design</span> <span class="op">&lt;-</span> 
+  <span class="fu">redesign</span><span class="op">(</span><span class="va">two_period_two_group_design</span>, N_time_periods <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-240-1.svg" width="100%"></div>
 <ul>
 <li>Formal test (DID on T = -1 and T = 0 periods, i.e. a year backward from the DiD)</li>
@@ -457,7 +450,7 @@ DiM
 <ul>
 <li>Switch to regression context with 20 periods, 100 units and show same results hold with two-way FE (controlling for one period before T is insufficient to remove bias)</li>
 </ul>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_units</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">N_time_periods</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 
@@ -494,10 +487,6 @@ DiM
                     model <span class="op">=</span> <span class="va">lm_robust</span>, 
                     label <span class="op">=</span> <span class="st">"twoway-fe"</span>, 
                     estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span> </code></pre></div>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">diagnosis_multi_period_multi_group</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">multi_period_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_multi_period_multi_group</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">3</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -581,7 +570,7 @@ D
 <li><p><strong>D</strong>ata strategy: We collect data on the Democratic vote share at time <span class="math inline">\(t-1\)</span> and time <span class="math inline">\(t\)</span> for all 1,000 pairs of elections. There is no sampling or random assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises.</p></li>
 </ul>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cutoff</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">control</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.7</span>, <span class="op">-</span><span class="fl">.8</span>, <span class="fl">.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
@@ -595,10 +584,17 @@ D
     X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span> <span class="op">-</span> <span class="va">cutoff</span>,
     D <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="va">X</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">*</span> <span class="fu">treatment</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">D</span><span class="op">)</span> <span class="op">*</span> <span class="fu">control</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span>, assignment_variable <span class="op">=</span> <span class="va">D</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+    <span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">*</span> <span class="fu">treatment</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">D</span><span class="op">)</span> <span class="op">*</span> <span class="fu">control</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span>, 
+    assignment_variable <span class="op">=</span> <span class="va">D</span>
+  <span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>LATE <span class="op">=</span> <span class="fu">treatment</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">-</span> <span class="fu">control</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"LATE"</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_estimator</span><span class="op">(</span>
+    <span class="va">Y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span>, 
+    model <span class="op">=</span> <span class="va">lm_robust</span>, 
+    estimand <span class="op">=</span> <span class="st">"LATE"</span>
+  <span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="dag-12" class="section level3">
@@ -659,7 +655,7 @@ D
 <li><p><span class="math inline">\(D\)</span> <em>Data Strategy</em>: The fundamental problem that the researcher faces is that of observational equivalence: different causal types can cause the same data patterns. The issue is mitigated by following a controversial sampling strategy: selecting on <span class="math inline">\(Y\)</span>. By selecting at random one case in which both <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are present, the researcher can narrow her uncertainty to two candidate types: the second and fourth causal types are incapable of producing the data <span class="math inline">\(Z = 1, Y = 1\)</span>. It cannot be that natural resources were the cause of peace (type 2), or that peace would have happened irrespective of natural resources (type 4), in a country that had a civil war and natural resources.</p></li>
 <li><p><span class="math inline">\(A\)</span> <em>Answer Strategy</em>: The researcher uses Bayes’ rule to update about the probability that <span class="math inline">\(Z\)</span> caused <span class="math inline">\(Y\)</span> given <span class="math inline">\(C\)</span>.</p></li>
 </ul>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Z_caused_Y'</span>, <span class="st">'Z_caused_not_Y'</span>, <span class="st">'always_Y'</span>, <span class="st">'always_not_Y'</span><span class="op">)</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span>
@@ -674,7 +670,8 @@ D
       <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"always_Y"</span><span class="op">)</span>,
     conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, type <span class="op">=</span> <span class="va">types</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    <span class="va">pr_C_1</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.25</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Z_caused_Y"</span><span class="op">)</span> <span class="op">+</span> <span class="fl">.005</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"always_Y"</span><span class="op">)</span><span class="op">)</span>,
+    <span class="va">pr_C_1</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">(</span><span class="fl">.25</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Z_caused_Y"</span><span class="op">)</span> <span class="op">+</span> 
+                    <span class="fl">.005</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"always_Y"</span><span class="op">)</span><span class="op">)</span>,
     conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, type <span class="op">=</span> <span class="va">types</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">pr_C_1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_measurement</span><span class="op">(</span>C <span class="op">=</span> <span class="fu">draw_binary</span><span class="op">(</span>prob <span class="op">=</span> <span class="va">pr_C_1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -727,7 +724,7 @@ D
 </li>
 <li><p>Using the code below, diagnose the <code>design</code> and interpret the diagnosands.</p></li>
 </ol>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>,
                 diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
                   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">posterior</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
@@ -764,7 +761,7 @@ D
 <h3>
 <span class="header-section-number">16.6.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, units <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,

@@ -56,8 +56,10 @@
 <li><a class="" href="multi-study-designs.html"><span class="header-section-number">18</span> Multi-study designs</a></li>
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
-<li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">21</span> Part IV Exercises</a></li>
+<li><a class="" href="before.html"><span class="header-section-number">20</span> Before</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">21</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">22</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">23</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -96,7 +98,8 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 </li>
 </ul>
 <div class="inline-table"><table class="table table-sm">
-<caption>Causal Types</caption>
+<caption>
+<span id="tab:auditcausaltypes">Table 15.1: </span> Causal Types</caption>
 <thead><tr class="header">
 <th>Type</th>
 <th><span class="math inline">\(R_i(0)\)</span></th>
@@ -149,19 +152,25 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <p>We’ll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span>, <span class="cn">NA_real_</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+    <span class="va">R</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+    <span class="va">Q</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span>, <span class="cn">NA_real_</span><span class="op">)</span>, 
+    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>ATE_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">R_Z_1</span> <span class="op">-</span> <span class="va">R_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>CATE_ar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Q_Z_1_R_1</span> <span class="op">-</span> <span class="va">Q_Z_0_R_1</span><span class="op">)</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R_Z_1</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">R_Z_0</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>CATE_ar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Q_Z_1_R_1</span> <span class="op">-</span> <span class="va">Q_Z_0_R_1</span><span class="op">)</span>, 
+                   subset <span class="op">=</span> <span class="op">(</span><span class="va">R_Z_1</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">R_Z_0</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">R</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Q</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">R</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_R"</span>, label <span class="op">=</span> <span class="st">"ATE_R"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="va">Z</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, estimand <span class="op">=</span> <span class="st">"CATE_ar"</span>, label <span class="op">=</span> <span class="st">"CATE_ar"</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Q</span> <span class="op">~</span> <span class="va">Z</span>, subset <span class="op">=</span> <span class="op">(</span><span class="va">R</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, 
+                    estimand <span class="op">=</span> <span class="st">"CATE_ar"</span>, 
+                    label <span class="op">=</span> <span class="st">"CATE_ar"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dag-4" class="section level3">
 <h3>
@@ -231,7 +240,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <li><p><strong>D</strong>ata strategy: First we sample 500 respondents from the U.S. population at random, then we randomly assign 250 of the 500 to treatment and the remainder to control. In the survey, we ask subjects both the direct question and the list experiment question.</p></li>
 <li><p><strong>A</strong>nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.</p></li>
 </ul>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -261,7 +270,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.2.3</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-193-1.svg" width="100%"></div>
@@ -457,7 +466,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># applies the function to each pair</span>
 <span class="va">Y_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">data</span> <span class="op">%&gt;%</span>
@@ -519,7 +528,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     games <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,
@@ -532,10 +541,21 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>mean_fairness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">fairness</span><span class="op">)</span>,
                    mean_cutoff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">cutoff</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">games</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"proposer"</span>, <span class="st">"responder"</span><span class="op">)</span>, assignment_variable <span class="op">=</span> <span class="st">"role"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_step</span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">games</span>, names_from <span class="op">=</span> <span class="va">role</span>, values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">prosociality</span>, <span class="va">fairness</span>, <span class="va">cutoff</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">pivot_wider</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_measurement</span><span class="op">(</span>proposal <span class="op">=</span> <span class="va">fairness_proposer</span> <span class="op">*</span> <span class="fl">0.5</span>, 
-                      response <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">proposal</span> <span class="op">&gt;=</span> <span class="va">cutoff_responder</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>
+    blocks <span class="op">=</span> <span class="va">games</span>, 
+    conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"proposer"</span>, <span class="st">"responder"</span><span class="op">)</span>,
+    assignment_variable <span class="op">=</span> <span class="st">"role"</span>
+  <span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_step</span><span class="op">(</span>
+    id_cols <span class="op">=</span> <span class="va">games</span>, 
+    names_from <span class="op">=</span> <span class="va">role</span>, 
+    values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">prosociality</span>, <span class="va">fairness</span>, <span class="va">cutoff</span><span class="op">)</span>, 
+    handler <span class="op">=</span> <span class="va">pivot_wider</span>
+  <span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_measurement</span><span class="op">(</span>
+    proposal <span class="op">=</span> <span class="va">fairness_proposer</span> <span class="op">*</span> <span class="fl">0.5</span>, 
+    response <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">proposal</span> <span class="op">&gt;=</span> <span class="va">cutoff_responder</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">proposal</span> <span class="op">~</span> <span class="fl">1</span>,
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     estimand <span class="op">=</span> <span class="st">"mean_fairness"</span>,
