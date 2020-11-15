@@ -82,7 +82,8 @@
 <h2>
 <span class="header-section-number">15.1</span> Audit experiments<a class="anchor" aria-label="anchor" href="#audit-experiments"><i class="fas fa-link"></i></a>
 </h2>
-<p>An audit experiment (see <strong>Audit Experiment Design</strong>) that seeks to assess the effects of an email from a Latino name (versus a White name) on <em>whether</em> and <em>how well</em> election officials respond to requests for information. For example, do they use a positive or negative tone. These questions seem reasonable enough. The problem, however, is that if there are officials who don’t send responses, tone is undefined. More subtly, if there is an official that does send an email but would not have sent it in a different treatment condition, then tone is undefined for one of their potential outcomes.</p>
+<p>Audit experiments are used to measure whether requests that vary according along a nominally irrelevant dimension receive equal treatment. The design is used commonly in employment settings to measure whether job applications that are otherwise similar but come from candidates from different genders, races, or social backgrounds receive the same rate of job interview invitations. The same approach has been applied to a very wide range of settings, including education, housing, and requests to politicians.</p>
+<p>For example <span class="citation">White, Nathan, and Faller (<a href="references.html#ref-WHITE_NATHAN_FALLER_2015" role="doc-biblioref">2015</a>)</span> seeks to assess the effects of an email from a Latino name (versus a White name) on <em>whether</em> and <em>how well</em> election officials respond to requests for information.</p>
 <div id="declaration-5" class="section level3">
 <h3>
 <span class="header-section-number">15.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-5"><i class="fas fa-link"></i></a>
@@ -168,43 +169,23 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-183-1.svg" width="100%"></div>
 </div>
-<div id="example-5" class="section level3">
+<div id="takeaways" class="section level3">
 <h3>
-<span class="header-section-number">15.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-5"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.1.3</span> Takeaways<a class="anchor" aria-label="anchor" href="#takeaways"><i class="fas fa-link"></i></a>
 </h3>
-</div>
-<div id="design-declaration" class="section level3">
-<h3>
-<span class="header-section-number">15.1.4</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration"><i class="fas fa-link"></i></a>
-</h3>
-<!-- We learn three things from the design diagnosis. First, as expected, our experiment is unbiased for the average treatment effect on response. -->
-<!-- Next, we see that our second inquiry, as well as our diagnostics for it, are undefined. The diagnosis tells us that our definition of potential outcomes produces a definition problem for the estimand. Note that the diagnosands that are defined, including power, depend only on the answer strategy and not on the estimand. -->
-<!-- Finally, our third estimand -- the average effects for the $A$ types -- is defined but our estimates are biased. The reason for this is that we cannot tell from the data which types are the $A$ types: we are not conditioning on the correct subset. Indeed, we are unable to condition on the correct subset. If a subject responds in the treatment group, we don't know if she is an $A$ or a $B$ type; in the control group, we can't tell if a responder is an $A$ or a $C$ type. Our difference-in-means estimator of the ATE on $Y$ among $A$s will be off whenever $A$s have different outcomes from $B$s and $C$s. -->
-<!-- In some cases, the problem might be resolved by changing the inquiry. Closely related estimands can often be defined, perhaps by redefining $Y$ (e.g., emails never sent have a tone of zero). Some redefinitions of the problem, as in the one we examine above, require estimating effects for unobserved subgroups which is a difficult challenge. -->
-<!-- ### Applications -->
-<!-- This kind of problem is surprisingly common. Here are three more distinct instances of the problem: -->
-<!-- 1. $Y$ is the decision to vote Democrat ($Y=1$) or Republican ($Y=0$), $R$ is the decision to turn out to vote and $Z$ is a campaign message. The decision to vote may depend on treatment but if subjects do not vote then $Y$ is undefined. -->
-<!-- 2. $Y$ is the weight of infants, $R$ is whether a child is born and $Z$ is a maternal health intervention. Fertility may depend on treatment but the weight of unborn (possibly never conceived) babies is not defined. -->
-<!-- 2. $Y$ is the charity to whom contributions are made during fundraising and $R$ is whether anything is contributed and $Z$ is an encouragement to contribute. The identity of beneficiaries is not defined if there are no contributions.  -->
-<!-- All of these problem exhibit a form of post treatment bias (see section **Post treatment bias**) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn't exist for some subjects. -->
-</div>
-<div id="exercises-1" class="section level3">
-<h3>
-<span class="header-section-number">15.1.5</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
-</h3>
-<ol style="list-style-type: decimal">
-<li><p>The amount of bias on the third estimand depends on both the distribution of types and the correlation of types with the potential outcomes of Y. Modify the declaration so that the estimator of the effect on Y is unbiased, changing only the distribution of types. Repeat the exercise, changing only the correlation of type with the potential outcomes of <span class="math inline">\(Y\)</span>.</p></li>
-<li><p>Try approaching the problem by redefining the inquiry, seeking to assess the effect of treatment on the share of responses with positive tone.</p></li>
-</ol>
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
+<ul>
+<li>The effect on response is identified by the design</li>
+<li>This is a “descriptive” quantity in the sense that we seek to estimate the fraction of bureaucrats that discriminate against Latinos. We only learn this if the treatment effect on response is “monotonic”</li>
+</ul>
+<!-- ### Example --><!-- We learn three things from the design diagnosis. First, as expected, our experiment is unbiased for the average treatment effect on response. --><!-- Next, we see that our second inquiry, as well as our diagnostics for it, are undefined. The diagnosis tells us that our definition of potential outcomes produces a definition problem for the estimand. Note that the diagnosands that are defined, including power, depend only on the answer strategy and not on the estimand. --><!-- Finally, our third estimand -- the average effects for the $A$ types -- is defined but our estimates are biased. The reason for this is that we cannot tell from the data which types are the $A$ types: we are not conditioning on the correct subset. Indeed, we are unable to condition on the correct subset. If a subject responds in the treatment group, we don't know if she is an $A$ or a $B$ type; in the control group, we can't tell if a responder is an $A$ or a $C$ type. Our difference-in-means estimator of the ATE on $Y$ among $A$s will be off whenever $A$s have different outcomes from $B$s and $C$s. --><!-- In some cases, the problem might be resolved by changing the inquiry. Closely related estimands can often be defined, perhaps by redefining $Y$ (e.g., emails never sent have a tone of zero). Some redefinitions of the problem, as in the one we examine above, require estimating effects for unobserved subgroups which is a difficult challenge. --><!-- ### Applications --><!-- This kind of problem is surprisingly common. Here are three more distinct instances of the problem: --><!-- 1. $Y$ is the decision to vote Democrat ($Y=1$) or Republican ($Y=0$), $R$ is the decision to turn out to vote and $Z$ is a campaign message. The decision to vote may depend on treatment but if subjects do not vote then $Y$ is undefined. --><!-- 2. $Y$ is the weight of infants, $R$ is whether a child is born and $Z$ is a maternal health intervention. Fertility may depend on treatment but the weight of unborn (possibly never conceived) babies is not defined. --><!-- 2. $Y$ is the charity to whom contributions are made during fundraising and $R$ is whether anything is contributed and $Z$ is an encouragement to contribute. The identity of beneficiaries is not defined if there are no contributions.  --><!-- All of these problem exhibit a form of post treatment bias (see section **Post treatment bias**) but the issue goes beyond picking the right estimator. Our problem here is conceptual: the effect of treatment on the outcome just doesn't exist for some subjects. --><!-- ### Exercises --><!-- 1. The amount of bias on the third estimand depends on both the distribution of types and the correlation of types with the potential outcomes of Y. Modify the declaration so that the estimator of the effect on Y is unbiased, changing only the distribution of types. Repeat the exercise, changing only the correlation of type with the potential outcomes of $Y$.   --><!-- 2. Try approaching the problem by redefining the inquiry, seeking to assess the effect of treatment on the share of responses with positive tone.  --><!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
 <div id="experiments-for-sensitive-questions" class="section level2">
 <h2>
 <span class="header-section-number">15.2</span> Experiments for sensitive questions<a class="anchor" aria-label="anchor" href="#experiments-for-sensitive-questions"><i class="fas fa-link"></i></a>
 </h2>
-<p>Sometimes, subjects might not tell the truth when <em>directly</em> asked about certain attitudes or behaviors. Responses may be affected by sensitivity bias, or the tendency of survey subjects to dissemble for fear of negative repercussions if some reference group learns their true response <span class="citation">(Blair, Coppock, and Moor <a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span>. In such cases, standard survey estimates based on direct questions will be biased. One class of solutions to this problem is to obscure individual responses, providing protection from social or legal pressures. When we obscure responses systematically through an experiment, we can often still identify average quantities of interest. One such design is the list experiment (introduced by <span class="citation">Miller (<a href="references.html#ref-miller1984new" role="doc-biblioref">1984</a>)</span>), which asks respondents for the count of the number of `yes’ responses to a series of questions including the sensitive item, rather than for a yes or no answer on the sensitive item itself. List experiments give subjects cover by aggregating their answer to the sensitive item with responses to other questions.</p>
-<p>During the 2016 Presidential Election in the U.S., some observers were concerned that pre-election estimates of support for Donald Trump might have been downward biased by “Shy Trump Supporters” – survey respondents who supported Trump in their hearts, but were embarrassed to admit it to pollsters. To assess this possibility, <span class="citation">Coppock (<a href="references.html#ref-coppock2017did" role="doc-biblioref">2017</a>)</span> obtained estimates of Trump support that were free of social desirability bias using a list experiment. Subjects in the control and treatment groups were asked: “Here is a list of [three/four] things that some people would do and some people would not. Please tell me HOW MANY of them you would do. We do not want to know which ones of these you would do, just how many. Here are the [three/four] things:”</p>
+<p>Sometimes, subjects might not tell the truth about certain attitudes or behaviors when asked directly. Responses may be affected by sensitivity bias, or the tendency of survey subjects to dissemble for fear of negative repercussions if some reference group learns their true response <span class="citation">(Blair, Coppock, and Moor <a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span>. In such cases, standard survey estimates based on direct questions will be biased. One class of solutions to this problem is to obscure individual responses, providing protection from social or legal pressures. When we obscure responses systematically through an experiment, we can often still identify average quantities of interest. One such design is the list experiment (introduced by <span class="citation">Miller (<a href="references.html#ref-miller1984new" role="doc-biblioref">1984</a>)</span>), which asks respondents for the count of the number of `yes’ responses to a series of questions including the sensitive item, rather than for a yes or no answer on the sensitive item itself. List experiments give subjects cover by aggregating their answer to the sensitive item with responses to other questions.</p>
+<p>For example, during the 2016 Presidential election in the U.S., some observers were concerned that pre-election estimates of support for Donald Trump might have been downwardly biased by “Shy Trump Supporters” – survey respondents who supported Trump in their hearts, but were embarrassed to admit it to pollsters. To assess this possibility, <span class="citation">Coppock (<a href="references.html#ref-coppock2017did" role="doc-biblioref">2017</a>)</span> obtained estimates of Trump support that were free of social desirability bias using a list experiment. Subjects in the control and treatment groups were asked: “Here is a list of [three/four] things that some people would do and some people would not. Please tell me HOW MANY of them you would do. We do not want to know which ones of these you would do, just how many. Here are the [three/four] things:”</p>
 <div class="inline-table"><table class="table table-sm">
 <colgroup>
 <col width="36%">
@@ -233,9 +214,9 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 </tr>
 </tbody>
 </table></div>
-<p>The treatment group averaged 1.843 items while the control group averaged 1.548 items, for a difference-in-means estimate 0.296. We will show this is an unbiased estimator for the average treatment effect between being asked to respond to the treated list and the control list (invoking the usual assumptions of randomized experiments, including SUTVA). But our estimand is the proportion of people who support Donald Trump. For the difference-in-means to be an unbiased estimator of the proportion of respondents who would say “yes” to the sensitive item, we invoke two additional assumptions: no design effects and no “liars” (see Imai 2011). The first highlights the fact that we need a good estimate of the average control item count from the control group (in this example 1.843). We use that to net out the control item count from responses to the treated group (what is left is the sensitive item proportion). When respondents provide a different control item count in the treated group than in the control group, for example because they evaluate items relatively and the inclusion of the sensitive item changes their answers (see Flavin and Keane 2011), the design breaks down. The no liars assumption says that respondents provide truthful answers to the sensitive item within the count. The justification for the assumption is that the plausible cover of being asked within a count makes it possible for respondents to answer truthfully.</p>
-<p>The estimate is, under these assumptions, free from sensitivity bias, but it’s also much higher variance. The 95% confidence interval for the list experiment estimate is nearly 14 percentage points wide, whereas the the 95% confidence interval for the (possibly biased!) direct question asked of the same sample is closer to 4 percentage points.</p>
-<p>The choice between list experiments and direct question is therefore a <strong>bias-variance tradeoff</strong>. List experiments may have less bias, but they are higher variance. Direct questions may be biased, but they have less variance.</p>
+<p>The treatment group averaged 1.843 items while the control group averaged 1.548 items, for a difference-in-means estimate 0.296. Under the usual assumptions of randomized experiments, the difference-in-means is an unbiased estimator for the average treatment effect of <em>being asked</em> to respond to the treated list and the control list. But our (descriptive) estimand is the proportion of people who support Donald Trump. For the difference-in-means to be an unbiased estimator for that inquiry, we invoke two additional assumptions: no design effects and no “liars” <span class="citation">(Imai <a href="references.html#ref-Imai2011" role="doc-biblioref">2011</a>)</span>. The first highlights the fact that we need a good estimate of the average control item count from the control group (in this example 1.843). We use that to net out the control item count from responses to the treated group (what is left is the sensitive item proportion).</p>
+<!-- When respondents provide a different control item count in the treated group than in the control group, for example because they evaluate items relatively and the inclusion of the sensitive item changes their answers (see Flavin and Keane 2011), the design breaks down. The no liars assumption says that respondents provide truthful answers to the sensitive item within the count. The justification for the assumption is that the plausible cover of being asked within a count makes it possible for respondents to answer truthfully. -->
+<p>The estimate is, under these assumptions, free from sensitivity bias, but it’s also much higher variance. The 95% confidence interval for the list experiment estimate is nearly 14 percentage points wide, whereas the the 95% confidence interval for the (possibly biased!) direct question asked of the same sample is closer to 4 percentage points. The choice between list experiments and direct question is therefore a <strong>bias-variance tradeoff</strong>. List experiments may have less bias, but they are higher variance. Direct questions may be biased, but they have less variance.</p>
 <div id="declaration-6" class="section level3">
 <h3>
 <span class="header-section-number">15.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-6"><i class="fas fa-link"></i></a>
@@ -276,9 +257,9 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-190-1.svg" width="100%"></div>
 </div>
-<div id="example-6" class="section level3">
+<div id="diagnosis-1" class="section level3">
 <h3>
-<span class="header-section-number">15.2.3</span> Example<a class="anchor" aria-label="anchor" href="#example-6"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.2.3</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis-1"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
@@ -449,17 +430,19 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.2.4</span> Further readings<a class="anchor" aria-label="anchor" href="#further-readings"><i class="fas fa-link"></i></a>
 </h3>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
-<!-- make sure to rename the section title below -->
+<ul>
+<li><span class="citation">Miller (<a href="references.html#ref-miller1984new" role="doc-biblioref">1984</a>)</span></li>
+<li><span class="citation">Imai (<a href="references.html#ref-Imai2011" role="doc-biblioref">2011</a>)</span></li>
+<li><span class="citation">Blair, Coppock, and Moor (<a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span></li>
+</ul>
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above --><!-- make sure to rename the section title below -->
 </div>
 </div>
 <div id="conjoint-experiments" class="section level2">
 <h2>
 <span class="header-section-number">15.3</span> Conjoint experiments<a class="anchor" aria-label="anchor" href="#conjoint-experiments"><i class="fas fa-link"></i></a>
 </h2>
-<p>Conjoint survey experiments have become hugely popular in political science and beyond for studying multidimensional choice. In popular “forced-choice” design variant, subjects are presented with a choice task: a pair of profiles (of candidates, of immigrants, of policies) and are asked to make a binary choice between them.</p>
+<p>Conjoint survey experiments have become hugely popular in political science and beyond for studying multidimensional choice <span class="citation">(Hainmueller, Hopkins, and Yamamoto <a href="references.html#ref-Hainmueller2014" role="doc-biblioref">2014</a>)</span>. In the common “forced-choice” design variant, subjects are presented with a choice task: a pair of profiles (of candidates, of immigrants, of policies) and are asked to make a binary choice between them.</p>
 <p>When you’re designing a conjoint, you have to make (at least) three choices:</p>
 <ol style="list-style-type: decimal">
 <li>The number of <strong>attributes</strong>
@@ -467,7 +450,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <li>The number of <strong>levels</strong> within each attribute</li>
 <li>The number of <strong>choice tasks</strong> ask subjects to rate.</li>
 </ol>
-<p>The right number of <strong>attributes</strong> is governed by the “masking/satisficing” tradeoff. If you don’t include an important attribute (like partisanship in a candidate choice experiment), you’re worried that subjects will partially infer partisanship from other attributes (like race or gender). If so, partisanship is “masked”, and the estimates for the effects of race or gender will be biased by this “omitted variable.” But if you add too many attributes in order to avoid masking, you may induce “satisficing” among subjects, whereby they only take in a little bit of information, enough to make a “good enough” choice among the candidates.</p>
+<p>The right number of <strong>attributes</strong> is governed by the “masking/satisficing” tradeoff <span class="citation">(Bansak et al. <a href="references.html#ref-bansak_hainmueller_hopkins_yamamoto_2019" role="doc-biblioref">2019</a>)</span>. If you don’t include an important attribute (like partisanship in a candidate choice experiment), you’re worried that subjects will partially infer partisanship from other attributes (like race or gender). If so, partisanship is “masked”, and the estimates for the effects of race or gender will be biased by this “omitted variable.” But if you add too many attributes in order to avoid masking, you may induce “satisficing” among subjects, whereby they only take in a little bit of information, enough to make a “good enough” choice among the candidates.</p>
 <p>The right number of <strong>levels</strong> is governed by your sample size. If an attribute has three levels, it’s like you’re conducting a three-arm trial, so you’ll want to have enough subjects for each arm. The more levels, the lower the power.</p>
 <p>The right number of <strong>choice tasks</strong> depends on your survey budget. You can always add more pairs of profiles and the only cost is the opportunity cost of asking a different question of the survey that may serve some higher scientific purpose. If you’re worried that respondents will get bored with the task, you can always throw out profile pairs that come later in the survey. <span class="citation">(<span class="citeproc-not-found" data-reference-id="bansak2018number"><strong>???</strong></span>)</span> suggest that you can ask many pairs without much loss of data quality.</p>
 <div id="declaration-7" class="section level3">
@@ -509,20 +492,30 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-200-1.svg" width="100%"></div>
 </div>
-<div id="example-7" class="section level3">
+<div id="example-5" class="section level3">
 <h3>
-<span class="header-section-number">15.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-5"><i class="fas fa-link"></i></a>
 </h3>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
-<!-- make sure to rename the section title below -->
+</div>
+<div id="further-reading-7" class="section level3">
+<h3>
+<span class="header-section-number">15.3.4</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-7"><i class="fas fa-link"></i></a>
+</h3>
+<ul>
+<li><span class="citation">Hainmueller, Hopkins, and Yamamoto (<a href="references.html#ref-Hainmueller2014" role="doc-biblioref">2014</a>)</span></li>
+<li><span class="citation">(<span class="citeproc-not-found" data-reference-id="bansak2018number"><strong>???</strong></span>)</span></li>
+<li><span class="citation">Bansak et al. (<a href="references.html#ref-bansak_hainmueller_hopkins_yamamoto_2019" role="doc-biblioref">2019</a>)</span></li>
+</ul>
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above --><!-- make sure to rename the section title below -->
 </div>
 </div>
 <div id="behavioral-games" class="section level2">
 <h2>
 <span class="header-section-number">15.4</span> Behavioral games<a class="anchor" aria-label="anchor" href="#behavioral-games"><i class="fas fa-link"></i></a>
 </h2>
+<ul>
+<li>What behavioral game would be the most informative to demonstrate here?</li>
+</ul>
 <div id="declaration-8" class="section level3">
 <h3>
 <span class="header-section-number">15.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
@@ -559,9 +552,9 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-207-1.svg" width="100%"></div>
 </div>
-<div id="example-8" class="section level3">
+<div id="example-6" class="section level3">
 <h3>
-<span class="header-section-number">15.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-8"><i class="fas fa-link"></i></a>
+<span class="header-section-number">15.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-6"><i class="fas fa-link"></i></a>
 </h3>
 
 </div>
@@ -578,16 +571,14 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <a class="nav-link" href="#audit-experiments"><span class="header-section-number">15.1</span> Audit experiments</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-5"><span class="header-section-number">15.1.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-4"><span class="header-section-number">15.1.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-5"><span class="header-section-number">15.1.3</span> Example</a></li>
-<li><a class="nav-link" href="#design-declaration"><span class="header-section-number">15.1.4</span> Design Declaration</a></li>
-<li><a class="nav-link" href="#exercises-1"><span class="header-section-number">15.1.5</span> Exercises</a></li>
+<li><a class="nav-link" href="#takeaways"><span class="header-section-number">15.1.3</span> Takeaways</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#experiments-for-sensitive-questions"><span class="header-section-number">15.2</span> Experiments for sensitive questions</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-6"><span class="header-section-number">15.2.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-5"><span class="header-section-number">15.2.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-6"><span class="header-section-number">15.2.3</span> Example</a></li>
+<li><a class="nav-link" href="#diagnosis-1"><span class="header-section-number">15.2.3</span> Diagnosis</a></li>
 <li><a class="nav-link" href="#further-readings"><span class="header-section-number">15.2.4</span> Further readings</a></li>
 </ul>
 </li>
@@ -595,14 +586,15 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <a class="nav-link" href="#conjoint-experiments"><span class="header-section-number">15.3</span> Conjoint experiments</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-7"><span class="header-section-number">15.3.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-6"><span class="header-section-number">15.3.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-7"><span class="header-section-number">15.3.3</span> Example</a></li>
+<li><a class="nav-link" href="#example-5"><span class="header-section-number">15.3.3</span> Example</a></li>
+<li><a class="nav-link" href="#further-reading-7"><span class="header-section-number">15.3.4</span> Further reading</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#behavioral-games"><span class="header-section-number">15.4</span> Behavioral games</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-8"><span class="header-section-number">15.4.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-7"><span class="header-section-number">15.4.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-8"><span class="header-section-number">15.4.3</span> Example</a></li>
+<li><a class="nav-link" href="#example-6"><span class="header-section-number">15.4.3</span> Example</a></li>
 </ul>
 </li>
 </ul>

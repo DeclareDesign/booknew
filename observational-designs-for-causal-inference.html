@@ -102,9 +102,9 @@
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-216-1.svg" width="100%"></div>
 </div>
-<div id="example-9" class="section level3">
+<div id="example-7" class="section level3">
 <h3>
-<span class="header-section-number">16.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-9"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-7"><i class="fas fa-link"></i></a>
 </h3>
 <p>(matching and regression etc.)</p>
 </div>
@@ -267,9 +267,9 @@ Figure 16.3: DAG with one observed mediator
 ##      0.32          0.51        0.18    0.21        0.00          1.00
 ##    (0.05)        (0.02)      (0.01)  (0.00)      (0.00)        (0.00)</code></pre>
 </div>
-<div id="further-reading-7" class="section level3">
+<div id="further-reading-8" class="section level3">
 <h3>
-<span class="header-section-number">16.1.8</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.1.8</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-8"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li>
@@ -321,14 +321,14 @@ Figure 16.3: DAG with one observed mediator
 </li>
 </ul>
 </div>
-<div id="example-10" class="section level3">
+<div id="example-8" class="section level3">
 <h3>
-<span class="header-section-number">16.2.4</span> Example<a class="anchor" aria-label="anchor" href="#example-10"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.2.4</span> Example<a class="anchor" aria-label="anchor" href="#example-8"><i class="fas fa-link"></i></a>
 </h3>
 </div>
-<div id="further-reading-8" class="section level3">
+<div id="further-reading-9" class="section level3">
 <h3>
-<span class="header-section-number">16.2.5</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-8"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.2.5</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-9"><i class="fas fa-link"></i></a>
 </h3>
 <p>Applications</p>
 <ul>
@@ -364,12 +364,13 @@ Figure 16.3: DAG with one observed mediator
     unit_period <span class="op">=</span> <span class="fu">cross_levels</span><span class="op">(</span>by <span class="op">=</span> <span class="fu">join</span><span class="op">(</span><span class="va">unit</span>, <span class="va">period</span><span class="op">)</span>, 
                                U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">period</span><span class="op">)</span> <span class="op">+</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">period</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_step</span><span class="op">(</span>Z <span class="op">=</span> <span class="va">X</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">reveal_outcomes</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">period</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">Y_Z_0</span>, <span class="va">Y_Z_1</span><span class="op">)</span>, 
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">period</span><span class="op">)</span> <span class="op">+</span> <span class="va">D</span> <span class="op">+</span> <span class="va">U</span>,
+                             assignment_variable <span class="op">=</span> <span class="va">D</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1</span> <span class="op">-</span> <span class="va">Y_D_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">period</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_step</span><span class="op">(</span>D <span class="op">=</span> <span class="va">X</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">reveal_outcomes</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">D</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">period</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">Y_D_0</span>, <span class="va">Y_D_1</span><span class="op">)</span>, 
                   handler <span class="op">=</span> <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">period</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, se_type <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">*</span> <span class="va">period</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, se_type <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dag-10" class="section level3">
 <h3>
@@ -377,9 +378,9 @@ Figure 16.3: DAG with one observed mediator
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-241-1.svg" width="100%"></div>
 </div>
-<div id="example-11" class="section level3">
+<div id="example-9" class="section level3">
 <h3>
-<span class="header-section-number">16.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-11"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-9"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="two-period-two-group-setting" class="section level3">
@@ -405,38 +406,38 @@ Figure 16.3: DAG with one observed mediator
   <span class="op">)</span> <span class="op">+</span> 
   
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    Y_Z_0 <span class="op">=</span> <span class="va">unit_shock</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">time</span> <span class="op">+</span> <span class="va">unit_time_shock</span>, 
-    Y_Z_1 <span class="op">=</span> <span class="va">Y_Z_0</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    Y_D_0 <span class="op">=</span> <span class="va">unit_shock</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">time</span> <span class="op">+</span> <span class="va">unit_time_shock</span>, 
+    Y_D_1 <span class="op">=</span> <span class="va">Y_D_0</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
   
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1</span> <span class="op">-</span> <span class="va">Y_D_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> 
   
   <span class="fu">declare_assignment</span><span class="op">(</span>
-    Z <span class="op">=</span> <span class="va">unit_shock</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">unit_shock</span><span class="op">)</span>, 
+    D <span class="op">=</span> <span class="va">unit_shock</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">unit_shock</span><span class="op">)</span>, 
     handler <span class="op">=</span> <span class="va">mutate</span>
   <span class="op">)</span> <span class="op">+</span> 
   
   <span class="fu">reveal_outcomes</span><span class="op">(</span>
-    Y <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">&lt;</span> <span class="fl">1</span> <span class="op">~</span> <span class="va">Y_Z_0</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">Y_Z_1</span><span class="op">)</span>, 
+    Y <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">D</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">time</span> <span class="op">&lt;</span> <span class="fl">1</span> <span class="op">~</span> <span class="va">Y_D_0</span>, <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">Y_D_1</span><span class="op">)</span>, 
     handler <span class="op">=</span> <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="fu">declare_estimator</span><span class="op">(</span>
-    estimate <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> 
-                  <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span>
-      <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,
+    estimate <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> 
+                  <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span>
+      <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,
     estimator_label <span class="op">=</span> <span class="st">"DiD"</span>, 
     handler <span class="op">=</span> <span class="va">summarize</span>, 
     label <span class="op">=</span> <span class="st">"DiD"</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="fu">declare_estimator</span><span class="op">(</span>
-    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> 
-      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span>,
+    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span>,
     estimator_label <span class="op">=</span> <span class="st">"Diff"</span>, 
     handler <span class="op">=</span> <span class="va">summarize</span>, 
     label <span class="op">=</span> <span class="st">"Over-Time"</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="fu">declare_estimator</span><span class="op">(</span>
-    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> 
-      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
+    estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">[</span><span class="va">D</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
     estimator_label <span class="op">=</span> <span class="st">"DiM"</span>, 
     handler <span class="op">=</span> <span class="va">summarize</span>, 
     label <span class="op">=</span> <span class="st">"DiM"</span><span class="op">)</span></code></pre></div>
@@ -445,7 +446,7 @@ Figure 16.3: DAG with one observed mediator
   <span class="va">two_period_two_group_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>,
   sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_two_period_two_group</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_two_period_two_group</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -470,7 +471,7 @@ n_sims
 <tbody>
 <tr>
 <td style="text-align:left;">
-two_period_design
+two_period_two_group_design
 </td>
 <td style="text-align:left;">
 ATE
@@ -479,10 +480,10 @@ ATE
 DiD
 </td>
 <td style="text-align:right;">
--0.0421836
+-0.001
 </td>
 <td style="text-align:right;">
-0.0671367
+0.001
 </td>
 <td style="text-align:right;">
 1000
@@ -490,7 +491,7 @@ DiD
 </tr>
 <tr>
 <td style="text-align:left;">
-two_period_design
+two_period_two_group_design
 </td>
 <td style="text-align:left;">
 ATE
@@ -499,10 +500,10 @@ ATE
 Diff
 </td>
 <td style="text-align:right;">
-0.4619315
+0.499
 </td>
 <td style="text-align:right;">
-0.0487573
+0.000
 </td>
 <td style="text-align:right;">
 1000
@@ -510,7 +511,7 @@ Diff
 </tr>
 <tr>
 <td style="text-align:left;">
-two_period_design
+two_period_two_group_design
 </td>
 <td style="text-align:left;">
 ATE
@@ -519,10 +520,10 @@ ATE
 DiM
 </td>
 <td style="text-align:right;">
-1.1511461
+0.567
 </td>
 <td style="text-align:right;">
-0.0547887
+0.014
 </td>
 <td style="text-align:right;">
 1000
@@ -543,10 +544,10 @@ DiM
 <span class="va">three_period_two_group_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">two_period_two_group_design</span>, N_time_periods <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">draw_data</span><span class="op">(</span><span class="va">three_period_two_group_design</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">Z</span>, <span class="va">time</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">D</span>, <span class="va">time</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">summarize</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">mutate</span><span class="op">(</span>Z_color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">Z</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Untreated"</span>, <span class="st">"Treated"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Y</span>, color <span class="op">=</span> <span class="va">Z_color</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">mutate</span><span class="op">(</span>D_color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">D</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Untreated"</span>, <span class="st">"Treated"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">time</span>, <span class="va">Y</span>, color <span class="op">=</span> <span class="va">D_color</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">scale_color_discrete</span><span class="op">(</span><span class="st">""</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">scale_x_discrete</span><span class="op">(</span><span class="st">"Time"</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -587,23 +588,23 @@ DiM
   <span class="op">)</span> <span class="op">+</span> 
   
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
-    Y_Z_0 <span class="op">=</span> <span class="va">unit_shock</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">time</span> <span class="op">+</span> <span class="va">noise</span>, 
-    Y_Z_1 <span class="op">=</span> <span class="va">Y_Z_0</span> <span class="op">+</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span>
+    Y_D_0 <span class="op">=</span> <span class="va">unit_shock</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">time</span> <span class="op">+</span> <span class="va">noise</span>, 
+    Y_D_1 <span class="op">=</span> <span class="va">Y_D_0</span> <span class="op">+</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span>
   
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1</span> <span class="op">-</span> <span class="va">Y_D_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> 
   
-  <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fl">1</span><span class="op">*</span><span class="op">(</span><span class="va">unit_treated</span> <span class="op">&amp;</span> <span class="va">pretreatment</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span>, 
+  <span class="fu">declare_assignment</span><span class="op">(</span>D <span class="op">=</span> <span class="fl">1</span><span class="op">*</span><span class="op">(</span><span class="va">unit_treated</span> <span class="op">&amp;</span> <span class="va">pretreatment</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span>, 
                      handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span> 
   
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">time</span>, fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">units</span> <span class="op">+</span> <span class="va">periods</span>, 
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">+</span> <span class="va">time</span>, fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">units</span> <span class="op">+</span> <span class="va">periods</span>, 
                     model <span class="op">=</span> <span class="va">lm_robust</span>, 
                     label <span class="op">=</span> <span class="st">"twoway-fe"</span>, 
                     estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span> </code></pre></div>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_multi_period_multi_group</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">multi_period_design</span>, diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_multi_period_multi_group</span><span class="op">)</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">kable</span><span class="op">(</span><span class="fu">get_diagnosands</span><span class="op">(</span><span class="va">diagnosis_multi_period_multi_group</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">3</span>, booktabs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -639,13 +640,13 @@ ATE
 twoway-fe
 </td>
 <td style="text-align:left;">
-Z
+D
 </td>
 <td style="text-align:right;">
--0.0005784
+-0.007
 </td>
 <td style="text-align:right;">
-0.0066689
+0.006
 </td>
 <td style="text-align:right;">
 1000
@@ -677,7 +678,7 @@ Z
 <ul>
 <li>
 <p><strong>M</strong>odel: Regression discontinuity designs have four components: A running variable, a cutoff, a treatment variable, and an outcome. The cutoff determines which units are treated depending on the value of the running variable.</p>
-<p>In our example, the running variable <span class="math inline">\(X\)</span> is the Democratic party’s margin of victory at time <span class="math inline">\(t-1\)</span>; and the treatment, <span class="math inline">\(Z\)</span>, is whether the Democratic party won the election in time <span class="math inline">\(t-1\)</span>. The outcome, <span class="math inline">\(Y\)</span>, is the Democratic vote margin at time <span class="math inline">\(t\)</span>. We’ll consider a population of 1,000 of these pairs of elections.</p>
+<p>In our example, the running variable <span class="math inline">\(X\)</span> is the Democratic party’s margin of victory at time <span class="math inline">\(t-1\)</span>; and the treatment, <span class="math inline">\(D\)</span>, is whether the Democratic party won the election in time <span class="math inline">\(t-1\)</span>. The outcome, <span class="math inline">\(Y\)</span>, is the Democratic vote margin at time <span class="math inline">\(t\)</span>. We’ll consider a population of 1,000 of these pairs of elections.</p>
 <p>A major assumption required for regression discontinuity is that the conditional expectation functions for both treatment and control potential outcomes are continuous at the cutoff.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;An alternative motivation for some designs that do not rely on continuity at the cutoff is “local randomization”.&lt;/p&gt;"><sup>22</sup></a> To satisfy this assumption, we specify two smooth conditional expectation functions, one for each potential outcome. The figure plots <span class="math inline">\(Y\)</span> (the Democratic vote margin at time <span class="math inline">\(t\)</span>) against <span class="math inline">\(X\)</span> (the margin at time <span class="math inline">\(t-1\)</span>). We’ve also plotted the true conditional expectation functions for the treated and control potential outcomes. The solid lines correspond to the observed data and the dashed lines correspond to the unobserved data.</p>
 </li>
 </ul>
@@ -699,12 +700,12 @@ Z
     N <span class="op">=</span> <span class="fl">1000</span>,
     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span>,
     X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span> <span class="op">-</span> <span class="va">cutoff</span>,
-    Z <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="va">X</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>
+    D <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="va">X</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="fu">treatment</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">Z</span><span class="op">)</span> <span class="op">*</span> <span class="fu">control</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">*</span> <span class="fu">treatment</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">D</span><span class="op">)</span> <span class="op">*</span> <span class="fu">control</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="va">U</span>, assignment_variable <span class="op">=</span> <span class="va">D</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>LATE <span class="op">=</span> <span class="fu">treatment</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">-</span> <span class="fu">control</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"LATE"</span><span class="op">)</span></code></pre></div>
+  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"LATE"</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="dag-11" class="section level3">
@@ -713,14 +714,14 @@ Z
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-260-1.svg" width="100%"></div>
 </div>
-<div id="example-12" class="section level3">
+<div id="example-10" class="section level3">
 <h3>
-<span class="header-section-number">16.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-12"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-10"><i class="fas fa-link"></i></a>
 </h3>
 </div>
-<div id="exercises-2" class="section level3">
+<div id="exercises-1" class="section level3">
 <h3>
-<span class="header-section-number">16.4.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.4.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p><span class="citation">Gelman and Imbens (<a href="references.html#ref-gelman2017high" role="doc-biblioref">2017</a>)</span> point out that higher order polynomial regression specifications lead to extreme regression weights. One approach to obtaining better estimates is to select a bandwidth, <span class="math inline">\(h\)</span>, around the cutoff, and run a linear regression. Declare a sampling procedure that subsets the data to a bandwidth around the threshold, as well as a first order linear regression specification, and analyze how the power, bias, RMSE, and coverage of the design vary as a function of the bandwidth.</p></li>
@@ -729,9 +730,9 @@ Z
 <li><p>Redefine the population function so that units with higher potential outcome are more likely to locate just above the cutoff than below it. Assess whether and how this affects the bias of the design.</p></li>
 </ol>
 </div>
-<div id="further-reading-9" class="section level3">
+<div id="further-reading-10" class="section level3">
 <h3>
-<span class="header-section-number">16.4.5</span> Further Reading<a class="anchor" aria-label="anchor" href="#further-reading-9"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.4.5</span> Further Reading<a class="anchor" aria-label="anchor" href="#further-reading-10"><i class="fas fa-link"></i></a>
 </h3>
 <!-- Since its rediscovery by social scientists in the late 1990s, the regression discontinuity design has been widely used to study diverse causal effects such as: prison on recidivism (@Ojmarrh2017); China's one child policy on human capital (@qin2017); eligibility for World Bank loans on political liberalization (@carnegie2017international); and anti-discrimination laws on minority employment (@hahn1999evaluating). -->
 <!-- We've discussed a "sharp" regression discontinuity design in which all units above the threshold were treated and all units below were untreated. In fuzzy regression discontinuity designs, some units above the cutoff remain untreated or some units below take treatment. This setting is analogous to experiments that experience noncompliance and may require instrumental variables approaches to the answer strategy. -->
@@ -816,9 +817,9 @@ Z
 <!-- **Comment for JC**: a really like most of this set up. My own thinking though has changed a fair bit on this stuff however and think now it is more coherent to have a model such as `X -> Y <- C` where the position in the model is what gives C explanatory power. Plus with teh CausalQueries package it is really easy to set this up in a natural way and connect with DD. Doing like this would be not just conceptually better (I think) but a lot more flexible for the user. I'd be happy to do the work, think most of the text would remain as is but the example and some questions etc would change. What do you think? -->
 <!-- I think this is a question for Graeme, too, as we worked on this together and got it to a place we were pretty happy with. But I'd certainly be open to changing to something simpler and more accessible. If it's more complicated in spirit, then maybe it should go in the more detailed version below? -->
 </div>
-<div id="exercises-3" class="section level3">
+<div id="exercises-2" class="section level3">
 <h3>
-<span class="header-section-number">16.5.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.5.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p>Inspect the DAG. How would removing the arrow pointing from type to C affect the inferences a researcher could draw?</p></li>
@@ -899,9 +900,9 @@ Z
 </h3>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-276-1.svg" width="100%"></div>
 </div>
-<div id="example-13" class="section level3">
+<div id="example-11" class="section level3">
 <h3>
-<span class="header-section-number">16.6.3</span> Example<a class="anchor" aria-label="anchor" href="#example-13"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.6.3</span> Example<a class="anchor" aria-label="anchor" href="#example-11"><i class="fas fa-link"></i></a>
 </h3>
 <!-- Modeled after the example here:  -->
 <!-- https://www.mitpressjournals.org/doi/abs/10.1162/REST_a_00429?casa_token=o-zWqCima50AAAAA:yiEERZfdhAUoHV0-xBYNjgdljvgfRXrriR8foG7X8nHSUAMFrLcw2vWY8e9pHzmRT24MMAIv9hvKpQ -->
@@ -1120,9 +1121,9 @@ Z
 <!-- } -->
 <!-- ``` -->
 </div>
-<div id="further-reading-10" class="section level3">
+<div id="further-reading-11" class="section level3">
 <h3>
-<span class="header-section-number">16.6.4</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-10"><i class="fas fa-link"></i></a>
+<span class="header-section-number">16.6.4</span> Further reading<a class="anchor" aria-label="anchor" href="#further-reading-11"><i class="fas fa-link"></i></a>
 </h3>
 
 </div>
@@ -1140,12 +1141,12 @@ Z
 <a class="nav-link" href="#selection-on-observables"><span class="header-section-number">16.1</span> Selection on observables</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-9"><span class="header-section-number">16.1.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-8"><span class="header-section-number">16.1.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-9"><span class="header-section-number">16.1.3</span> Example</a></li>
+<li><a class="nav-link" href="#example-7"><span class="header-section-number">16.1.3</span> Example</a></li>
 <li><a class="nav-link" href="#classic-confounding"><span class="header-section-number">16.1.4</span> Classic Confounding</a></li>
 <li><a class="nav-link" href="#what-if-the-functional-form-is-wrong"><span class="header-section-number">16.1.5</span> What if the functional form is wrong?</a></li>
 <li><a class="nav-link" href="#what-if-you-have-unobserved-confounding"><span class="header-section-number">16.1.6</span> What if you have unobserved confounding?</a></li>
 <li><a class="nav-link" href="#what-if-the-observed-covariate-is-post-treatment"><span class="header-section-number">16.1.7</span> What if the observed covariate is post-treatment?</a></li>
-<li><a class="nav-link" href="#further-reading-7"><span class="header-section-number">16.1.8</span> Further reading</a></li>
+<li><a class="nav-link" href="#further-reading-8"><span class="header-section-number">16.1.8</span> Further reading</a></li>
 </ul>
 </li>
 <li>
@@ -1153,15 +1154,15 @@ Z
 <li><a class="nav-link" href="#declaration-10"><span class="header-section-number">16.2.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-9"><span class="header-section-number">16.2.2</span> DAG</a></li>
 <li><a class="nav-link" href="#redesign-3"><span class="header-section-number">16.2.3</span> Redesign</a></li>
-<li><a class="nav-link" href="#example-10"><span class="header-section-number">16.2.4</span> Example</a></li>
-<li><a class="nav-link" href="#further-reading-8"><span class="header-section-number">16.2.5</span> Further reading</a></li>
+<li><a class="nav-link" href="#example-8"><span class="header-section-number">16.2.4</span> Example</a></li>
+<li><a class="nav-link" href="#further-reading-9"><span class="header-section-number">16.2.5</span> Further reading</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#difference-in-differences"><span class="header-section-number">16.3</span> Difference-in-differences</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-11"><span class="header-section-number">16.3.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-10"><span class="header-section-number">16.3.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-11"><span class="header-section-number">16.3.3</span> Example</a></li>
+<li><a class="nav-link" href="#example-9"><span class="header-section-number">16.3.3</span> Example</a></li>
 <li><a class="nav-link" href="#two-period-two-group-setting"><span class="header-section-number">16.3.4</span> Two-period two-group setting</a></li>
 <li><a class="nav-link" href="#parallel-trends-assumption"><span class="header-section-number">16.3.5</span> Parallel trends assumption</a></li>
 <li><a class="nav-link" href="#multi-period-design"><span class="header-section-number">16.3.6</span> Multi-period design</a></li>
@@ -1171,24 +1172,24 @@ Z
 <a class="nav-link" href="#RDD"><span class="header-section-number">16.4</span> Regression Discontinuity</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-12"><span class="header-section-number">16.4.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-11"><span class="header-section-number">16.4.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-12"><span class="header-section-number">16.4.3</span> Example</a></li>
-<li><a class="nav-link" href="#exercises-2"><span class="header-section-number">16.4.4</span> Exercises</a></li>
-<li><a class="nav-link" href="#further-reading-9"><span class="header-section-number">16.4.5</span> Further Reading</a></li>
+<li><a class="nav-link" href="#example-10"><span class="header-section-number">16.4.3</span> Example</a></li>
+<li><a class="nav-link" href="#exercises-1"><span class="header-section-number">16.4.4</span> Exercises</a></li>
+<li><a class="nav-link" href="#further-reading-10"><span class="header-section-number">16.4.5</span> Further Reading</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#bayesianprocesstracing"><span class="header-section-number">16.5</span> Bayesian process-tracing</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-14"><span class="header-section-number">16.5.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-12"><span class="header-section-number">16.5.2</span> DAG</a></li>
-<li><a class="nav-link" href="#exercises-3"><span class="header-section-number">16.5.3</span> Exercises</a></li>
+<li><a class="nav-link" href="#exercises-2"><span class="header-section-number">16.5.3</span> Exercises</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#synthetic-controls"><span class="header-section-number">16.6</span> Synthetic controls</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#declaration-15"><span class="header-section-number">16.6.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-13"><span class="header-section-number">16.6.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-13"><span class="header-section-number">16.6.3</span> Example</a></li>
-<li><a class="nav-link" href="#further-reading-10"><span class="header-section-number">16.6.4</span> Further reading</a></li>
+<li><a class="nav-link" href="#example-11"><span class="header-section-number">16.6.3</span> Example</a></li>
+<li><a class="nav-link" href="#further-reading-11"><span class="header-section-number">16.6.4</span> Further reading</a></li>
 </ul>
 </li>
 </ul>
