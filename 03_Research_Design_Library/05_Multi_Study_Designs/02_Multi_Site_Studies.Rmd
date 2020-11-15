@@ -140,7 +140,7 @@ single_site_design <-
   ) + 
   declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + noise) +
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == FALSE) + 
+  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == TRUE) + 
   declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, 1)) + 
   declare_sampling(strata = site, n = n_subjects_per_site) + 
   declare_assignment(blocks = site, prob = 0.5) + 
@@ -155,13 +155,13 @@ multi_site_design <-
     ),
     subjects = add_level(N = n_subjects_per_site, noise = rnorm(N))
   ) + 
-  declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + feasible_effect * feasible_site) + noise) +
+  declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + noise) +
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == FALSE) + 
+  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == TRUE) + 
   declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, n_study_sites)) + 
   declare_sampling(strata = site, n = n_subjects_per_site) + 
   declare_assignment(blocks = site, prob = 0.5) + 
-  declare_estimator(handler = random_effects_meta_analysis)
+  declare_estimator(handler = label_estimator(random_effects_meta_analysis), label = "random-effects")
 
 single_site_large_design <- redesign(single_site_design, n_subjects_per_site = 2500)
 
@@ -170,7 +170,7 @@ small_study_five_sites <- redesign(multi_site_design, n_study_sites = 5, n_subje
 
 ```{r, warning = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
 simulations_small_large <- simulate_design(single_site_large_design, small_study_five_sites, sims = sims)
-diagnosis_small_large <- diagnose_design(simulations_small_large %>% filter(!is.na(estimate) & !is.na(std.error) & !is.na(statistic) & !is.na(p.value) & !is.na(conf.low) & !is.na(conf.high)), bootstrap_sims = b_sims)
+diagnosis_small_large <- diagnose_design(simulations_small_large, bootstrap_sims = b_sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
@@ -233,33 +233,33 @@ To do: you can improve site-level effect estimates by analyzing with simple Baye
 <!-- # bayes_estimator <- declare_estimator(handler = stan_re_estimator) -->
 <!-- # ``` -->
 
-### When things break down: confounded sampling
+<!-- ### When things break down: confounded sampling -->
 
-None of these designs work when you're trying to make predictions for sites that are systematically different, i.e. are not in the same population as the sampling frame.
+<!-- None of these designs work when you're trying to make predictions for sites that are systematically different, i.e. are not in the same population as the sampling frame. -->
 
-The design was set up to include several sites where researchers could not feasibly set up experiments. in the original design, effects do not depend on whether sites are feasible for the experiment. When effects do vary, there are systematic differences for those target sites. Those differences might come from three sources: mean effect size differs in places that are sampled vs not sampled; individual-level heterogeneous effect sizes that systematically differ in places that are sampled to study vs others; or covariate profiles that do not exist in sites outside the sampling frame. We introduce effects in the first way and show there is substantial bias.
+<!-- The design was set up to include several sites where researchers could not feasibly set up experiments. in the original design, effects do not depend on whether sites are feasible for the experiment. When effects do vary, there are systematic differences for those target sites. Those differences might come from three sources: mean effect size differs in places that are sampled vs not sampled; individual-level heterogeneous effect sizes that systematically differ in places that are sampled to study vs others; or covariate profiles that do not exist in sites outside the sampling frame. We introduce effects in the first way and show there is substantial bias. -->
 
-```{r}
-small_study_five_sites_feasible_effects <- multi_site_designer(n_study_sites = 5, n_subjects_per_site = 500, feasible_effect  = -0.25)
-```
+<!-- ```{r} -->
+<!-- small_study_five_sites_feasible_effects <- multi_site_designer(n_study_sites = 5, n_subjects_per_site = 500, feasible_effect  = -0.25) -->
+<!-- ``` -->
 
-```{r, warning = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
-simulations_feasible_effects <- simulate_design(small_study_five_sites_feasible_effects, sims = sims)
-diagnosis_feasible_effects <- diagnose_design(simulations_feasible_effects %>% filter(!is.na(estimate) & !is.na(std.error) & !is.na(statistic) & !is.na(p.value) & !is.na(conf.low) & !is.na(conf.high)), bootstrap_sims = b_sims)
-```
+<!-- ```{r, warning = FALSE, eval = do_diagnosis & !exists("do_bookdown")} -->
+<!-- simulations_feasible_effects <- simulate_design(small_study_five_sites_feasible_effects, sims = sims) -->
+<!-- diagnosis_feasible_effects <- diagnose_design(simulations_feasible_effects %>% filter(!is.na(estimate) & !is.na(std.error) & !is.na(statistic) & !is.na(p.value) & !is.na(conf.low) & !is.na(conf.high)), bootstrap_sims = b_sims) -->
+<!-- ``` -->
 
-```{r, echo = FALSE, purl = FALSE}
-# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("multi_site_studies"), "/diagnosis_feasible_effects.RDS")
-if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis_feasible_effects, path = rds_file_path)
-}
-diagnosis_feasible_effects <- read_rds(rds_file_path)
-```
+<!-- ```{r, echo = FALSE, purl = FALSE} -->
+<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
+<!-- rds_file_path <- paste0(get_dropbox_path("multi_site_studies"), "/diagnosis_feasible_effects.RDS") -->
+<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
+<!--   write_rds(diagnosis_feasible_effects, path = rds_file_path) -->
+<!-- } -->
+<!-- diagnosis_feasible_effects <- read_rds(rds_file_path) -->
+<!-- ``` -->
 
-```{r, echo = FALSE}
-kable(get_diagnosands(diagnosis_feasible_effects) %>% reshape_diagnosis %>% select(Bias, RMSE), booktabs = TRUE, caption = "Diagnosis with confounded sampling,", digits = 3)
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- kable(get_diagnosands(diagnosis_feasible_effects) %>% reshape_diagnosis %>% select(Bias, RMSE), booktabs = TRUE, caption = "Diagnosis with confounded sampling,", digits = 3) -->
+<!-- ``` -->
 
 <!-- Other points I decided to abandon to keep this simple: -->
 <!-- - tradeoff: context-specific interventions and comparability of intervention effects -->
