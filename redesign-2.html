@@ -114,7 +114,7 @@
 
 <span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>  <span class="co"># Number of cases</span>
 <span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">1</span>     <span class="co"># Measurement error</span>
-<span class="va">c</span> <span class="op">&lt;-</span> <span class="fl">.25</span>   <span class="co"># Cost of policy</span>
+<span class="va">c</span> <span class="op">&lt;-</span> <span class="fl">.2</span>   <span class="co"># Cost of policy</span>
 
 <span class="co"># Design</span>
 <span class="va">design</span> <span class="op">&lt;-</span> 
@@ -129,12 +129,12 @@
 <code class="sourceCode R"><span class="co"># Utility as a diagnosand</span>
 
 <span class="va">utility</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
-  utility_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">statistic</span> <span class="op">&gt;</span> <span class="fl">1.96</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">estimate</span> <span class="op">&gt;</span> <span class="va">c</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">estimand</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span> <span class="op">-</span> <span class="va">N</span><span class="op">/</span><span class="fl">50000</span><span class="op">+</span> <span class="va">r</span><span class="op">/</span><span class="fl">40</span><span class="op">)</span><span class="op">)</span>
+  utility_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">statistic</span> <span class="op">&gt;</span> <span class="fl">1.96</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">estimate</span> <span class="op">&gt;</span> <span class="va">c</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">estimand</span> <span class="op">-</span> <span class="va">c</span><span class="op">)</span> <span class="op">-</span> <span class="va">N</span><span class="op">/</span><span class="fl">100000</span><span class="op">+</span> <span class="va">r</span><span class="op">/</span><span class="fl">2500</span><span class="op">)</span><span class="op">)</span>
                                   
 <span class="va">design</span> <span class="op">&lt;-</span> <span class="fu">set_diagnosands</span><span class="op">(</span><span class="va">design</span>, <span class="va">utility</span><span class="op">)</span>
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">design</span>, N <span class="op">=</span> <span class="fl">100</span><span class="op">*</span><span class="fl">2</span><span class="op">^</span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, r <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p>Payoffs across two decision dimensions are show in n Figure @(fig:optimialdesign).</p>
+<p>Payoffs across two decision dimensions are show in Figure <a href="redesign-2.html#fig:optimaldesign">11.1</a>.</p>
 <!-- utility <- declare_diagnosands( -->
 <!--   utility_1 = mean((statistic > 1.96)*(estimate > c)*(estimand - c)), -->
 <!--   utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/50000+ r/40), -->
@@ -144,8 +144,8 @@
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<span id="fig:optimialdesign"></span>
-<img src="book_files/figure-html/optimialdesign-1.svg" alt="Utility over two design parameters." width="100%"><p class="caption">
+<span id="fig:optimaldesign"></span>
+<img src="book_files/figure-html/optimaldesign-1.svg" alt="Utility over two design parameters." width="100%"><p class="caption">
 Figure 11.1: Utility over two design parameters.
 </p>
 </div>
