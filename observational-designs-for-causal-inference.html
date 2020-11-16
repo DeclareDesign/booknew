@@ -94,7 +94,7 @@
 <h3>
 <span class="header-section-number">16.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-9"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -124,7 +124,7 @@
 <h3>
 <span class="header-section-number">16.1.4</span> What if you have unobserved confounding?<a class="anchor" aria-label="anchor" href="#what-if-you-have-unobserved-confounding"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -143,7 +143,7 @@
 <h3>
 <span class="header-section-number">16.1.5</span> What if an observed covariate is post-treatment?<a class="anchor" aria-label="anchor" href="#what-if-an-observed-covariate-is-post-treatment"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      X_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -182,7 +182,7 @@
 <h3>
 <span class="header-section-number">16.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-10"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">D</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, 
@@ -252,7 +252,7 @@
 <h3>
 <span class="header-section-number">16.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-11"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
@@ -286,7 +286,7 @@
 <ul>
 <li>Show that comparison of T and C in period 2 is biased and comparison of T between period 1 and 2 is biased, but DiD unbiased in presence of confounding in treatment assignment (unit with higher unit shock is always treated) and time trends</li>
 </ul>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_units</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 <span class="va">N_time_periods</span> <span class="op">&lt;-</span> <span class="fl">2</span>
 
@@ -337,7 +337,7 @@
     estimator_label <span class="op">=</span> <span class="st">"DiM"</span>, 
     handler <span class="op">=</span> <span class="va">summarize</span>, 
     label <span class="op">=</span> <span class="st">"DiM"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_two_period_two_group</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span>
   <span class="va">two_period_two_group_design</span>, 
   diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">)</span>,
@@ -434,7 +434,7 @@ DiM
 <ul>
 <li>Introduce assumption and visual test</li>
 </ul>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># add an additional pretreatment time period in order to visually test for parallel pre-trends</span>
 <span class="va">three_period_two_group_design</span> <span class="op">&lt;-</span> 
   <span class="fu">redesign</span><span class="op">(</span><span class="va">two_period_two_group_design</span>, N_time_periods <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
@@ -451,7 +451,7 @@ DiM
 <ul>
 <li>Switch to regression context with 20 periods, 100 units and show same results hold with two-way FE (controlling for one period before T is insufficient to remove bias)</li>
 </ul>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N_units</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">N_time_periods</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 
@@ -571,7 +571,7 @@ D
 <li><p><strong>D</strong>ata strategy: We collect data on the Democratic vote share at time <span class="math inline">\(t-1\)</span> and time <span class="math inline">\(t\)</span> for all 1,000 pairs of elections. There is no sampling or random assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises.</p></li>
 </ul>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cutoff</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">control</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.7</span>, <span class="op">-</span><span class="fl">.8</span>, <span class="fl">.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
@@ -656,7 +656,7 @@ D
 <li><p><span class="math inline">\(D\)</span> <em>Data Strategy</em>: The fundamental problem that the researcher faces is that of observational equivalence: different causal types can cause the same data patterns. The issue is mitigated by following a controversial sampling strategy: selecting on <span class="math inline">\(Y\)</span>. By selecting at random one case in which both <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are present, the researcher can narrow her uncertainty to two candidate types: the second and fourth causal types are incapable of producing the data <span class="math inline">\(Z = 1, Y = 1\)</span>. It cannot be that natural resources were the cause of peace (type 2), or that peace would have happened irrespective of natural resources (type 4), in a country that had a civil war and natural resources.</p></li>
 <li><p><span class="math inline">\(A\)</span> <em>Answer Strategy</em>: The researcher uses Bayes’ rule to update about the probability that <span class="math inline">\(Z\)</span> caused <span class="math inline">\(Y\)</span> given <span class="math inline">\(C\)</span>.</p></li>
 </ul>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Z_caused_Y'</span>, <span class="st">'Z_caused_not_Y'</span>, <span class="st">'always_Y'</span>, <span class="st">'always_not_Y'</span><span class="op">)</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span>
@@ -725,7 +725,7 @@ D
 </li>
 <li><p>Using the code below, diagnose the <code>design</code> and interpret the diagnosands.</p></li>
 </ol>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>,
                 diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
                   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">posterior</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
@@ -762,7 +762,7 @@ D
 <h3>
 <span class="header-section-number">16.6.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, units <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,

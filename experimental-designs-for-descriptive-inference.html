@@ -153,7 +153,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <p>We’ll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -241,7 +241,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <li><p><strong>D</strong>ata strategy: First we sample 500 respondents from the U.S. population at random, then we randomly assign 250 of the 500 to treatment and the remainder to control. In the survey, we ask subjects both the direct question and the list experiment question.</p></li>
 <li><p><strong>A</strong>nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.</p></li>
 </ul>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -271,7 +271,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.2.3</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-196-1.svg" width="100%"></div>
@@ -467,7 +467,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># applies the function to each pair</span>
 <span class="va">Y_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">data</span> <span class="op">%&gt;%</span>
@@ -529,7 +529,7 @@ In the design we assume a distribution of types with 40% <em>A</em>, 5% <em>B</e
 <h3>
 <span class="header-section-number">15.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     games <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,
