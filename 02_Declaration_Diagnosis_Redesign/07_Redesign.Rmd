@@ -72,15 +72,19 @@ A somewhat more integrated approach is to generate a diagnosand that reflects yo
 * Varying **D** and **A** over viable alternatives, recording the costs of different alternatives.
 * Declaring a diagnosand that reflects ultimate objectives including performance and cost.
 
-Consider for example a design is which we place a prior distribution over a treatment effect, $b$. We consider designs that vary (a) the number of units studies and (b) the investment in careful measurement. Each comes with a cost. We imagine that results will be used as follows: if a positive and significant treatment effect is estimated then an intervention is implemented which has value $b$ and cost $c$. Our diagnosand is the expected utility from  whatever policy is implemented after the study: $b-c$ if the policy is adopted, 0 otherwise. Thus it is responsive to different types of errors: implementing a weak intervention with $b<c$ and failing to implement a strong intervention with $b>c$.  Note of course that this policy decision rule is not *itself* optimal since it is based on significance not on posteriors, yet it may still be the rule used and we may still need to know how to undertake optimal design given this rule.
+Consider for example a design is which we place a prior distribution over a treatment effect, $b$. We consider designs that vary (a) the number of units studies and (b) the investment in careful measurement. Each comes with a cost. We imagine that results will be used as follows: if a *signifanct* treatment effect of $b>c$ is estimated then an intervention is implemented which has value $b$ and cost $c$. Our diagnosand is the expected utility from  whatever policy is implemented after the study: $b-c$ if the policy is adopted, 0 otherwise. Thus it is responsive to different types of errors: implementing a weak intervention with $b<c$ and failing to implement a strong intervention with $b>c$.  Note of course that this policy decision rule is not *itself* optimal insofar as  it is based on significance not on posteriors, yet it may still be the rule used and we may still need to know how to undertake optimal design given this rule.
 
-*Illustration to follow.*
+We illustrate with a simple design in which we explicitly provide a prior distribution over the  estimand and build in decision relevant parameters as arguments. 
 
 ```{r}
+
+# Decision parameters
+
 N <- 1000  # Number of cases
 r <- 1     # Measurement error
-c <- .5    # Cost of policy
+c <- .25   # Cost of policy
 
+# Design
 design <- 
   declare_population(
     b = add_level(N = 1, b = rnorm(1,0,1)),
@@ -88,31 +92,60 @@ design <-
   declare_measurement(Y_seen = Y + rnorm(N, 0, r)) +
   declare_estimand(b=b[1]) +
   declare_estimator(Y_seen ~ X, model = lm_robust) 
+```
+
+The key step then is to define a diagnosand that reflects choices, benefits, and costs and then assess performance over a range of designs.
+
+```{r}
+# Utility as a diagnosand
 
 utility <- declare_diagnosands(
-  utility_1 = mean((statistic > 2)*(estimate > c)*(estimand - c)),
-  utility_2 = mean((statistic > 2)*(estimate > c)*(estimand - c) - N/20000+ r/50)
-)
+  utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/50000+ r/40))
                                   
 design <- set_diagnosands(design, utility)
 
-designs <- redesign(design, N = c(100, 500, 1000), r = c(0, .5, 1))
+designs <- redesign(design, N = 100*2^(0:6), r = (0:8)/2)
 ```
 
 
-```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis <- diagnose_design(designs)
+Payoffs across two decision dimensions are show in n Figure @\ref(fig:optimialdesign).
+
+<!-- utility <- declare_diagnosands( -->
+<!--   utility_1 = mean((statistic > 1.96)*(estimate > c)*(estimand - c)), -->
+<!--   utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/50000+ r/40), -->
+<!--   power = mean(statistic > 1.96), -->
+<!--   benefit_given_significant = mean(estimand[statistic > 1.96]) -->
+<!-- ) -->
+
+```{r , eval = do_diagnosis & !exists("do_bookdown")}
+diagnosis <- diagnose_design(designs, sims = 5000)
 ```
 
-```{r, echo = FALSE, purl = FALSE, eval = FALSE}
+```{r optimialdesign, echo = FALSE, purl = FALSE, eval = TRUE, fig.cap= "Utility over two design parameters."}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("02_Improving_Research_Designs"), "/optimal_design.RDS")
+rds_file_path <- paste0(get_dropbox_path("optimal_design"), "/optimal_design.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
   write_rds(diagnosis, path = rds_file_path)
 }
 optimal_design_diagnosis <- read_rds(rds_file_path)
 
-# plot as a contour plot showing optimal design ; should be an elipse
+optimal_design_diagnosis$diagnosands_df %>% 
+  ggplot(aes(N, 2 - r, z = utility_2))  + geom_contour() + 
+  ylab("Investment in precision") + geom_contour_filled(show.legend = FALSE) + scale_x_continuous(trans = 'log10')
+
+
+# check <- optimal_design_diagnosis$simulations_df %>% 
+#   group_by(N, r) %>% summarize(sig = mean(statistic>1.96),
+#                                included = mean((statistic > 1.96)*(estimate > c)),
+#                                est_inc = mean(estimate[statistic > 1.96]),
+#                                utility_1 = mean((statistic > 1.96)*(estimate > c)*(estimand - c))) 
+# 
+# plot( check$N, check$sig, type = "n")
+# text( check$N, check$sig, check$r)
+# plot( check$r, check$sig, type = "n")
+# text( check$r, check$sig, check$N)
+
+# plot as a contour plot showing optimal design ; should be an ellipse
 # df <- d$simulations_df %>% filter(N == 10000, r== 0)
 
 ```
