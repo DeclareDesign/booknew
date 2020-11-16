@@ -82,7 +82,7 @@ We illustrate with a simple design in which we explicitly provide a prior distri
 
 N <- 1000  # Number of cases
 r <- 1     # Measurement error
-c <- .25   # Cost of policy
+c <- .2   # Cost of policy
 
 # Design
 design <- 
@@ -100,7 +100,7 @@ The key step then is to define a diagnosand that reflects choices, benefits, and
 # Utility as a diagnosand
 
 utility <- declare_diagnosands(
-  utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/50000+ r/40))
+  utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/100000+ r/2500))
                                   
 design <- set_diagnosands(design, utility)
 
@@ -108,7 +108,7 @@ designs <- redesign(design, N = 100*2^(0:6), r = (0:8)/2)
 ```
 
 
-Payoffs across two decision dimensions are show in n Figure @\ref(fig:optimialdesign).
+Payoffs across two decision dimensions are show in Figure \@ref(fig:optimaldesign).
 
 <!-- utility <- declare_diagnosands( -->
 <!--   utility_1 = mean((statistic > 1.96)*(estimate > c)*(estimand - c)), -->
@@ -117,11 +117,11 @@ Payoffs across two decision dimensions are show in n Figure @\ref(fig:optimialde
 <!--   benefit_given_significant = mean(estimand[statistic > 1.96]) -->
 <!-- ) -->
 
-```{r , eval = do_diagnosis & !exists("do_bookdown")}
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
 diagnosis <- diagnose_design(designs, sims = 5000)
 ```
 
-```{r optimialdesign, echo = FALSE, purl = FALSE, eval = TRUE, fig.cap= "Utility over two design parameters."}
+```{r optimaldesign, echo = FALSE, purl = FALSE, eval = TRUE, fig.cap= "Utility over two design parameters."}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("optimal_design"), "/optimal_design.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
@@ -129,10 +129,15 @@ if (do_diagnosis & !exists("do_bookdown")) {
 }
 optimal_design_diagnosis <- read_rds(rds_file_path)
 
-optimal_design_diagnosis$diagnosands_df %>% 
-  ggplot(aes(N, 2 - r, z = utility_2))  + geom_contour() + 
-  ylab("Investment in precision") + geom_contour_filled(show.legend = FALSE) + scale_x_continuous(trans = 'log10')
+# optimal_design_diagnosis$diagnosands_df %>% 
+#   ggplot(aes(N, 2 - r, z = utility_2))  + geom_contour() + 
+#   ylab("Investment in precision") + geom_contour_filled(show.legend = FALSE) + scale_x_continuous(trans = 'log10')
 
+c = .2
+optimal_design_diagnosis$simulations_df %>% group_by(N, r) %>% summarize(
+  utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/100000  + .0004*r)) %>% 
+  ggplot(aes(N, 4 - r, z = utility_2)) + 
+  ylab("Investment in precision") + geom_contour_filled(show.legend = FALSE) + scale_x_continuous(trans = 'log10')
 
 # check <- optimal_design_diagnosis$simulations_df %>% 
 #   group_by(N, r) %>% summarize(sig = mean(statistic>1.96),
