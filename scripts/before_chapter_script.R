@@ -15,4 +15,8 @@ source("scripts/ggplot_dd_theme.R")
 source("scripts/custom_scripts.R")
 source("scripts/make_dag_df.R")
 
+# FLAGS
+show_flags <- TRUE
+source("scripts/flagit.R")
+
 theme_set(dd_theme())
