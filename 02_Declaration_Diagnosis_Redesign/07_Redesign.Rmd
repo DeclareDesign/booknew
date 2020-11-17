@@ -39,7 +39,9 @@ Redesign is the process of *changing* parts of **D** and **A** (and, perhaps, **
 
 For example, we can compare how the distribution of errors changes if we use a different data strategy $D'$: $P_M(a^d - a^m|D')$ or a different answer strategy $A'$: $P_M(a^{d'} - a^m|D)$. In each case as we examine variation in **D** and **A** our diagnoses can assess how the distribution of errors differs for alternative model $M'$: $P_M(a^{d} - a^{m'}|D)$.
 
-Researchers typically wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have many variations, so the search space must be limited. Typically, researchers will want to find the optimal values of a small set of easily-controlled design parameters. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's bias subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
+Sometimes redesign is about getting fixing problems. You diagnose a design and find that your estimator is shooting at an altogether different quantity than what you have in mind. In such cases redesign is about fixing errors. 
+
+Often however researchers wish to find the optimal design for their question subject to financial and logistical constraints. Even simple designs have many variations, so the search space must be limited. For example, a researcher might want to find the sample size $N$ and the number of treated units $N_t$ that minimize a design's error subject to a fixed budget for the experiment in which data collection for each unit costs \$25 and treating one unit costs \$5. They solve the optimization problem:
 
 \begin{equation*}
 \begin{aligned}
@@ -52,7 +54,7 @@ Researchers typically wish to find the optimal design for their question subject
 
 where $L$ is a loss function, increasing in the difference between $a^{d}$ and $a^{m}$.
 
-There is no reason however to optimizing with respect to a single diagnosand. If we redesign by optimizing for the power diagnosand, we are likely to find a design that is highly powered but highly biased --- it is targeting the wrong estimand. We can solve this by switching to the root mean-squared error as the diagnosand, which reflects both the bias and efficiency of the design. More generally, the choice of an optimal design requires the researcher to select a weighting of diagnosands. They must balance bias, efficiency, the risk of imprecise null results, the risk of getting the sign of an effect wrong, and other diagnosands given their research goals.
+There is no reason however to optimize with respect to a single diagnosand only. If we redesign by optimizing for the power diagnosand, we are likely to find a design that is highly powered but highly biased --- it is targeting the wrong estimand. We can solve this by switching to the root mean-squared error as the diagnosand, which reflects both the bias and efficiency of the design. More generally, the choice of an optimal design requires the researcher to select a weighting of diagnosands. They must balance bias, efficiency, the risk of imprecise null results, the risk of getting the sign of an effect wrong, and other diagnosands given their research goals.
 
 The full evaluation of a design --- declaration, diagnosis, and redesign --- depends on the assessment of one or more diagnosands, and comparing the diagnoses to what could be achieved under alternative designs.
 
@@ -100,7 +102,7 @@ The key step then is to define a diagnosand that reflects choices, benefits, and
 # Utility as a diagnosand
 
 utility <- declare_diagnosands(
-  utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/100000+ r/2500))
+  utility = mean((p.value <= 0.05)*(estimate > c)*(estimand - c) - N/100000+ r/250))
                                   
 design <- set_diagnosands(design, utility)
 
@@ -118,7 +120,7 @@ Payoffs across two decision dimensions are show in Figure \@ref(fig:optimaldesig
 <!-- ) -->
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis <- diagnose_design(designs, sims = 5000)
+diagnosis <- diagnose_design(designs, sims = 20000)
 ```
 
 ```{r optimaldesign, echo = FALSE, purl = FALSE, eval = TRUE, fig.cap= "Utility over two design parameters."}
@@ -135,8 +137,8 @@ optimal_design_diagnosis <- read_rds(rds_file_path)
 
 c = .2
 optimal_design_diagnosis$simulations_df %>% group_by(N, r) %>% summarize(
-  utility_2 = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/100000  + .0004*r)) %>% 
-  ggplot(aes(N, 4 - r, z = utility_2)) + 
+  utility = mean((statistic > 1.96)*(estimate > c)*(estimand - c) - N/100000  + r/250)) %>% 
+  ggplot(aes(N, 4 - r, z = utility)) + 
   ylab("Investment in precision") + geom_contour_filled(show.legend = FALSE) + scale_x_continuous(trans = 'log10')
 
 # check <- optimal_design_diagnosis$simulations_df %>% 
