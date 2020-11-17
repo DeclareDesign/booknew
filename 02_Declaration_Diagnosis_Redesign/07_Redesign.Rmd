@@ -101,10 +101,10 @@ The key step then is to define a diagnosand that reflects choices, benefits, and
 ```{r}
 # Utility as a diagnosand
 
-utility <- declare_diagnosands(
+diagnosands <- declare_diagnosands(
   utility = mean((p.value <= 0.05)*(estimate > c)*(estimand - c) - N/100000+ r/250))
                                   
-design <- set_diagnosands(design, utility)
+design <- set_diagnosands(design, diagnosands)
 
 designs <- redesign(design, N = 100*2^(0:6), r = (0:8)/2)
 ```
