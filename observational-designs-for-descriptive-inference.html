@@ -456,21 +456,22 @@ design <-
 <h2>
 <span class="header-section-number">14.3</span> Inference about unobserved variables<a class="anchor" aria-label="anchor" href="#inference-about-unobserved-variables"><i class="fas fa-link"></i></a>
 </h2>
-<p>The purpose of this unwritten entry is to show how a latent variable (<code>Y_star</code>) can be measured with three procedures (<code>Y_1</code>, <code>Y_2</code>, <code>Y_3</code>), which are then averaged into an index.</p>
-<p>We’ll of course be “biased” for the true latent variable. Could a reasonable diagnosand here be the average correlation of the estimated index with the latent value?</p>
+<p>Oftentimes researchers seek to measure a latent variable (<code>Y_star</code>) but have access only to proxies (<code>Y_1</code>, <code>Y_2</code>, <code>Y_3</code>). In such cases the proxies are sometimes combined into an index which is thought to capture <code>Y_star</code> and then used for further analysis.</p>
+<p>A difficult feature of such problems is that we do not have access to the <em>scale</em> on which <code>Y_star</code> is measured and so it may seem like a hopeless exercise to try to assess whether we have got good or bad estimates of <code>Y_star</code> when we combine the measured data.</p>
+<p>One way around this is to normalize the scale of both the latent variable and the measured variable so that they have a mean of 0 and unit standard deviation. But in that case we are guaranteed that our estimate of the mean of the normalized variable will be unbiased! We will certainly estimate a mean of 0! That may be but as we show in the declaration below, if you model is correct this approach may still be useful for calculating other quantities — such as conditional means—that you don’t just get right by construction.</p>
 <div id="declaration-3" class="section level3">
 <h3>
 <span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-3"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, Y_star <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">200</span>, gender <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>, Y_star <span class="op">=</span> <span class="va">gender</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">[</span><span class="va">gender</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_measurement</span><span class="op">(</span>Y_1 <span class="op">=</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
                       Y_2 <span class="op">=</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
                       Y_3 <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="va">Y_star</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,
-                      Y_idx <span class="op">=</span> <span class="op">(</span><span class="va">Y_1</span> <span class="op">+</span> <span class="va">Y_2</span> <span class="op">+</span> <span class="va">Y_3</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_idx</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span><span class="op">)</span></code></pre></div>
+                      Y_idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Y_1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Y_2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Y_3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_idx</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span>, subset <span class="op">=</span> <span class="va">gender</span> <span class="op">==</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dag-2" class="section level3">
 <h3>
@@ -482,11 +483,64 @@ design <-
 <h3>
 <span class="header-section-number">14.3.3</span> Example<a class="anchor" aria-label="anchor" href="#example-3"><i class="fas fa-link"></i></a>
 </h3>
-<p>Perhaps a good psychometric example would be worthwhile to explore here? Or an education example?</p>
+<p><span style="color: red;"><small>[FLAG]</small></span>
+Perhaps a good psychometric example would be worthwhile to explore here? Or an education example?</p>
 <!-- make sure to rename the section title below -->
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span> </code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:latentmodel">Table 14.3: </span>Estimation of the conditional mean of a normalized latent variable
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Mean Estimand
+</th>
+<th style="text-align:left;">
+Bias
+</th>
+<th style="text-align:left;">
+RMSE
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+0.24
+</td>
+<td style="text-align:left;">
+-0.01
+</td>
+<td style="text-align:left;">
+0.02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+<td style="text-align:left;">
+(0.00)
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>We see from the diagnosis that we do quite well here in recovering the conditional mean of the latent variable.</p>
+<!-- Maybe add in factor analysis; do more to explain bias -- which I think comes from normalization on tthe same creating to toght a distribution? -->
+</div>
+<div id="exercises-3" class="section level3">
+<h3>
+<span class="header-section-number">14.3.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-3"><i class="fas fa-link"></i></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Modify the design so that only two rather than three observed components are used. How is the diagnosis affected? Does it matter which indices you use?</li>
+<li>Try to modify the design so that (a) indices are generated by a factor analysis procedure and (b) the different indices vary in the extent to which they are correlated with each other.</li>
+<li>How is estimation affected if you have the wrong model linking measures to the latent variables? Try a design in which the measures are non linear in the latent variable.</li>
+</ol>
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
 <div id="structural-estimation" class="section level2">
@@ -541,6 +595,7 @@ What is the number one use case for this design?</p>
 <li><a class="nav-link" href="#declaration-3"><span class="header-section-number">14.3.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#dag-2"><span class="header-section-number">14.3.2</span> Dag</a></li>
 <li><a class="nav-link" href="#example-3"><span class="header-section-number">14.3.3</span> Example</a></li>
+<li><a class="nav-link" href="#exercises-3"><span class="header-section-number">14.3.4</span> Exercises</a></li>
 </ul>
 </li>
 <li>
