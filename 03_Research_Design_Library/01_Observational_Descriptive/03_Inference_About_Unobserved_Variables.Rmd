@@ -29,7 +29,7 @@ One way around this is to normalize the scale of both the latent variable and th
 
 ```{r}
 design <-
-  declare_population(N = 100, gender = rep(0:1, N/2), Y_star = gender + 2* rnorm(N)) +
+  declare_population(N = 200, gender = rep(0:1, N/2), Y_star = gender + 2* rnorm(N)) +
   declare_estimand(Y_bar = mean(scale(Y_star)[gender == 1])) + 
   declare_measurement(Y_1 = 0.1 * Y_star + rnorm(N, sd = 0.25),
                       Y_2 = Y_star + rnorm(N, sd = 0.25),
@@ -111,7 +111,10 @@ diagnosis %>%
   kable(digits = 3, booktabs = TRUE, caption = "EStimation of the conditional mean of a normalized latent variable")
 ```
 
-We see from the diagnosis that we do quite well here in recovering the conditional mean of the latent variable. Even here though, where we assume a lot of knowledge about the underlying model, our estimate has some bias.
+We see from the diagnosis that we do quite well here in recovering the conditional mean of the latent variable. 
+
+<!-- Maybe add in factor analysis; do more to explain bias -- which I think comes from normalization on tthe same creating to toght a distribution? -->
+
 ### Exercises
 
 1. Modify the design so that only two rather than three observed components are used. How is the diagnosis affected? Does it matter which indices you use?
