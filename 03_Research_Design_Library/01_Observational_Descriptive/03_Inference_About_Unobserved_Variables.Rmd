@@ -27,12 +27,14 @@ One way around this is to normalize the scale of both the latent variable and th
 
 ### Declaration
 
+In the declaration below `Y_star` has a normal distribution but it is not centered on zero. The measured variables `Y_1`, `Y_2, `Y_3` are also normally distributed but each has its own scale; they are all related to `Y_star` though some more strongly than others. The index is constructed by first scaling each of these measured variables, then averaging and then scaling again. This is akin to the approach used in @kling2007experimental.
+
 ```{r}
 design <-
-  declare_population(N = 200, gender = rep(0:1, N/2), Y_star = gender + 2* rnorm(N)) +
+  declare_population(N = 200, gender = rep(0:1, N/2), Y_star = 1 + gender + 2* rnorm(N)) +
   declare_estimand(Y_bar = mean(scale(Y_star)[gender == 1])) + 
   declare_measurement(Y_1 = 0.1 * Y_star + rnorm(N, sd = 0.25),
-                      Y_2 = Y_star + rnorm(N, sd = 0.25),
+                      Y_2 = Y_star + rnorm(N, sd = 0.5),
                       Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.25),
                       Y_idx = scale((scale(Y_1) + scale(Y_2) + scale(Y_3)))) + 
   declare_estimator(Y_idx ~ 1, model = lm_robust, estimand = "Y_bar", subset = gender ==1)
@@ -40,8 +42,9 @@ design <-
 
 ### Dag
 
-```{r, echo = FALSE}
+A DAG representing this design is given in Figure \@ref(fig:indexdag): an underlying measure gives rise to three observed measures which are then (mechanically) combined to produce a measured index.
 
+```{r indexdag, echo = FALSE, fig.cap = "Index"}
 
 dag <-
   dagify(Y_1 ~ Y_star, Y_2 ~ Y_star, 
@@ -110,6 +113,7 @@ diagnosis %>%
   select(`Mean Estimand`, Bias, RMSE) %>%
   kable(digits = 3, booktabs = TRUE, caption = "Estimation of the conditional mean of a normalized latent variable")
 ```
+
 
 We see from the diagnosis that we do quite well here in recovering the conditional mean of the standardized latent variable.  
 
