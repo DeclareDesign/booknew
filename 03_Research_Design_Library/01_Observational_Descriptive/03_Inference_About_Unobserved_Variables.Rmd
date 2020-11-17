@@ -68,10 +68,10 @@ ggdd_df <- make_dag_df(dag, nodes, design)
 base_dag_plot %+% ggdd_df
 ```
 
-### Example
+### Diagnosis
 
-`r flagit()`
-Perhaps a good psychometric example would be worthwhile to explore here? Or an education example?
+<!-- `r flagit()` -->
+<!-- Perhaps a good psychometric example would be worthwhile to explore here? Or an education example? -->
 
 
 <!-- make sure to rename the section title below -->
@@ -83,9 +83,6 @@ sims <- 1000
 b_sims <- 50
 ```
 
-```{r, echo = FALSE}
-# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-```
 
 ```{r, eval = FALSE}
 diagnosis <- diagnose_design(design) 
@@ -105,6 +102,8 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
+The diagnosis is given in Table \@ref(tab:latentmodel). We show the RMSE and bias but also the average value of the estimand (and the estimate).
+
 ```{r latentmodel, echo = FALSE}
 diagnosis %>%
   reshape_diagnosis() %>%
@@ -112,9 +111,8 @@ diagnosis %>%
   kable(digits = 3, booktabs = TRUE, caption = "Estimation of the conditional mean of a normalized latent variable")
 ```
 
-We see from the diagnosis that we do quite well here in recovering the conditional mean of the latent variable.  
+We see from the diagnosis that we do quite well here in recovering the conditional mean of the standardized latent variable.  
 
-<!-- Maybe add in factor analysis; do more to explain bias -- which I think comes from normalization on tthe same creating to toght a distribution? -->
 
 ### Exercises
 
