@@ -61,7 +61,92 @@ Some diagnosands can be calculated analytically. It can be straightforward to ca
 
 In practice, it is important to diagnose a design under multiple possible $M$'s, given our fundamental uncertainty about the world $w$. We do not know the precise distributions of exogenous variables or the exact functional forms of potential outcomes (e.g., we do not know the true effect size). Diagnosis, therefore, should typically involve simulating the properties of a fixed set of inquiries, data strategies, and answer strategies under *multiple* likely models. A $D$ and $A$ for a given $I$ that provide good diagnosand values under multiple $M$'s can be said to be robust to multiple models. 
 
-```{r midadagsimulated, echo=FALSE, fig.cap = "DAG of Design Simulation", fig.width = 7, fig.height = 2.75}
+```{r midadagsimulated, echo=FALSE, fig.cap = "DAG of Design Simulation", fig.width = 7, fig.height = 5.5}
+dag <-
+  dagify(aw ~ w + I,
+         m ~ M,
+         am ~ m + I,
+         d ~ D + w,
+         ad ~ A + d,
+         w ~ W)
+
+dag_base <- tidy_dagitty(dag) %>%
+  select(name, direction, to, circular) %>%
+  as_tibble
+
+nodes_df <-
+  tibble(
+    name = c("M", "I", "D", "A", 
+             "m", "am", "aw", "d", 
+             "ad", "w", "W"),
+    label = TeX(c("M", "I", "D", "A", "m", "a^m", "a^w", "d", "a^d", "w", "W")),
+    long_label = c("Theoretical<br>causal model", "Inquiry<br>", "Data<br>strategy", "Answer<br>strategy", "Model<br>draw", "Theoretical<br>answer", "True<br>answer", "Realized<br>data", "Empirical<br>answer", "Real<br>world", "True causal<br>model"),
+    lbl_direction = c("N", "N", "N", "N", "S", "S", "S", "S", "S", "S", "N"),
+    x = c(1.5, 3.5, 11.5, 13.5, 
+          1.5, 3.5, 8.5, 11.5, 
+          13.5, 6.5, 6.5),
+    y = c(3.5, 3.5, 3.5, 3.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 3.5)
+  )
+
+endnodes_df <-
+  nodes_df %>%
+  transmute(to = name, xend = x, yend = y)
+
+gg_df <-
+  dag_base %>%
+  left_join(nodes_df, by = "name") %>%
+  left_join(endnodes_df, by = "to")
+
+gg_df <-
+  gg_df %>%
+  mutate(arced1 = (name == "w" & to == "d"),
+         arced2 = (name == "I" & to == "aw")) %>%
+  arrange(name)
+
+rect_df <-
+  tibble(
+    xmin = c(0, 10),
+    xmax = c(5, 15),
+    ymin = c(0, 0),
+    ymax = c(5, 5)
+  )
+
+g1 <-
+  ggplot(data = filter(gg_df, !arced1 & !arced2), aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
+  geom_point(color = gray(.1), fill = NA, size = 14, stroke = 0.5, pch = 1) +
+  geom_dag_edges(edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.25, edge_width = 0.35) +
+  geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .64, edge_width = 0.35) +
+  geom_text(color = "black",
+            aes(label = label),
+            size = 4,
+            parse = TRUE) +
+  geom_richtext(aes(y = y + if_else(lbl_direction == "N", 0.75, -0.75),
+        vjust = if_else(lbl_direction == "N", "bottom", "top"),
+        label = long_label),
+    color = gray(0.5),
+    fill = NA,
+    label.color = NA,
+    label.padding = grid::unit(rep(0, 4), "pt"),
+    size = 3) +
+  geom_rect(data = rect_df, aes(x = NULL, y = NULL, 
+                                xend = NULL, yend = NULL,
+                                xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+            alpha = 0.15) +
+  annotate("text", x = 2.5, y = 5.35, label = "Theory") +
+  annotate("text", x = 12.5, y = 5.35, label = "Empirics") +
+  annotate("text", x = 7.5, y = 5.35, label = "Reality") +
+  annotate("text", x = -0.5, y = 2.5, label = "Actual Research Design", angle = 90) +
+  scale_x_continuous(breaks = 0:15) +
+  scale_y_continuous(breaks = 0:5) +
+  coord_fixed(clip = "off") + 
+  theme_dag()
+
 dag <-
   dagify(m ~ M,
          am ~ m + I,
@@ -77,7 +162,7 @@ nodes_df <-
     name = c("M", "I", "D", "A", 
              "m", "am", "aw", "d", 
              "ad", "w", "W"),
-    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
+    label = TeX(c("M", "I", "D", "A", "m_k", "a^m_k", "a^w", "d_k", "a^d_k", "w", "W")),
     long_label = c("Theoretical<br>causal model", "Inquiry<br>", "Data<br>strategy", "Answer<br>strategy", "Model<br>draw", "Theoretical<br>answer", "True<br>answer", "Simulated<br>data", "Simulated<br>answer", "Real<br>world", "True causal<br>model"),
     lbl_direction = c("N", "N", "N", "N", "S", "S", "S", "S", "S", "S", "N"),
     x = c(1.5, 3.5, 11.5, 13.5, 
@@ -109,7 +194,7 @@ rect_df <-
     ymax = c(5, 5)
   )
 
-g <-
+g2 <-
   ggplot(data = filter(gg_df, !arced1 & !arced2), aes(
     x = x,
     y = y,
@@ -120,13 +205,12 @@ g <-
   geom_dag_edges(edge_width = 0.35) +
   geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.2, edge_width = 0.35) +
   geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = 0.64, edge_width = 0.35) +
-  geom_richtext(color = "black",
-                aes(label = label, 
-                    y = y + if_else(name %in% c("M", "I", "D", "A", "W"), -0.025, 0),),
-                fill = NA,
-                label.color = NA,
-                label.padding = grid::unit(rep(0, 4), "pt"),
-                size = 4) +
+  geom_text(
+    color = "black",
+    aes(label = label, y = y),
+    size = 4,
+    parse = TRUE
+  ) +
   geom_richtext(aes(y = y + if_else(lbl_direction == "N", 0.75, -0.75),
         vjust = if_else(lbl_direction == "N", "bottom", "top"),
         label = long_label),
@@ -139,13 +223,16 @@ g <-
                                 xend = NULL, yend = NULL,
                                 xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
             alpha = 0.15) +
-  annotate("text", x = 2.5, y = 5.35, label = "Theory") +
-  annotate("text", x = 12.5, y = 5.35, label = "Simulation") +
+  annotate("text", x = 2.5, y = 5.35, label = "Simulated Theory") +
+  annotate("text", x = 12.5, y = 5.35, label = "Simulated Empirics") +
+  annotate("text", x = -0.5, y = 2.5, label = "Simulated Research Design", angle = 90) +
   scale_x_continuous(breaks = 0:15) +
   scale_y_continuous(breaks = 0:5) +
   coord_fixed(clip = "off") + 
   theme_dag()
-g
+g2
+
+g1 / g2
 ```
 
 ## Estimating diagnosands analytically

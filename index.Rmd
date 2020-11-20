@@ -54,7 +54,7 @@ nodes_df <-
     name = c("M", "I", "D", "A", 
              "m", "am", "aw", "d", 
              "ad", "w", "W"),
-    label = c("M", "I", "D", "A", "m", "a<sup>m</sup>", "a<sup>w</sup>", "d", "a<sup>d</sup>", "w", "W"),
+    label = TeX(c("M", "I", "D", "A", "m", "a^m", "a^w", "d", "a^d", "w", "W")),
     long_label = c("Theoretical<br>causal model", "Inquiry<br>", "Data<br>strategy", "Answer<br>strategy", "Model<br>draw", "Theoretical<br>answer", "True<br>answer", "Realized<br>data", "Empirical<br>answer", "Real<br>world", "True causal<br>model"),
     lbl_direction = c("N", "N", "N", "N", "S", "S", "S", "S", "S", "S", "N"),
     x = c(1.5, 3.5, 11.5, 13.5, 
@@ -105,13 +105,11 @@ g <-
   geom_dag_edges(edge_width = 0.35) +
   geom_dag_edges_arc(data = filter(gg_df, arced1), curvature = -0.25, edge_width = 0.35) +
   geom_dag_edges_arc(data = filter(gg_df, arced2), curvature = .64, edge_width = 0.35) +
-  geom_richtext(color = "black",
-                aes(label = label, 
-                    y = y + if_else(name %in% c("M", "I", "D", "A", "W"), -0.025, 0),),
-                fill = NA,
-                label.color = NA,
-                label.padding = grid::unit(rep(0, 4), "pt"),
-                size = 4) +
+  geom_text(color = "black",
+            aes(label = label),
+            size = 4,
+            parse = TRUE
+  ) +
   # geom_richtext(aes(y = y + if_else(lbl_direction == "N", 0.75, -0.75),
   #       vjust = if_else(lbl_direction == "N", "bottom", "top"),
   #       label = long_label),
