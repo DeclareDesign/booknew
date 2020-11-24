@@ -37,5 +37,6 @@ bookwide_packages <-
     "ggtext",
     "ggrepel",
     # extras
-    "dddag"
+    "dddag",
+    "latex2exp"
   )

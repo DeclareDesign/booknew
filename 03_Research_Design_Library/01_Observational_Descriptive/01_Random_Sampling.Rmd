@@ -29,9 +29,9 @@ b_sims <- 20
 
 Often we are interested in features of a population, but data on the entire population is prohibitively expensive to collect. Instead, researchers obtain data on a small fraction of the population and use measurements taken on that sample to draw inferences about the population.
 
-Imagine we seek to estimate the average political ideology of adults residents of the small town of Portola, California (population 2,100). Households include between 1 and 3 adults; adults living in the same households typically have similar ideologies, but differ somewhat. The *latent* ideology of each subject is therefore composed of a household-level shock as well as an idiosyncratic individual-level shock. Our data strategy will involve administering a survey that ask subjects to place themselves on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We approximate this measurement procedure with a function that "cuts" the latent ideology into 7 separate groups.
+Imagine we seek to estimate the average political ideology of adults residents of the small town of Portola, California (population 2,100). Households include between 1 and 3 adults; adults living in the same households typically have similar ideologies, but differ somewhat. The *latent* ideology of each subject is therefore composed of a household-level shock as well as an idiosyncratic individual-level shock. Our data strategy will involve administering a survey that asks subjects to place themselves on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We approximate this measurement procedure with a function that "cuts" the latent ideology into 7 separate groups. Note that here we define the measurement *before* the sampling to let us simulate what we *would* measure for any member of the population were we to sample them.
 
-Our inquiry is "data-dependent", since we are interested the population mean of the measured variable $Y$: $\frac{1}{N} \sum_1^N Y_i = \bar{Y}$. Our first sampling strategy will be complete random sampling. We draw a sample of exactly $n = 100$, where every member of the population has an equal probability of inclusion in the sample, $\frac{n}{N}$. Our answer strategy is the sample mean estimator: $\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i$, implemented here as an ordinary least squares regression to facilitate the easy calculation of auxiliary statistics like the standard error of the estimate and the 95% confidence interval.
+Our inquiry is "data-dependent", since we are interested the population mean of the *measured* variable $Y$: $\frac{1}{N} \sum_1^N Y_i = \bar{Y}$ (or, what we would measure were we to be able to measure the population). Our first sampling strategy will be complete random sampling. We draw a sample of exactly $n = 100$, where every member of the population has an equal probability of inclusion in the sample, $\frac{n}{N}$. Our answer strategy is the sample mean estimator: $\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i$, implemented here as an ordinary least squares regression to facilitate the easy calculation of auxiliary statistics like the standard error of the estimate and the 95% confidence interval.
 
 ### Declaration
 
@@ -48,9 +48,7 @@ portola <-
 
 design <- 
   declare_population(data = portola) + 
-  declare_measurement(Y = as.numeric(
-    cut(Ystar, breaks = c(-Inf, seq(-2.5, 2.5), Inf), 
-        labels = 1:7))) +
+  declare_measurement(Y = as.numeric(cut(Ystar, 7))) + 
   declare_estimand(Y_bar = mean(Y)) + 
   declare_sampling(n = 100) + 
   declare_estimator(Y ~ 1, model = lm_robust, estimand = "Y_bar")
@@ -62,16 +60,12 @@ design <-
 
 d_internal <-
   declare_population(data = portola) +
-  declare_step(Y = as.numeric(cut(
-    Ystar, breaks = c(-Inf, seq(-2.5, 2.5), Inf),
-    labels = 1:7
-  )), handler = fabricate) +
+  declare_measurement(Y = as.numeric(cut(Ystar, 7))) +
   declare_sampling(n = 100, drop_nonsampled = FALSE) +
   declare_measurement(Q = 1) 
 
 
-dag <- dagify(Y ~ Q + Ystar,
-              Q ~ S)
+dag <- dagify(Y ~ Q + Ystar + S)
 
 nodes <-
   tibble(
@@ -129,7 +123,14 @@ diagnosis %>%
   kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
 ```
 
-The diagnosis in table \@ref(tab:completerandomsampling) indicates that under complete random sampling, the sample mean estimator of the population mean is unbiased and that the root mean squared error is manageable at 0.09.
+The diagnosis in table \@ref(tab:completerandomsampling) indicates that under complete random sampling, the sample mean estimator of the population mean is unbiased and that the root mean squared error is manageable at `r round(diagnosis$diagnosands_df$rmse,2)`.
+
+#### Exercises
+
+1. Can you modify the design to define the estimand as the mean of the latent variable `Y_star`? What happens if you diagnose this design?
+2. Can you modify the design to allow for the possibility of measurement error? 
+2. Can you modify the design to allow for the possibility of sampling error? 
+
 
 ### Clustered random sampling
 
@@ -140,23 +141,18 @@ Let's modify our first design to sample at the household level, rather than at t
 ```{r}
 design <-
   declare_population(data = portola) +
-  declare_measurement(Y = as.numeric(cut(
-    Ystar, breaks = c(-Inf, seq(-2.5, 2.5), Inf),
-    labels = 1:7
-  ))) +
+  declare_measurement(Y = as.numeric(cut(Ystar, 7))) +
   declare_estimand(Y_bar = mean(Y)) +
   declare_sampling(clusters = households, n = 50) +
   declare_estimator(Y ~ 1,
                     model = lm_robust,
                     estimand = "Y_bar",
                     label = "Standard errors not clustered") +
-declare_estimator(
-  Y ~ 1,
-  clusters = households,
-  model = lm_robust,
-  estimand = "Y_bar",
-  label = "Standard errors clustered"
-)
+  declare_estimator(Y ~ 1,
+                    clusters = households,
+                    model = lm_robust,
+                    estimand = "Y_bar",
+                    label = "Standard errors clustered")
 
 diagnosands <- declare_diagnosands(
   bias = mean(estimate - estimand),
@@ -182,8 +178,12 @@ diagnosis %>%
   kable(digits = 3, booktabs = TRUE, caption = "Cluster random sampling design diagnosis")
 ```
 
-The diagnosis shows the impact of clustering on the quality of our estimates. While the design remains unbiased for the population mean, the RMSE has gone up. We still interview (on average) 100 people in each sample, but since under the clustered design, we interview all adults in the household, the sampling distribution of the estimates is higher variance. The diagnosis also highlights the importance of matching your answer strategy to your data strategy. The sampling was clustered by household. The answer strategy that fails to account for this yields confidence intervals that are too small, as evidenced by the coverage rate well below the nominal 95\%. When we estimate clustered standard errors instead, the coverage improves.
+The diagnosis shows the affect of clustering on the quality of our estimates. While the design remains unbiased for the population mean, the RMSE has gone up. We still interview (on average) 100 people in each sample, but since under the clustered design, we interview all adults in the household, the sampling distribution of the estimates has higher variance. The diagnosis also highlights the importance of matching your answer strategy to your data strategy. The sampling was clustered by household. The answer strategy that fails to account for clustering yields confidence intervals that are too small, as evidenced by the coverage rate well below the nominal 95\%. When we estimate clustered standard errors instead, the coverage improves.
 
+
+#### Exercises
+
+1. Here the clusters were defined as part of the model, but they could be defined as part of the data strategy.  Can you modify the design and generate sampling clusters by putting neighboring households into the same cluster. Your data will have a household identifier `households` so you could try making a single cluster out of each pair (for instance households `001` and `002`). How does sampling using pairs households together affect your estimated rmse?    
 
 <!-- #### Exercises -->
 
