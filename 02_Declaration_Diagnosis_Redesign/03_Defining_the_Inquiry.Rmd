@@ -224,14 +224,14 @@ draw_estimands(model + inquiry) %>%
 
 ```
 
-The first estimand is a descriptive estimand: the average outcome for $Y$ when $D = 1$. 
-Note that the declaration of the estimand does not make use of any counterfactual quantities.   
+The first estimand is a descriptive estimand: the average outcome for $Y$ when $D = 1$. Note that the declaration of the estimand does not make use of any counterfactual quantities.   
  
 The second estimand is a causal effect. The inquiry is asked of the same model but this time the inquiry takes the average difference, across individuals, in two potential outcomes.  Unlike the descriptive estimand, this estimand uses information about $Y$'s potential outcomes but it does not use any information about the distribution of $D$.
 
 The third inquiry asks an attribution question, in this case on continuous data. In this case, we ask about the share of units with positive values of $Y$ and $D=1$ that *would have had* negative values of $Y$ were $D=0$. This estimand requires information about both potential outcomes and actual outcomes (for $D$).
 
-In this illustration, each "run" of `model + inquiry` provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter, we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution, or we might think of the model, $M$, as representing a set of possible worlds and we are interested in performance in each of them `r flagit()`(WHAT DOES PERFORMANCE (IN A WORLD) MEAN?). Which approach we take will matter when we turn to diagnosis. 
+In this illustration, each "run" of `model + inquiry` provides a different value for the estimand (or, more precisely, this is true in this design for the first and the third estimand). How is this variation to be understood? As we noted in the last chapter, we might think of a superpopulation with a distribution of estimands and that we have an interest in understanding that superpopulation distribution, or we might think of the model, $M$, as representing a set of possible worlds and we are interested in performance in each of them `r flagit()`. Which approach we take will matter when we turn to diagnosis. 
+<!-- (WHAT DOES PERFORMANCE (IN A WORLD) MEAN?) -->
 
 ## Common complexities in defining estimands
 
@@ -271,9 +271,10 @@ With this conceptualization the estimand is an average of individual effects, th
 
 Another approach is to imagine a more complex summary where we construct a best fit continuous potential outcomes function for the cases with $Z=1$ and $Z=0$ and evaluate the difference between these when $X=0$. Though not an average of individual effects, this difference is nevertheless a summary of the potential outcomes. Note though that the nature of the estimand (recall we are discussing the estimand, not the estimate) depends on how the potential outcomes function is constructed---is it, for instance, a linear function or a higher-order polynomial?
 
-### Model dependent inquiries
+### Model-dependent inquiries
 
-A similar conceptualization can be used for settings where model parameters are estimands. For instance, we might have access to data on decisions by subjects in a lab and seek to estimate a "coefficient of risk aversion." The reference model might not include such a coefficient---indeed we might not be willing to believe that such a number really exists for subjects. Yet we might still ask: if we had access to all possible choices, what coefficient would best summarize the choices of an agent. The answer provides the estimand which we then seek to estimate on finite data. `r flagit()`(HOW IS IT MODEL DEPENDENT YET NOT INCLUDED IN THE REFERENCE MODEL?)
+A similar conceptualization can be used for settings where model parameters are estimands. For instance, we might have access to data on decisions by subjects in a lab and seek to estimate a "coefficient of risk aversion." The reference model might not include such a coefficient---indeed we might not be willing to believe that such a number really exists for subjects. Yet we might still ask: if we had access to all possible choices, what coefficient would best summarize the choices of an agent. The answer provides the estimand which we then seek to estimate on finite data. `r flagit()`
+<!-- (HOW IS IT MODEL DEPENDENT YET NOT INCLUDED IN THE REFERENCE MODEL?) -->
 
 ### Complex counterfactual inquiries
 
