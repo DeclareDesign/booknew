@@ -215,7 +215,7 @@ simulated_df <- draw_data(design)
 
 simulated_df %>% select(ID, X, D, Y) %>% 
 head(5) %>% 
-kable(caption = "Simulated data from a DAG with varaibles $X$, $D$, and $Y$.", digits = 3, booktabs = TRUE)
+kable(caption = "Simulated data from a DAG with variables $X$, $D$, and $Y$.", digits = 3, booktabs = TRUE)
 
 gg_df <-
   gg_df %>%
