@@ -175,6 +175,31 @@ kable(digits = 3, caption = "Difference-in-means estimate from simulated data.",
 ##   Y ~ Z, model = difference_in_means, estimand = "PATE"
 ## )
 
+## declare_estimator(
+##   Y ~ Z, model = lm_robust, model_summary = tidy
+## )
+
+## declare_estimator(
+##   Y ~ Z, model = lm_robust, model_summary = glance
+## )
+
+## tidy_margins <- function(x) {
+##   tidy(margins(x, data = x$data), conf.int = TRUE)
+## }
+## 
+## declare_estimator(
+##   Y ~ Z + X,
+##   model = glm,
+##   family = binomial("logit"),
+##   model_summary = tidy_margins,
+##   term = "Z"
+## )
+
+my_estimator <- function(data){
+  data.frame(estimate = mean(data$Y))
+}
+declare_estimator(handler = label_estimator(my_estimator), label = "mean", estimand = "Y_bar")
+
 ## declare_step(handler = fabricate, added_variable = rnorm(N))
 
 ## collapse_data <- function(data, collapse_by) {
