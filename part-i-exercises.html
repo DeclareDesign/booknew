@@ -75,8 +75,45 @@
 </h1>
 <!-- make sure to rename the section title below -->
 <!-- You can use the global bib file via rmarkdown cites like this: @imai2008 -->
-<p>To be written.</p>
+<p>To be completed.</p>
+<div id="question-1" class="section level2">
+<h2>
+<span class="header-section-number">4.1</span> Question 1<a class="anchor" aria-label="anchor" href="#question-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>Read the abstract of this paper:</p>
+<p>Becker, Sascha O., Irena Grosfeld, Pauline Grosjean, Nico Voigtländer, and Ekaterina Zhuravskaya. 2020. “Forced Migration and Human Capital: Evidence from Post-WWII Population Transfers.” American Economic Review, 110 (5): 1430-63.</p>
+<blockquote>
+<p>We study the long-run effects of forced migration on investment in education. After World War II, millions of Poles were forcibly uprooted from the Kresy territories of eastern Poland and resettled ( primarily) in the newly acquired Western Territories, from which the Germans were expelled. We combine historical censuses with newly collected survey data to show that, while there were no pre-WWII differences in educational attainment, Poles with a family history of forced migration are significantly more educated today than other Poles. These results are driven by a shift in preferences away from material possessions toward investment in human capital.</p>
+</blockquote>
+<ol style="list-style-type: lower-alpha">
+<li><p>From what you can tell on the basis of this abstract alone, what is the paper’s model, inquiry, data strategy, and answer strategy in words? What information would you need to know to complete your declaration of the design?</p></li>
+<li><p>Now download the paper and highlight in four colors the parts of the paper that contain the model, inquiry, data strategy, and answer strategy. For an example of what this should look like, see Chapter <a href="#Publication"><strong>??</strong></a>.</p></li>
+<li><p>Using the highlighted portions, fill in the missing details from part (a) and complete your declaration of the paper’s design in words. Are there still remaining details that you need to know to declare the design?</p></li>
+</ol>
+</div>
+<div id="question-2" class="section level2">
+<h2>
+<span class="header-section-number">4.2</span> Question 2<a class="anchor" aria-label="anchor" href="#question-2"><i class="fas fa-link"></i></a>
+</h2>
+<p>After reading Chapter <a href="primer.html#primer">3</a>, initialize the following design:</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">reveal_outcomes</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> </code></pre></div>
+<ol style="list-style-type: lower-alpha">
+<li><p>What is the value of the estimand, the ATE, for one run of the design? Use <code>draw_estimands(design)</code> to calculate.</p></li>
+<li><p>Draw data from the design using <code>draw_data(design)</code> and run a regression with <code>Y</code> as the outcome and <code>Z</code> and <code>X</code> as predictors. What is the estimated average treatment effect of <code>Z</code> on <code>Y</code> based on this regression?</p></li>
+<li><p>Add an estimator using that regression to the design, and link it to the ATE estimand using this code:</p></li>
+</ol>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
+<pre><code>## declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")</code></pre>
+<p>Diagnose the design by running <code>diagnose_design(design, sims = 500)</code>. What is the bias of the design? What is its statistical power?</p>
 
+</div>
 </div>
 
 
@@ -88,7 +125,11 @@
 <div class="next"><a href="declaration.html"><span class="header-section-number">5</span> Declaration</a></div>
 </div></main><div id="on-this-page-nav" class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#part-i-exercises"><span class="header-section-number">4</span> Part I Exercises</a></li></ul>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#part-i-exercises"><span class="header-section-number">4</span> Part I Exercises</a></li>
+<li><a class="nav-link" href="#question-1"><span class="header-section-number">4.1</span> Question 1</a></li>
+<li><a class="nav-link" href="#question-2"><span class="header-section-number">4.2</span> Question 2</a></li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">

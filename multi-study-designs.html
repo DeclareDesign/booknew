@@ -103,7 +103,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n3</span> <span class="op">&lt;-</span> <span class="fl">100</span>
@@ -157,9 +157,9 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <h3>
 <span class="header-section-number">18.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-22"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-334-1.svg" width="100%"></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-335-1.svg" width="100%"></div>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-336-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-337-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-338-1.svg" width="100%"></div>
 </div>
 <div id="takeaways-1" class="section level3">
 <h3>
@@ -170,7 +170,7 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulate design</span>
 <span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
 
@@ -379,7 +379,7 @@ accordingly. As the number of studies increases, so too does the probability
 of discordant results, and using the unanimity of signs to judge whether
 the theory is correct becomes increasingly unwise.</p></li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-344-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-346-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -425,7 +425,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 <!-- two kinds of populations, one in which the study type determines the subject types and you select on study type -->
 <!--   a second kind where study type determines study shock  -->
 <!--   in second type if you adjust for subject type then you will be able to unbiased recover global -->
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_site_design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     site <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -463,7 +463,7 @@ the theory is correct becomes increasingly unwise.</p></li>
 <span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">single_site_design</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
 
 <span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">multi_site_design</span>, n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_small_large</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
