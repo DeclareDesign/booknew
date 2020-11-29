@@ -34,4 +34,45 @@ b_sims <- 20
 
 <!-- You can use the global bib file via rmarkdown cites like this: @imai2008 -->
 
-To be written.
+To be completed.
+
+## Question 1
+
+Read the abstract of this paper:
+
+Becker, Sascha O., Irena Grosfeld, Pauline Grosjean, Nico Voigtländer, and Ekaterina Zhuravskaya. 2020. "Forced Migration and Human Capital: Evidence from Post-WWII Population Transfers." American Economic Review, 110 (5): 1430-63.
+
+> We study the long-run effects of forced migration on investment in education. After World War II, millions of Poles were forcibly uprooted from the Kresy territories of eastern Poland and resettled ( primarily) in the newly acquired Western Territories, from which the Germans were expelled. We combine historical censuses with newly collected survey data to show that, while there were no pre-WWII differences in educational attainment, Poles with a family history of forced migration are significantly more educated today than other Poles. These results are driven by a shift in preferences away from material possessions toward investment in human capital.
+
+a. From what you can tell on the basis of this abstract alone, what is the paper's model, inquiry, data strategy, and answer strategy in words? What information would you need to know to complete your declaration of the design?
+
+b. Now download the paper and highlight in four colors the parts of the paper that contain the model, inquiry, data strategy, and answer strategy. For an example of what this should look like, see Chapter \@ref(Publication).
+
+c. Using the highlighted portions, fill in the missing details from part (a) and complete your declaration of the paper's design in words. Are there still remaining details that you need to know to declare the design?
+
+## Question 2
+
+After reading Chapter \@ref(primer), initialize the following design:
+
+```{r}
+design <- 
+  declare_population(N = 100, X = rnorm(N), U = rnorm(N)) +
+  declare_potential_outcomes(Y ~ 0.25 * Z + X + U) + 
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_assignment(prob = 0.5) + 
+  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) 
+```
+
+a. What is the value of the estimand, the ATE, for one run of the design? Use `draw_estimands(design)` to calculate.
+
+b. Draw data from the design using `draw_data(design)` and run a regression with `Y` as the outcome and `Z` and `X` as predictors. What is the estimated average treatment effect of `Z` on `Y` based on this regression?
+
+c. Add an estimator using that regression to the design, and link it to the ATE estimand using this code:
+
+```{r}
+declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")
+```
+
+Diagnose the design by running `diagnose_design(design, sims = 500)`. What is the bias of the design? What is its statistical power?
+
+
