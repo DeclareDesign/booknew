@@ -398,7 +398,60 @@ declare_estimator(
 )
 ```
 
-#### Other design steps
+#### Two finer points: `model_summary` and `label_estimator`
+
+Many answer strategies use modeling functions like `lm`, `lm_robust`, or `glm`. The output from these modeling functions are typically very complicated `list` objects that contain large amounts of information about the modeling process. We typically only want a few summary pieces of information out of these model objects, like the coefficient estimates, standard errors, and confidence intervals. We use model summary functions passed to the `model_summary` argument of `declare_estimator` to do so. Model summary functions take models as inputs and return data frames as outputs.
+
+The default model summary function is `tidy`:
+
+```{r, eval = FALSE}
+declare_estimator(
+  Y ~ Z, model = lm_robust, model_summary = tidy
+)
+```
+
+You could also use `glance` to get model fit statistics like $R^2$.
+
+```{r, eval = FALSE}
+declare_estimator(
+  Y ~ Z, model = lm_robust, model_summary = glance
+)
+```
+
+Occasionally, you'll need to write your own model summary function that takes a model fit object and returns a data.frame with the information you need. For example, in order to calculate average marginal effects estimates from a logistic regression, we run a `glm` model through the `margins` function from the `margins` package; we then need to "tidy" the output from `margins` using the `tidy` function. Here we're also asking for a 95% confidence interval.
+
+```{r, eval = FALSE}
+tidy_margins <- function(x) {
+  tidy(margins(x, data = x$data), conf.int = TRUE)
+}
+
+declare_estimator(
+  Y ~ Z + X,
+  model = glm,
+  family = binomial("logit"),
+  model_summary = tidy_margins,
+  term = "Z"
+) 
+```
+
+If your answer strategy does not use a `model` function, you'll need to provide a function that takes `data` as an input and returns a `data.frame` with the estimate. Set the handler to be `label_estimator(your_function_name)` to take advantage of DeclareDesign's mechanism for matching estimands to estimators. When you use `label_estimator`, you can provide an estimand, and DeclareDesign will keep track of which estimates match each estimand. For example, to calculate the mean of an outcome, you could write your own estimator in this way:
+
+```{r}
+my_estimator <- function(data){
+  data.frame(estimate = mean(data$Y))
+}
+declare_estimator(handler = label_estimator(my_estimator), label = "mean", estimand = "Y_bar")
+```
+
+
+
+
+
+
+
+
+
+### Other design steps
 
 The main `declare_*` functions cover many elements of research designs, but not all. You can include any operations we haven't explicitly included as steps in your design too, using `declare_step`. Here, you must define a specific handler. Some handlers that may be useful are the `dplyr` verbs such as `mutate` and `summarize`, and the `fabricate` function from our `fabricatr` package.
 
