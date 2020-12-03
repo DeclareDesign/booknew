@@ -107,8 +107,7 @@
 <p>Social scientists use a number of tools for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. At the time of writing, Stata and R are commonly used platforms for academic work by social scientists. We wrote the companion software to the book, <code>DeclareDesign</code>, in the R statistical environment because of the availability of other useful tools in R and because it is free, open-source, and high-quality.</p>
 <p>To illustrate declaring a design in code, we declare a simplified version of the <span class="citation">Gulzar and Khan (<a href="references.html#ref-Gulzar2020" role="doc-biblioref">2020</a>)</span> study–we declare the complete design in Section <a href="declaration.html#p2gulzarkhanrevisited">5.1</a>.</p>
 <!-- # we should turn this into a picture labeling MIDA -->
-<p>In the model, we describe a hierarchical structure with
-100 villages, each of which is home to somewhere between 20 and 100 citizens. Each citizen harbors two potential outcomes, <code>Y_Z_0</code> and <code>Y_Z_1</code>. <code>Y_Z_0</code> is the citizen’s latent likelihood of standing for election if untreated; <code>Y_Z_1</code> is the latent probability if treated. Our simplified model includes a constant treatment effect of 0.025 units on the latent scale (2.5 percentage points) for all units.</p>
+<p>In the model, we describe a hierarchical structure with 192 villages each of which is home to 48 randomly sampled citizens who are eligible to run for elected office. Each citizen harbors three potential outcomes, <code>Y_Z_neutral</code>, <code>Y_Z_personal</code>, and <code>Y_Z_social</code>. <code>Y_Z_neutral</code> is the citizen’s latent probability of standing for election if treated with a neutral appeal; <code>Y_Z_personal</code> is the probability if treated with an appeal that emphasizes the personal returns to office, and <code>Y_Z_social</code> is the probability if treated with an appeal that underlines the benefits to the community . Our simplified model includes a constant treatment effect of 2 percentage points for the personal appeal and 3 percentage points for the social appeal.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
@@ -128,7 +127,7 @@
 <ul>
 <li>assignment: We randomly assign one third to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal.</li>
 <li>reveal outcomes: Subjects reveal outcomes (i.e., their probability of running for office) according to their randomly-assigned condition.</li>
-<li>measurement: We measure a binary outcome <code>Yobs</code> from the unobserved, latent variable <code>Y</code>: units that have a latent outcome above 0.95 have <code>Yobs</code> of 1 and 0 otherwise.</li>
+<li>measurement: We measure a binary outcome <code>Yobs</code> from the unobserved, latent variable <code>Y</code>: units that have a latent outcome above 0.97 have <code>Yobs</code> of 1 and 0 otherwise.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span>
