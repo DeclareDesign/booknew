@@ -563,7 +563,7 @@ g_estimation + g_hypothesis
 ```
 
 
-This line of code does it all in one.  We simulate the design 1000 times to calculate the diagnostic statistics, then we summarize them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage. `r flagit()`(CODE BELOW ONLY HAS BIAS AND POWER)
+This line of code does it all in one.  We simulate the design 1000 times to calculate the diagnostic statistics, then we summarize them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.
 
 ```{r, eval=FALSE}
 diagnosis <- 
@@ -571,7 +571,9 @@ diagnosis <-
     design, sims = 1000, 
     diagnosands = declare_diagnosands(
       bias = mean(estimate - estimand),
-      power = mean(p.value <= 0.05)
+      true_se = sd(estimate),
+      power = mean(p.value <= 0.05),
+      coverage = mean(estimand <= conf.high & estimand >= conf.low)
     )
   )
 ```
@@ -581,8 +583,10 @@ diagnosis <-
 ```{r, eval = do_diagnosis & !exists("do_bookdown"), echo=FALSE}
 diagnosis <- diagnose_design(design, sims = sims, 
                              diagnosands = declare_diagnosands(
-  bias = mean(estimate - estimand),
-  power = mean(p.value <= 0.05)
+      bias = mean(estimate - estimand),
+      true_se = sd(estimate),
+      power = mean(p.value <= 0.05),
+      coverage = mean(estimand <= conf.high & estimand >= conf.low)
 ))
 ```
 
@@ -591,16 +595,20 @@ diagnosis <- diagnose_design(design, sims = sims,
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("diagnosis"), "/diagnosis.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis, path = rds_file_path)
+  write_rds(diagnosis, file = rds_file_path)
 }
 diagnosis <- read_rds(rds_file_path)
 ```
 
 ```{r estimateddiagnosands, echo=FALSE}
-diagnosis$diagnosands_df %>% 
-transmute(bias = make_se_entry(bias, `se(bias)`), 
-power = make_se_entry(power, `se(power)`)) %>% 
-kable(digits = 3, caption = "Diagnosand estimates with bootstrapped standard errors.", booktabs = TRUE)
+diagnosis$diagnosands_df %>%
+  transmute(bias = make_se_entry(bias, `se(bias)`),
+            `true se` = make_se_entry(true_se, `se(true_se)`),
+            power = make_se_entry(power, `se(power)`),
+            coverage = make_se_entry(coverage, `se(coverage)`)) %>%
+  kable(digits = 3,
+        caption = "Diagnosand estimates with bootstrapped standard errors.",
+        booktabs = TRUE)
 ```
 
 <!-- ## Interactive element -->
