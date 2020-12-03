@@ -454,7 +454,9 @@ g_estimation + g_hypothesis
 ##     design, sims = 1000,
 ##     diagnosands = declare_diagnosands(
 ##       bias = mean(estimate - estimand),
-##       power = mean(p.value <= 0.05)
+##       true_se = sd(estimate),
+##       power = mean(p.value <= 0.05),
+##       coverage = mean(estimand <= conf.high & estimand >= conf.low)
 ##     )
 ##   )
 
@@ -462,10 +464,14 @@ g_estimation + g_hypothesis
 
 
 
-diagnosis$diagnosands_df %>% 
-transmute(bias = make_se_entry(bias, `se(bias)`), 
-power = make_se_entry(power, `se(power)`)) %>% 
-kable(digits = 3, caption = "Diagnosand estimates with bootstrapped standard errors.", booktabs = TRUE)
+diagnosis$diagnosands_df %>%
+  transmute(bias = make_se_entry(bias, `se(bias)`),
+            `true se` = make_se_entry(true_se, `se(true_se)`),
+            power = make_se_entry(power, `se(power)`),
+            coverage = make_se_entry(coverage, `se(coverage)`)) %>%
+  kable(digits = 3,
+        caption = "Diagnosand estimates with bootstrapped standard errors.",
+        booktabs = TRUE)
 
 n <- 50
 

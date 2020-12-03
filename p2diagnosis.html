@@ -202,14 +202,16 @@ Figure 10.2: Visualization of one draw from a design diagnosis.
 Figure 10.3: Visualization of ten draws from a design diagnosis.
 </p>
 </div>
-<p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnostic statistics, then we summarize them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage. (CODE BELOW ONLY HAS BIAS AND POWER)</p>
+<p>This line of code does it all in one. We simulate the design 1000 times to calculate the diagnostic statistics, then we summarize them in terms of bias, the true standard error (the standard deviation of the sampling distribution), RMSE, power, and coverage.</p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> 
   <span class="fu">diagnose_design</span><span class="op">(</span>
     <span class="va">design</span>, sims <span class="op">=</span> <span class="fl">1000</span>, 
     diagnosands <span class="op">=</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
       bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
-      power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>
+      true_se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span>,
+      power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>,
+      coverage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimand</span> <span class="op">&lt;=</span> <span class="va">conf.high</span> <span class="op">&amp;</span> <span class="va">estimand</span> <span class="op">&gt;=</span> <span class="va">conf.low</span><span class="op">)</span>
     <span class="op">)</span>
   <span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
@@ -221,7 +223,13 @@ Figure 10.3: Visualization of ten draws from a design diagnosis.
 bias
 </th>
 <th style="text-align:left;">
+true se
+</th>
+<th style="text-align:left;">
 power
+</th>
+<th style="text-align:left;">
+coverage
 </th>
 </tr></thead>
 <tbody><tr>
@@ -229,7 +237,13 @@ power
 0.01 (0.01)
 </td>
 <td style="text-align:left;">
+0.09 (0.01)
+</td>
+<td style="text-align:left;">
 0.20 (0.04)
+</td>
+<td style="text-align:left;">
+0.94 (0.02)
 </td>
 </tr></tbody>
 </table></div>
