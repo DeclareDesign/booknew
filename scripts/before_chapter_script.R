@@ -16,7 +16,7 @@ source("scripts/custom_scripts.R")
 source("scripts/make_dag_df.R")
 
 # FLAGS
-show_flags <- TRUE
+show_flags <- FALSE
 source("scripts/flagit.R")
 
 theme_set(dd_theme())
