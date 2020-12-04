@@ -45,6 +45,14 @@ library(car)
 We imagine a benchamrk model that is consistent with an economic model of bargaining between pairs of players.
 The model is taken from Wilke and Humphreys (2020). 
 
+Wilke and Humphreys (2020) imagine a bargaining game with payoffs to $i$ given by:
+
+$$\pi_i =  \theta_i(z_i\omega + (1-z_i)(1-\omega)) + (1-\theta_i)\phi + u_3$$
+
+Here  $\omega = \sum_{j = 2}^n(-1^{j})\delta^{j-1}$ is the equilibrium offer made by the first movee as predicted by the @rubinstein1982perfect alternating offers bargaining model with $n$ possible bargaining rounds.  $\delta$ is the discount factor. The  customer's payoff  depends on whether she goes first ($z_i = 1$) or second ($z_i = 0$). Non-rational customers ($\theta_i = 0$) insist on giving the driver some share $\phi$ of their endowment, irrespective of whether they go first or second. The last term, $u_3$, is a random disturbance.
+
+
+
 ### Design
 
 We make use of a maximum likelihood estimator that takes the model form and identifies which parmater values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). 
@@ -81,8 +89,7 @@ structural_estimator <- function(data,
   # Format output from estimation
   out <- data.frame(coef(summary(M)), outcome = Y)
   
-  names(out) <- c("estimate", "std.error", "statistic",
-                  "p.value", "outcome")
+  names(out) <- c("estimate", "std.error", "statistic", "p.value", "outcome")
   
   # Use estimates of q and delta to predict average treatment effects (ATEs)
   
