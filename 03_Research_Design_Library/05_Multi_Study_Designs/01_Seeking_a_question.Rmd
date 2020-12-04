@@ -1,0 +1,178 @@
+---
+title: "Locating the question"
+output: html_document
+bibliography: ../../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+```
+
+<!-- start post here, do not edit above -->
+
+<!-- make sure to rename the section title below -->
+
+```{r multi_site_studies, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 1000
+b_sims <- 1000
+```
+
+```{r, echo = FALSE}
+library(metafor)
+library(car)
+```
+
+## Discovery
+
+Imagine a study in which a researcher is interested not just in figuring out the effects of an intervention but also in what accounts for variation in effects. They have *candidate* estimands but the decision whether to promote these candidates to study estimands depends on data patterns that are found along the way. This kind of problem is akin to the common problem of selecting predictors or selecting controls.
+
+We define a design of this form with just a single candidate for simplicity. The design lets us assess the risks and benefits of different answer strategies given the endogeneous choice of estimand.
+
+### Design Declaration
+
+- **M**odel: The population consists of two groups (men and women, for instance). The conditional average treatment effect is possibly larger in one group than another. This group is the candidate variable for forming an heterogeneous effects estimand.
+
+- **I**nquiry: The main purpose of the experiment is to estimate the overall Average Treatment Effect. Here, though, we consider the secondary, heterogeneous effects analysis that many researchers conduct after examining the ATE, in which they seek to assess whether effects are larger for one group than for another. This potentially becomes a second question of interest, resulting from discovery.
+
+- **D**ata strategy: We allocate treatment using complete random assignment. 
+
+- **A**nswer strategy: Using a random half of the data (the test set), we test for an interaction of treatment with group membership. If we find a significant interaction at the $p \leq 0.05$ level, we declare the interaction as a new estimand and estimate the size of the interaction in the test data  set. 
+
+We also include, for comparison, an analysis that reports the interaction estimated using the full data **whenever that interaction is significant**. 
+
+### Declaration
+
+The declaration makes use of two conditional estimators.
+
+```{r}
+
+# An estimator that estimates on testing data only if 
+# estimates on training data were significant
+
+new_estimator <- function(data){
+    with(data, data.frame(
+      estimate = ifelse(train_p[1] <= .05, 
+                        coef(lm(Y ~ Z*X, subset = !train))[4], 
+                        NA),
+      p.value = ifelse(train_p[1] <= .05, 
+                       coef(summary(lm(Y ~ Z * X, subset = !train)))[4,4],
+                       NA),
+      term = "Z:X",
+      stringsAsFactors = FALSE))}
+
+# An estimator that estimates on all data only if 
+# estimates on training data were significant
+
+comparison_estimator <- function(data){
+  with(data, data.frame(
+    estimate = ifelse(all_p[1] < .05, coef(lm(Y ~ Z*X))[4], NA),
+    p.value = ifelse(all_p[1] < .05, all_p[1], NA),
+    term = "Z:X",
+    stringsAsFactors = FALSE))}
+```
+
+We now declare the design:
+
+```{r}
+# The design
+
+discovery <- 
+  
+  declare_population(
+    N = 200, 
+    X = sample(1:N %% 2)==1,
+    het_effect = sample(c(0,.5),1,TRUE),
+    train = sample(1:N %% 2)==1,
+    u = rnorm(N)) +
+  
+  declare_potential_outcomes(Y ~ Z + het_effect * Z * X + u) + 
+    declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+    declare_assignment() +
+    reveal_outcomes() +
+    
+  # Main analysis
+  declare_estimator(Y ~ Z, estimand = "ATE", label = "Main") +
+  
+  # Exploration
+  declare_step(
+      train_p = (lm_robust(Y ~ Z * X, subset = train) %>% tidy())[4,4],
+      all_p   = (lm_robust(Y ~ Z * X) %>% tidy())[4,4],
+      handler = fabricate) +
+    
+  declare_estimand(
+    het = mean(Y_Z_1[X] - Y_Z_0[X]) - mean(Y_Z_1[!X] - Y_Z_0[!X])) +
+  
+  # Handler estimates only if p low in training group  
+  declare_estimator(
+    handler = tidy_estimator(new_estimator), 
+    estimand = "het",
+    label = "Discovery") +
+    
+  declare_estimator(
+    handler = tidy_estimator(comparison_estimator), 
+    estimand = "het",
+    label = "Comparison")
+```
+
+We include  diagnosands that take account of the fact that some runs of the designs to not produce estimates for thenew estimand.
+
+```{r}
+discovery <- set_diagnosands(discovery, declare_diagnosands(
+  bias = mean((estimate - estimand), na.rm = TRUE),
+  RMSE = sqrt(mean((estimate - estimand)^2, na.rm = TRUE)),
+  frequency = mean(!is.na(estimate)),
+  false_pos = mean(p.value[estimand == 0] < 0.05, na.rm = TRUE),
+  false_neg = 1 - mean(p.value[estimand != 0] < 0.05, na.rm = TRUE),
+  keep_defaults = FALSE))
+
+```
+
+### Diagnosis
+
+
+
+```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
+diagnosis <- diagnose_design(discovery, sims = sims, bootstrap_sims = b_sims) 
+```
+
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("discovery"), "/discovery1.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, path = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+```{r discoverydiagnosis, echo = FALSE}
+diagnosis %>%
+  reshape_diagnosis() %>%
+  kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
+```
+
+
+
+```{r, echo = FALSE, include = FALSE}
+kable(reshape_diagnosis(diagnosis)[c("Estimator Label","Term","Bias","RMSE","Frequency","False Pos","False Neg")])
+```
+
+We see that the principled discovery method, using training and testing data, provides essentially unbiased estimates of the heterogeneous effect, when it is estimated. The comparison method tends to provide biased estimates, because conditioning on statistical significance tends to exaggerate effect sizes (@Gelman2014b). 
+
+The consequences of the two approaches for false discovery rates are stark. If the true effect is 0, the probability of falsely rejecting the null of 0 (conditional on reporting) is 1 under the comparison method: by definition, only significant estimates are kept. Similarly, since the only estimates generated by this procedure are statistically significant, the false negative rate (conditional on reporting) is 0: the estimand is declared and the analysis conducted only when estimates are guaranteed to be significant. The principled discovery method exhibits conventional rates for falsely rejecting a true null (0.05) though it it fails to reject the null quite often, due to weak power.
+
+The protection from bias from the principled discovery strategy declared here does not necessarily translate into improved inferences on average, because of a bias-variance tradeoff inherent in the approach. Less data is used in the final test when adopting a principled discovery approach, and so on average the estimates are much noisier than under the unprincipled comparison. 
+
+Moreover the principled strategy is somewhat less likely to produce a result at all since it is less likely that a result would be discovered in a subset of the data than in the entire data set.   
+
+With this design, one can assess what an optimal division of units into training and testing data might be given different hypothesized effect sizes. 
+
