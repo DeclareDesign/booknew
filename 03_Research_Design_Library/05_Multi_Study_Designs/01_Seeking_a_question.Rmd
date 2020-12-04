@@ -131,8 +131,7 @@ discovery <- set_diagnosands(discovery, declare_diagnosands(
   RMSE = sqrt(mean((estimate - estimand)^2, na.rm = TRUE)),
   frequency = mean(!is.na(estimate)),
   false_pos = mean(p.value[estimand == 0] < 0.05, na.rm = TRUE),
-  false_neg = 1 - mean(p.value[estimand != 0] < 0.05, na.rm = TRUE),
-  keep_defaults = FALSE))
+  false_neg = 1 - mean(p.value[estimand != 0] < 0.05, na.rm = TRUE)))
 
 ```
 
@@ -156,7 +155,7 @@ diagnosis <- read_rds(rds_file_path)
 
 ```{r discoverydiagnosis, echo = FALSE}
 diagnosis %>%
-  reshape_diagnosis() %>%
+  reshape_diagnosis() %>% select(-Term, - 'N Sims') %>%
   kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
 ```
 

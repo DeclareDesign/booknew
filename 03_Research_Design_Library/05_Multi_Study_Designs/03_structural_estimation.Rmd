@@ -41,42 +41,44 @@ library(car)
 
 ## Structural estimation
 
+Structural estimation is used in situations where researchers have a general model in mind for how processes work and their goal is fit the parameters of the model. With the fitted model they might then estimate levels of unobserved variables, treatment effects, or other quantities. They might even extrapolate to estimate counterfactual quantities, such as the effects of interventions that have not been implemented [@reiss2007structural]. 
 
-We imagine a benchamrk model that is consistent with an economic model of bargaining between pairs of players.
-The model is taken from Wilke and Humphreys (2020). 
+We illustrate using an example of a model of bargaining between pairs of players, drawing on an example use in  @wilke2020field. 
 
-Wilke and Humphreys (2020) imagine a bargaining game with payoffs to $i$ given by:
+@wilke2020field imagine a bargaining game with payments from customer $i$ to a taxi driver given by:
 
-$$\pi_i =  \theta_i(z_i\omega + (1-z_i)(1-\omega)) + (1-\theta_i)\phi + u_3$$
+$$\pi_i =  \theta_i(z_iy + (1-z_i)(1-y)) + (1-\theta_i)\chi$$
 
-Here  $\omega = \sum_{j = 2}^n(-1^{j})\delta^{j-1}$ is the equilibrium offer made by the first movee as predicted by the @rubinstein1982perfect alternating offers bargaining model with $n$ possible bargaining rounds.  $\delta$ is the discount factor. The  customer's payoff  depends on whether she goes first ($z_i = 1$) or second ($z_i = 0$). Non-rational customers ($\theta_i = 0$) insist on giving the driver some share $\phi$ of their endowment, irrespective of whether they go first or second. The last term, $u_3$, is a random disturbance.
+Here  $y = \sum_{j = 2}^n(-1^{j})\delta^{j-1}$ is the equilibrium offer made by the first mover as predicted by the @rubinstein1982perfect alternating offers bargaining model with $n$ possible bargaining rounds.  $\delta$ is the discount factor. The  customer's payoff  depends on whether she goes first ($z_i = 1$) or second ($z_i = 0$). Non-rational customers ($\theta_i = 0$) insist on giving the driver some share $\chi$ of their endowment, irrespective of whether they go first or second. We let $q$ denote the probability that $\chi = 1$.
 
+To allow for a disturbance we assume that *measured* payments are a draw from a Beta distribution with expectation given by the expected payment and variance parameterized by $\kappa$. 
 
+We imagine that $Z$ is randomly assigned and we have access to data on payments, $\pi$. Our goal however is not simply to measure the effect of $Z$ on $\pi$ but to estimate the model parameters which themselves can be used to estimate this effect and other counterfactual quantities.
 
 ### Design
 
-We make use of a maximum likelihood estimator that takes the model form and identifies which parmater values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). 
+-  **M**odel. In this declaration we will assume that the data is indeed produced by a process similar to that assumed at the estimation stage. 
+
+- **I**nquiries. Our inquiries will include parameters `k`, `d`, and `q` corresponding to $\kappa$, $\delta$ and $q$ in the model (we will treat $\chi$ as known). In addition we will be interested in the effect of $Z$ in a two period game and in the game of indefinite duration.  
+
+- **D**ata. First mover position, $Z$, is randomly assigned. Payments are measured with some error (in this model however we cannot distinguish between measurement error and decision making error). We imagine that we have access to data from games with $n=2$ and games with $n=\infty$ in order to compare the performance of estimators in both conditions.
+
+- **A**nalysis is implemented using maximum likelihood to identify which parameter values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). In this declaration the model employed in **A** is the same as that employed in **M**. We will report analysis results implemented both using the $n=2$ data (`DIM_two, Struc_two`) and using $n=\infty$ data (`DIM_inf, Struc_inf`) 
+
+The most complex part of the design is the specification of the estimator, shown next:
 
 ```{r}
-structural_estimator <- function(data,
-                                 Y = "Y_2_obs",
-                                 # function to calculate
-                                 # predicted price for rational
-                                 # customers given z_i and delta,
-                                 # defaults to n=2:
-                                 y = function(Z, d)
-                                   Z * d + (1 - Z) * (1 - d))
-  
-{
-  # Define negative log likelihood as a function of kappa, delta and q
-  LL  <- function(k, d, q) {
-    m <- with(data, y(Z, d))
-    R <- q * dbeta(data[Y][[1]], k * 3 / 4, k * 1 / 4) +
-      (1 - q) * dbeta(data[Y][[1]], k * m, k * (1 - m))
-    - sum(log(R))
+
+structural_estimator <- function(data, pi, y, chi = 3/4){
     
-  }
-  
+    # Define negative log likelihood as a function of k, d and q
+    LL  <- function(k, d, q) {
+      m <- with(data, y(Z, d))
+      R <- q * dbeta(data[pi][[1]], k * chi, k * (1- chi)) +
+        (1 - q) * dbeta(data[pi][[1]], k * m, k * (1 - m))
+      - sum(log(R))
+    }
+
   # Estimation
   M <- mle2(
     LL,
@@ -87,13 +89,11 @@ structural_estimator <- function(data,
   )
   
   # Format output from estimation
-  out <- data.frame(coef(summary(M)), outcome = Y)
+  out <- data.frame(coef(summary(M)), outcome = pi)
   
   names(out) <- c("estimate", "std.error", "statistic", "p.value", "outcome")
   
   # Use estimates of q and delta to predict average treatment effects (ATEs)
-  
- 
   # Predicted ATE for n=2
   out[4, 1] <- (1 - out["q", "estimate"]) * (2 * out["d", "estimate"] - 1)
   
@@ -107,80 +107,71 @@ structural_estimator <- function(data,
 
 The design makes use of this estimator to estimate parameter values as well as treatment effects. It is accompanied by a simpler difference in means estimator of treatment effects.
 
+An attraction of structural estimation is that, with a fitted model, one can generate estimates of effects of treatments that have not been implemented. In this case the 
+same parameters that describe the equilibrium outcomes in a two round game are sufficient to describe outcomes in the infinitely repeated game. SO if you understand the effects of a treatment in one case you understand it in the other. At least if the model is correct.  In the design below these distinct estimates are generated. 
+
+
 ```{r}
 # Declare the design ----------------------------------------------------------
 
 # Define parameter values:
-
-N = 500       # Sample size
 d = 0.8       # True delta (unknown)
-k = 6         # Nuisance parameter that affects variance (unknown)
+k = 6         # Parameter to governance variance (unknown)
 q = 0.5       # Share of behavioral types in the population (unknown)
-e = 3/4       # Price paid by behavioral customers (known)
-random = TRUE # Switch to control whether 
-# first movers are randomly assigned
+chi = 0.75    # Price paid by norm following ("behavioral" customers) (known)
 
 # Design declaration:
 
 design <- 
   
-  # Define the population 
-  declare_population(N = N, 
-                     # indicator for behavioral type (norm = 1)
-                     norm = rbinom(N, 1, q), 
-                     # probablity of going first without random assignment
-                     p = ifelse(norm == 1, .8, .5) 
-  ) +
+  # Define the population: indicator for behavioral type (norm = 1)
+  declare_population(N = 500, norm = rbinom(N, 1, q)) +
   
   # Define mean potential outcomes for n = 2 
-  declare_potential_outcomes(Y_2 ~ norm*e + (1-norm)*(Z*d + (1-Z)*(1-d))) +
+  declare_potential_outcomes(
+    pi_two ~ norm*chi + (1-norm)*(Z*d + (1-Z)*(1-d))) +
   
   # Define mean potential outcomes for n = infinity
-  declare_potential_outcomes(Y_inf ~ norm*e + 
-                               (1-norm)*(Z*d/(1+d) +
-                                           (1-Z)*(1-d/(1+d)))) +
+  declare_potential_outcomes(
+    pi_inf ~ norm*chi + (1-norm)*(Z*d/(1+d) + (1-Z)*(1-d/(1+d)))) +
   
   # Define estimands (quantities we want to estimate)
-  declare_estimand(ATE_2 = mean(Y_2_Z_1 - Y_2_Z_0),       # ATE n = 2
-                   ATE_inf = mean(Y_inf_Z_1 - Y_inf_Z_0), # ATE n = infinity
-                   k = k,                                 # kappa
-                   d = d,                                 # delta
-                   q = q) +                               # q
+  declare_estimand(ATE_two = mean(pi_two_Z_1 - pi_two_Z_0), # ATE n = 2
+                   ATE_inf = mean(pi_inf_Z_1 - pi_inf_Z_0), # ATE n = infinity
+                   k = k,                                   # kappa
+                   d = d,                                   # delta
+                   q = q) +                                 # q
 
-  # Declare assignment process (random assignment if random = TRUE)
-  declare_assignment(prob_unit = if(random) rep(0.5, N) else p, simple = TRUE) +
+  # Declare assignment process 
+  declare_assignment() +
   
   # Declare revealed potential outcomes
-  declare_reveal(Y_2,   Z) +
-  declare_reveal(Y_inf, Z) +
+  reveal_outcomes(pi_two, Z) + reveal_outcomes(pi_inf, Z) +
   
   # Get draws from beta distribution given means for n = 2 and n = infinity
-  declare_step(fabricate, Y_2_obs   = rbeta(N, Y_2*k, (1-Y_2)*k),      
-               Y_inf_obs = rbeta(N, Y_inf*k, (1-Y_inf)*k)
-  ) +
+  declare_measurement(
+    pi_two_obs = rbeta(N, pi_two*k, (1-pi_two)*k),      
+    pi_inf_obs = rbeta(N, pi_inf*k, (1-pi_inf)*k)) +
   
   # Declare estimators
-  
   # Difference-in-means for n = 2
-  declare_estimator(Y_2_obs ~ Z, 
-                    estimand = "ATE_2", 
-                    label = "DIM_2") +
+  declare_estimator(pi_two_obs ~ Z, estimand = "ATE_two", label = "DIM_two") +
   
   # Difference-in-means for n = infinity
-  declare_estimator(Y_inf_obs ~ Z, 
-                    estimand = "ATE_inf", 
-                    label = "DIM_inf") +
+  declare_estimator(pi_inf_obs ~ Z, estimand = "ATE_inf", label = "DIM_inf") +
   
   # MLE for n = 2
   declare_estimator(handler = tidy_estimator(structural_estimator), 
-                    estimand = c("k","d", "q", "ATE_2", "ATE_inf"), 
-                    label = "Struc_2") +
+                    pi = "pi_two_obs", 
+                    y = function(Z, d) Z * d + (1 - Z) * (1 - d), 
+                    estimand = c("k","d", "q", "ATE_two", "ATE_inf"), 
+                    label = "Struc_two") +
   
   # MLE for n = infinity
   declare_estimator(handler = tidy_estimator(structural_estimator),
-                    Y = "Y_inf_obs", 
+                    pi = "pi_inf_obs", 
                     y = function(Z, d) Z*d/(1+d) +  (1-Z)*(1-d/(1+d)),
-                    estimand = c("k","d","q","ATE_2", "ATE_inf"), 
+                    estimand = c("k","d","q","ATE_two", "ATE_inf"), 
                     label = "Struc_inf") 
 ```
 
@@ -199,6 +190,7 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
+Now for the diagnosis. 
 ```{r structuraldiagnosis, echo = FALSE}
 diagnosis %>%
   reshape_diagnosis() %>%
@@ -206,3 +198,9 @@ diagnosis %>%
   kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
 ```
 
+We see here that we do a good job in recovering parameter values and we also recover treatment effects. When using two period data the estimate for the `ATE_two` is as good when estimated using the structural and design based approaches. In the case with data from $n=\infty$ games however the estimate from the structural model is less precise, though unbiased. In contrast we have no estimate using design based methods for this estimand. Finally, $\delta$, we see, is better estimated using data from the 2 period games; the estimate for $\kappa$ is biased though the bias is small.
+
+
+### Exercises
+
+- Declare and diagnose a version of this design where the benchmark model is different to the analysis model. How do you define parameter estimands in this case?
