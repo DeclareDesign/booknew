@@ -49,21 +49,21 @@ We illustrate using an example of a model of bargaining between pairs of players
 
 $$\pi_i =  \theta_i(z_iy + (1-z_i)(1-y)) + (1-\theta_i)\chi$$
 
-Here  $y = \sum_{j = 2}^n(-1^{j})\delta^{j-1}$ is the equilibrium offer made by the first mover as predicted by the @rubinstein1982perfect alternating offers bargaining model with $n$ possible bargaining rounds.  $\delta$ is the discount factor. The  customer's payoff  depends on whether she goes first ($z_i = 1$) or second ($z_i = 0$). Non-rational customers ($\theta_i = 0$) insist on giving the driver some share $\chi$ of their endowment, irrespective of whether they go first or second. We let $q$ denote the probability that $\chi = 1$.
+Here  $y = \sum_{j = 2}^n(-1^{j})\delta^{j-1}$ is the equilibrium offer made by the first mover as predicted by the @rubinstein1982perfect alternating offers bargaining model with $n$ possible bargaining rounds given discount factor  $\delta$. The  customer's payoff  depends on whether she goes first ($z_i = 1$) or second ($z_i = 0$). Non-rational customers ($\theta_i = 0$) do not engage in bargaining but successfully invoke a norm, insisting on giving the driver some share $\chi$ of their endowment, irrespective of whether they go first or second. We let $q$ denote the probability that $\theta = 1$.
 
 To allow for a disturbance we assume that *measured* payments are a draw from a Beta distribution with expectation given by the expected payment and variance parameterized by $\kappa$. 
 
-We imagine that $Z$ is randomly assigned and we have access to data on payments, $\pi$. Our goal however is not simply to measure the effect of $Z$ on $\pi$ but to estimate the model parameters which themselves can be used to estimate this effect and other counterfactual quantities.
+We imagine that $Z$ is randomly assigned and we have access to data on payments, $\pi$. We will also assume we know price $\chi$. Our goal however is not simply to measure the effect of $Z$ on $\pi$ but to estimate the model parameters, $q$,  $\delta$, $\kappa$, which themselves can be used to estimate this effect and other counterfactual quantities (if we assume the model is true).
 
 ### Design
 
 -  **M**odel. In this declaration we will assume that the data is indeed produced by a process similar to that assumed at the estimation stage. 
 
-- **I**nquiries. Our inquiries will include parameters `k`, `d`, and `q` corresponding to $\kappa$, $\delta$ and $q$ in the model (we will treat $\chi$ as known). In addition we will be interested in the effect of $Z$ in a two period game and in the game of indefinite duration.  
+- **I**nquiries. Our inquiries will include parameters `k`, `d`, and `q` corresponding to $\kappa$, $\delta$ and $q$ in the model (we will treat $\chi$ as known). In addition we will be interested in the effect of $Z$ on payments in a two period game and in the game of indefinite duration.   
 
 - **D**ata. First mover position, $Z$, is randomly assigned. Payments are measured with some error (in this model however we cannot distinguish between measurement error and decision making error). We imagine that we have access to data from games with $n=2$ and games with $n=\infty$ in order to compare the performance of estimators in both conditions.
 
-- **A**nalysis is implemented using maximum likelihood to identify which parameter values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). In this declaration the model employed in **A** is the same as that employed in **M**. We will report analysis results implemented both using the $n=2$ data (`DIM_two, Struc_two`) and using $n=\infty$ data (`DIM_inf, Struc_inf`) 
+- **A**nalysis is implemented using maximum likelihood to identify which parameter values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). In this declaration the model employed in **A** is the same as that employed in **M**. We will report analysis results from both differences in means and structural estimation generated both from using the $n=2$ data (`DIM_two, Struc_two`) and from using $n=\infty$ data (`DIM_inf, Struc_inf`) 
 
 The most complex part of the design is the specification of the estimator, shown next:
 
@@ -108,7 +108,7 @@ structural_estimator <- function(data, pi, y, chi = 3/4){
 The design makes use of this estimator to estimate parameter values as well as treatment effects. It is accompanied by a simpler difference in means estimator of treatment effects.
 
 An attraction of structural estimation is that, with a fitted model, one can generate estimates of effects of treatments that have not been implemented. In this case the 
-same parameters that describe the equilibrium outcomes in a two round game are sufficient to describe outcomes in the infinitely repeated game. SO if you understand the effects of a treatment in one case you understand it in the other. At least if the model is correct.  In the design below these distinct estimates are generated. 
+same parameters that describe the equilibrium outcomes in a two round game are sufficient to describe outcomes in the infinitely repeated game. So if you understand the effects of a treatment in one case you understand it in the other. At least if the model is correct.  In the design below we generate such estimates for the effects of unimplemented treatments. 
 
 
 ```{r}
