@@ -85,18 +85,18 @@
 <span class="header-section-number">18.1</span> Discovery<a class="anchor" aria-label="anchor" href="#discovery"><i class="fas fa-link"></i></a>
 </h2>
 <p>Imagine a study in which a researcher is interested not just in figuring out the effects of an intervention but also in what accounts for variation in effects. They have <em>candidate</em> estimands but the decision whether to promote these candidates to study estimands depends on data patterns that are found along the way. This kind of problem is akin to the common problem of selecting predictors or selecting controls.</p>
-<p>We define a design of this form with just a single candidate for simplicity. The design lets us assess the risks and benefits of different answer strategies given the endogeneous choice of estimand.</p>
+<p>For simplicity we define a design of this form with just a single candidate. The design lets us assess the risks and benefits of different answer strategies given the endogenous choice of estimand.</p>
 <div id="design-declaration" class="section level3">
 <h3>
 <span class="header-section-number">18.1.1</span> Design Declaration<a class="anchor" aria-label="anchor" href="#design-declaration"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li><p><strong>M</strong>odel: The population consists of two groups (men and women, for instance). The conditional average treatment effect is possibly larger in one group than another. This group is the candidate variable for forming an heterogeneous effects estimand.</p></li>
-<li><p><strong>I</strong>nquiry: The main purpose of the experiment is to estimate the overall Average Treatment Effect. Here, though, we consider the secondary, heterogeneous effects analysis that many researchers conduct after examining the ATE, in which they seek to assess whether effects are larger for one group than for another. This potentially becomes a second question of interest, resulting from discovery.</p></li>
+<li><p><strong>I</strong>nquiry: The main purpose of the experiment is to estimate the overall Average Treatment Effect. Here, though, we consider the secondary, heterogeneous effects analysis that many researchers conduct after examining the ATE, in which they seek to assess whether effects are larger for one group than for another. This potentially becomes a second question of interest, depending on a discovery process.</p></li>
 <li><p><strong>D</strong>ata strategy: We allocate treatment using complete random assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using a random half of the data (the test set), we test for an interaction of treatment with group membership. If we find a significant interaction at the <span class="math inline">\(p \leq 0.05\)</span> level, we declare the interaction as a new estimand and estimate the size of the interaction in the test data set.</p></li>
 </ul>
-<p>We also include, for comparison, an analysis that reports the interaction estimated using the full data <strong>whenever that interaction is significant</strong>.</p>
+<p>We also include, for comparison, a “naive” analysis that reports the interaction estimated using the full data whenever that interaction is significant.</p>
 </div>
 <div id="declaration-22" class="section level3">
 <h3>
@@ -118,8 +118,7 @@
       term <span class="op">=</span> <span class="st">"Z:X"</span>,
       stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
 
-<span class="co"># An estimator that estimates on all data only if </span>
-<span class="co"># estimates on training data were significant</span>
+<span class="co"># An estimator that estimates on all data only if estimates are significant</span>
 
 <span class="va">comparison_estimator</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
@@ -167,7 +166,7 @@
     handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">comparison_estimator</span><span class="op">)</span>, 
     estimand <span class="op">=</span> <span class="st">"het"</span>,
     label <span class="op">=</span> <span class="st">"Comparison"</span><span class="op">)</span></code></pre></div>
-<p>We include diagnosands that take account of the fact that some runs of the designs to not produce estimates for thenew estimand.</p>
+<p>We include diagnosands that take account of the fact that some runs of the designs do not produce estimates for the new estimand.</p>
 <div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">discovery</span> <span class="op">&lt;-</span> <span class="fu">set_diagnosands</span><span class="op">(</span><span class="va">discovery</span>, <span class="fu">declare_diagnosands</span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
@@ -383,23 +382,23 @@ Discovery
 </table></div>
 <p>We see that the principled discovery method, using training and testing data, provides essentially unbiased estimates of the heterogeneous effect, when it is estimated. The comparison method tends to provide biased estimates, because conditioning on statistical significance tends to exaggerate effect sizes (<span class="citation">Gelman and Carlin (<a href="references.html#ref-Gelman2014b" role="doc-biblioref">2014</a>)</span>).</p>
 <p>The consequences of the two approaches for false discovery rates are stark. If the true effect is 0, the probability of falsely rejecting the null of 0 (conditional on reporting) is 1 under the comparison method: by definition, only significant estimates are kept. Similarly, since the only estimates generated by this procedure are statistically significant, the false negative rate (conditional on reporting) is 0: the estimand is declared and the analysis conducted only when estimates are guaranteed to be significant. The principled discovery method exhibits conventional rates for falsely rejecting a true null (0.05) though it it fails to reject the null quite often, due to weak power.</p>
-<p>The protection from bias from the principled discovery strategy declared here does not necessarily translate into improved inferences on average, because of a bias-variance tradeoff inherent in the approach. Less data is used in the final test when adopting a principled discovery approach, and so on average the estimates are much noisier than under the unprincipled comparison.</p>
-<p>Moreover the principled strategy is somewhat less likely to produce a result at all since it is less likely that a result would be discovered in a subset of the data than in the entire data set.</p>
-<p>With this design, one can assess what an optimal division of units into training and testing data might be given different hypothesized effect sizes.</p>
+<p>Strikingly we see in this example that the protection from bias from the principled discovery strategy declared here does not necessarily translate into improved inferences on average (as measured by the MSE), because of a bias-variance tradeoff inherent in the approach. Less data is used in the final test when adopting a principled discovery approach, and so on average the estimates are much noisier than under the unprincipled comparison.</p>
+<p>Moreover the principled strategy is somewhat less likely to produce a result <em>at all</em> since it is less likely that a result would be discovered in a subset of the data than in the entire data set.</p>
+<p>Reanalysis of this design can be used to assess what an optimal division of units into training and testing data might be given different hypothesized effect sizes.</p>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
 <!-- make sure to rename the section title below -->
 <pre><code>## 
 ## The downloaded binary packages are in
-##  /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//Rtmp8yz6g6/downloaded_packages</code></pre>
+##  /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmplVJwWp/downloaded_packages</code></pre>
 </div>
 </div>
 <div id="structural-estimation" class="section level2">
 <h2>
 <span class="header-section-number">18.2</span> Structural estimation<a class="anchor" aria-label="anchor" href="#structural-estimation"><i class="fas fa-link"></i></a>
 </h2>
-<p>Structural estimation is used in situations where researchers have a general model in mind for how processes work and their goal is fit the parameters of the model. With the fitted model they might then estimate levels of unobserved variables, treatment effects, or other quantities. They might even extrapolate to estimate counterfactual quantities, such as the effects of interventions that have not been implemented <span class="citation">(Reiss and Wolak <a href="references.html#ref-reiss2007structural" role="doc-biblioref">2007</a>)</span>.</p>
+<p>Structural estimation is used in situations where researchers have a general model in mind for how processes work and their goal is to fit the parameters of the model. With the fitted model they might then estimate levels of unobserved variables, treatment effects, or other quantities. They might even extrapolate to estimate counterfactual quantities, such as the effects of interventions that have not been implemented <span class="citation">(Reiss and Wolak <a href="references.html#ref-reiss2007structural" role="doc-biblioref">2007</a>)</span>.</p>
 <p>We illustrate using an example of a model of bargaining between pairs of players, drawing on an example use in <span class="citation">Wilke and Humphreys (<a href="references.html#ref-wilke2020field" role="doc-biblioref">2020</a>)</span>.</p>
 <p><span class="citation">Wilke and Humphreys (<a href="references.html#ref-wilke2020field" role="doc-biblioref">2020</a>)</span> imagine a bargaining game with payments from customer <span class="math inline">\(i\)</span> to a taxi driver given by:</p>
 <p><span class="math display">\[\pi_i =  \theta_i(z_iy + (1-z_i)(1-y)) + (1-\theta_i)\chi\]</span></p>

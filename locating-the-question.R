@@ -23,8 +23,7 @@ new_estimator <- function(data){
       term = "Z:X",
       stringsAsFactors = FALSE))}
 
-# An estimator that estimates on all data only if 
-# estimates on training data were significant
+# An estimator that estimates on all data only if estimates are significant
 
 comparison_estimator <- function(data){
   with(data, data.frame(
