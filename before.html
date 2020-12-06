@@ -53,7 +53,7 @@
 <li><a class="" href="experimental-designs-for-descriptive-inference.html"><span class="header-section-number">15</span> Experimental designs for descriptive inference</a></li>
 <li><a class="" href="observational-designs-for-causal-inference.html"><span class="header-section-number">16</span> Observational designs for causal inference</a></li>
 <li><a class="" href="experimental-designs-for-causal-inference.html"><span class="header-section-number">17</span> Experimental designs for causal inference</a></li>
-<li><a class="" href="multi-study-designs.html"><span class="header-section-number">18</span> Multi-study designs</a></li>
+<li><a class="" href="complex-design.html"><span class="header-section-number">18</span> Complex design</a></li>
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
@@ -85,9 +85,9 @@
 <p>Our view is, minimally, a PAP should include a design declaration. A good deal of the discussion of what goes in a PAP centers on the answer strategy <span class="math inline">\(A\)</span> – what estimator to use, what covariates to condition on, what subsets of the data to include. But of course, we also need to know the details of <span class="math inline">\(D\)</span> – how units were sampled, how treatments were assigned, how the outcomes will be measured. We need these details to assess the properties of the design and also to gauge whether the principles of analysis as you randomize are being followed. We need to know about <span class="math inline">\(I\)</span> because we need to know the target of inference.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;A major concern in medical trials is “outcome switching,” wherein the eventual report focuses on different health outcomes than originally intended. When we switch outcomes, we switch inquiries!&lt;/p&gt;"><sup>23</sup></a> We need enough of <span class="math inline">\(M\)</span> to describe <span class="math inline">\(I\)</span> in sufficient detail. In short, a design declaration is what belongs in a PAP, because a design declaration specifies all of the analytically-relevant design decisions.</p>
 <p>In addition to a design declaration, a PAP should include mock analyses conducted on simulated data. If the design declaration is done formally in code, creating simulated data that resemble the eventual realized data is quite straightforward. We think researchers should run their answer strategy on the mock data, creating mock figures and tables that will eventually be made with real data. In our experience, <em>this</em> is the step that really causes researchers to think hard about all aspects of their design.</p>
 <p>Strictly speaking, preanalysis plans should include design declaration, but they do not <em>require</em> design diagnosis. But since the design that is finally settled on as the design to be implemented is usually chosen as the result of a diagnosis, it can be informative to describe, in a preanalysis plan, the reasons why the particular design was chosen. For this reason, a PAP might include estimates of diagnosands like power, RMSE, or bias. If a researcher writes in a PAP that the power to detect a very small effect is large, then if the study comes back null, the eventual writeup can much more credibly rule out “low power” as an explanation for the null. Moreover, ex ante design diagnosis communicates the assumptions under which they thought the design was a good one before they ran the study. These reasons are often the basis on which we convince skeptics of the value of the design, so writing them down <em>before</em> the results are known increases the faith we put in them.</p>
-<div id="example-17" class="section level3">
+<div id="example-16" class="section level3">
 <h3>
-<span class="header-section-number">21.1.1</span> Example<a class="anchor" aria-label="anchor" href="#example-17"><i class="fas fa-link"></i></a>
+<span class="header-section-number">21.1.1</span> Example<a class="anchor" aria-label="anchor" href="#example-16"><i class="fas fa-link"></i></a>
 </h3>
 <p>In this section, we provide an example of how to supplement a PAP with design declaration. We follow the actual PAP for <span class="citation">Bonilla and Tillery (<a href="references.html#ref-bonilla_tillery_2020" role="doc-biblioref">2020</a>)</span>, which was posted to the As Predicted registry here: <a href="https://aspredicted.org/q56qq.pdf" class="uri">https://aspredicted.org/q56qq.pdf</a>. The goal of the study is to estimate the causal effects of alternative framings of the Black Lives Matter (BLM) movement on support for the movement among Black Americans overall as well as among subsets of the Black community. These study authors are models of research transparency: they prominently link to the PAP in the published article, they conduct no non-preregistered analyses except those requested during the review process, and their replication archive includes all materials required to confirm their analyses, all of which we were able to reproduce exactly with minimal effort. Our goal with this section is to show how design declaration can supplement and complement existing planning practices.</p>
 <div id="model-2" class="section level4">
@@ -101,7 +101,7 @@
 <p>These hypotheses reflect a model of coalition politics that emphasizes the tensions induced by overlapping identities. Framing the BLM movement as feminist or pro-LGBTQ may increase support among Black women or Black LGBTQ identifiers, but that increase may come at the expense of support among Black men or Blacks who do not identify as LGBTQ. Similarly, this model predicts that subjects with stronger attachment to their Black identity will have a larger response to a Black nationalist framing of BLM than those with weaker attachments.</p>
 <p>The model also includes beliefs about the distributions of gender, LGBTQ status, and Black identity strength. In the Data strategy, Black identity will be measured with the standard linked fate measure. Other background characteristics that may be correlated with support for BLM include age, religiosity, income, education, and familiarity with the movement, so these are included in the model as well.</p>
 <p>The focus of the study will be on the causal effects of the nationalism, feminism, and intersectional frames relative to a general description of the Black Lives Matter movement. Model beliefs about treatment effect heterogeneity are embedded in the <code>declare_potential_outcomes</code> call. The effect of the nationalism treatment is hypothesized to be stronger, the greater subjects’ sense of linked fate; the effect of the feminism treatment should be negative for men but positive for women; the effect of the intersectionality treatment should be positive for LGBTQ identifies, but negative for non-identifiers.</p>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rescale</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="va">likert_cut</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">100</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>
 
@@ -153,7 +153,7 @@
 <p>We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation.</p>
 </blockquote>
 <p>In the code below, we specify how each treatment effect changes with its corresponding covariate <span class="math inline">\(X\)</span> with <span class="math inline">\(\frac{\mathrm{cov}(\tau_i, X)}{\mathbb{V}(X)}\)</span>, which is identical to the difference-in-difference for the binary covariates (<code>female</code> and <code>lgbtq</code>) and is the slope of the best linear predictor of how the effect changes over the range of <code>linked_fate</code>, and <code>blm_familiarity</code> which we are treating as quasi-continuous here.</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">slope</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 
 <span class="va">inquiry</span> <span class="op">&lt;-</span>  
@@ -195,7 +195,7 @@
 </h4>
 <p>The subjects for this study are 800 Black Americans recruited by the survey firm Qualtrics using a quota sampling procedure. We elide this sampling step in our declaration – the 800 subjects are described by the <code>declare_population</code> call. The reason is that, as is common practice in the analysis of survey experiments on convenience samples, authors do not formally extrapolate out from their data to make generalizations about the population of Black Americans. The inquiries they study are sample average effects. If the authors had used a different sampling strategy, using random sampling through random digit dialing for example, we would have defined the population from which they were sampling and the random sampling procedure.</p>
 <p>After subjects’ background characteristics are measured, they were assigned to one of four treatment conditions. Since the survey was conducted on Qualtrics, we assume that the authors used the built-in randomization tools, which typically use simple (Bernoulli) random assignment.</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_assignment</span><span class="op">(</span>
     conditions <span class="op">=</span> 
@@ -213,7 +213,7 @@
 <p>We will run an OLS regression predicting the support for, effectiveness of, and trust in BLM on each treatment condition. […] We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation. We plan to conduct analyses without controls. As we will check for between group balance, we may also run OLS analyses with demographic controls (age, linked fate, gender, sexual orientation, religiosity, income, education, and ethnic or multi-racial backgrounds), and will report differences in OLS results.</p>
 </blockquote>
 <p>In DeclareDesign, this corresponds to five estimators, with two shooting at the ATEs and three shooting at the differences-in-CATEs. We use OLS for all five – the majority of the code is bookkeeping to ensure we match the right regression coefficient with the appropriate estimand.</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span>,
@@ -269,12 +269,12 @@
 <span class="header-section-number">21.1.1.5</span> Mock analysis<a class="anchor" aria-label="anchor" href="#mock-analysis"><i class="fas fa-link"></i></a>
 </h4>
 <p>Putting it all together, we can declare the complete design and draw mock data from it.</p>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 <span class="va">mock_data</span> <span class="op">&lt;-</span> <span class="fu">draw_data</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:unnamed-chunk-379">Table 21.1: </span>Mock analysis from Bonilla and Tillery design.
+<span id="tab:unnamed-chunk-394">Table 21.1: </span>Mock analysis from Bonilla and Tillery design.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -1705,7 +1705,7 @@ Figure 21.2: Navigating research partnerships.
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#before"><span class="header-section-number">21</span> Before</a></li>
 <li>
-<a class="nav-link" href="#p4planning"><span class="header-section-number">21.1</span> Planning</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#example-17"><span class="header-section-number">21.1.1</span> Example</a></li></ul>
+<a class="nav-link" href="#p4planning"><span class="header-section-number">21.1</span> Planning</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#example-16"><span class="header-section-number">21.1.1</span> Example</a></li></ul>
 </li>
 <li>
 <a class="nav-link" href="#ethical-review"><span class="header-section-number">21.2</span> Ethical Review</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#ethical-principles-as-diagnosands"><span class="header-section-number">21.2.1</span> Ethical principles as diagnosands</a></li></ul>
