@@ -34,6 +34,30 @@ b_sims <- 20
 
 `r flagit()`
 
+Two-arm trials constitute a class of randomized experimental designs that all have in common that subjects can be assigned to one of two treatment conditions. Typically, a two-arm trial has one treatment condition in which units are exposed to a treatment and as a result reveal their treated potential outcome and one control condition in which units are *not* exposed to any treatment as as a result reveal their untreated potential outcome. Some two-arm trials eschew the pure control condition in favor of a placebo control condition, or even a second treatment condition. The uniting feature of all these designs is that our model includes two and only two potential outcomes for each unit and that our data strategy randomly assigns which of these potential outcomes will be revealed.
+
+A key choice in the design of two arm trials is the random assignment procedure. Will we use simple (coin flip, or Bernoulli) random assignment or will we use complete random assignment? Will the randomization be blocked or clustered? Will we "restrict" the randomization so that only randomizations that generate acceptable levels of balance on pre-treatment characteristic are permitted? We will explore the implications of some of these choices in the coming sections, but for the moment, the main point is that saying "treatments were assigned at random" is insufficient -- we need to describe the randomization procedure in detail in order to know how to analyze the resulting experiment. See section XXX for a description of many kinds of random assignment.
+
+For the remainder of this section, we'll consider the canonical two arm-trial design described in @GerberGreen2012. In short, the design conducts complete random assignment in a fixed population, then uses difference-in-means to estimate the average treatment effect. We'll now unpack this shorthand into the components of M, I, D, and A.
+
+The model comprises a fixed population of $N$ subjects, each of which has a treated potential outcome and an untreated potential outcome. The potential outcomes themselves have a correlation of $\rho$. The correlation of the potential outcomes turns out to be consequential. If treatment effects very similar from unit to unit, $rho$ will be close to 1. In the limiting case of exactly constant effects (the difference between the treated and untreated potential outcome is exactly the same for every unit), $rho$ is equal to 1. The fixed population is also an important specification. Here we aren't imagining that we are sampling from a larger population first -- we have in mind a fixed set of units among whom we will conduct our experiment.  
+
+Our inquiries will also be defined at the sample level. The most common inquiry for a two-arm trial is the sample average treatment effect, or SATE. It is equal to the average difference between the treated and untreated potential outcomes for the units in the sample: $\E_{i\in N}[Y_i(1) - Y_i(0)]$. Two-arm trials can also support other inquiries like the SATE among a subgroup (called a conditional average treatment effect, or CATE), but we'll leave those inquiries to the side for the moment.
+
+The data strategy uses complete random assignment in which exactly $m$ of $N$ units are assigned to treatment ($Z = 1$) and the remainder are assigned to control ($Z = 0$). We measure observed outcomes in such a way that we measure the treated potential outcome in the treatment group and untreated potential outcomes in the control group: $Y = Y_i(1) * Z + Y_i(0)*(1 - Z)$. This expression is sometimes called the "switching equation" because of the way it "switches" which potential outcome is revealed by the treatment assignment. It also embeds a crucial assumption -- that indeed units reveal the potential outcomes they are assigned to. If the experiment encounters noncompliance, this assumption is violated. It's also violated if we violate "excludability," i.e. if something other than treatment moves with assignment to treatment. For example, if the treatment group is measured differently from the control group, excludability would be violated.
+
+The answer strategy is the difference-in-means estimator with neyman standard errors.
+
+Under these design specification, @GerberGreen2012 provides analytic expressions for two important diagnosands: bias and the true standard error.^[The appendix to chapter 3 also provides an expression for the power diagnosand that adds two extra design details: a balanced design ($m = N / 2$ and) equal variances of the treated and untreated potential outcomes] Equation 2.14 demonstrates that regardless of the values (except in degenerate cases) of $m$, $N$, or $rho$, bias is equal to zero. Equation 3.4 provides an exact expression for the true standard error:
+
+$$
+SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\V(Y_i(0))}{n-m} + \frac{(N-m)\V(Y_i(1))}{m} + 2Cov(Y_i(0), Y_i(1))\right\}}
+$$
+
+
+
+
+
 ### Declaration
 
 ```{r}
