@@ -34,42 +34,145 @@ b_sims <- 20
 
 `r flagit()`
 
-Two-arm trials constitute a class of randomized experimental designs that all have in common that subjects can be assigned to one of two treatment conditions. Typically, a two-arm trial has one treatment condition in which units are exposed to a treatment and as a result reveal their treated potential outcome and one control condition in which units are *not* exposed to any treatment as as a result reveal their untreated potential outcome. Some two-arm trials eschew the pure control condition in favor of a placebo control condition, or even a second treatment condition. The uniting feature of all these designs is that our model includes two and only two potential outcomes for each unit and that our data strategy randomly assigns which of these potential outcomes will be revealed.
+Two-arm trials constitute a class of randomized experimental designs that all have in common that subjects can be assigned to one of two treatment conditions. Typically, a two-arm trial has one treatment condition in which the main causal agent under study is applied and one control condition in which subjects receive no treatment. Some two-arm trials eschew the pure control condition in favor of a placebo control condition, or even a second treatment condition. The uniting feature of all these designs is that the model includes two and only two potential outcomes for each unit and that the data strategy randomly assigns which of these potential outcomes will be revealed.
 
 A key choice in the design of two arm trials is the random assignment procedure. Will we use simple (coin flip, or Bernoulli) random assignment or will we use complete random assignment? Will the randomization be blocked or clustered? Will we "restrict" the randomization so that only randomizations that generate acceptable levels of balance on pre-treatment characteristic are permitted? We will explore the implications of some of these choices in the coming sections, but for the moment, the main point is that saying "treatments were assigned at random" is insufficient -- we need to describe the randomization procedure in detail in order to know how to analyze the resulting experiment. See section XXX for a description of many kinds of random assignment.
 
 For the remainder of this section, we'll consider the canonical two arm-trial design described in @GerberGreen2012. In short, the design conducts complete random assignment in a fixed population, then uses difference-in-means to estimate the average treatment effect. We'll now unpack this shorthand into the components of M, I, D, and A.
 
-The model comprises a fixed population of $N$ subjects, each of which has a treated potential outcome and an untreated potential outcome. The potential outcomes themselves have a correlation of $\rho$. The correlation of the potential outcomes turns out to be consequential. If treatment effects very similar from unit to unit, $rho$ will be close to 1. In the limiting case of exactly constant effects (the difference between the treated and untreated potential outcome is exactly the same for every unit), $rho$ is equal to 1. The fixed population is also an important specification. Here we aren't imagining that we are sampling from a larger population first -- we have in mind a fixed set of units among whom we will conduct our experiment.  
+The model specified a fixed sample of $N$ subjects. Here we aren't imagining that we are sampling from a larger population first -- we have in mind a fixed set of units among whom we will conduct our experiment. Under our model, each unit is endowed with two latent potential outcomes: a treated potential outcome and an untreated potential outcome. The potential outcomes themselves have a correlation of $\rho$. If units with higher untreated potential outcomes also have higher treated potential outcomes, $\rho$ will be positive. Thinking about how treatment effect might vary from unit to unit gives another perspective on the plausible values of $rho$. If treatment effects very similar from unit to unit, $rho$ will be close to 1. In the limiting case of exactly constant effects (the difference between the treated and untreated potential outcome is exactly the same for every unit), $rho$ is equal to 1. It is difficult (but not impossible) to imagine settings in which $rho$ will bee negative. If the potential outcomes are negatively correlated, then units with higher treated potential outcomes have lower untreated potential outcomes (large, positive effects) and units with lower treated potential outcomes have higher untreated potential outcomes (large, negative effects). 
 
-Our inquiries will also be defined at the sample level. The most common inquiry for a two-arm trial is the sample average treatment effect, or SATE. It is equal to the average difference between the treated and untreated potential outcomes for the units in the sample: $\E_{i\in N}[Y_i(1) - Y_i(0)]$. Two-arm trials can also support other inquiries like the SATE among a subgroup (called a conditional average treatment effect, or CATE), but we'll leave those inquiries to the side for the moment.
+Developing intuitions about $rho$ is frustrated by the fundamental problem of causal inference: since we can only ever observe a unit in its treated or untreated state (but not both), we can't directly observe the correlation in potential outcomes. In order to make a guess about $rho$, we need to reason about treatment effect heterogeneity. When effects are close to homogeneous, $rho$ will be positive. Some patterns of treatment effect heterogeneity will cause $rho$ to be negative, but not all.
+
+Because the model specifies a fixed sample, the inquiries are also be defined at the sample level. The most common inquiry for a two-arm trial is the sample average treatment effect, or SATE. It is equal to the average difference between the treated and untreated potential outcomes for the units in the sample: $\E_{i\in N}[Y_i(1) - Y_i(0)]$. Two-arm trials can also support other inquiries like the SATE among a subgroup (called a conditional average treatment effect, or CATE), but we'll leave those inquiries to the side for the moment.
 
 The data strategy uses complete random assignment in which exactly $m$ of $N$ units are assigned to treatment ($Z = 1$) and the remainder are assigned to control ($Z = 0$). We measure observed outcomes in such a way that we measure the treated potential outcome in the treatment group and untreated potential outcomes in the control group: $Y = Y_i(1) * Z + Y_i(0)*(1 - Z)$. This expression is sometimes called the "switching equation" because of the way it "switches" which potential outcome is revealed by the treatment assignment. It also embeds a crucial assumption -- that indeed units reveal the potential outcomes they are assigned to. If the experiment encounters noncompliance, this assumption is violated. It's also violated if we violate "excludability," i.e. if something other than treatment moves with assignment to treatment. For example, if the treatment group is measured differently from the control group, excludability would be violated.
 
-The answer strategy is the difference-in-means estimator with neyman standard errors.
+The answer strategy is the difference-in-means estimator with Neyman standard errors:
 
-Under these design specification, @GerberGreen2012 provides analytic expressions for two important diagnosands: bias and the true standard error.^[The appendix to chapter 3 also provides an expression for the power diagnosand that adds two extra design details: a balanced design ($m = N / 2$ and) equal variances of the treated and untreated potential outcomes] Equation 2.14 demonstrates that regardless of the values (except in degenerate cases) of $m$, $N$, or $rho$, bias is equal to zero. Equation 3.4 provides an exact expression for the true standard error:
+\begin{align}
+\widehat{DIM} &= \frac{\sum_1^mY_i}{m} - \frac{\sum_{m + 1}^NY_i}{N-m} \\
+\widehat{se(DIM)} &= \sqrt{\frac{\widehat{Var}(Y_i|Z = 1)}{m} - \frac{\widehat{Var}(Y_i|Z = 0)}{N-m}}\\
+\end{align}
+
+The estimated standard error can be used as an input for two other statistical procedures: null hypothesis significance testing via a t-test and the construction of a 95% confidence interval.
+
+Under these design specifications, @GerberGreen2012 provides analytic expressions for two important diagnosands: bias and the true standard error.^[The text also provides clues to other diagnosands. The standard error estimator is biased upward except when $rho = 1$, which in turn implies that the confidence intervals will over-cover. The appendix to chapter 3 also provides an expression for the power diagnosand that adds two extra design details: a balanced design ($m = N / 2$ and) equal variances of the treated and untreated potential outcomes] Equation 2.14 demonstrates that regardless of the values (except in degenerate cases) of $m$, $N$, or $rho$, the bias of the difference-in-means estimator is equal to zero. Equation 3.4 provides an exact expression for the true standard error:
 
 $$
 SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\V(Y_i(0))}{n-m} + \frac{(N-m)\V(Y_i(1))}{m} + 2Cov(Y_i(0), Y_i(1))\right\}}
 $$
 
+This expression is tremendously useful. It shows how the standard error decreases as sample size ($N$) increases and as the variances of the potential outcomes decrease. If the variances of the potential outcomes are not equal, the expression suggests allocating more units to the condition with the higher variance. 
 
-
-
+Here we have conducted *analytic* design diagnosis. After the relevant features of the design are declared (the fixed sample, the variances and covariances of the potential outcomes, the ATE as the inquiry, complete random assignment as the data strategy, and difference-in-means as the answer strategy), we can derive expressions for some important diagnosands like bias and the true standard error. 
 
 ### Declaration
 
+We can of course declare this design and conduct design diagnosis using simulation. This process will confirm the analytic results, as well as provide estimates of diagnosands for which statisticians have not yet derived analytic expressions. This code produces a "designer" that allows us to easily vary the important components of the design.
+
 ```{r}
-design <-
-  declare_population(N = 100, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + U) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, estimand = "ATE")
+eq_3.4_designer <-
+  function(N, m, var_Y0, var_Y1, cov_Y0_Y1, mean_Y0, mean_Y1) {
+    
+    fixed_sample <-
+      MASS::mvrnorm(
+        n = N,
+        mu = c(mean_Y0, mean_Y1),
+        Sigma = matrix(c(var_Y0, cov_Y0_Y1, cov_Y0_Y1, var_Y1), nrow = 2),
+        empirical = TRUE # this line makes the means and variances "exact" in the sample data
+      ) %>%
+      magrittr::set_colnames(c("Y_Z_0", "Y_Z_1"))
+    
+    declare_population(data = fixed_sample) +
+      declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+      declare_assignment(m = m) +
+      reveal_outcomes() +
+      declare_estimator(Y ~ Z, estimand = "ATE")
+    
+  }
 ```
 
+This simulation investigates how much of the sample we should allocate to the treatment group if the treatment group variance is twice as large as the control group variance. The diagnosis confirms the bias is zero, the true standard errors are what Equation 3.4 predictions, coverage in this case is close to nominal, and that we are above the 80% power target for a middle range of $m$. 
+
+```{r, eval=FALSE}
+designs <- 
+  expand_design(designer = eq_3.4_designer,
+                N = 100,
+                m = seq(10, 90, 10),
+                var_Y0 = 1,
+                var_Y1 = 2,
+                cov_Y0_Y1 = 1,
+                mean_Y0 = 1.0,
+                mean_Y1 = 1.75)
+
+dx <- diagnose_designs(designs, sims = 100, bootstrap_sims = FALSE)
+
+```
+
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+designs <- 
+  expand_design(designer = eq_3.4_designer,
+                N = 100,
+                m = seq(10, 90, 10),
+                var_Y0 = 1,
+                var_Y1 = 2,
+                cov_Y0_Y1 = 1,
+                mean_Y0 = 1.0,
+                mean_Y1 = 1.75)
+
+dx <- diagnose_designs(designs, sims = 100, bootstrap_sims = FALSE)
+```
+
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("two_arm"), "/dx.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(dx, file = rds_file_path)
+}
+dx <- read_rds(rds_file_path)
+```
+
+
+```{r, echo=FALSE}
+gg_df <-
+  dx %>%
+  get_diagnosands() %>%
+  pivot_longer(c(power, sd_estimate, coverage, bias))
+
+eq_3.4 <- function(N, m, var_Y0, var_Y1, cov_Y0_Y1) {
+  n <- N - m
+  sqrt(1 / (N - 1) * (m / n  * var_Y0 + n / m * var_Y1 + 2 * cov_Y0_Y1))
+}
+
+theory_df <- 
+  tibble(
+    m = seq(10, 90, 1),
+    sd_estimate = eq_3.4(N = 100, m = m, var_Y0 = 1, var_Y1 = 2, cov_Y0_Y1 = 1),
+    bias = 0,
+    power = 0.80,
+    coverage = 0.95
+  ) %>%
+  pivot_longer(c(power, sd_estimate, coverage, bias))
+
+g <- 
+  ggplot(gg_df, aes(m, value)) +
+  geom_point() +
+  geom_line() +
+  geom_line(data = theory_df, color = "purple") +
+  theme_minimal() +
+  facet_wrap(~name) +
+  labs(y = "Diagnosand value", x = "Number of treated units (m)", title = "Simulating a two arm trial", subtitle = c("N = 100, var_Y0 = 1, var_Y1 = 2, cov_Y0_Y1 = 1, mean_Y0 = 1.0, mean_Y1 = 1.75"), caption = "Theoretical values and design targets in purple.")
+g
+```
+
+
+
+
 ### DAG
+
+
 
 ```{r, echo=FALSE, fig.height = 3.5, fig.width = 7}
 dag <-
@@ -77,7 +180,18 @@ dagify(
   Y ~ Z + U
 )
 
-# dag <- get_dag(design)
+
+design <-  expand_design(designer = eq_3.4_designer,
+                N = 100,
+                m = 50,
+                var_Y0 = 1,
+                var_Y1 = 2,
+                cov_Y0_Y1 = 1,
+                mean_Y0 = 1.0,
+                mean_Y1 = 1.75)
+
+design <- design + declare_step(U = rnorm(N), handler = "fabricate")
+
 
 nodes <-
   tibble(
