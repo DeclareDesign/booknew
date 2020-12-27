@@ -366,7 +366,7 @@ ggplot(gg_df_small %>% filter(name %in% c("D", "Y")), aes(x, y)) +
 
 In order to consider how our design fares under alternative possible models, which do or do not have a causal relationship between $D$ and $Y$, we first expand the model to included unmeasured characteristics $U$ and measured characteristics $X$ of units. These variables may serve as confounders, colliders, mediators, moderators, or instruments. In fact, we consider all of these possibilities for both variables by expanding to all possible relationships between $D$, $Y$, $U$, and $X$. There are six edges between these variables, each with three possible relations: each variable may cause (e.g., $D \rightarrow Y$), be caused by (e.g., $D \leftarrow Y$), or not be causally related to every other variable. With three possible relationships and six edges, there are $3^6 = 729$ conceptually possible DAGs. We rule out DAGs in which other variables cause $U$, because we defined $U$ as an unobserved confounder. This leaves 216 possible combinations. We do not know which one! Our goal as researchers is to narrow down the possible DAGs.
 
-```{r make-all-models, echo = FALSE}
+```{r make-all-models-ch2, echo = FALSE}
 possible_models <-
   expand.grid(
     XU = c("X<-U", "none"),
@@ -610,7 +610,7 @@ possible_models %>%
 
 With these DAGs in mind, we can declare a design in which we turn on and off each causal relationship:  
 
-```{r, eval = TRUE}
+```{r diagnosisundermultiplemodels, eval = TRUE}
 M <-
   declare_population(N = 100, 
                      U = rnorm(N), 
