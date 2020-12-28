@@ -88,7 +88,7 @@
 <h3>
 <span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">portola</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     households <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, 
@@ -116,7 +116,7 @@
 <span class="header-section-number">14.1.2.1</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis"><i class="fas fa-link"></i></a>
 </h4>
 <p>Two main diagnosands for the simple random sampling design are bias and rmse. We want to know if we get the right answer on average and we want to know, on average, how far off from the truth we are.</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
   rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
@@ -172,7 +172,7 @@ RMSE
 </h3>
 <p>Researchers often cannot randomly sample at the individual level because it may, among other reasons, be too costly or logistically impractical. Instead, they may choose to randomly sample households, political precincts, or any group of individuals in order to draw inferences about the population. This strategy may be cheaper and simpler but may also introduce risks of less precise estimates.</p>
 <p>Let’s modify our first design to sample at the household level, rather than at the individual level. We’ll also add an additional estimator that clusters standard errors at the level of sampling, the household to compare to the estimator that ignores clustering. We’ll also add a new diagnosand, coverage, which will indicate whether the confidence intervals we construct (which depend on the flavor of standard errors we estimate) indeed include the true value of the inquiry 95% of the time.</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">portola</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_measurement</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">Ystar</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -315,7 +315,7 @@ design <-
 <li><p><strong>D</strong>ata strategy: Ten individuals from each group are included in the sample. Thus, whereas 2/3 of the population belong to the <span class="math inline">\(X = 0\)</span> group, only 1/2 of the sample does. Conversely, while only 1/3 of the population belongs to the <span class="math inline">\(X = 1\)</span> group, 1/2 of the sample does.</p></li>
 <li><p><strong>A</strong>nswer strategy: The answer strategy involves taking a weighted average of <span class="math inline">\(Y\)</span> in the sample, where each unit’s weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, <span class="math inline">\(X = 0\)</span>, get a weight of 100/10 = 10, while the overrepresented group, <span class="math inline">\(X = 1\)</span>, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents.</p></li>
 </ul>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -464,7 +464,7 @@ design <-
 <span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-3"><i class="fas fa-link"></i></a>
 </h3>
 <p>In the declaration below <code>Y_star</code> has a normal distribution but it is not centered on zero. The measured variables <code>Y_1</code>, <code>Y_2</code>, <code>Y_3</code> are also normally distributed but each has its own scale; they are all related to <code>Y_star</code>, though some more strongly than others. We construct two indices. One (<code>Y_av</code>) is constructed by first scaling each of these measured variables, then averaging and then scaling again. This is akin to the approach used in <span class="citation">Kling, Liebman, and Katz (<a href="references.html#ref-kling2007experimental" role="doc-biblioref">2007</a>)</span>. The second also weights the components but this time using weights generated by ‘principal components analysis’ which, intuitively, seeks to find a weighting that minimizes the distance to the measured variables.</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">250</span>, gender <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>, Y_star <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">gender</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">[</span><span class="va">gender</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
@@ -495,7 +495,7 @@ Figure 14.1: Index
 <!--  -->
 <!-- Perhaps a good psychometric example would be worthwhile to explore here? Or an education example? -->
 <!-- make sure to rename the section title below -->
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span> </code></pre></div>
 <p>The diagnosis is given in Table <a href="observational-designs-for-descriptive-inference.html#tab:latentmodel">14.3</a>. We show the RMSE and bias but also the average value of the estimand (and the estimate).</p>
 <div class="inline-table"><table class="table table-sm">

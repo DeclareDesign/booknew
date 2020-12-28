@@ -389,11 +389,143 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 <span class="header-section-number">6.5.2</span> Fundamental uncertainty<a class="anchor" aria-label="anchor" href="#fundamental-uncertainty"><i class="fas fa-link"></i></a>
 </h3>
 <p>Even the best reference models are sure to be simplifications of the true data generating process. The true causal structure of the world <span class="math inline">\(W\)</span> generates draws from the world <span class="math inline">\(w\)</span>. The inquiry <span class="math inline">\(I\)</span> might not even be defined under <span class="math inline">\(W\)</span>. That is, <span class="math inline">\(I(w)\)</span> might be <span class="math inline">\(NA\)</span>. Applying the data strategy <span class="math inline">\(D\)</span> to <span class="math inline">\(w\)</span> might produce unexpected results. That is, <span class="math inline">\(D(w)\)</span> need not be anything like <span class="math inline">\(D(m)\)</span>. This disjuncture is in large part the point of doing research in the first place. We do not know <span class="math inline">\(W\)</span> – that would require omniscience. We have learned parts of <span class="math inline">\(W\)</span> and put them in <span class="math inline">\(M\)</span> – that’s science. When research produces unexpected results, it’s an indication that something in MIDA is out of whack and it is an opportunity for learning. The <em>next</em> research project will amend MIDA in order to bring <span class="math inline">\(M\)</span> closer to <span class="math inline">\(W\)</span>.</p>
+</div>
+</div>
+<div id="sets-of-models" class="section level2">
+<h2>
+<span class="header-section-number">6.6</span> Sets of models<a class="anchor" aria-label="anchor" href="#sets-of-models"><i class="fas fa-link"></i></a>
+</h2>
+<p>Every research design starts with a small part of <span class="math inline">\(W\)</span> to study, often a hypothesized relationship between two variables <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>. We return at the end of the section to an even simpler starting point: a single variable <span class="math inline">\(Y\)</span> that we wish to describe. Our initial model describes just this “starting point”:</p>
+<div class="figure">
+<span id="fig:DYdag"></span>
+<img src="book_files/figure-html/DYdag-1.svg" alt="Starting model." width="100%"><p class="caption">
+Figure 6.3: Starting model.
+</p>
+</div>
+<p>In order to consider how our design fares under alternative possible models, which do or do not have a causal relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>, we first expand the model to included unmeasured characteristics <span class="math inline">\(U\)</span> and measured characteristics <span class="math inline">\(X\)</span> of units. These variables may serve as confounders, colliders, mediators, moderators, or instruments. In fact, we consider all of these possibilities for both variables by expanding to all possible relationships between <span class="math inline">\(D\)</span>, <span class="math inline">\(Y\)</span>, <span class="math inline">\(U\)</span>, and <span class="math inline">\(X\)</span>. There are six edges between these variables, each with three possible relations: each variable may cause (e.g., <span class="math inline">\(D \rightarrow Y\)</span>), be caused by (e.g., <span class="math inline">\(D \leftarrow Y\)</span>), or not be causally related to every other variable. With three possible relationships and six edges, there are <span class="math inline">\(3^6 = 729\)</span> conceptually possible DAGs. We rule out DAGs in which other variables cause <span class="math inline">\(U\)</span>, because we defined <span class="math inline">\(U\)</span> as an unobserved confounder. This leaves 216 possible combinations. We do not know which one! Our goal as researchers is to narrow down the possible DAGs.</p>
+<div class="figure">
+<span id="fig:dagsacyclicity"></span>
+<img src="book_files/figure-html/dagsacyclicity-1.svg" alt="216 possible DAGs with acyclicity." width="100%"><p class="caption">
+Figure 6.4: 216 possible DAGs with acyclicity.
+</p>
+</div>
+<p>We illustrate possible beliefs about these edges by visualizing all of the 216 DAGs in which <span class="math inline">\(U\)</span> is an unobserved confounder (see Figure <a href="choosing-an-answer-strategy.html#fig:dagsadjustment">9.2</a>). The large groups of three squares of nine group DAGs based on how <span class="math inline">\(U\)</span> affects other variables in the model: the top left grouping of 27 DAGs represents those in which <span class="math inline">\(U\)</span> affects all of <span class="math inline">\(D\)</span>, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Within that grouping, there are three squares of nine squares. Each group of nine squares represents a set of DAGs with a single relationship between <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>. The top left group of nine are those DAGs in which <span class="math inline">\(D\rightarrow Y\)</span>.</p>
+<p>After enumerating each possibility, we draw on logic, theory, and past evidence to rule out implausible or impossible models. We do so judiciously: any model we rule out represents the addition of a possibly false assumption. Past evidence or a theoretical model may provide conclusive reasons to include or exclude certain edges in the reference models. One common exclusion is the assumption of acyclicity: we commonly operate under the view that cycling is not possible in the world, which would imply that these variables simultaneously cause each other. In Figure <a href="choosing-an-answer-strategy.html#fig:dagsadjustment">9.2</a>, DAGs in gray are ruled out by acyclicity.</p>
+<p>The final step in setting up our model is defining a mapping between theory and these possible DAGs. Our aim is to provide evidence about generalizable theories, and to do so we must know which theories are ruled in or out by empirical evidence. The first step to doing this is to define which DAGs are consistent or inconsistent with each theory. (Later, we will define what evidence will result in rejection or retention of each DAG; the two steps together will allow us to define which theories are rejected or retained from the evidence.)</p>
+<p>For example, we code each model in which <span class="math inline">\(D\)</span> causes <span class="math inline">\(Y\)</span> as consistent with “Theory A” and all those in which <span class="math inline">\(D\)</span> does not cause <span class="math inline">\(Y\)</span> as consistent with “Theory B” in Table <a href="specifying-the-model.html#tab:theorydags">6.2</a>.</p>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">possible_models</span> <span class="op">%&gt;%</span> 
+  <span class="va">ungroup</span> <span class="op">%&gt;%</span> 
+  <span class="fu">sample_n</span><span class="op">(</span>size <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">mutate</span><span class="op">(</span>theory_A <span class="op">=</span> <span class="va">DY</span> <span class="op">==</span> <span class="st">"D-&gt;Y"</span>,
+         theory_B <span class="op">=</span> <span class="va">DY</span> <span class="op">==</span> <span class="st">"D Y"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">select</span><span class="op">(</span><span class="va">var</span>, <span class="va">theory_A</span>, <span class="va">theory_B</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">kable</span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"DAGs coded by consistency with two theories."</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:theorydags">Table 6.2: </span>DAGs coded by consistency with two theories.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+var
+</th>
+<th style="text-align:left;">
+theory_A
+</th>
+<th style="text-align:left;">
+theory_B
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+X&lt;-U;D-&gt;X;D&lt;-Y
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+X&lt;-U;Y-&gt;X;D&lt;-U;D&lt;-Y
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+X&lt;-U;Y&lt;-X;D&lt;-U;
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y-&gt;X;D&lt;-U;D&lt;-Y
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+D&lt;-U;D&lt;-X;
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y&lt;-U;Y-&gt;X;D&lt;-U;D&lt;-X;D&lt;-Y
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>With these DAGs in mind, we can declare a design in which we turn on and off each causal relationship:</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
+                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
+                     D <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,
+                     X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">DY</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">YU</span> <span class="op">*</span> <span class="va">U</span> <span class="op">+</span> <span class="va">YX</span> <span class="op">*</span> <span class="va">X</span><span class="op">)</span>
+
+<span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">M</span>, DY <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, YU <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, YX <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+
+<span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<!-- 1. identify a small subgraph of interest to study -->
+<!-- 2. enumerate all possibilities for the subgraph as M-vector, which is the set we are uncertain over. (ideally we want to be able to say you have provably exploded to the whole ) -->
+<!-- 3. rule out sparingly *by assumption* any M in M-vector that past evidence or logic suggest are not W (e.g., acyclicity).  -->
+<!-- 4. define mapping of models in M-vector to theories. Some models can result under a theory, others cannot. -->
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
 <!-- make sure to rename the section title below -->
-</div>
 </div>
 </div>
   <div class="chapter-nav">
@@ -424,6 +556,7 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 <li><a class="nav-link" href="#fundamental-uncertainty"><span class="header-section-number">6.5.2</span> Fundamental uncertainty</a></li>
 </ul>
 </li>
+<li><a class="nav-link" href="#sets-of-models"><span class="header-section-number">6.6</span> Sets of models</a></li>
 </ul>
 
       <div class="book-extra">
