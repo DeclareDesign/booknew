@@ -62,26 +62,25 @@ nudges_df <-
          text_y = nudgey)
 
 make_dag_df <- 
-  function(dag, nodes, design) {
-    design_nodes <- get_design_nodes(design)
-    
+  function(dag, nodes) {
+    if(!all(nodes$data_strategy %in% c("assignment", "sampling", "measurement", "unmanipulated")))
+      stop("I don't recognize some of your data strategy elements")
+    if(!all(nodes$answer_strategy %in% c("controlled", "uncontrolled")))
+      stop("I don't recognize some of your answer strategy elements")
+      
     endnodes <-
       nodes %>%
       transmute(to = name, xend = x, yend = y)
-    
     
     dag %>%
       tidy_dagitty() %>%
       select(name, direction, to, circular) %>%
       as_tibble %>%
-      left_join(design_nodes, by = "name") %>%
       left_join(nodes, by = "name") %>%
       left_join(endnodes, by = "to") %>%
       left_join(nudges_df, by = c("x", "y", "nudge_direction")) %>%
       left_join(aes_df, by = c("data_strategy", "answer_strategy")) %>%
-      mutate(shape_y = y + shape_nudge_y,
-             exclusion_restriction = "no")
-    
+      mutate(shape_y = y + shape_nudge_y, exclusion_restriction = "no")
   }
 
 family <- "Helvetica"
