@@ -106,14 +106,13 @@ base_dag_plot %+% ggdd_df
 
 The visual display of DAGs typically includes nodes connected by edges
 
-
 - edges point only to nodes, not to other edges. Some frameworks for visualizing parametric causal models encode the presence of an interaction as an edge pointing to another edge, but we will not use that approach here.
 
 - Pearl (pg. XXX) denotes conditioning on a variable in the answer stragegy with a box around the variable; we do follow this convention.
 
 - CITE introduces intervention nodes -- in that framework, variables that are manipulated by the researcher (as in a random assignement) are marked with a []. In that spirit, we introduce shapes for all three kinds of operations in a data strategy: circles for random assignments, triangles for sampling, and squares for measurement procedures. 
 
-```{r, fig.height = 3, fig.width = 6}
+```{r, fig.height = 6, fig.width = 4, echo = FALSE}
 # assignment
 dag <- dagify(Y ~ D,
               D ~ Z)
@@ -199,7 +198,7 @@ ggdd_df <- make_dag_df(dag, nodes)
 
 gg_adjustment <- base_dag_plot %+% ggdd_df
 
-gg_assignment / gg_sampling / gg_measurement / gg_adjustment
+(gg_assignment + gg_sampling) / (gg_measurement + gg_adjustment)
 ```
 
 
