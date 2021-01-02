@@ -211,8 +211,8 @@ REP
 </table></div>
 <p>There are 100 voters in the dataset.</p>
 <p>We want a function that takes this dataset, implements a random assignment, adds it to the dataset, and then returns the new dataset containing the random assignment.</p>
-<p>You could write your own function to do that but you can also use one of the <code>declare_*</code> functions in <code>DeclareDesign</code> that are designed to write functions. Each one of these functions is a kind of <em>function factory</em>: it takes a set of parameters about your research design like the number of units and the random assignment probability as <em>inputs</em>, and returns a <em>function</em> as an output.</p>
-<p>Here is an example of a <code>declare_assignment</code> step .</p>
+<p>You could write your own function to do that but you can also use one of the <code>declare_*</code> functions in <code>DeclareDesign</code> that are designed to write functions. Each one of these functions is a kind of <em>function factory</em>: it takes a set of parameters about your research design like the number of units and the random assignment probability as <em>inputs</em>, and returns a <em>function</em> as an output.
+Here is an example of a <code>declare_assignment</code> step.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simple_random_assignment_step</span> <span class="op">&lt;-</span> <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></code></pre></div>
 <p>The big idea here is that the object we created, <code>simple_random_assignment_step</code>, is not a particular assignment, it is a <em>function</em> that conducts assignment when called. You can run the function on data:</p>
