@@ -79,12 +79,6 @@ Y_i(1) &= 1 + u_i
 This DAG encodes this model in graphical form:
 
 ```{r p2simpledag, echo = FALSE, fig.height = 3.5, fig.width = 7, fig.cap = "Simple DAG. U is unobserved."}
-design <-
-  declare_population(N = 100, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + U) +
-  declare_assignment(prob = 0.5) 
-
-
 dag <- dagify(Y ~ Z + U)
 
 nodes <-
@@ -99,13 +93,116 @@ nodes <-
     x = c(1, 5, 5),
     y = c(1.5, 3.5,  1.5), 
     nudge_direction = c("S", "N", "S"),
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
 ```
+
+## Visualizing research design elements
+
+The visual display of DAGs typically includes nodes connected by edges
+
+
+- edges point only to nodes, not to other edges. Some frameworks for visualizing parametric causal models encode the presence of an interaction as an edge pointing to another edge, but we will not use that approach here.
+
+- Pearl (pg. XXX) denotes conditioning on a variable in the answer stragegy with a box around the variable; we do follow this convention.
+
+- CITE introduces intervention nodes -- in that framework, variables that are manipulated by the researcher (as in a random assignement) are marked with a []. In that spirit, we introduce shapes for all three kinds of operations in a data strategy: circles for random assignments, triangles for sampling, and squares for measurement procedures. 
+
+```{r, fig.height = 3, fig.width = 6}
+# assignment
+dag <- dagify(Y ~ D,
+              D ~ Z)
+
+nodes <-
+  tibble(
+    name = c("Z", "D", "Y"),
+    label = c("Z", "D", "Y"),
+    annotation = c("**Random assignment**",
+                   "**Treatment**",
+                   "**Observed outcome**"),
+    x = c(1, 3, 5),
+    y = c(2, 2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_assignment <- base_dag_plot %+% ggdd_df
+
+# sampling
+dag <- dagify(Y ~ S)
+
+nodes <-
+  tibble(
+    name = c("S", "Y"),
+    label = c("S", "Y"),
+    annotation = c("**Random sampling**",
+                   "**Observed outcome**"),
+    x = c(1, 5),
+    y = c(2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("sampling", "unmanipulated"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_sampling <- base_dag_plot %+% ggdd_df
+
+
+# measurement
+dag <- dagify(Y ~ Q + Ystar)
+
+nodes <-
+  tibble(
+    name = c("Ystar", "Y", "Q"),
+    label = c("Y^*", "Y", "Q"),
+    annotation = c("**Latent outcome**",
+                   "**Observed outcome**",
+                   "**Measurement tool**"),
+    x = c(1, 3, 5),
+    y = c(2, 2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("unmanipulated", "unmanipulated", "measurement"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_measurement <- base_dag_plot %+% ggdd_df
+
+# adjustment 
+dag <- dagify(Y ~ Z + X)
+
+nodes <-
+  tibble(
+    name = c("Z", "Y", "X"),
+    label = c("Z", "Y", "X"),
+    annotation = c("**Treatment assignment**",
+                   "**Observed outcome**",
+                   "**Pretreatment covariate**"),
+    x = c(1, 3, 5),
+    y = c(2, 2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated"),
+    answer_strategy = c("uncontrolled", "uncontrolled", "controlled")
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_adjustment <- base_dag_plot %+% ggdd_df
+
+gg_assignment / gg_sampling / gg_measurement / gg_adjustment
+```
+
+
 
 <!-- This is good text but for answer stratgy: -->
 <!-- Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting by applying the "back-door criterion," which asks whether a back-door path exists between a pair of causally-related variables. Here, the causal relationship between $X$ and $Y$ is confounded by the back-door path $X \leftarrow U \rightarrow Z$. (for much more on the back-door criterion, see XXX). Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned. There are no back door paths leading from $Z$ to $Y$, so we *can* learn more easily about average causal effects of $Z$ on $Y$. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances. -->
@@ -224,10 +321,11 @@ nodes <-
     x = c(1, 3, 5, 5, 5, 3, 3, 2),
     y = c(2.5, 4, 1, 2.5, 4, 1, 2.5, 2.5), 
     nudge_direction = c("N", "N", "S", "E", "N", "S", "N", "S"),
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, M)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
 ```
