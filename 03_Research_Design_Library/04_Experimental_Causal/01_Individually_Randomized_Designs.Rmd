@@ -1,5 +1,5 @@
 ---
-title: "Two arm trials"
+title: "Individually-randomized designs"
 output: html_document
 bibliography: ../../bib/book.bib
 ---
@@ -30,7 +30,7 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-## Two arm trials
+## Individually-randomized designs
 
 `r flagit()`
 
@@ -60,21 +60,7 @@ The estimated standard error can be used as an input for two other statistical p
 The DAG corresponding to a two-arm randomized trial is very simple. An outcome $Y$ is affected by unknown factors $U$ and a treatment $Z$. The measurement procedure $Q$ affects $Y$ in the sense that it measures a latent $Y$ and records it in a dataset. No arrows lead into $Z$ because it is randomly assigned. No arrow leads from $Z$ to $Q$, because we assume no excludability violations wherein the treatment changes how units are measured. This simple DAG confirms that the average causal effect of Z on Y is nonparametrically identified because no back-door paths lead from Z to Y.
 
 ```{r, echo=FALSE, fig.height = 3.5, fig.width = 7}
-dag <-
-dagify(
-  Y~ Z + Q + U
-)
-
-
-design <-
-  declare_step(
-    N = 10,
-    Y = rnorm(N),
-    Z = rnorm(N),
-    U = rnorm(N),
-    Q = rnorm(N),
-    handler = fabricate
-  ) + NULL
+dag <- dagify(Y ~ Z + Q + U)
 
 nodes <-
   tibble(
@@ -88,10 +74,11 @@ nodes <-
     x = c(5, 1, 5, 1),
     y = c(2.5, 2.5, 4, 4),
     nudge_direction = c("S", "S", "N", "N"),
+    data_strategy = c("unmanipulated", "assignment","unmanipulated", "measurement"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2, 4.5), xlim = c(0.5, 5.5))
 ```
@@ -225,6 +212,27 @@ g
 ```
 
 
+### Increasing precision through blocking
+
+- Increase precision
+- Watch out for IPW
+- Blocking on many covariates
+
+### Increasing precision through covariate adjustment
+
+- "like blocking" in the answer strategy
+- Watch out for post-treatment variables
+- the Lin adjustment
+
+### Simulation comparing blocking to covariate adjustment
+
+
+### Randomization checks
+
+- Confirm the number of units in each condition
+- Check balance. Covariate by covariate. Omnibus test.
+- sub sub sub bullet point: if you're really worried about it, you can do rerandomization, but it's really a waste of time, just block.
+
 ### What can go wrong
 
 Even for the simplest two-arm trial design, many things can go wrong. Naturally, the sorts of problems can be described in terms of M, I, D, and A. 
@@ -245,4 +253,4 @@ ON THE HUNT FOR
 
 - a two arm trial with complete random assignment. No blocking, no clustering, no multiple treatment arms.
 
-
+[Lauren's study?]

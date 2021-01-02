@@ -1,5 +1,5 @@
 ---
-title: "Blocked trials"
+title: "Cluster-randomized designs"
 output: html_document
 bibliography: ../../bib/book.bib 
 ---
@@ -17,54 +17,68 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-## Uses of Covariates in Experiments
-
-- Covariates are pre treamtent X(0) = X(1) = X.
-
-- covariates can be used in data strategy
-- covariates can be used in answer strategy
-- design comparison
-- errors to avoid (conditioning on post-treatment variables)
-
-
+## Cluster-randomized designs
 
 ### Declaration
 
 ```{r}
 design <-
-  declare_population(N = 100,
-                     X = rbinom(N, 1, 0.3),
-                     U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + X + U) +
+  declare_population(
+    V = add_level(
+      N = 100,
+      X = rbinom(N, 1, 0.3),
+      Q = rnorm(N)
+    ),
+    I = add_level(N = 5,
+                  U = rnorm(N))) +
+  declare_potential_outcomes(Y ~ Z * X + U + Q) +
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_assignment(blocks = X, block_prob = c(0.1, 0.5)) +
-  declare_estimator(Y ~ Z, estimand = "ATE", label = "Naive DIM") +
+  declare_assignment(clusters = V,
+                     blocks = X,
+                     block_prob = c(0.1, 0.5)) +
   declare_estimator(Y ~ Z,
-                    blocks = X,
+                    model = difference_in_means,
                     estimand = "ATE",
-                    label = "Blocked DIM")
+                    label = "Naive DIM") +
+  declare_estimator(
+    Y ~ Z,
+    clusters = V,
+    blocks = X,
+    model = difference_in_means,
+    estimand = "ATE",
+    label = "Blocked and Clustered DIM"
+  ) +
+  declare_estimator(
+    Y ~ Z,
+    clusters = V,
+    fixed_effects = X,
+    model = lm_robust,
+    estimand = "ATE",
+    label = "Naive FE"
+  )
 ```
 
 ### DAG
 
-```{r,echo=FALSE, fig.width = 7, fig.height = 3.5}
+```{r,echo=FALSE, fig.height = 3.5, fig.width = 7}
 dag <- dagify(
-  Y ~ Z + X + U,
-  Z ~ X
+  Y ~ Z + X + U + V,
+  Z ~ X + V
 )
 
 nodes <-
   tibble(
-    name = c("Y", "Z", "U", "X"),
-    label = c("Y", "Z", "U", "X"),
+    name = c("Y", "Z", "U", "V", "X"),
+    label = c("Y", "Z", "U", "V", "X"),
     annotation = c(
       "**Outcome**<br>",
       "**Random assignment**<br>",
       "**Unknown heterogeneity**",
+      "**Villages**<br>Used for clustering",
       "**Covariate**<br>Used for blocking"),
-    x = c(5, 1, 5, 1),
-    y = c(2.5, 2.5, 4, 4), 
-    nudge_direction = c("S", "S", "N", "N"),
+    x = c(5, 1, 5, 2.5,  1),
+    y = c(2.5, 2.5, 4, 4, 4), 
+    nudge_direction = c("S", "S", "N", "N", "N"),
     answer_strategy = "uncontrolled"
   )
 ggdd_df <- make_dag_df(dag, nodes, design)

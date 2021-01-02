@@ -1,5 +1,5 @@
 ---
-title: "Randomized Saturation Design"
+title: "Spillover Designs"
 output: html_document
 bibliography: ../../bib/book.bib
 ---
@@ -17,7 +17,14 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-## Randomized Saturation Design
+## Spillover designs
+
+
+two kinds of spillover designs
+
+- "disconnected" graphs: e.g. connection within households but not across. this includes the "multilevel" design and also the "randomized saturation design". Aronow shepherd paluck.  Ichino and Scheundlin. Sinclair mcconnell green.
+
+- "connected" graphs: stoves, lawnsigns, twitter.  Assumption about invariance "far enough" away. Worms.
 
 Randomized saturation designs are used to measure the diffusion of treatment effects throughout a pre-defined area or network (@bairdetal2018). The design works in two phases. First, entire areas or networks are randomly assigned to *saturations*, e.g. 0%, 25%, and 75% saturation. Then, in each network, units are individually assigned in proportions determined by the saturations: e.g., in the groups randomly assigned to 0%, none of the units are assigned to treatment, while in the groups assigned to 25% and 75%, one-quarter and three-quarters of the units are assigned to treatment, respectively. By comparing untreated units in the 0% groups to their *untreated* counterparts in the higher-saturation networks, researchers can estimate the indirect treatment effects that result from saturation-induced spillovers.
 
@@ -30,53 +37,6 @@ Randomized saturation designs are used to measure the diffusion of treatment eff
 - **D**ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.
 
 - **A**nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they're in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.
-
-<!-- # ```{r} -->
-<!-- # design <-  -->
-<!-- #   declare_population(network = add_level(N = 4),  -->
-<!-- #                      unit = add_level(N = 4, U = rnorm(N))) + -->
-<!-- #   declare_assignment(assignment_variable = "S",  -->
-<!-- #                      clusters = network,  -->
-<!-- #                      conditions = c("low","high")) + -->
-<!-- #   declare_assignment(prob = 0.25,  -->
-<!-- #                      blocks = network,  -->
-<!-- #                      assignment_variable = "Z_S_low") + -->
-<!-- #   declare_assignment(prob = 0.75,  -->
-<!-- #                      blocks = network,  -->
-<!-- #                      assignment_variable = "Z_S_high") + -->
-<!-- #   declare_step(spillover_low = ave(Z_S_low, network, FUN = mean),  -->
-<!-- #                spillover_high = ave(Z_S_high, network, FUN = mean),handler = fabricate)  + -->
-<!-- #   declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") +  -->
-<!-- #                                Z * spillover_high * (S == "high") + U, -->
-<!-- #                              conditions = list(Z = c(0, 1),  S = c("low", "high"))) + -->
-<!-- #   declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low), -->
-<!-- #                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) + -->
-<!-- #   reveal_outcomes(Z,S) + -->
-<!-- #   declare_step(ipw = 1 / ( -->
-<!-- #     S_cond_prob * (Z_S_low_cond_prob * (S == "low") +  -->
-<!-- #                      Z_S_high_cond_prob * (S == "high"))), -->
-<!-- #     handler = fabricate) + -->
-<!-- #   reveal_outcomes(Y, c(Z, S)) + -->
-<!-- #   declare_estimator( -->
-<!-- #     Y ~ Z * S, -->
-<!-- #     clusters = network, -->
-<!-- #     model = lm_robust, -->
-<!-- #     term = c("Z", "Shigh"), -->
-<!-- #     estimand = c("ate_no_spill", "ate_saturation"), -->
-<!-- #     weight = ipw -->
-<!-- #   ) -->
-<!-- # ``` -->
-
-<!--
-JC Comment: I see that the previous version was far too complex but the updated version was
-misleadingly simple. The POs need to be a function of the proportion of units treated, not
-simply a fixed trait of the saturation category you're assigned to. As it was setup before,
-I could set the saturations at all sorts of crazy values and it makes no difference, it was
-basically a het-fx by blocks design. Also, the point and variance estimators were biased
-because this design requires IPWing. To me, the minimally sufficient declaration has to
-illustrate the design works in terms of bias and coverage in a DGP it was specifically
-setup to handle.
--->
 
 ```{r}
 design <-
@@ -102,21 +62,6 @@ design <-
                     estimand = c("ATE_saturation", "ate_no_spill"),
                     label = "main effect")
 ```
-
-<!-- # ```{r saturation, echo = FALSE} -->
-<!-- # draw_data(design) %>%  -->
-<!-- #   mutate( -->
-<!-- #     label = paste0("Group ", group, "\nSaturation = ", S),  -->
-<!-- #     Z = as.factor(Z) -->
-<!-- #   ) %>%  -->
-<!-- #   ggplot() + -->
-<!-- #   geom_point(aes(y = 1, x = unit, shape = Z, color = Z))  + -->
-<!-- #   facet_wrap(~ label, scales = "free", nrow = 1) + -->
-<!-- #   theme(axis.title.y = element_blank(), -->
-<!-- #     axis.text.y = element_blank(), -->
-<!-- #     axis.ticks.y = element_blank(), -->
-<!-- #     axis.line = element_blank())  -->
-<!-- # ``` -->
 
 ### DAG
 
