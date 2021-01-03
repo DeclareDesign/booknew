@@ -126,9 +126,10 @@ nodes <-
     x = c(5, 1, 3, 5, 1),
     y = c(2.5, 2.5, 2.5, 4, 4), 
     nudge_direction = c("S", "S", "S", "N", "N"),
+    data_strategy = c("unmanipulated", "sampling", "assignment", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon)) 
 

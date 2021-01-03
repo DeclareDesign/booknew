@@ -95,9 +95,9 @@
 Figure 10.1: DAG of Design Simulation
 </p>
 </div>
-<div id="estimating-diagnosands-analytically" class="section level2">
+<div id="p2analyticdiagnosis" class="section level2">
 <h2>
-<span class="header-section-number">10.1</span> Estimating diagnosands analytically<a class="anchor" aria-label="anchor" href="#estimating-diagnosands-analytically"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.1</span> Estimating diagnosands analytically<a class="anchor" aria-label="anchor" href="#p2analyticdiagnosis"><i class="fas fa-link"></i></a>
 </h2>
 <p>Diagnosis can be done with analytic, pencil-and-paper methods. Indeed, research design textbooks often contain many formulas for calculating power under a variety of designs. For example, <span class="citation">Alan S. Gerber and Green (<a href="references.html#ref-Gerber2012" role="doc-biblioref">2012</a>)</span> include the following power formula:</p>
 <p>They write:</p>
@@ -473,7 +473,7 @@ coverage
 <p>Often, we need to look at several diagnosands in order to understand what might be going wrong. If your design exhibits “undercoverage” (e.g., your coverage is less than <span class="math inline">\(1 - \alpha\)</span>), that might be because your standard errors are too small (under-estimation of the variance in the sampling distribution) or because your point estimate is biased, or some combination of the two. In really perverse instances, you might have a biased point estimate which, thanks to overly-wide confidence intervals, just happens to get covered 95% of the time. So, when assessing coverage it’s important to look not only at point estimate bias, but you should also check that the average estimated standard error lines up with the true standard error. Alternatively, you could look at the “bias-eliminated coverage,” which assesses coverage purely in terms of confidence interval width, ignoring bias.</p>
 <p>Many research design decisions involve trading off bias and variance. In trade-off settings, we may need to accept higher variance in order to decrease bias. Likewise, we may need to accept a bit of bias in order to achieve lower variance. The tradeoff is captured by mean-squared error – which is the average squared distance between <span class="math inline">\(a^d\)</span> and <span class="math inline">\(a^m\)</span>. Of course, we would ideally like to have as low a mean-squared error as possible. We would like to achieve low variance and low bias simultaneously.</p>
 <p>To illustrate, consider the following three designs as represented by three targets. The inquiry is the bullseye of the target. The data and answer strategies combine to generate a process by which arrows are shot towards the target. On the left, we have a very bad archer: even though the estimates are unbiased in the sense that they hit the bullseye “on average”, very few of the arrows are on target. In the middle, we have the Katniss Everdeen (the heroine of the Hunger Games novels who is good with a bow) of data and answer strategies: they are both on target and low variance. On the right, we have an archer who is very consistent (low variance) but biased. The mean squared error is highest on the left and lowest in the middle.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-131-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-132-1.svg" width="100%"></div>
 <p>The archery metaphor is common in research design textbooks because it effectively conveys the difference between variance and bias, but it does elide an important point. It really matters <strong>which target</strong> your archer is shooting at. Figure <a href="p2diagnosis.html#fig:archerydual">10.4</a> shows a bizarre double-target representing two inquiries. The empirical strategy is unbiased and precise for the left inquiry, but it is clearly biased for the right inquiry. When we are describing the properties of <span class="math inline">\(a^d\)</span>, we have to be clear about which <span class="math inline">\(a^a\)</span> they are associated with.</p>
 <div class="figure">
 <span id="fig:archerydual"></span>
@@ -575,7 +575,7 @@ diag <- diagnose_design(
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#p2diagnosis"><span class="header-section-number">10</span> Diagnosis</a></li>
-<li><a class="nav-link" href="#estimating-diagnosands-analytically"><span class="header-section-number">10.1</span> Estimating diagnosands analytically</a></li>
+<li><a class="nav-link" href="#p2analyticdiagnosis"><span class="header-section-number">10.1</span> Estimating diagnosands analytically</a></li>
 <li>
 <a class="nav-link" href="#estimating-diagnosands-via-simulation"><span class="header-section-number">10.2</span> Estimating diagnosands via simulation</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#interpreting-diagnosands"><span class="header-section-number">10.2.1</span> Interpreting diagnosands</a></li>

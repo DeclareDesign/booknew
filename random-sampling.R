@@ -22,14 +22,6 @@ design <-
   declare_sampling(n = 100) + 
   declare_estimator(Y ~ 1, model = lm_robust, estimand = "Y_bar")
 
-
-d_internal <-
-  declare_population(data = portola) +
-  declare_measurement(Y = as.numeric(cut(Ystar, 7))) +
-  declare_sampling(n = 100, drop_nonsampled = FALSE) +
-  declare_measurement(Q = 1) 
-
-
 dag <- dagify(Y ~ Q + Ystar + S)
 
 nodes <-
@@ -43,10 +35,11 @@ nodes <-
     x = c(5, 1, 5, 1),
     y = c(1.5, 3.5, 3.5, 1.5), 
     nudge_direction = c("S", "N", "N", "S"),
+    data_strategy = c("unmanipulated", "sampling", "measurement", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, d_internal)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
 

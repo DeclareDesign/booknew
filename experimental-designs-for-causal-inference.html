@@ -83,34 +83,50 @@
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
 <!-- make sure to rename the section title below -->
-<div id="two-arm-trials-1" class="section level2">
+<div id="individually-randomized-designs" class="section level2">
 <h2>
-<span class="header-section-number">17.1</span> Two arm trials<a class="anchor" aria-label="anchor" href="#two-arm-trials-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.1</span> Individually-randomized designs<a class="anchor" aria-label="anchor" href="#individually-randomized-designs"><i class="fas fa-link"></i></a>
 </h2>
-<p>Two-arm trials constitute a class of randomized experimental designs that all have in common that subjects can be assigned to one of two treatment conditions. Typically, a two-arm trial has one treatment condition in which the main causal agent under study is applied and one control condition in which subjects receive no treatment. Some two-arm trials eschew the pure control condition in favor of a placebo control condition, or even a second treatment condition. The uniting feature of all these designs is that the model includes two and only two potential outcomes for each unit and that the data strategy randomly assigns which of these potential outcomes will be revealed.</p>
-<p>A key choice in the design of two arm trials is the random assignment procedure. Will we use simple (coin flip, or Bernoulli) random assignment or will we use complete random assignment? Will the randomization be blocked or clustered? Will we “restrict” the randomization so that only randomizations that generate acceptable levels of balance on pre-treatment characteristic are permitted? We will explore the implications of some of these choices in the coming sections, but for the moment, the main point is that saying “treatments were assigned at random” is insufficient – we need to describe the randomization procedure in detail in order to know how to analyze the resulting experiment. See section XXX for a description of many kinds of random assignment.</p>
-<p>For the remainder of this section, we’ll consider the canonical two arm-trial design described in <span class="citation">Alan S Gerber and Green (<a href="references.html#ref-GerberGreen2012" role="doc-biblioref">2012</a>)</span>. In short, the design conducts complete random assignment in a fixed population, then uses difference-in-means to estimate the average treatment effect. We’ll now unpack this shorthand into the components of M, I, D, and A.</p>
-<p>The model specified a fixed sample of <span class="math inline">\(N\)</span> subjects. Here we aren’t imagining that we are sampling from a larger population first – we have in mind a fixed set of units among whom we will conduct our experiment. Under our model, each unit is endowed with two latent potential outcomes: a treated potential outcome and an untreated potential outcome. The potential outcomes themselves have a correlation of <span class="math inline">\(\rho\)</span>. If units with higher untreated potential outcomes also have higher treated potential outcomes, <span class="math inline">\(\rho\)</span> will be positive. Thinking about how treatment effect might vary from unit to unit gives another perspective on the plausible values of <span class="math inline">\(rho\)</span>. If treatment effects very similar from unit to unit, <span class="math inline">\(rho\)</span> will be close to 1. In the limiting case of exactly constant effects (the difference between the treated and untreated potential outcome is exactly the same for every unit), <span class="math inline">\(rho\)</span> is equal to 1. It is difficult (but not impossible) to imagine settings in which <span class="math inline">\(rho\)</span> will bee negative. If the potential outcomes are negatively correlated, then units with higher treated potential outcomes have lower untreated potential outcomes (large, positive effects) and units with lower treated potential outcomes have higher untreated potential outcomes (large, negative effects).</p>
-<p>Developing intuitions about <span class="math inline">\(rho\)</span> is frustrated by the fundamental problem of causal inference: since we can only ever observe a unit in its treated or untreated state (but not both), we can’t directly observe the correlation in potential outcomes. In order to make a guess about <span class="math inline">\(rho\)</span>, we need to reason about treatment effect heterogeneity. When effects are close to homogeneous, <span class="math inline">\(rho\)</span> will be positive. Some patterns of treatment effect heterogeneity will cause <span class="math inline">\(rho\)</span> to be negative, but not all.</p>
+<p>All two-arm randomized trials have in common that subjects can be randomly assigned to one of two conditions, typically, one treatment condition and one control condition. Some two-arm trials eschew the pure control condition in favor of a placebo control condition, or even a second treatment condition. The uniting feature of all these designs is that the model includes two and only two potential outcomes for each unit and that the data strategy randomly assigns which of these potential outcomes will be revealed.</p>
+<p>A key choice in the design of two arm trials is the random assignment procedure. Will we use simple (coin flip, or Bernoulli) random assignment or will we use complete random assignment? Will the randomization be blocked or clustered? Will we “restrict” the randomization so that only randomizations that generate acceptable levels of balance on pre-treatment characteristic are permitted? We will explore the implications of some of these choices in the coming sections, but for the moment, the main point is that saying “treatments were assigned at random” is insufficient – we need to describe the randomization procedure in detail in order to know how to analyze the resulting experiment. See Section <a href="crafting-a-data-strategy.html#p2assignment">8.2</a> for a description of many different random assignment procedures.</p>
+<p>For the remainder of this section, we’ll consider the canonical two arm-trial design described in <span class="citation">Alan S Gerber and Green (<a href="references.html#ref-GerberGreen2012" role="doc-biblioref">2012</a>)</span>. In short, the canonical design conducts complete random assignment in a fixed population, then uses difference-in-means to estimate the average treatment effect. We’ll now unpack this shorthand into the components of M, I, D, and A.</p>
+<p>The model specified a fixed sample of <span class="math inline">\(N\)</span> subjects. Here we aren’t imagining that we are sampling from a larger population first – we have in mind a fixed set of units among whom we will conduct our experiment. Under our model, each unit is endowed with two latent potential outcomes: a treated potential outcome and an untreated potential outcome. The potential outcomes themselves have a correlation of <span class="math inline">\(\rho\)</span>. If units with higher untreated potential outcomes also have higher treated potential outcomes, <span class="math inline">\(\rho\)</span> will be positive. Reflecting on how treatment effects might vary from unit to unit gives another way to think about plausible values of <span class="math inline">\(rho\)</span>. If treatment effects very similar from unit to unit, <span class="math inline">\(rho\)</span> will be close to 1. In the limiting case of exactly constant effects (the difference between the treated and untreated potential outcome is exactly the same for every unit), <span class="math inline">\(rho\)</span> is equal to 1. It is difficult (but not impossible) to imagine settings in which <span class="math inline">\(rho\)</span> is negative. If the potential outcomes are negatively correlated, then units with higher treated potential outcomes have lower untreated potential outcomes (large, positive effects) and units with lower treated potential outcomes have higher untreated potential outcomes (large, negative effects).</p>
+<p>Developing intuitions about <span class="math inline">\(rho\)</span> is frustrated by the fundamental problem of causal inference: since we can only ever observe a unit in its treated or untreated state (but not both), we can’t directly observe the correlation in potential outcomes. In order to make a guess about <span class="math inline">\(rho\)</span>, we need to reason about treatment effect heterogeneity. When effects are close to homogeneous, <span class="math inline">\(rho\)</span> will be positive. Some patterns of treatment effect heterogeneity will cause <span class="math inline">\(rho\)</span> to be negative, but not all. An example of this might be a “surprising” partisan cue. Imagine that in the control condition, Democratic subjects tend to support a policy (<span class="math inline">\(Y_i(0)\)</span> is high) and Republicans tend to oppose it (<span class="math inline">\(Y_i(0)\)</span> is low). The treatment is a “surprise” endorsement of the by a Republican elite: treatment group Republicans will find themselves supporting the policy (<span class="math inline">\(Y_i(1)\)</span> is high) whereas treatment group Democrats will infer from the Republican endorsement that the policy must not be a good one (<span class="math inline">\(Y_i(1)\)</span> is low.) Treatments with extreme heterogeneity like this example could in principle cause negatively correlated potential outcomes.</p>
 <p>Because the model specifies a fixed sample, the inquiries are also be defined at the sample level. The most common inquiry for a two-arm trial is the sample average treatment effect, or SATE. It is equal to the average difference between the treated and untreated potential outcomes for the units in the sample: <span class="math inline">\(\mathbb{E}_{i\in N}[Y_i(1) - Y_i(0)]\)</span>. Two-arm trials can also support other inquiries like the SATE among a subgroup (called a conditional average treatment effect, or CATE), but we’ll leave those inquiries to the side for the moment.</p>
-<p>The data strategy uses complete random assignment in which exactly <span class="math inline">\(m\)</span> of <span class="math inline">\(N\)</span> units are assigned to treatment (<span class="math inline">\(Z = 1\)</span>) and the remainder are assigned to control (<span class="math inline">\(Z = 0\)</span>). We measure observed outcomes in such a way that we measure the treated potential outcome in the treatment group and untreated potential outcomes in the control group: <span class="math inline">\(Y = Y_i(1) * Z + Y_i(0)*(1 - Z)\)</span>. This expression is sometimes called the “switching equation” because of the way it “switches” which potential outcome is revealed by the treatment assignment. It also embeds a crucial assumption – that indeed units reveal the potential outcomes they are assigned to. If the experiment encounters noncompliance, this assumption is violated. It’s also violated if we violate “excludability,” i.e. if something other than treatment moves with assignment to treatment. For example, if the treatment group is measured differently from the control group, excludability would be violated.</p>
+<p>The data strategy uses complete random assignment in which exactly <span class="math inline">\(m\)</span> of <span class="math inline">\(N\)</span> units are assigned to treatment (<span class="math inline">\(Z = 1\)</span>) and the remainder are assigned to control (<span class="math inline">\(Z = 0\)</span>). We measure observed outcomes in such a way that we measure the treated potential outcome in the treatment group and untreated potential outcomes in the control group: <span class="math inline">\(Y = Y_i(1) * Z + Y_i(0)*(1 - Z)\)</span>. This expression is sometimes called the “switching equation” because of the way it “switches” which potential outcome is revealed by the treatment assignment. It also embeds a crucial assumption – that indeed units reveal the potential outcomes they are assigned to. If the experiment encounters noncompliance, this assumption is violated. It’s also violated if we violate “excludability,” i.e., if something other than treatment moves with assignment to treatment. For example, if the treatment group is measured differently from the control group, excludability would be violated.</p>
 <p>The answer strategy is the difference-in-means estimator with Neyman standard errors:</p>
 <p><span class="math display">\[\begin{align}
 \widehat{DIM} &amp;= \frac{\sum_1^mY_i}{m} - \frac{\sum_{m + 1}^NY_i}{N-m} \\
 \widehat{se(DIM)} &amp;= \sqrt{\frac{\widehat{Var}(Y_i|Z = 1)}{m} - \frac{\widehat{Var}(Y_i|Z = 0)}{N-m}}\\
 \end{align}\]</span></p>
-<p>The estimated standard error can be used as an input for two other statistical procedures: null hypothesis significance testing via a t-test and the construction of a 95% confidence interval.</p>
-<p>Under these design specifications, <span class="citation">Alan S Gerber and Green (<a href="references.html#ref-GerberGreen2012" role="doc-biblioref">2012</a>)</span> provides analytic expressions for two important diagnosands: bias and the true standard error.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;The text also provides clues to other diagnosands. The standard error estimator is biased upward except when &lt;span class="math inline"&gt;\(rho = 1\)&lt;/span&gt;, which in turn implies that the confidence intervals will over-cover. The appendix to chapter 3 also provides an expression for the power diagnosand that adds two extra design details: a balanced design (&lt;span class="math inline"&gt;\(m = N / 2\)&lt;/span&gt; and) equal variances of the treated and untreated potential outcomes&lt;/p&gt;'><sup>23</sup></a> Equation 2.14 demonstrates that regardless of the values (except in degenerate cases) of <span class="math inline">\(m\)</span>, <span class="math inline">\(N\)</span>, or <span class="math inline">\(rho\)</span>, the bias of the difference-in-means estimator is equal to zero. Equation 3.4 provides an exact expression for the true standard error:</p>
+<p>The estimated standard error can be used as an input for two other statistical procedures: null hypothesis significance testing via a <span class="math inline">\(t\)</span>-test and the construction of a 95% confidence interval.</p>
+<p>The DAG corresponding to a two-arm randomized trial is very simple. An outcome <span class="math inline">\(Y\)</span> is affected by unknown factors <span class="math inline">\(U\)</span> and a treatment <span class="math inline">\(Z\)</span>. The measurement procedure <span class="math inline">\(Q\)</span> affects <span class="math inline">\(Y\)</span> in the sense that it measures a latent <span class="math inline">\(Y\)</span> and records it in a dataset. No arrows lead into <span class="math inline">\(Z\)</span> because it is randomly assigned. No arrow leads from <span class="math inline">\(Z\)</span> to <span class="math inline">\(Q\)</span>, because we assume no excludability violations wherein the treatment changes how units are measured. This simple DAG confirms that the average causal effect of Z on Y is nonparametrically identified because no back-door paths lead from Z to Y.</p>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-313-1.svg" width="100%"></div>
+<div id="analytic-design-diagnosis" class="section level3">
+<h3>
+<span class="header-section-number">17.1.1</span> Analytic design diagnosis<a class="anchor" aria-label="anchor" href="#analytic-design-diagnosis"><i class="fas fa-link"></i></a>
+</h3>
+<p>The statistical theory for the canonical two-arm design is very well explored, so analytic expressions for many diagnosands are available.</p>
+<ol style="list-style-type: decimal">
+<li><p>Bias of the difference-in-means estimator. Equation 2.14 in <span class="citation">Alan S Gerber and Green (<a href="references.html#ref-GerberGreen2012" role="doc-biblioref">2012</a>)</span> demonstrates that regardless of the values (except in degenerate cases) of <span class="math inline">\(m\)</span>, <span class="math inline">\(N\)</span>, or <span class="math inline">\(rho\)</span>, the bias diagnosand is equal to zero. This is the “unbiasedness” property of many randomized experimental designs. On average, the difference-in-means estimates from the canonical design will equal the average treatment effect. As we’ll explore later in this chapter, not every experimental design yields unbiased estimates. Some (like blocked experiments with differential probabilities of assignments) require fix-ups in the answer strategy and others (like clustered experiments with unequal cluster sizes) require fix-ups in the data strategy.</p></li>
+<li><p>The true standard error of the difference-in-means estimator. Equation 3.4 in <span class="citation">Alan S Gerber and Green (<a href="references.html#ref-GerberGreen2012" role="doc-biblioref">2012</a>)</span> provides an exact expression for the true standard error of the canonical two-arm trial.</p></li>
+</ol>
 <p><span class="math display">\[
 SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)\mathbb{V}(Y_i(1))}{m} + 2Cov(Y_i(0), Y_i(1))\right\}}
 \]</span></p>
-<p>This expression is tremendously useful. It shows how the standard error decreases as sample size (<span class="math inline">\(N\)</span>) increases and as the variances of the potential outcomes decrease. If the variances of the potential outcomes are not equal, the expression suggests allocating more units to the condition with the higher variance.</p>
-<p>Here we have conducted <em>analytic</em> design diagnosis. After the relevant features of the design are declared (the fixed sample, the variances and covariances of the potential outcomes, the ATE as the inquiry, complete random assignment as the data strategy, and difference-in-means as the answer strategy), we can derive expressions for some important diagnosands like bias and the true standard error.</p>
-<div id="declaration-15" class="section level3">
+<p>This equation contains many design lessons. It shows how the standard error decreases as sample size (<span class="math inline">\(N\)</span>) increases and as the variances of the potential outcomes decrease. It provides a justification for “balanced” designs that assign the same proportion of subjects to treatment and control: if the variances of <span class="math inline">\(Y_i(0)\)</span> and <span class="math inline">\(Y_i(1)\)</span> are equal, then a balanced split of subjects across conditions will yield the lowest standard error. If the variances of the potential outcomes are not equal, the expression suggests allocating more units to the condition with the higher variance.</p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Bias of the standard error estimator. Equation 3.4 is the <em>true</em> standard error. We also learn from analytic design diagnosis that the standard error <em>estimator</em> is upwardly biased, which is to say that it is conservative. The intuition for this bias is that we can’t directly estimate the covariance term in Equation 3.4, so we bound the variance under a worst-case assumption.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;See &lt;span class="citation"&gt;Aronow, Green, and Lee (&lt;a href="references.html#ref-aronow_green_lee_2014" role="doc-biblioref"&gt;2014&lt;/a&gt;)&lt;/span&gt; for an alternative bounding procedure.&lt;/p&gt;'><sup>23</sup></a> The amount of bias in the standard error estimator depends on how wrong this worst case assumption is. When <span class="math inline">\(rho\)</span> is equal to 1, the bias goes to zero.</p></li>
+<li><p>Coverage. Since the standard errors are upwardly biased – they are “too big” – the statistics that are built on them will inherit this bias as well. The 95% confidence intervals will also be “too big,” so the coverage diagnosand will be above nominal, that is, 95% confidence intervals will cover the true parameter more frequently than 95% of the time.</p></li>
+<li><p>Power. Our answer strategy involves conducting a statistical significance test against the null hypothesis that the average outcome in the control group is equal to the average outcome in the treatment group. This test is also built on the estimated standard error, so the upward bias in the standard error estimator will put downward pressure on statistical power. In section <a href="p2diagnosis.html#p2analyticdiagnosis">10.1</a>, we reproduced the formula given in <span class="citation">Alan S Gerber and Green (<a href="references.html#ref-GerberGreen2012" role="doc-biblioref">2012</a>)</span> for statistical power that makes two further restrictions on the canonical design: equally-sized treatment groups and equal variances in the potential outcomes.</p></li>
+</ol>
+<p>Analytic design diagnosis is tremendously useful, for two reasons. First, we obtain guarantees for a large class of designs. <em>Any</em> experiment that fits into the canonical design will have these properties. Second, we learn from the analytic design diagnosis what the important design parameters are. In our model, we need to think about treatment effect heterogeneity in order to develop expectations about the variances and covariances of the potential outcomes. In our inquiry, we need to be thinking about specific average causal effects – the SATE, not the PATE or the CATE or the LATE. The data strategy in the canonical design is complete random assignment, so we need to think about how many units to assign to treatment (<span class="math inline">\(m\)</span>) relative to control (<span class="math inline">\(N-m\)</span>). The answer strategy is difference-in-means with neyman standard errors – difference in means is unbiased for the ATE, but the Neyman standard error estimator is upwardly biased. This means our coverage will be conservative and we’ll take a small hit to statistical power. We can learn all this from theory, not from simulation.</p>
+</div>
+<div id="design-diagnosis-through-simulation" class="section level3">
 <h3>
-<span class="header-section-number">17.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.1.2</span> Design diagnosis through simulation<a class="anchor" aria-label="anchor" href="#design-diagnosis-through-simulation"><i class="fas fa-link"></i></a>
 </h3>
-<p>We can of course declare this design and conduct design diagnosis using simulation. This process will confirm the analytic results, as well as provide estimates of diagnosands for which statisticians have not yet derived analytic expressions. This code produces a “designer” that allows us to easily vary the important components of the design.</p>
+<p>But of course we can declare this design and conduct design diagnosis using simulation. This process will confirm the analytic results, as well as provide estimates of diagnosands for which statisticians have not yet derived analytic expressions. This code produces a “designer” that allows us to easily vary the important components of the design (which of course we only learned about by studying the statistical theory!).</p>
 <div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eq_3.4_designer</span> <span class="op">&lt;-</span>
   <span class="kw">function</span><span class="op">(</span><span class="va">N</span>, <span class="va">m</span>, <span class="va">var_Y0</span>, <span class="va">var_Y1</span>, <span class="va">cov_Y0_Y1</span>, <span class="va">mean_Y0</span>, <span class="va">mean_Y1</span><span class="op">)</span> <span class="op">{</span>
@@ -131,7 +147,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
       <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
     
   <span class="op">}</span></code></pre></div>
-<p>This simulation investigates how much of the sample we should allocate to the treatment group if the treatment group variance is twice as large as the control group variance. The diagnosis confirms the bias is zero, the true standard errors are what Equation 3.4 predictions, coverage in this case is close to nominal, and that we are above the 80% power target for a middle range of <span class="math inline">\(m\)</span>.</p>
+<p>This simulation investigates how much of the sample we should allocate to the treatment group if the treatment group variance is twice as large as the control group variance. The diagnosis confirms the bias is zero, the true standard errors are what Equation 3.4 predicts, coverage is above nominal, and that we are above the 80% power target for a middle range of <span class="math inline">\(m\)</span>. We learn that power is maximized (and the true standard error is minimized) when we allocate 60 or 70 units (of 100 total) to treatment. We also learn from this that the gains from choosing the unbalanced design (relative to a 50/50 allocation) are very small. Even when the variance in the treatment group is twice as large as the variance in the control group, we don’t lose much when sticking with the balanced design. Since we can never be sure of the relative variances of the treatment and control groups ex ante, this exercise provides further support for choosing balanced designs in many design settings.</p>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> 
   <span class="fu">expand_design</span><span class="op">(</span>designer <span class="op">=</span> <span class="va">eq_3.4_designer</span>,
@@ -139,7 +155,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
                 m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">90</span>, <span class="fl">10</span><span class="op">)</span>,
                 var_Y0 <span class="op">=</span> <span class="fl">1</span>,
                 var_Y1 <span class="op">=</span> <span class="fl">2</span>,
-                cov_Y0_Y1 <span class="op">=</span> <span class="fl">1</span>,
+                cov_Y0_Y1 <span class="op">=</span> <span class="fl">0.5</span>,
                 mean_Y0 <span class="op">=</span> <span class="fl">1.0</span>,
                 mean_Y1 <span class="op">=</span> <span class="fl">1.75</span><span class="op">)</span>
 
@@ -155,68 +171,81 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
                 mean_Y0 <span class="op">=</span> <span class="fl">1.0</span>,
                 mean_Y1 <span class="op">=</span> <span class="fl">1.75</span><span class="op">)</span>
 
-<span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu">diagnose_designs</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">100</span>, bootstrap_sims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-316-1.svg" width="100%"></div>
+<span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu">diagnose_designs</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">200</span>, bootstrap_sims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<pre><code>##   design_label   N  m var_Y0 var_Y1 cov_Y0_Y1 mean_Y0 mean_Y1 estimand_label
+## 1     design_7 100 70      1      2         1       1    1.75            ATE
+##   estimator_label term        bias      rmse power coverage mean_estimate
+## 1       estimator    Z -0.02187367 0.1917612   0.9        1     0.7281263
+##   sd_estimate   mean_se type_s_rate mean_estimand n_sims
+## 1   0.1914693 0.2470444           0          0.75    100</code></pre>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-318-1.svg" width="100%"></div>
 </div>
-<div id="dag-14" class="section level3">
+<div id="increasing-precision-through-blocking" class="section level3">
 <h3>
-<span class="header-section-number">17.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-14"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.1.3</span> Increasing precision through blocking<a class="anchor" aria-label="anchor" href="#increasing-precision-through-blocking"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-317-1.svg" width="100%"></div>
+<ul>
+<li>Increase precision</li>
+<li>Watch out for IPW</li>
+<li>Blocking on many covariates</li>
+</ul>
+</div>
+<div id="increasing-precision-through-covariate-adjustment" class="section level3">
+<h3>
+<span class="header-section-number">17.1.4</span> Increasing precision through covariate adjustment<a class="anchor" aria-label="anchor" href="#increasing-precision-through-covariate-adjustment"><i class="fas fa-link"></i></a>
+</h3>
+<ul>
+<li>“like blocking” in the answer strategy</li>
+<li>Watch out for post-treatment variables</li>
+<li>the Lin adjustment</li>
+</ul>
+</div>
+<div id="simulation-comparing-blocking-to-covariate-adjustment" class="section level3">
+<h3>
+<span class="header-section-number">17.1.5</span> Simulation comparing blocking to covariate adjustment<a class="anchor" aria-label="anchor" href="#simulation-comparing-blocking-to-covariate-adjustment"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="randomization-checks" class="section level3">
+<h3>
+<span class="header-section-number">17.1.6</span> Randomization checks<a class="anchor" aria-label="anchor" href="#randomization-checks"><i class="fas fa-link"></i></a>
+</h3>
+<ul>
+<li>Confirm the number of units in each condition</li>
+<li>Check balance. Covariate by covariate. Omnibus test.</li>
+<li>sub sub sub bullet point: if you’re really worried about it, you can do rerandomization, but it’s really a waste of time, just block.</li>
+</ul>
+</div>
+<div id="what-can-go-wrong" class="section level3">
+<h3>
+<span class="header-section-number">17.1.7</span> What can go wrong<a class="anchor" aria-label="anchor" href="#what-can-go-wrong"><i class="fas fa-link"></i></a>
+</h3>
+<p>Even for the simplest two-arm trial design, many things can go wrong. Naturally, the sorts of problems can be described in terms of M, I, D, and A.</p>
+<p>The most crucial assumption we made in the model is that that are exactly two potential outcomes for each unit. This is violated if there are “spillovers” between units, say between housemates. If a unit’s outcome depends on the treatment status of their housemate, we could imagine four potential outcomes for each unit: only unit <span class="math inline">\(i\)</span> is treated, only unit <span class="math inline">\(i\)</span>’s housemate is treated, both are treated, or neither is treated. If there are indeed spillovers, but they are ignored, the very definition of the inquiry is malformed. If units don’t even have clearly defined “treated” and “untreated” potential outcomes because of spillovers from others, then we can’t define the ATE in the usual way. The solution to this problem is to <em>elaborate</em> the model to account for all the potential outcomes, then to redefine the inquiry with respect to <em>those</em> potential outcomes.</p>
+<p>Other ways for a two arm-trial to go wrong concern the data strategy. If you <em>think</em> you are using complete random assignment but you in fact are not, bias may creep in. A nonrandom assignment procedure might be something like “first-come, first-served.” If you assign the “first” <span class="math inline">\(m\)</span> units to treatment and the remainder to control, the assignment procedure is not randomized. Bias will occur if the potential outcomes of the first <span class="math inline">\(m\)</span> are unlike the potential outcomes of the remaining <span class="math inline">\(N-m\)</span> units.</p>
+<p>Sometimes researchers do successfully conduct random assignment, but the random assignment happened to produce treatment and control groups that are unlike each other in observable ways. The unbiasedness property applies to the whole procedure – over many hypothetical iterations of the experiment, the average estimate will be equal to the value of the inquiry. But any <em>particular</em> estimate can be close or far from the true value. A solution to this problem is to change the answer strategy to adjust estimates for covariates, though we would recommend adjusting for covariates regardless of whether the treatment and control groups appear imbalanced (see the following chapters).</p>
+<p>Other data strategy problems include noncompliance and attrition. Noncompliance occurs when units’ treatment status differs from their treatment assignment. This is a big enough problem that we devote an entire library entry to it (see “encouragement designs”.). Attrition occurs when we fail to measure outcomes for some units.</p>
 </div>
 <div id="example-10" class="section level3">
 <h3>
-<span class="header-section-number">17.1.3</span> Example<a class="anchor" aria-label="anchor" href="#example-10"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.1.8</span> Example<a class="anchor" aria-label="anchor" href="#example-10"><i class="fas fa-link"></i></a>
 </h3>
+<p>ON THE HUNT FOR</p>
+<ul>
+<li>a two arm trial with complete random assignment. No blocking, no clustering, no multiple treatment arms.</li>
+</ul>
+<p>[Lauren’s study?]</p>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
 </div>
 </div>
-<div id="blocked-trials" class="section level2">
+<div id="cluster-randomized-designs" class="section level2">
 <h2>
-<span class="header-section-number">17.2</span> Blocked trials<a class="anchor" aria-label="anchor" href="#blocked-trials"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.2</span> Cluster-randomized designs<a class="anchor" aria-label="anchor" href="#cluster-randomized-designs"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration-16" class="section level3">
+<div id="declaration-15" class="section level3">
 <h3>
-<span class="header-section-number">17.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-16"><i class="fas fa-link"></i></a>
-</h3>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
-                     X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.3</span><span class="op">)</span>,
-                     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">X</span>, block_prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"Naive DIM"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
-                    blocks <span class="op">=</span> <span class="va">X</span>,
-                    estimand <span class="op">=</span> <span class="st">"ATE"</span>,
-                    label <span class="op">=</span> <span class="st">"Blocked DIM"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="dag-15" class="section level3">
-<h3>
-<span class="header-section-number">17.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-15"><i class="fas fa-link"></i></a>
-</h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-323-1.svg" width="100%"></div>
-</div>
-<div id="example-11" class="section level3">
-<h3>
-<span class="header-section-number">17.2.3</span> Example<a class="anchor" aria-label="anchor" href="#example-11"><i class="fas fa-link"></i></a>
-</h3>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
-</div>
-</div>
-<div id="blocked-cluster-trials" class="section level2">
-<h2>
-<span class="header-section-number">17.3</span> Blocked cluster trials<a class="anchor" aria-label="anchor" href="#blocked-cluster-trials"><i class="fas fa-link"></i></a>
-</h2>
-<div id="declaration-17" class="section level3">
-<h3>
-<span class="header-section-number">17.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-17"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
@@ -254,11 +283,39 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     label <span class="op">=</span> <span class="st">"Naive FE"</span>
   <span class="op">)</span></code></pre></div>
 </div>
-<div id="dag-16" class="section level3">
+<div id="dag-14" class="section level3">
 <h3>
-<span class="header-section-number">17.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-16"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-14"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-329-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-324-1.svg" width="100%"></div>
+</div>
+<div id="example-11" class="section level3">
+<h3>
+<span class="header-section-number">17.2.3</span> Example<a class="anchor" aria-label="anchor" href="#example-11"><i class="fas fa-link"></i></a>
+</h3>
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
+<!-- make sure to rename the section title below -->
+</div>
+</div>
+<div id="treatment-effect-heterogeneity" class="section level2">
+<h2>
+<span class="header-section-number">17.3</span> Treatment effect heterogeneity<a class="anchor" aria-label="anchor" href="#treatment-effect-heterogeneity"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>treatment by subgroup interactions</li>
+<li>multi-arm trials varying aspects of the intervention</li>
+</ul>
+<div id="declaration-16" class="section level3">
+<h3>
+<span class="header-section-number">17.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-16"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="dag-15" class="section level3">
+<h3>
+<span class="header-section-number">17.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-15"><i class="fas fa-link"></i></a>
+</h3>
 </div>
 <div id="example-12" class="section level3">
 <h3>
@@ -270,37 +327,18 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <!-- make sure to rename the section title below -->
 </div>
 </div>
-<div id="multiarm-designs" class="section level2">
+<div id="designs-encountering-noncompliance" class="section level2">
 <h2>
-<span class="header-section-number">17.4</span> Multiarm Designs<a class="anchor" aria-label="anchor" href="#multiarm-designs"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.4</span> Designs encountering noncompliance<a class="anchor" aria-label="anchor" href="#designs-encountering-noncompliance"><i class="fas fa-link"></i></a>
 </h2>
-<div id="declaration-18" class="section level3">
+<ul>
+<li>designs with noncompliance</li>
+<li>encouragement designs</li>
+<li>placebo-controlled design (note one part is measurement one half is causal)</li>
+</ul>
+<div id="declaration-17" class="section level3">
 <h3>
-<span class="header-section-number">17.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-18"><i class="fas fa-link"></i></a>
-</h3>
-</div>
-<div id="dag-17" class="section level3">
-<h3>
-<span class="header-section-number">17.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-17"><i class="fas fa-link"></i></a>
-</h3>
-</div>
-<div id="example-13" class="section level3">
-<h3>
-<span class="header-section-number">17.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-13"><i class="fas fa-link"></i></a>
-</h3>
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
-<!-- make sure to rename the section title below -->
-</div>
-</div>
-<div id="encouragement-designs" class="section level2">
-<h2>
-<span class="header-section-number">17.5</span> Encouragement designs<a class="anchor" aria-label="anchor" href="#encouragement-designs"><i class="fas fa-link"></i></a>
-</h2>
-<div id="declaration-19" class="section level3">
-<h3>
-<span class="header-section-number">17.5.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-19"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-17"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
@@ -339,15 +377,15 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
   <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="dag-18" class="section level3">
+<div id="dag-16" class="section level3">
 <h3>
-<span class="header-section-number">17.5.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-18"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-16"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-340-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-335-1.svg" width="100%"></div>
 </div>
-<div id="example-14" class="section level3">
+<div id="example-13" class="section level3">
 <h3>
-<span class="header-section-number">17.5.3</span> Example<a class="anchor" aria-label="anchor" href="#example-14"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-13"><i class="fas fa-link"></i></a>
 </h3>
 <p>To do: demonstrate how violations of no defiers and excludability leads to bias.</p>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
@@ -396,21 +434,37 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <span class="op">)</span>
 
 <span class="va">simulations_df</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-344-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-339-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
 </div>
 </div>
-<div id="stepped-wedge-designs" class="section level2">
+<div id="multiperiod-designs" class="section level2">
 <h2>
-<span class="header-section-number">17.6</span> Stepped wedge designs<a class="anchor" aria-label="anchor" href="#stepped-wedge-designs"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5</span> Multiperiod Designs<a class="anchor" aria-label="anchor" href="#multiperiod-designs"><i class="fas fa-link"></i></a>
 </h2>
+<ul>
+<li><p>Baseline-endline (connection to covariate control, e.g., controlling for Y_pre)</p></li>
+<li>
+<p>multiple rounds of post-treatment measurement.</p>
+<ul>
+<li>One justification is we’re interested in persistence.</li>
+<li>multiple measurements decrease variance.</li>
+<li>Inquiries: “persistence ratio” ATE_t2 / ATE_t1 versus “average persistence” (Y_{t2}(1) - Y_{t2}(0))/(Y_{t1}(1) - Y_{t1}(0))</li>
+</ul>
+</li>
+<li><p>Crossover</p></li>
+<li><p>Stepped Wedge</p></li>
+<li><p>Downstream experimentation. add ONE MORE PERIOD!</p></li>
+<li><p>Literature: “more T”, Durably reducing Transphobia. Nollywood is stepped wedge. Progressa for baseline endline?</p></li>
+<li><p>massive point is that we DONT use time to infer causal effects, we still use the random assignment.</p></li>
+</ul>
 <p>In a stepped wedge design, individuals are randomly assigned to enter into treatment in different stages and at each stage, their outcomes are remeasured. Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.1</a> illustrates where the study gets its name: as two units are randomly added to the treatment group in each of the three waves, the treatment group increases in “steps” while the control group diminishes.</p>
 <p>Often, stepped wedge designs are vaunted for their policy appeal because they allow for everyone to be (eventually) treated in the context of an experiment. However, you could achieve the same goal in a regular two-arm trial by treating everyone after the final wave of measurement, and not all stepped wedge designs involve treating everyone. Beyond its ethical and logistical appeal, the design can squeeze more power out of a small sample by treating each wave as though it were its own study.</p>
-<div id="declaration-20" class="section level3">
+<div id="declaration-18" class="section level3">
 <h3>
-<span class="header-section-number">17.6.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-20"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-18"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li><p><strong>M</strong>odel: Eight units are randomized and remeasured at three time points. Importantly, any unit at any given point in time reveals one of only two potential outcomes — treated or untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific shock. Treated potential outcomes increase relative to the control potential outcome by a rate of 1 each period — in other words, there are bigger treatment effects in later periods.</p></li>
@@ -465,20 +519,20 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 </p>
 </div>
 </div>
-<div id="dag-19" class="section level3">
+<div id="dag-17" class="section level3">
 <h3>
-<span class="header-section-number">17.6.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-19"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-17"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-350-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-345-1.svg" width="100%"></div>
 </div>
-<div id="example-15" class="section level3">
+<div id="example-14" class="section level3">
 <h3>
-<span class="header-section-number">17.6.3</span> Example<a class="anchor" aria-label="anchor" href="#example-15"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5.3</span> Example<a class="anchor" aria-label="anchor" href="#example-14"><i class="fas fa-link"></i></a>
 </h3>
 </div>
 <div id="exercises-6" class="section level3">
 <h3>
-<span class="header-section-number">17.6.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-6"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.5.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-6"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Add an answer strategy to the design that doesn’t include IPWs and diagnose the design.</li>
@@ -494,14 +548,19 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <!-- - Comparing 1 and 2, stepped wedge gives a big improvement in power, is --><!-- unbiased, and gets the coverage correct. Clearly better than just doing a --><!-- cross-section at wave 2.  --><!-- - Estimator 3 shows two pitfalls, however, that can lead us to overestimate --><!-- benefits of SW. --><!-- 1. First, it is biased: [explain how treated POs are more commonly observed in --><!-- periods when they're higher, we need to weight for this. How weights come about: --><!-- There is one way that a unit can be observed in a treated state in wave 1: they --><!-- are assigned to W1 with probability `p_W1`. There are two ways in which a unit --><!-- can be treated in wave 2: they are assigned in W1 with `p_W1` or in W2 with --><!-- `p_W2`. Because being assigned in W1 or in W2 are exclusive and independent --><!-- events, we can get the prob of being treated in any period by wave 2 by summing --><!-- the probs.] --><!-- 2. Second, standard errors are wrong. Units should be treated as clusters (draw --><!-- analogue to two-stage random assignment in saturation design?) --><!-- A natural question is how power changes as more or fewer units are assigned.  --><!-- Here, we consider variations on the stepped wedge design declared above, in  --><!-- which we hold constant at 3 the number of units assigned to the pure control,  --><!-- and shift an increasing proportion of the assignment to later waves. --><!-- ```{r} --><!-- designs <- list( --><!--   a = redesign(design, p_00 = 3/8, p_W1 =  3/8, p_W2 = 1/8, p_W3 = 1/8), --><!--   b = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 2/8, p_W3 = 1/8), --><!--   c = redesign(design, p_00 = 3/8, p_W1 =  2/8, p_W2 = 1/8, p_W3 = 2/8), --><!--   d = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 3/8, p_W3 = 1/8), --><!--   e = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 2/8, p_W3 = 2/8), --><!--   f = redesign(design, p_00 = 3/8, p_W1 =  1/8, p_W2 = 1/8, p_W3 = 3/8) --><!--   ) --><!-- ``` --><!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} --><!-- # Diagnose design --><!-- diagnoses <- diagnose_designs(designs) --><!-- ``` --><!-- ```{r, echo = FALSE, purl = FALSE} --><!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file --><!-- rds_file_path <- paste0(get_dropbox_path("05_Stepped_Wedge_Designs.Rmd"), "/diagnoses.RDS") --><!-- if (do_diagnosis & !exists("do_bookdown")) { --><!--   write_rds(diagnoses, path = rds_file_path) --><!-- } --><!-- diagnoses <- read_rds(rds_file_path) --><!-- ``` --><!-- ```{r, echo = FALSE} --><!-- designs_data <- names(designs) %>%  --><!--   lapply(function(name) designs[[name]] %>%  --><!--            draw_data %>%  --><!--            mutate(design_id = name)) %>%  --><!--   do.call(what = rbind,args = .) %>%  --><!--   arrange(design_id,wave,i) %>%  --><!--   group_by(t,design_id) %>% --><!--   mutate(i = 1:n(), Assignment = ifelse(Z == 1, "Treatment", "Control"))  --><!-- diags <- diagnoses %>%  --><!--   get_diagnosands() %>%  --><!--   filter(estimator_label == "2: Weighted, clustered SW") %>%  --><!--   mutate( --><!--     design_name = paste0("Design ", design_label, ": W1 = ",8*p_W1, --><!--                          "; W2 = ", 8*p_W2,  --><!--                          "; W3 = ", 8*p_W3,",\nPower = ",round(power,2) --><!--                          ) --><!--   ) --><!-- designs_data <- left_join(designs_data, diags %>% select(design_name, design_label), by = c("design_id" = "design_label")) --><!-- designs_data %>%  --><!--   ggplot(aes(x = t, y = i, fill = Assignment)) + --><!--   geom_tile(color = "white") +  --><!--   scale_fill_manual(values = c(control_color, treatment_color)) + --><!--   dd_theme() + facet_wrap(~ design_name, nrow = 1) +  --><!--   scale_y_continuous("",labels = NULL) --><!-- ``` --><!-- - We see a monotonic decrease in the power as more of the sample is treated  --><!-- later. This occurs because treating units later means observing less of the --><!-- potential outcomes. The potential outcomes are more variant, so we're better --><!-- off when we observe more of them [I think!] --><!-- ### Spillovers --><!-- An important assumption is that the potential outcomes revealed are not a --><!-- function of what wave the unit entered into treatment. In other words, there are --><!-- no Show how, in case of such spillovers, you can just treat the effects as --><!-- different, but then you lose power gains (and possibly change estimand) --><!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 </div>
-<div id="randomized-saturation-design" class="section level2">
+<div id="spillover-designs" class="section level2">
 <h2>
-<span class="header-section-number">17.7</span> Randomized Saturation Design<a class="anchor" aria-label="anchor" href="#randomized-saturation-design"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.6</span> Spillover designs<a class="anchor" aria-label="anchor" href="#spillover-designs"><i class="fas fa-link"></i></a>
 </h2>
+<p>two kinds of spillover designs</p>
+<ul>
+<li><p>“disconnected” graphs: e.g. connection within households but not across. this includes the “multilevel” design and also the “randomized saturation design”. Aronow shepherd paluck. Ichino and Scheundlin. Sinclair mcconnell green.</p></li>
+<li><p>“connected” graphs: stoves, lawnsigns, twitter. Assumption about invariance “far enough” away. Worms.</p></li>
+</ul>
 <p>Randomized saturation designs are used to measure the diffusion of treatment effects throughout a pre-defined area or network (<span class="citation">Baird et al. (<a href="references.html#ref-bairdetal2018" role="doc-biblioref">2018</a>)</span>). The design works in two phases. First, entire areas or networks are randomly assigned to <em>saturations</em>, e.g. 0%, 25%, and 75% saturation. Then, in each network, units are individually assigned in proportions determined by the saturations: e.g., in the groups randomly assigned to 0%, none of the units are assigned to treatment, while in the groups assigned to 25% and 75%, one-quarter and three-quarters of the units are assigned to treatment, respectively. By comparing untreated units in the 0% groups to their <em>untreated</em> counterparts in the higher-saturation networks, researchers can estimate the indirect treatment effects that result from saturation-induced spillovers.</p>
-<div id="declaration-21" class="section level3">
+<div id="declaration-19" class="section level3">
 <h3>
-<span class="header-section-number">17.7.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-21"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.6.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-19"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li><p><strong>M</strong>odel: There are four networks each comprised of four units. Units’ treatment assignment is a function of their network’s saturation assignment, which in turn defines the amount of spillover they receive. The spillover is equal to the proportion of units treated in the network. Potential outcomes are thus defined in terms of <code>S</code>—the unit’s group’s saturation—and <code>Z</code>—whether or not a unit is treated.</p></li>
@@ -509,16 +568,7 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <li><p><strong>D</strong>ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.</p></li>
 </ul>
-<!-- # ```{r} --><!-- # design <-  --><!-- #   declare_population(network = add_level(N = 4),  --><!-- #                      unit = add_level(N = 4, U = rnorm(N))) + --><!-- #   declare_assignment(assignment_variable = "S",  --><!-- #                      clusters = network,  --><!-- #                      conditions = c("low","high")) + --><!-- #   declare_assignment(prob = 0.25,  --><!-- #                      blocks = network,  --><!-- #                      assignment_variable = "Z_S_low") + --><!-- #   declare_assignment(prob = 0.75,  --><!-- #                      blocks = network,  --><!-- #                      assignment_variable = "Z_S_high") + --><!-- #   declare_step(spillover_low = ave(Z_S_low, network, FUN = mean),  --><!-- #                spillover_high = ave(Z_S_high, network, FUN = mean),handler = fabricate)  + --><!-- #   declare_potential_outcomes(Y ~ Z + spillover_low * (S == "low") +  --><!-- #                                Z * spillover_high * (S == "high") + U, --><!-- #                              conditions = list(Z = c(0, 1),  S = c("low", "high"))) + --><!-- #   declare_estimand(ate_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low), --><!-- #                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) + --><!-- #   reveal_outcomes(Z,S) + --><!-- #   declare_step(ipw = 1 / ( --><!-- #     S_cond_prob * (Z_S_low_cond_prob * (S == "low") +  --><!-- #                      Z_S_high_cond_prob * (S == "high"))), --><!-- #     handler = fabricate) + --><!-- #   reveal_outcomes(Y, c(Z, S)) + --><!-- #   declare_estimator( --><!-- #     Y ~ Z * S, --><!-- #     clusters = network, --><!-- #     model = lm_robust, --><!-- #     term = c("Z", "Shigh"), --><!-- #     estimand = c("ate_no_spill", "ate_saturation"), --><!-- #     weight = ipw --><!-- #   ) --><!-- # ``` --><!--
-JC Comment: I see that the previous version was far too complex but the updated version was
-misleadingly simple. The POs need to be a function of the proportion of units treated, not
-simply a fixed trait of the saturation category you're assigned to. As it was setup before,
-I could set the saturations at all sorts of crazy values and it makes no difference, it was
-basically a het-fx by blocks design. Also, the point and variance estimators were biased
-because this design requires IPWing. To me, the minimally sufficient declaration has to
-illustrate the design works in terms of bias and coverage in a DGP it was specifically
-setup to handle.
---><div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>,
@@ -541,30 +591,16 @@ setup to handle.
                     term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Z"</span>, <span class="st">"Shigh"</span><span class="op">)</span>,
                     estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_saturation"</span>, <span class="st">"ate_no_spill"</span><span class="op">)</span>,
                     label <span class="op">=</span> <span class="st">"main effect"</span><span class="op">)</span></code></pre></div>
-<!-- # ```{r saturation, echo = FALSE} -->
-<!-- # draw_data(design) %>%  -->
-<!-- #   mutate( -->
-<!-- #     label = paste0("Group ", group, "\nSaturation = ", S),  -->
-<!-- #     Z = as.factor(Z) -->
-<!-- #   ) %>%  -->
-<!-- #   ggplot() + -->
-<!-- #   geom_point(aes(y = 1, x = unit, shape = Z, color = Z))  + -->
-<!-- #   facet_wrap(~ label, scales = "free", nrow = 1) + -->
-<!-- #   theme(axis.title.y = element_blank(), -->
-<!-- #     axis.text.y = element_blank(), -->
-<!-- #     axis.ticks.y = element_blank(), -->
-<!-- #     axis.line = element_blank())  -->
-<!-- # ``` -->
 </div>
-<div id="dag-20" class="section level3">
+<div id="dag-18" class="section level3">
 <h3>
-<span class="header-section-number">17.7.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-20"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.6.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-18"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-356-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-351-1.svg" width="100%"></div>
 </div>
 <div id="exercises-7" class="section level3">
 <h3>
-<span class="header-section-number">17.7.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">17.6.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-7"><i class="fas fa-link"></i></a>
 </h3>
 <!-- - Increase the saturation of the "low" condition from 0% to 25% and diagnose the design. Notice how this changes the mean saturation and direct effect estimands. Now set the saturations both equal to 25%. Explain why the two estimands do or do not change. -->
 <ul>
@@ -591,53 +627,51 @@ setup to handle.
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#experimental-designs-for-causal-inference"><span class="header-section-number">17</span> Experimental designs for causal inference</a></li>
 <li>
-<a class="nav-link" href="#two-arm-trials-1"><span class="header-section-number">17.1</span> Two arm trials</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-15"><span class="header-section-number">17.1.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-14"><span class="header-section-number">17.1.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-10"><span class="header-section-number">17.1.3</span> Example</a></li>
+<a class="nav-link" href="#individually-randomized-designs"><span class="header-section-number">17.1</span> Individually-randomized designs</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#analytic-design-diagnosis"><span class="header-section-number">17.1.1</span> Analytic design diagnosis</a></li>
+<li><a class="nav-link" href="#design-diagnosis-through-simulation"><span class="header-section-number">17.1.2</span> Design diagnosis through simulation</a></li>
+<li><a class="nav-link" href="#increasing-precision-through-blocking"><span class="header-section-number">17.1.3</span> Increasing precision through blocking</a></li>
+<li><a class="nav-link" href="#increasing-precision-through-covariate-adjustment"><span class="header-section-number">17.1.4</span> Increasing precision through covariate adjustment</a></li>
+<li><a class="nav-link" href="#simulation-comparing-blocking-to-covariate-adjustment"><span class="header-section-number">17.1.5</span> Simulation comparing blocking to covariate adjustment</a></li>
+<li><a class="nav-link" href="#randomization-checks"><span class="header-section-number">17.1.6</span> Randomization checks</a></li>
+<li><a class="nav-link" href="#what-can-go-wrong"><span class="header-section-number">17.1.7</span> What can go wrong</a></li>
+<li><a class="nav-link" href="#example-10"><span class="header-section-number">17.1.8</span> Example</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#blocked-trials"><span class="header-section-number">17.2</span> Blocked trials</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-16"><span class="header-section-number">17.2.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-15"><span class="header-section-number">17.2.2</span> DAG</a></li>
+<a class="nav-link" href="#cluster-randomized-designs"><span class="header-section-number">17.2</span> Cluster-randomized designs</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#declaration-15"><span class="header-section-number">17.2.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-14"><span class="header-section-number">17.2.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-11"><span class="header-section-number">17.2.3</span> Example</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#blocked-cluster-trials"><span class="header-section-number">17.3</span> Blocked cluster trials</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-17"><span class="header-section-number">17.3.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-16"><span class="header-section-number">17.3.2</span> DAG</a></li>
+<a class="nav-link" href="#treatment-effect-heterogeneity"><span class="header-section-number">17.3</span> Treatment effect heterogeneity</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#declaration-16"><span class="header-section-number">17.3.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-15"><span class="header-section-number">17.3.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-12"><span class="header-section-number">17.3.3</span> Example</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#multiarm-designs"><span class="header-section-number">17.4</span> Multiarm Designs</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-18"><span class="header-section-number">17.4.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-17"><span class="header-section-number">17.4.2</span> DAG</a></li>
+<a class="nav-link" href="#designs-encountering-noncompliance"><span class="header-section-number">17.4</span> Designs encountering noncompliance</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#declaration-17"><span class="header-section-number">17.4.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-16"><span class="header-section-number">17.4.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-13"><span class="header-section-number">17.4.3</span> Example</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#encouragement-designs"><span class="header-section-number">17.5</span> Encouragement designs</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-19"><span class="header-section-number">17.5.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-18"><span class="header-section-number">17.5.2</span> DAG</a></li>
+<a class="nav-link" href="#multiperiod-designs"><span class="header-section-number">17.5</span> Multiperiod Designs</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#declaration-18"><span class="header-section-number">17.5.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-17"><span class="header-section-number">17.5.2</span> DAG</a></li>
 <li><a class="nav-link" href="#example-14"><span class="header-section-number">17.5.3</span> Example</a></li>
+<li><a class="nav-link" href="#exercises-6"><span class="header-section-number">17.5.4</span> Exercises</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#stepped-wedge-designs"><span class="header-section-number">17.6</span> Stepped wedge designs</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-20"><span class="header-section-number">17.6.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-19"><span class="header-section-number">17.6.2</span> DAG</a></li>
-<li><a class="nav-link" href="#example-15"><span class="header-section-number">17.6.3</span> Example</a></li>
-<li><a class="nav-link" href="#exercises-6"><span class="header-section-number">17.6.4</span> Exercises</a></li>
-</ul>
-</li>
-<li>
-<a class="nav-link" href="#randomized-saturation-design"><span class="header-section-number">17.7</span> Randomized Saturation Design</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-21"><span class="header-section-number">17.7.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-20"><span class="header-section-number">17.7.2</span> DAG</a></li>
-<li><a class="nav-link" href="#exercises-7"><span class="header-section-number">17.7.3</span> Exercises</a></li>
+<a class="nav-link" href="#spillover-designs"><span class="header-section-number">17.6</span> Spillover designs</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#declaration-19"><span class="header-section-number">17.6.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-18"><span class="header-section-number">17.6.2</span> DAG</a></li>
+<li><a class="nav-link" href="#exercises-7"><span class="header-section-number">17.6.3</span> Exercises</a></li>
 </ul>
 </li>
 </ul>

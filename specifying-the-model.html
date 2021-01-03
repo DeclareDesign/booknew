@@ -104,11 +104,23 @@ Y_i(1) &amp;= 1 + u_i
 Figure 6.1: Simple DAG. U is unobserved.
 </p>
 </div>
+<div id="visualizing-research-design-elements" class="section level2">
+<h2>
+<span class="header-section-number">6.1</span> Visualizing research design elements<a class="anchor" aria-label="anchor" href="#visualizing-research-design-elements"><i class="fas fa-link"></i></a>
+</h2>
+<p>The visual display of DAGs typically includes nodes connected by edges</p>
+<ul>
+<li><p>edges point only to nodes, not to other edges. Some frameworks for visualizing parametric causal models encode the presence of an interaction as an edge pointing to another edge, but we will not use that approach here.</p></li>
+<li><p>Pearl (pg. XXX) denotes conditioning on a variable in the answer stragegy with a box around the variable; we do follow this convention.</p></li>
+<li><p>CITE introduces intervention nodes – in that framework, variables that are manipulated by the researcher (as in a random assignement) are marked with a []. In that spirit, we introduce shapes for all three kinds of operations in a data strategy: circles for random assignments, triangles for sampling, and squares for measurement procedures.</p></li>
+</ul>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-104-1.svg" width="100%"></div>
 <!-- This is good text but for answer stratgy: -->
 <!-- Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting by applying the "back-door criterion," which asks whether a back-door path exists between a pair of causally-related variables. Here, the causal relationship between $X$ and $Y$ is confounded by the back-door path $X \leftarrow U \rightarrow Z$. (for much more on the back-door criterion, see XXX). Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned. There are no back door paths leading from $Z$ to $Y$, so we *can* learn more easily about average causal effects of $Z$ on $Y$. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances. -->
+</div>
 <div id="what-is-the-population" class="section level2">
 <h2>
-<span class="header-section-number">6.1</span> What is the population?<a class="anchor" aria-label="anchor" href="#what-is-the-population"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.2</span> What is the population?<a class="anchor" aria-label="anchor" href="#what-is-the-population"><i class="fas fa-link"></i></a>
 </h2>
 <p>The first choice to make in declaring <span class="math inline">\(M\)</span> is the set of units about which you wish to make inferences. This is largely determined by your inquiry (<span class="math inline">\(I\)</span>). We might usefully distinguish between three types of sets of units—all of which we will refer to as your “population.”</p>
 <ul>
@@ -156,19 +168,19 @@ Y_Z_1
 001
 </td>
 <td style="text-align:right;">
-2.321
+0.108
 </td>
 <td style="text-align:right;">
-1.003
+0.963
 </td>
 <td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
-2.321
+0.108
 </td>
 <td style="text-align:right;">
-3.324
+1.071
 </td>
 </tr>
 <tr>
@@ -176,19 +188,19 @@ Y_Z_1
 002
 </td>
 <td style="text-align:right;">
--0.843
+0.268
 </td>
 <td style="text-align:right;">
-0.874
+0.919
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
--0.843
+0.268
 </td>
 <td style="text-align:right;">
-0.032
+1.187
 </td>
 </tr>
 <tr>
@@ -196,19 +208,19 @@ Y_Z_1
 003
 </td>
 <td style="text-align:right;">
--0.104
+0.118
 </td>
 <td style="text-align:right;">
-1.030
+1.118
 </td>
 <td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
--0.104
+0.118
 </td>
 <td style="text-align:right;">
-0.926
+1.236
 </td>
 </tr>
 <tr>
@@ -216,19 +228,19 @@ Y_Z_1
 004
 </td>
 <td style="text-align:right;">
--0.058
+-0.923
 </td>
 <td style="text-align:right;">
-0.997
+0.960
 </td>
 <td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
--0.058
+-0.923
 </td>
 <td style="text-align:right;">
-0.940
+0.037
 </td>
 </tr>
 <tr>
@@ -236,19 +248,19 @@ Y_Z_1
 005
 </td>
 <td style="text-align:right;">
--0.583
+1.324
 </td>
 <td style="text-align:right;">
-0.784
+1.173
 </td>
 <td style="text-align:right;">
 1
 </td>
 <td style="text-align:right;">
--0.583
+1.324
 </td>
 <td style="text-align:right;">
-0.201
+2.498
 </td>
 </tr>
 </tbody>
@@ -264,12 +276,12 @@ Y_Z_1
 </div>
 <div id="what-variables-to-include" class="section level2">
 <h2>
-<span class="header-section-number">6.2</span> What variables to include?<a class="anchor" aria-label="anchor" href="#what-variables-to-include"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.3</span> What variables to include?<a class="anchor" aria-label="anchor" href="#what-variables-to-include"><i class="fas fa-link"></i></a>
 </h2>
 <!-- perhaps give technical definition of a variable -->
 <div id="types-of-variables" class="section level3">
 <h3>
-<span class="header-section-number">6.2.1</span> Types of variables<a class="anchor" aria-label="anchor" href="#types-of-variables"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.3.1</span> Types of variables<a class="anchor" aria-label="anchor" href="#types-of-variables"><i class="fas fa-link"></i></a>
 </h3>
 <p>The key components in the model above and all the reference models we examine are the “variables” (or “nodes”) and the ways these stand in relation to each other. Informally, a variable is a quantity that can take on different values: the day of the week, the winner of an election, the height of a mountain. All variables are formally similar but they can play distinguished roles in a model.</p>
 <p>Often variables are labeled according to the role they play in a causal model and, in later discussions, we will often refer to variables in this way using the following terms:</p>
@@ -300,7 +312,7 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 </div>
 <div id="what-variables-are-needed-for-declaration-and-diagnosis" class="section level3">
 <h3>
-<span class="header-section-number">6.2.2</span> What variables are <em>needed</em> for declaration and diagnosis?<a class="anchor" aria-label="anchor" href="#what-variables-are-needed-for-declaration-and-diagnosis"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.3.2</span> What variables are <em>needed</em> for declaration and diagnosis?<a class="anchor" aria-label="anchor" href="#what-variables-are-needed-for-declaration-and-diagnosis"><i class="fas fa-link"></i></a>
 </h3>
 <p>When considering what variables to include in a model, researchers are often torn between two conflicting goals. First, we want to learn more and more about how the world works or in other words, to fill in more and more of a large causal model. There are an infinite number of nodes and edges in this model — from how people vote to how they save and spend money to how they find romantic partners, all of which are interrelated. Second, we generally seek simple explanations where possible. Indeed in some accounts, the point of research is to generate simplified representations of the world. The analogy of a map is often used: a useful map usually should have less detail than the object it is mapping.</p>
 <p>We are used to these considerations vying with each other when choosing which variables “of interest” to include in a model. For instance, which are the causes to examine when explaining an outcome. We highlight here that in the MIDA framework, the first consideration – realism – likely carries more weight than in other settings. The reason is that the model, as understood here, is not the analysis but <em>the benchmark against which your analysis will be assessed</em>. An excellent “analytic model” might ignore unimportant details about a problem, but your reference model might have to specify these details in order to establish that indeed they can be ignored without harming your inferences.</p>
@@ -314,7 +326,7 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 </div>
 <div id="specifying-structural-relations" class="section level2">
 <h2>
-<span class="header-section-number">6.3</span> Specifying structural relations<a class="anchor" aria-label="anchor" href="#specifying-structural-relations"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.4</span> Specifying structural relations<a class="anchor" aria-label="anchor" href="#specifying-structural-relations"><i class="fas fa-link"></i></a>
 </h2>
 <p>DAGs convey beliefs about <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we will need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
 <p>A slightly more complex example helps demonstrate how we can use a model declaration to facilitate the representation of a class of possibly stochastic models. Suppose that according to our model, the effect of <span class="math inline">\(Z\)</span> should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in the design declaration below. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard deviation 1; <span class="math inline">\(X\)</span> follows a Bernoulli distribution. In the <code>declare_potential_outcomes</code> function, we describe how the average effect of treatment depends on <span class="math inline">\(X\)</span>.</p>
@@ -339,13 +351,13 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 </div>
 <div id="substantive-justifications-for-choices-of-nodes-and-equations" class="section level2">
 <h2>
-<span class="header-section-number">6.4</span> Substantive justifications for choices of nodes and equations<a class="anchor" aria-label="anchor" href="#substantive-justifications-for-choices-of-nodes-and-equations"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.5</span> Substantive justifications for choices of nodes and equations<a class="anchor" aria-label="anchor" href="#substantive-justifications-for-choices-of-nodes-and-equations"><i class="fas fa-link"></i></a>
 </h2>
 <p>So far we have described formal considerations but we have not described substantive considerations for including particular variables or stipulating particular relations between them.</p>
 <p>The justification for your choice of reference model will depend on the purpose of your design. Broadly we distinguish between reality tracking models, discursive models, and sufficient models.</p>
 <div id="reality-tracking-models" class="section level3">
 <h3>
-<span class="header-section-number">6.4.1</span> Reality tracking models<a class="anchor" aria-label="anchor" href="#reality-tracking-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.5.1</span> Reality tracking models<a class="anchor" aria-label="anchor" href="#reality-tracking-models"><i class="fas fa-link"></i></a>
 </h3>
 <p>Reality tracking reference models seek to approximate the truth as well as possible.</p>
 <p>The content of these models typically comes from two places: reading the past literature and qualitative research. Past theoretical work can guide the set of nodes that are relevant and how they are connected by edges. Past empirical work can provide further insight into the set of edges that exist (or do not). However, when past research is thin on a topic, there is no substitute for insights gained through qualitative data collection: focus groups and interviews with key informants who know aspects of the model that are hidden from the researcher; archival investigations to understand a causal process when the actors in it are no longer alive, or to gain insights only contained in administrative records; and immersive participant observation to see with your eyes how social actors behave. <span class="citation">Fenno (<a href="references.html#ref-fenno1978home" role="doc-biblioref">1978</a>)</span> calls this “soaking and poking.” This mode of inquiry, discovery, is separate from the qualitative research designs that provide an answer to an inquiry deductively. We examine those throughout the book. Instead, qualitative insights such as this, which <span class="citation">Lieberman (<a href="references.html#ref-lieberman2005nested" role="doc-biblioref">2005</a>)</span> labels “model-building” case studies, do not aim to answer a question but rather yield a new theoretical model. Quantitative research is often seen as distinct from qualitative research, but the model building phase in both is itself qualitative.</p>
@@ -358,25 +370,25 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 </div>
 <div id="discursive-models" class="section level3">
 <h3>
-<span class="header-section-number">6.4.2</span> Discursive models<a class="anchor" aria-label="anchor" href="#discursive-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.5.2</span> Discursive models<a class="anchor" aria-label="anchor" href="#discursive-models"><i class="fas fa-link"></i></a>
 </h3>
 <p>For some purposes, the reference model might be developed not to track reality, but to reflect assumptions in a scholarly debate. For instance, the purpose might be to question whether a given conclusion is valid <strong>under the assumptions maintained by some scholarly community</strong>. Indeed it is possible that a reference model is used specifically because the researcher thinks it is inaccurate, allowing them to show that even if they are wrong about some assumptions about the world in <span class="math inline">\(M\)</span>, their analysis will produce useful answers.</p>
 <p>A particularly important class of discursive models are what might be called “agnostic models”: models that make weaker assumptions about the world than the researcher in good faith holds. In a directed acyclic graph, every arrow indicates a possible relation between a cause and an outcome. The big assumptions in these models, however, are not seen in the arrows but the absence of arrows: every missing arrow represents a claim that an outcome is not affected by a possible cause. Analysis strategies often depend upon such assumptions. Even when arrows are included, functional relations might presuppose particular features important for inference. For instance, a researcher using “instrumental variables” analysis will generally assume that <span class="math inline">\(Z\)</span> causes <span class="math inline">\(Y\)</span> through <span class="math inline">\(D\)</span> but not through other paths. This is an assumption about absent arrows. The same analysis might also assume that <span class="math inline">\(Z\)</span> never affects <span class="math inline">\(D\)</span> negatively. That is an assumption about functional forms. An agnostic reference model might loosen these assumptions, allow for the possibility of violations of exclusion restrictions and violations of monotonicity assumptions and use this to see how analysis fares under conditions that the researcher believes not to be true, but that a skeptic might be willing to entertain.</p>
 </div>
 <div id="sufficient-models" class="section level3">
 <h3>
-<span class="header-section-number">6.4.3</span> Sufficient models<a class="anchor" aria-label="anchor" href="#sufficient-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.5.3</span> Sufficient models<a class="anchor" aria-label="anchor" href="#sufficient-models"><i class="fas fa-link"></i></a>
 </h3>
 <p>For some purposes, the validity of inferences or the lessons learned from a diagnosis do not depend on the realized world <span class="math inline">\(w\)</span> being among the set of possible draws of <span class="math inline">\(M\)</span> , the relevant question is only whether the kinds of inferences one might draw given stipulated reference models would also hold reasonable well for the true data generating process. For instance, if your aim is to assess whether an analysis strategy generates an unbiased estimate of a treatment effect you may go to pains to make sure that that you model treatment assignment carefully but modeling the size of a treatment effect correctly may not be important. The idea is that what you learn from the model that you do study is sufficient for inferences about a broader class of models within which the true data generating process might lie.</p>
 </div>
 </div>
 <div id="getting-it-right" class="section level2">
 <h2>
-<span class="header-section-number">6.5</span> Getting it right?<a class="anchor" aria-label="anchor" href="#getting-it-right"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.6</span> Getting it right?<a class="anchor" aria-label="anchor" href="#getting-it-right"><i class="fas fa-link"></i></a>
 </h2>
 <div id="robustness-to-multiple-models" class="section level3">
 <h3>
-<span class="header-section-number">6.5.1</span> Robustness to multiple models<a class="anchor" aria-label="anchor" href="#robustness-to-multiple-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.6.1</span> Robustness to multiple models<a class="anchor" aria-label="anchor" href="#robustness-to-multiple-models"><i class="fas fa-link"></i></a>
 </h3>
 <p>We noted that the most uncomfortable part of declaring <span class="math inline">\(M\)</span> is choosing point estimates of its parameters such as the effect size, the mean and variance of the normal distribution that describes unknown heterogeneity. But we also emphasized that there is in general no need to specify a single point! Indeed, our uncertainty about the model should usually lead us to a range or even empirical distribution from past studies of each parameter.</p>
 <p>We suggest three strategies for choosing these ranges: the <em>logical bounds</em> of a parameter, such as choosing the range of possible effect sizes based on the largest change from the bottom of a scale to the top of a scale; the <em>empirical distribution</em> from past studies, either the full range of the parameter or the predictive interval from a random effects meta-analysis; or a <em>best case</em>-<em>worst case</em> bounds, based on the substantive interpretation of results in light of past results, for example ranging from an effect size of zero to the largest plausible effect size. A design that performs well in terms of power and bias under one or all of these three ranges for each parameter might be labeled “robust to multiple models.”</p>
@@ -386,14 +398,14 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 </div>
 <div id="fundamental-uncertainty" class="section level3">
 <h3>
-<span class="header-section-number">6.5.2</span> Fundamental uncertainty<a class="anchor" aria-label="anchor" href="#fundamental-uncertainty"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.6.2</span> Fundamental uncertainty<a class="anchor" aria-label="anchor" href="#fundamental-uncertainty"><i class="fas fa-link"></i></a>
 </h3>
 <p>Even the best reference models are sure to be simplifications of the true data generating process. The true causal structure of the world <span class="math inline">\(W\)</span> generates draws from the world <span class="math inline">\(w\)</span>. The inquiry <span class="math inline">\(I\)</span> might not even be defined under <span class="math inline">\(W\)</span>. That is, <span class="math inline">\(I(w)\)</span> might be <span class="math inline">\(NA\)</span>. Applying the data strategy <span class="math inline">\(D\)</span> to <span class="math inline">\(w\)</span> might produce unexpected results. That is, <span class="math inline">\(D(w)\)</span> need not be anything like <span class="math inline">\(D(m)\)</span>. This disjuncture is in large part the point of doing research in the first place. We do not know <span class="math inline">\(W\)</span> – that would require omniscience. We have learned parts of <span class="math inline">\(W\)</span> and put them in <span class="math inline">\(M\)</span> – that’s science. When research produces unexpected results, it’s an indication that something in MIDA is out of whack and it is an opportunity for learning. The <em>next</em> research project will amend MIDA in order to bring <span class="math inline">\(M\)</span> closer to <span class="math inline">\(W\)</span>.</p>
 </div>
 </div>
 <div id="sets-of-models" class="section level2">
 <h2>
-<span class="header-section-number">6.6</span> Sets of models<a class="anchor" aria-label="anchor" href="#sets-of-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.7</span> Sets of models<a class="anchor" aria-label="anchor" href="#sets-of-models"><i class="fas fa-link"></i></a>
 </h2>
 <p>Every research design starts with a small part of <span class="math inline">\(W\)</span> to study, often a hypothesized relationship between two variables <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>. We return at the end of the section to an even simpler starting point: a single variable <span class="math inline">\(Y\)</span> that we wish to describe. Our initial model describes just this “starting point”:</p>
 <div class="figure">
@@ -440,7 +452,18 @@ theory_B
 <tbody>
 <tr>
 <td style="text-align:left;">
-X&lt;-U;D-&gt;X;D&lt;-Y
+Y&lt;-X;D&lt;-U;D-&gt;Y
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y&lt;-U;D&lt;-U;D&lt;-X;
 </td>
 <td style="text-align:left;">
 FALSE
@@ -451,7 +474,7 @@ FALSE
 </tr>
 <tr>
 <td style="text-align:left;">
-X&lt;-U;Y-&gt;X;D&lt;-U;D&lt;-Y
+X&lt;-U;Y-&gt;X;D-&gt;X;
 </td>
 <td style="text-align:left;">
 FALSE
@@ -462,21 +485,10 @@ FALSE
 </tr>
 <tr>
 <td style="text-align:left;">
-X&lt;-U;Y&lt;-X;D&lt;-U;
+Y&lt;-U;Y&lt;-X;D&lt;-U;D-&gt;X;D-&gt;Y
 </td>
 <td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Y-&gt;X;D&lt;-U;D&lt;-Y
-</td>
-<td style="text-align:left;">
-FALSE
+TRUE
 </td>
 <td style="text-align:left;">
 FALSE
@@ -484,10 +496,10 @@ FALSE
 </tr>
 <tr>
 <td style="text-align:left;">
-D&lt;-U;D&lt;-X;
+Y&lt;-U;Y-&gt;X;D&lt;-X;D-&gt;Y
 </td>
 <td style="text-align:left;">
-FALSE
+TRUE
 </td>
 <td style="text-align:left;">
 FALSE
@@ -495,7 +507,7 @@ FALSE
 </tr>
 <tr>
 <td style="text-align:left;">
-Y&lt;-U;Y-&gt;X;D&lt;-U;D&lt;-X;D&lt;-Y
+Y&lt;-U;Y&lt;-X;D-&gt;X;
 </td>
 <td style="text-align:left;">
 FALSE
@@ -535,28 +547,29 @@ FALSE
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#specifying-the-model"><span class="header-section-number">6</span> Specifying the model</a></li>
-<li><a class="nav-link" href="#what-is-the-population"><span class="header-section-number">6.1</span> What is the population?</a></li>
+<li><a class="nav-link" href="#visualizing-research-design-elements"><span class="header-section-number">6.1</span> Visualizing research design elements</a></li>
+<li><a class="nav-link" href="#what-is-the-population"><span class="header-section-number">6.2</span> What is the population?</a></li>
 <li>
-<a class="nav-link" href="#what-variables-to-include"><span class="header-section-number">6.2</span> What variables to include?</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#types-of-variables"><span class="header-section-number">6.2.1</span> Types of variables</a></li>
-<li><a class="nav-link" href="#what-variables-are-needed-for-declaration-and-diagnosis"><span class="header-section-number">6.2.2</span> What variables are needed for declaration and diagnosis?</a></li>
+<a class="nav-link" href="#what-variables-to-include"><span class="header-section-number">6.3</span> What variables to include?</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#types-of-variables"><span class="header-section-number">6.3.1</span> Types of variables</a></li>
+<li><a class="nav-link" href="#what-variables-are-needed-for-declaration-and-diagnosis"><span class="header-section-number">6.3.2</span> What variables are needed for declaration and diagnosis?</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#specifying-structural-relations"><span class="header-section-number">6.3</span> Specifying structural relations</a></li>
+<li><a class="nav-link" href="#specifying-structural-relations"><span class="header-section-number">6.4</span> Specifying structural relations</a></li>
 <li>
-<a class="nav-link" href="#substantive-justifications-for-choices-of-nodes-and-equations"><span class="header-section-number">6.4</span> Substantive justifications for choices of nodes and equations</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#reality-tracking-models"><span class="header-section-number">6.4.1</span> Reality tracking models</a></li>
-<li><a class="nav-link" href="#discursive-models"><span class="header-section-number">6.4.2</span> Discursive models</a></li>
-<li><a class="nav-link" href="#sufficient-models"><span class="header-section-number">6.4.3</span> Sufficient models</a></li>
+<a class="nav-link" href="#substantive-justifications-for-choices-of-nodes-and-equations"><span class="header-section-number">6.5</span> Substantive justifications for choices of nodes and equations</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#reality-tracking-models"><span class="header-section-number">6.5.1</span> Reality tracking models</a></li>
+<li><a class="nav-link" href="#discursive-models"><span class="header-section-number">6.5.2</span> Discursive models</a></li>
+<li><a class="nav-link" href="#sufficient-models"><span class="header-section-number">6.5.3</span> Sufficient models</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#getting-it-right"><span class="header-section-number">6.5</span> Getting it right?</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#robustness-to-multiple-models"><span class="header-section-number">6.5.1</span> Robustness to multiple models</a></li>
-<li><a class="nav-link" href="#fundamental-uncertainty"><span class="header-section-number">6.5.2</span> Fundamental uncertainty</a></li>
+<a class="nav-link" href="#getting-it-right"><span class="header-section-number">6.6</span> Getting it right?</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#robustness-to-multiple-models"><span class="header-section-number">6.6.1</span> Robustness to multiple models</a></li>
+<li><a class="nav-link" href="#fundamental-uncertainty"><span class="header-section-number">6.6.2</span> Fundamental uncertainty</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#sets-of-models"><span class="header-section-number">6.6</span> Sets of models</a></li>
+<li><a class="nav-link" href="#sets-of-models"><span class="header-section-number">6.7</span> Sets of models</a></li>
 </ul>
 
       <div class="book-extra">

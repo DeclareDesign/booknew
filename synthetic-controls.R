@@ -94,10 +94,10 @@ nodes <-
     x = c(5, 1, 1, 3, 5),
     y = c(1.5,3.5, 1, 2.5, 2.5), 
     nudge_direction = c("S", "N", "S", "S","N"),
-    answer_strategy = "uncontrolled")
-    
-    
+    data_strategy = c("unmanipulated", "unmanipulated", "unmanipulated", "assignment", "unmanipulated"),
+    answer_strategy = "uncontrolled"
+  )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df

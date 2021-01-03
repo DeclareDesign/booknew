@@ -10,12 +10,6 @@ library(dagitty)
 library(dddag)
 library(ggraph)
 
-design <-
-  declare_population(N = 100, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + U) +
-  declare_assignment(prob = 0.5) 
-
-
 dag <- dagify(Y ~ Z + U)
 
 nodes <-
@@ -30,12 +24,100 @@ nodes <-
     x = c(1, 5, 5),
     y = c(1.5, 3.5,  1.5), 
     nudge_direction = c("S", "N", "S"),
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
+
+# assignment
+dag <- dagify(Y ~ D,
+              D ~ Z)
+
+nodes <-
+  tibble(
+    name = c("Z", "D", "Y"),
+    label = c("Z", "D", "Y"),
+    annotation = c("**Random assignment**",
+                   "**Treatment**",
+                   "**Observed outcome**"),
+    x = c(1, 3, 5),
+    y = c(2, 2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_assignment <- base_dag_plot %+% ggdd_df
+
+# sampling
+dag <- dagify(Y ~ S)
+
+nodes <-
+  tibble(
+    name = c("S", "Y"),
+    label = c("S", "Y"),
+    annotation = c("**Random sampling**",
+                   "**Observed outcome**"),
+    x = c(1, 5),
+    y = c(2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("sampling", "unmanipulated"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_sampling <- base_dag_plot %+% ggdd_df
+
+
+# measurement
+dag <- dagify(Y ~ Q + Ystar)
+
+nodes <-
+  tibble(
+    name = c("Ystar", "Y", "Q"),
+    label = c("Y^*", "Y", "Q"),
+    annotation = c("**Latent outcome**",
+                   "**Observed outcome**",
+                   "**Measurement tool**"),
+    x = c(1, 3, 5),
+    y = c(2, 2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("unmanipulated", "unmanipulated", "measurement"),
+    answer_strategy = "uncontrolled"
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_measurement <- base_dag_plot %+% ggdd_df
+
+# adjustment 
+dag <- dagify(Y ~ Z + X)
+
+nodes <-
+  tibble(
+    name = c("Z", "Y", "X"),
+    label = c("Z", "Y", "X"),
+    annotation = c("**Treatment assignment**",
+                   "**Observed outcome**",
+                   "**Pretreatment covariate**"),
+    x = c(1, 3, 5),
+    y = c(2, 2, 2), 
+    nudge_direction = "N",
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated"),
+    answer_strategy = c("uncontrolled", "uncontrolled", "controlled")
+  )
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+gg_adjustment <- base_dag_plot %+% ggdd_df
+
+(gg_assignment + gg_sampling) / (gg_measurement + gg_adjustment)
 
 M <-
   declare_population(N = 100, 
@@ -95,10 +177,11 @@ nodes <-
     x = c(1, 3, 5, 5, 5, 3, 3, 2),
     y = c(2.5, 4, 1, 2.5, 4, 1, 2.5, 2.5), 
     nudge_direction = c("N", "N", "S", "E", "N", "S", "N", "S"),
+    data_strategy = c("assignment", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, M)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
 

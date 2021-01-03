@@ -35,7 +35,7 @@ design <-
   declare_estimator(Y ~ A1 + A2 + A3,
                     model = lm_robust, term = TRUE)
 
-dag <- dagify(Y ~ E,
+dag <- dagify(Y ~ E, 
               E ~ U + A1 + A2 + A3)
 
 nodes <-
@@ -51,9 +51,10 @@ nodes <-
     x = c(1, 1, 1, 3.5, 5, 3.5),
     y = c(4, 2.5, 1, 2.5, 2.5, 4),
     nudge_direction = c("N", "N", "N", "S", "N", "N"),
+    data_strategy = c("assignment", "assignment", "assignment", "unmanipulated", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
 
-ggdd_df <- make_dag_df(dag, nodes, design)
+ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
