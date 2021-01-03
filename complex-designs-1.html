@@ -103,7 +103,7 @@
 <span class="header-section-number">18.1.2</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-20"><i class="fas fa-link"></i></a>
 </h3>
 <p>The declaration makes use of two conditional estimators.</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># An estimator that estimates on testing data only if </span>
 <span class="co"># estimates on training data were significant</span>
 
@@ -127,48 +127,48 @@
     term <span class="op">=</span> <span class="st">"Z:X"</span>,
     stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></code></pre></div>
 <p>We now declare the design:</p>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># The design</span>
 
 <span class="va">discovery</span> <span class="op">&lt;-</span> 
   
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">200</span>, 
     X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span> <span class="op">%%</span> <span class="fl">2</span><span class="op">)</span><span class="op">==</span><span class="fl">1</span>,
     het_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">.5</span><span class="op">)</span>,<span class="fl">1</span>,<span class="cn">TRUE</span><span class="op">)</span>,
     train <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span> <span class="op">%%</span> <span class="fl">2</span><span class="op">)</span><span class="op">==</span><span class="fl">1</span>,
     u <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">het_effect</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">u</span><span class="op">)</span> <span class="op">+</span> 
-    <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu">declare_assignment</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">het_effect</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">u</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
     
   <span class="co"># Main analysis</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"Main"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"Main"</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Exploration</span>
-  <span class="fu">declare_step</span><span class="op">(</span>
-      train_p <span class="op">=</span> <span class="op">(</span><span class="fu">lm_robust</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span>, subset <span class="op">=</span> <span class="va">train</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">]</span>,
-      all_p   <span class="op">=</span> <span class="op">(</span><span class="fu">lm_robust</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">tidy</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">]</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_step.html">declare_step</a></span><span class="op">(</span>
+      train_p <span class="op">=</span> <span class="op">(</span><span class="fu">lm_robust</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span>, subset <span class="op">=</span> <span class="va">train</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">]</span>,
+      all_p   <span class="op">=</span> <span class="op">(</span><span class="fu">lm_robust</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span>,<span class="fl">4</span><span class="op">]</span>,
       handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span>
     
-  <span class="fu">declare_estimand</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>
     het <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span><span class="op">[</span><span class="va">X</span><span class="op">]</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">[</span><span class="va">X</span><span class="op">]</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span><span class="op">[</span><span class="op">!</span><span class="va">X</span><span class="op">]</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">[</span><span class="op">!</span><span class="va">X</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Handler estimates only if p low in training group  </span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
-    handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">new_estimator</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    handler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/ourPkg-deprecated.html">tidy_estimator</a></span><span class="op">(</span><span class="va">new_estimator</span><span class="op">)</span>, 
     estimand <span class="op">=</span> <span class="st">"het"</span>,
     label <span class="op">=</span> <span class="st">"Discovery"</span><span class="op">)</span> <span class="op">+</span>
     
-  <span class="fu">declare_estimator</span><span class="op">(</span>
-    handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">comparison_estimator</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    handler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/ourPkg-deprecated.html">tidy_estimator</a></span><span class="op">(</span><span class="va">comparison_estimator</span><span class="op">)</span>, 
     estimand <span class="op">=</span> <span class="st">"het"</span>,
     label <span class="op">=</span> <span class="st">"Comparison"</span><span class="op">)</span></code></pre></div>
 <p>We include diagnosands that take account of the fact that some runs of the designs do not produce estimates for the new estimand.</p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">discovery</span> <span class="op">&lt;-</span> <span class="fu">set_diagnosands</span><span class="op">(</span><span class="va">discovery</span>, <span class="fu">declare_diagnosands</span><span class="op">(</span>
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">discovery</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/set_diagnosands.html">set_diagnosands</a></span><span class="op">(</span><span class="va">discovery</span>, <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_diagnosands.html">declare_diagnosands</a></span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   RMSE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
   frequency <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span><span class="op">)</span>,
@@ -413,7 +413,7 @@ Discovery
 <li><p><strong>A</strong>nalysis is implemented using maximum likelihood to identify which parameter values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). In this declaration the model employed in <strong>A</strong> is the same as that employed in <strong>M</strong>. We will report analysis results from both differences in means and structural estimation generated both from using the <span class="math inline">\(n=2\)</span> data (<code>DIM_two, Struc_two</code>) and from using <span class="math inline">\(n=\infty\)</span> data (<code>DIM_inf, Struc_inf</code>)</p></li>
 </ul>
 <p>The most complex part of the design is the specification of the estimator, shown next:</p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">structural_estimator</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">pi</span>, <span class="va">y</span>, <span class="va">chi</span> <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span>
     
     <span class="co"># Define negative log likelihood as a function of k, d and q</span>
@@ -451,7 +451,7 @@ Discovery
 <p>The design makes use of this estimator to estimate parameter values as well as treatment effects. It is accompanied by a simpler difference in means estimator of treatment effects.</p>
 <p>An attraction of structural estimation is that, with a fitted model, one can generate estimates of effects of treatments that have not been implemented. In this case the
 same parameters that describe the equilibrium outcomes in a two round game are sufficient to describe outcomes in the infinitely repeated game. So if you understand the effects of a treatment in one case you understand it in the other. At least if the model is correct. In the design below we generate such estimates for the effects of unimplemented treatments.</p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Declare the design ----------------------------------------------------------</span>
 
 <span class="co"># Define parameter values:</span>
@@ -465,50 +465,50 @@ same parameters that describe the equilibrium outcomes in a two round game are s
 <span class="va">design</span> <span class="op">&lt;-</span> 
   
   <span class="co"># Define the population: indicator for behavioral type (norm = 1)</span>
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, norm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="va">q</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, norm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="va">q</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Define mean potential outcomes for n = 2 </span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">pi_two</span> <span class="op">~</span> <span class="va">norm</span><span class="op">*</span><span class="va">chi</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">norm</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">Z</span><span class="op">*</span><span class="va">d</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">Z</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Define mean potential outcomes for n = infinity</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">pi_inf</span> <span class="op">~</span> <span class="va">norm</span><span class="op">*</span><span class="va">chi</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">norm</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="va">Z</span><span class="op">*</span><span class="va">d</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">d</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">Z</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">d</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Define estimands (quantities we want to estimate)</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE_two <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">pi_two_Z_1</span> <span class="op">-</span> <span class="va">pi_two_Z_0</span><span class="op">)</span>, <span class="co"># ATE n = 2</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE_two <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">pi_two_Z_1</span> <span class="op">-</span> <span class="va">pi_two_Z_0</span><span class="op">)</span>, <span class="co"># ATE n = 2</span>
                    ATE_inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">pi_inf_Z_1</span> <span class="op">-</span> <span class="va">pi_inf_Z_0</span><span class="op">)</span>, <span class="co"># ATE n = infinity</span>
                    k <span class="op">=</span> <span class="va">k</span>,                                   <span class="co"># kappa</span>
                    d <span class="op">=</span> <span class="va">d</span>,                                   <span class="co"># delta</span>
                    q <span class="op">=</span> <span class="va">q</span><span class="op">)</span> <span class="op">+</span>                                 <span class="co"># q</span>
 
   <span class="co"># Declare assignment process </span>
-  <span class="fu">declare_assignment</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Declare revealed potential outcomes</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">pi_two</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">pi_inf</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">pi_two</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">pi_inf</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Get draws from beta distribution given means for n = 2 and n = infinity</span>
-  <span class="fu">declare_measurement</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_measurement.html">declare_measurement</a></span><span class="op">(</span>
     pi_two_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html">rbeta</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">pi_two</span><span class="op">*</span><span class="va">k</span>, <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">pi_two</span><span class="op">)</span><span class="op">*</span><span class="va">k</span><span class="op">)</span>,      
     pi_inf_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html">rbeta</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">pi_inf</span><span class="op">*</span><span class="va">k</span>, <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">pi_inf</span><span class="op">)</span><span class="op">*</span><span class="va">k</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Declare estimators</span>
   <span class="co"># Difference-in-means for n = 2</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">pi_two_obs</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_two"</span>, label <span class="op">=</span> <span class="st">"DIM_two"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">pi_two_obs</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_two"</span>, label <span class="op">=</span> <span class="st">"DIM_two"</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Difference-in-means for n = infinity</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">pi_inf_obs</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_inf"</span>, label <span class="op">=</span> <span class="st">"DIM_inf"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">pi_inf_obs</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE_inf"</span>, label <span class="op">=</span> <span class="st">"DIM_inf"</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># MLE for n = 2</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">structural_estimator</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>handler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/ourPkg-deprecated.html">tidy_estimator</a></span><span class="op">(</span><span class="va">structural_estimator</span><span class="op">)</span>, 
                     pi <span class="op">=</span> <span class="st">"pi_two_obs"</span>, 
                     y <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">Z</span>, <span class="va">d</span><span class="op">)</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">d</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">Z</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">d</span><span class="op">)</span>, 
                     estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"k"</span>,<span class="st">"d"</span>, <span class="st">"q"</span>, <span class="st">"ATE_two"</span>, <span class="st">"ATE_inf"</span><span class="op">)</span>, 
                     label <span class="op">=</span> <span class="st">"Struc_two"</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># MLE for n = infinity</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="fu">tidy_estimator</span><span class="op">(</span><span class="va">structural_estimator</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>handler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/ourPkg-deprecated.html">tidy_estimator</a></span><span class="op">(</span><span class="va">structural_estimator</span><span class="op">)</span>,
                     pi <span class="op">=</span> <span class="st">"pi_inf_obs"</span>, 
                     y <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">Z</span>, <span class="va">d</span><span class="op">)</span> <span class="va">Z</span><span class="op">*</span><span class="va">d</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">d</span><span class="op">)</span> <span class="op">+</span>  <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">Z</span><span class="op">)</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="va">d</span><span class="op">/</span><span class="op">(</span><span class="fl">1</span><span class="op">+</span><span class="va">d</span><span class="op">)</span><span class="op">)</span>,
                     estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"k"</span>,<span class="st">"d"</span>,<span class="st">"q"</span>,<span class="st">"ATE_two"</span>, <span class="st">"ATE_inf"</span><span class="op">)</span>, 
@@ -1261,9 +1261,9 @@ Struc_two
 <!-- two kinds of populations, one in which the study type determines the subject types and you select on study type -->
 <!--   a second kind where study type determines study shock  -->
 <!--   in second type if you adjust for subject type then you will be able to unbiased recover global -->
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_site_design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     site <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
       N <span class="op">=</span> <span class="fl">10</span>, 
       feasible_site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
@@ -1271,16 +1271,16 @@ Struc_two
     <span class="op">)</span>,
     subjects <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">n_subjects_per_site</span>, noise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.1</span> <span class="op">+</span> <span class="va">study_effect</span> <span class="op">+</span> <span class="fl">0.025</span> <span class="op">*</span> <span class="va">feasible_site</span><span class="op">)</span> <span class="op">+</span> <span class="va">noise</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>PATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>PATE_feasible <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">feasible_site</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_sampling</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">site</span>, strata <span class="op">=</span> <span class="va">feasible_site</span>, strata_n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_sampling</span><span class="op">(</span>strata <span class="op">=</span> <span class="va">site</span>, n <span class="op">=</span> <span class="va">n_subjects_per_site</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_assignment</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">site</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.1</span> <span class="op">+</span> <span class="va">study_effect</span> <span class="op">+</span> <span class="fl">0.025</span> <span class="op">*</span> <span class="va">feasible_site</span><span class="op">)</span> <span class="op">+</span> <span class="va">noise</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>PATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>PATE_feasible <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">feasible_site</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_sampling.html">declare_sampling</a></span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">site</span>, strata <span class="op">=</span> <span class="va">feasible_site</span>, strata_n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_sampling.html">declare_sampling</a></span><span class="op">(</span>strata <span class="op">=</span> <span class="va">site</span>, n <span class="op">=</span> <span class="va">n_subjects_per_site</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">site</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span><span class="op">)</span>
 
 <span class="va">multi_site_design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     site <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
       N <span class="op">=</span> <span class="fl">10</span>, 
       feasible_site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
@@ -1288,20 +1288,20 @@ Struc_two
     <span class="op">)</span>,
     subjects <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="va">n_subjects_per_site</span>, noise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.1</span> <span class="op">+</span> <span class="va">study_effect</span> <span class="op">+</span> <span class="fl">0.025</span> <span class="op">*</span> <span class="va">feasible_site</span><span class="op">)</span> <span class="op">+</span> <span class="va">noise</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>PATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>PATE_feasible <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">feasible_site</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_sampling</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">site</span>, strata <span class="op">=</span> <span class="va">feasible_site</span>, strata_n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n_study_sites</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_sampling</span><span class="op">(</span>strata <span class="op">=</span> <span class="va">site</span>, n <span class="op">=</span> <span class="va">n_subjects_per_site</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_assignment</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">site</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="fu">label_estimator</span><span class="op">(</span><span class="va">random_effects_meta_analysis</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"random-effects"</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.1</span> <span class="op">+</span> <span class="va">study_effect</span> <span class="op">+</span> <span class="fl">0.025</span> <span class="op">*</span> <span class="va">feasible_site</span><span class="op">)</span> <span class="op">+</span> <span class="va">noise</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>PATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>PATE_feasible <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span>, subset <span class="op">=</span> <span class="va">feasible_site</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_sampling.html">declare_sampling</a></span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">site</span>, strata <span class="op">=</span> <span class="va">feasible_site</span>, strata_n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n_study_sites</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_sampling.html">declare_sampling</a></span><span class="op">(</span>strata <span class="op">=</span> <span class="va">site</span>, n <span class="op">=</span> <span class="va">n_subjects_per_site</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">site</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>handler <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">label_estimator</a></span><span class="op">(</span><span class="va">random_effects_meta_analysis</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"random-effects"</span><span class="op">)</span>
 
-<span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">single_site_design</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
+<span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">single_site_design</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
 
-<span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">multi_site_design</span>, n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
-<span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">simulations_small_large</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
+<span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">multi_site_design</span>, n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
+<span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">simulations_small_large</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -1525,7 +1525,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n3</span> <span class="op">&lt;-</span> <span class="fl">100</span>
@@ -1539,38 +1539,38 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 
 <span class="va">three_study_design</span> <span class="op">&lt;-</span>
   <span class="co"># Study 1 -- Bivariate correlation between X and Y</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     n <span class="op">=</span> <span class="va">n1</span>,
     tau <span class="op">=</span> <span class="va">tau</span>,
     gamma <span class="op">=</span> <span class="va">gamma</span>,
     rho <span class="op">=</span> <span class="va">rho</span>,
     handler <span class="op">=</span> <span class="va">generate_study_sample</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>,
                     term <span class="op">=</span> <span class="st">"X"</span>,
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     label <span class="op">=</span> <span class="st">"Study 1"</span><span class="op">)</span> <span class="op">+</span>
   <span class="co"># Study 2 -- Bivariate correlation between M and X</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     n <span class="op">=</span> <span class="va">n2</span>,
     tau <span class="op">=</span> <span class="va">tau</span>,
     gamma <span class="op">=</span> <span class="va">gamma</span>,
     rho <span class="op">=</span> <span class="va">rho</span>,
     handler <span class="op">=</span> <span class="va">generate_study_sample</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">M</span> <span class="op">~</span> <span class="va">X</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">M</span> <span class="op">~</span> <span class="va">X</span>,
                     term <span class="op">=</span> <span class="st">"X"</span>,
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     label <span class="op">=</span> <span class="st">"Study 2"</span><span class="op">)</span> <span class="op">+</span>
   <span class="co"># Study 3 -- Interaction in X and M</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     n <span class="op">=</span> <span class="va">n3</span>,
     tau <span class="op">=</span> <span class="va">tau</span>,
     gamma <span class="op">=</span> <span class="va">gamma</span>,
     rho <span class="op">=</span> <span class="va">rho</span>,
     handler <span class="op">=</span> <span class="va">generate_study_sample</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">M</span> <span class="op">+</span> <span class="va">X</span><span class="op">:</span><span class="va">M</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">M</span> <span class="op">+</span> <span class="va">X</span><span class="op">:</span><span class="va">M</span>,
                     term <span class="op">=</span> <span class="st">"X:M"</span>,
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     label <span class="op">=</span> <span class="st">"Study 3"</span><span class="op">)</span> </code></pre></div>
@@ -1579,7 +1579,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <h3>
 <span class="header-section-number">18.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-19"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-390-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-391-1.svg" width="100%"></div>
 </div>
 <div id="takeaways-1" class="section level3">
 <h3>
@@ -1590,14 +1590,14 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulate design</span>
-<span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
+<span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
 
 <span class="co"># Simulate null design</span>
 <span class="va">null_three_study_design</span> <span class="op">&lt;-</span> 
-  <span class="fu">redesign</span><span class="op">(</span><span class="va">three_study_design</span>, tau <span class="op">=</span> <span class="fl">0</span>, gamma <span class="op">=</span> <span class="fl">0</span>, rho <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="va">null_simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">null_three_study_design</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">three_study_design</span>, tau <span class="op">=</span> <span class="fl">0</span>, gamma <span class="op">=</span> <span class="fl">0</span>, rho <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">null_simulations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">null_three_study_design</span><span class="op">)</span></code></pre></div>
 <p>In the first three rows of the table, the theory is correct in that <code>tau</code>, <code>gamma</code>, and <code>rho</code> are positive; in the second three rows, it is incorrect because both the main effect and interaction are zero. The “power” column tells us the proportion of simulations in which the effect is significant at the <span class="math inline">\(\alpha = .05\)</span> level, the “all significant” column tells us the proportion of simulations in which all of the studies have significant effects, the “positive” column tells us how often the study found a positively signed result, while the “all positive column” tells us the proportion of simulations where all studies had a positively signed result.</p>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -1799,7 +1799,7 @@ accordingly. As the number of studies increases, so too does the probability
 of discordant results, and using the unanimity of signs to judge whether
 the theory is correct becomes increasingly unwise.</p></li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-398-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-399-1.svg" width="100%"></div>
 
 <!-- bibliography: ../../bib/book.bib  -->
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->

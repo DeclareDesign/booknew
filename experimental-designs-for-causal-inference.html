@@ -204,6 +204,75 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.1.5</span> Simulation comparing blocking to covariate adjustment<a class="anchor" aria-label="anchor" href="#simulation-comparing-blocking-to-covariate-adjustment"><i class="fas fa-link"></i></a>
 </h3>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org">DeclareDesign</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+
+<span class="va">fixed_pop</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">50</span>,
+    X1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,
+    X2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
+  <span class="op">)</span><span class="op">(</span><span class="op">)</span>
+
+
+<span class="va">design</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_pop</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span>
+  
+  
+  
+  <span class="va">d1</span> <span class="op">&lt;-</span>
+  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+<span class="va">d2</span> <span class="op">&lt;-</span>
+  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">X1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+<span class="va">d3</span> <span class="op">&lt;-</span>
+  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">X1</span>, <span class="va">X2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+<span class="va">d4</span> <span class="op">&lt;-</span>
+  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+<span class="va">d5</span> <span class="op">&lt;-</span>
+  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X1</span><span class="op">:</span><span class="va">X2</span> , model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+
+<span class="va">balance_test</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_test.html">declare_test</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">~</span> <span class="va">X1</span><span class="op">:</span><span class="va">X2</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, model_summary <span class="op">=</span> <span class="va">glance</span>, label <span class="op">=</span> <span class="st">"balance"</span><span class="op">)</span>
+
+<span class="va">d1</span> <span class="op">&lt;-</span> <span class="va">d1</span> <span class="op">+</span> <span class="va">balance_test</span>
+<span class="va">d2</span> <span class="op">&lt;-</span> <span class="va">d2</span> <span class="op">+</span> <span class="va">balance_test</span>
+<span class="va">d3</span> <span class="op">&lt;-</span> <span class="va">d3</span> <span class="op">+</span> <span class="va">balance_test</span>
+<span class="va">d4</span> <span class="op">&lt;-</span> <span class="va">d4</span> <span class="op">+</span> <span class="va">balance_test</span>
+<span class="va">d5</span> <span class="op">&lt;-</span> <span class="va">d5</span> <span class="op">+</span> <span class="va">balance_test</span>
+
+<span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_designs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">d2</span>, <span class="va">d3</span>, <span class="va">d4</span>, <span class="va">d5</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">gg_df</span> <span class="op">&lt;-</span>
+  <span class="va">simulations</span> <span class="op">%&gt;%</span>
+  <span class="fu">group_by</span><span class="op">(</span><span class="va">design_label</span>, <span class="va">estimator_label</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">summarise</span><span class="op">(</span>sd_estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span>,
+            power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">pivot_wider</span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">design_label</span>, names_from <span class="op">=</span> <span class="va">estimator_label</span>, values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">sd_estimate</span>, <span class="va">power</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">transmute</span><span class="op">(</span><span class="va">design_label</span>, sd_estimate <span class="op">=</span> <span class="va">sd_estimate_estimator</span>, power <span class="op">=</span> <span class="va">power_estimator</span>, prop_imbalance <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">power_balance</span><span class="op">)</span>
+
+
+<span class="va">simulations</span> <span class="op">&lt;-</span>
+  <span class="va">simulations</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>design <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span>
+    <span class="va">design_label</span>,
+    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"design_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,
+    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+      <span class="st">"Block on two covariates"</span>,
+      <span class="st">"Block on one covariate"</span>,
+      <span class="st">"No blocks or controls"</span>,
+      <span class="st">"Control for one covariate"</span>,
+      <span class="st">"Control for two covariates"</span>
+    <span class="op">)</span>
+  <span class="op">)</span><span class="op">)</span>
+
+
+<span class="fu">ggplot</span><span class="op">(</span><span class="va">simulations</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">facet_wrap</span><span class="op">(</span> <span class="op">~</span> <span class="va">design</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="randomization-checks" class="section level3">
 <h3>
@@ -247,9 +316,9 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     V <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
       N <span class="op">=</span> <span class="fl">100</span>,
       X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.3</span><span class="op">)</span>,
@@ -257,16 +326,16 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     <span class="op">)</span>,
     I <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">5</span>,
                   U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> <span class="va">Q</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">V</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> <span class="va">Q</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">V</span>,
                      blocks <span class="op">=</span> <span class="va">X</span>,
                      block_prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
                     model <span class="op">=</span> <span class="va">difference_in_means</span>,
                     estimand <span class="op">=</span> <span class="st">"ATE"</span>,
                     label <span class="op">=</span> <span class="st">"Naive DIM"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
     clusters <span class="op">=</span> <span class="va">V</span>,
     blocks <span class="op">=</span> <span class="va">X</span>,
@@ -274,7 +343,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     estimand <span class="op">=</span> <span class="st">"ATE"</span>,
     label <span class="op">=</span> <span class="st">"Blocked and Clustered DIM"</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
     clusters <span class="op">=</span> <span class="va">V</span>,
     fixed_effects <span class="op">=</span> <span class="va">X</span>,
@@ -287,7 +356,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-14"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-324-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-325-1.svg" width="100%"></div>
 </div>
 <div id="example-11" class="section level3">
 <h3>
@@ -340,12 +409,12 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-17"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
     type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>
       x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Never-Taker"</span>, <span class="st">"Complier"</span>, <span class="st">"Defier"</span><span class="op">)</span>,
@@ -354,7 +423,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     <span class="op">)</span>,
     U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">D</span> <span class="op">~</span> <span class="fu">case_when</span><span class="op">(</span>
       <span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Complier"</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>,
       <span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never-Taker"</span>, <span class="st">"Defier"</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span>,
@@ -362,7 +431,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
       <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Defier"</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>
     <span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Complier"</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span>
       <span class="fl">0.25</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Always-Taker"</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span>
       <span class="fl">0.75</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Defier"</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span>
@@ -370,31 +439,31 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
       <span class="fl">0</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span>,
     assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>CACE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1_Z_1</span> <span class="op">-</span> <span class="va">Y_D_0_Z_0</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>CACE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1_Z_1</span> <span class="op">-</span> <span class="va">Y_D_0_Z_0</span><span class="op">)</span>,
                    subset <span class="op">=</span> <span class="va">type</span> <span class="op">==</span> <span class="st">"Complier"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="dag-16" class="section level3">
 <h3>
 <span class="header-section-number">17.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-16"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-335-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-336-1.svg" width="100%"></div>
 </div>
 <div id="example-13" class="section level3">
 <h3>
 <span class="header-section-number">17.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-13"><i class="fas fa-link"></i></a>
 </h3>
 <p>To do: demonstrate how violations of no defiers and excludability leads to bias.</p>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Never-Taker"</span>, <span class="st">"Complier"</span>, <span class="st">"Defier"</span><span class="op">)</span>
 <span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">500</span>,
     type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>
       <span class="va">types</span>,
@@ -404,7 +473,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     <span class="op">)</span>,
     noise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">D</span> <span class="op">~</span> <span class="fu">case_when</span><span class="op">(</span>
       <span class="va">Z</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never-Taker"</span>, <span class="st">"Complier"</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span>,
       <span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Never-Taker"</span>, <span class="st">"Defier"</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span>,
@@ -412,29 +481,29 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
       <span class="va">Z</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">type</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Complier"</span><span class="op">)</span> <span class="op">~</span> <span class="fl">1</span>
     <span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Complier"</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span>
       <span class="fl">0.25</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Always-Taker"</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span>
       <span class="fl">0.75</span> <span class="op">*</span> <span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"Defier"</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span> <span class="op">+</span>
       <span class="va">direct_effect_of_encouragement</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">noise</span>,
     assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>CACE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_D_1_Z_1</span> <span class="op">+</span> <span class="va">Y_D_1_Z_0</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>CACE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">Y_D_1_Z_1</span> <span class="op">+</span> <span class="va">Y_D_1_Z_0</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">-</span>
                                  <span class="op">(</span><span class="va">Y_D_0_Z_1</span> <span class="op">+</span> <span class="va">Y_D_0_Z_0</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>,
                    subset <span class="op">=</span> <span class="va">type</span> <span class="op">==</span> <span class="st">"Complier"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span>
   <span class="va">design</span>,
   proportion_defiers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
   direct_effect_of_encouragement <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="op">)</span>
 
-<span class="va">simulations_df</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-339-1.svg" width="100%"></div>
+<span class="va">simulations_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-340-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -472,9 +541,9 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <li><p><strong>D</strong>ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all—see the remaining two orange squares at the top-right corner of Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.1</a>. Notice that, while every <em>unit</em> is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of <em>unit-periods</em> with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy “under-represents” treated potential outcomes in the first wave and “over-represents” them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit’s IPW is represented in Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.1</a>. Using these weights, we get a “representative” estimate of the average control and treatment potential outcomes in each wave. If we didn’t apply the weights, we wouldn’t get a representative view of the unobserved potential outcomes we’re sampling, and our estimates would be biased. So what does all this buy us? We also declare a “two-arm” estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.</p></li>
 </ul>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">8</span>,
                      X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>,
     period <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -486,18 +555,18 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     obs <span class="op">=</span> <span class="fu">cross_levels</span><span class="op">(</span>by <span class="op">=</span> <span class="fu">join</span><span class="op">(</span><span class="va">unit</span>, <span class="va">period</span><span class="op">)</span>,
                        U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">time</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">time</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>
     clusters <span class="op">=</span> <span class="va">unit</span>,
     conditions <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,
     assignment_variable <span class="op">=</span> <span class="st">"wave"</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">wave</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">wave</span><span class="op">)</span>,
                      ipw <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="va">Z</span> <span class="op">*</span> <span class="va">p</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">Z</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">p</span><span class="op">)</span><span class="op">)</span>,
                      handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
     model <span class="op">=</span> <span class="va">lm_robust</span>,
     estimand <span class="op">=</span> <span class="st">"ATE"</span>,
@@ -505,7 +574,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     weights <span class="op">=</span> <span class="va">ipw</span>,
     clusters <span class="op">=</span> <span class="va">unit</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
     model <span class="op">=</span> <span class="va">lm_robust</span>,
     estimand <span class="op">=</span> <span class="st">"ATE"</span>,
@@ -523,7 +592,7 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <h3>
 <span class="header-section-number">17.5.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-17"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-345-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-346-1.svg" width="100%"></div>
 </div>
 <div id="example-14" class="section level3">
 <h3>
@@ -568,24 +637,24 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <li><p><strong>D</strong>ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.</p></li>
 </ul>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu">declare_population</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>,
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">group</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>, assignment_variable <span class="op">=</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_step</span><span class="op">(</span>S_prob <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span> <span class="op">~</span> <span class="fl">0.25</span>, <span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span> <span class="op">~</span> <span class="fl">0.75</span><span class="op">)</span>, <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_assignment</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">group</span>, prob_unit <span class="op">=</span> <span class="va">S_prob</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_step</span><span class="op">(</span>spillover <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">group</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">group</span>, conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span>, assignment_variable <span class="op">=</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_step.html">declare_step</a></span><span class="op">(</span>S_prob <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span> <span class="op">~</span> <span class="fl">0.25</span>, <span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span> <span class="op">~</span> <span class="fl">0.75</span><span class="op">)</span>, <span class="va">mutate</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">group</span>, prob_unit <span class="op">=</span> <span class="va">S_prob</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_step.html">declare_step</a></span><span class="op">(</span>spillover <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/ave.html">ave</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">group</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span>,
                handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span>  <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">spillover</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"low"</span><span class="op">)</span> <span class="op">+</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">spillover</span> <span class="op">*</span> <span class="op">(</span><span class="va">S</span> <span class="op">==</span> <span class="st">"high"</span><span class="op">)</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span>,
     conditions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"low"</span>, <span class="st">"high"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE_saturation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_0_S_high</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE_saturation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_0_S_high</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span>,
                    ate_no_spill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1_S_low</span> <span class="op">-</span> <span class="va">Y_Z_0_S_low</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">S</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">Y</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Z</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">S</span>,
                     weights <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="va">S_cond_prob</span> <span class="op">*</span> <span class="va">Z_cond_prob</span><span class="op">)</span>,
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Z"</span>, <span class="st">"Shigh"</span><span class="op">)</span>,
@@ -596,7 +665,7 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <h3>
 <span class="header-section-number">17.6.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-18"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-351-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-352-1.svg" width="100%"></div>
 </div>
 <div id="exercises-7" class="section level3">
 <h3>

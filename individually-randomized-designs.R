@@ -100,3 +100,73 @@ g <-
   facet_wrap(~name) +
   labs(y = "Diagnosand value", x = "Number of treated units (m)", title = "Simulating a two arm trial", subtitle = c("N = 100, var_Y0 = 1, var_Y1 = 2, cov_Y0_Y1 = 0.5, mean_Y0 = 1.0, mean_Y1 = 1.75"), caption = "Theoretical values and design targets in purple.")
 g
+
+## library(DeclareDesign)
+## library(tidyverse)
+## 
+## fixed_pop <-
+##   declare_population(
+##     N = 50,
+##     X1 = rbinom(N, 1, 0.5),
+##     X2 = rbinom(N, 1, 0.5),
+##     U = rnorm(N, sd = 0.1)
+##   )()
+## 
+## 
+## design <-
+##   declare_population(data = fixed_pop) +
+##   declare_potential_outcomes(Y ~ Z + X1 + X2 + U) +
+##   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+## 
+## 
+## 
+##   d1 <-
+##   design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
+## d2 <-
+##   design + declare_assignment(blocks = X1) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
+## d3 <-
+##   design + declare_assignment(blocks = paste0(X1, X2)) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
+## d4 <-
+##   design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z + X1, model = lm_robust, estimand = "ATE")
+## d5 <-
+##   design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z + X1:X2 , model = lm_robust, estimand = "ATE")
+## 
+## balance_test <-
+##   declare_test(Z ~ X1:X2, model = lm_robust, model_summary = glance, label = "balance")
+## 
+## d1 <- d1 + balance_test
+## d2 <- d2 + balance_test
+## d3 <- d3 + balance_test
+## d4 <- d4 + balance_test
+## d5 <- d5 + balance_test
+## 
+## simulations <- simulate_designs(list(d1, d2, d3, d4, d5))
+## 
+## gg_df <-
+##   simulations %>%
+##   group_by(design_label, estimator_label) %>%
+##   summarise(sd_estimate = sd(estimate),
+##             power = mean(p.value <= 0.05)) %>%
+##   pivot_wider(id_cols = design_label, names_from = estimator_label, values_from = c(sd_estimate, power)) %>%
+##   transmute(design_label, sd_estimate = sd_estimate_estimator, power = power_estimator, prop_imbalance = 1 - power_balance)
+## 
+## 
+## simulations <-
+##   simulations %>%
+##   mutate(design = factor(
+##     design_label,
+##     levels = paste0("design_", c(3, 2, 1, 4, 5)),
+##     labels = c(
+##       "Block on two covariates",
+##       "Block on one covariate",
+##       "No blocks or controls",
+##       "Control for one covariate",
+##       "Control for two covariates"
+##     )
+##   ))
+## 
+## 
+## ggplot(simulations, aes(estimate)) +
+##   geom_histogram(bins = 30) +
+##   facet_wrap( ~ design, ncol = 5)
+## 
