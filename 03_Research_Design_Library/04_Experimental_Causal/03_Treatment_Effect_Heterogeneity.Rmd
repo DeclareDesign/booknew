@@ -37,6 +37,127 @@ library(blockTools)
 - multi-arm trials varying aspects of the intervention
 
 
+```{r, eval = FALSE}
+
+library(DeclareDesign)
+library(tidyverse)
+library(reshape2)
+
+# Declare the design ------------------------------------------------------
+
+ATE <- 0.0
+
+design <- 
+  declare_population(N = 1000,
+                     binary_covariate = rbinom(N, 1, 0.5),
+                     normal_error = rnorm(N)) +
+  # crucial step in POs: effects are not heterogeneous
+  declare_potential_outcomes(Y ~ ATE*Z + normal_error) +
+  declare_assignment(prob = 0.5) +
+  # Three estimators
+  declare_estimator(Y ~ Z, subset = (binary_covariate == 0), label = "CATE_0") + 
+  declare_estimator(Y ~ Z, subset = (binary_covariate == 1), label = "CATE_1") +
+  declare_estimator(Y ~ Z*binary_covariate, 
+                    model = lm_robust, term = "Z:binary_covariate", label = "interaction")
+
+
+# Simulations -------------------------------------------------------------
+
+# sweep across all ATEs from 0 to 0.5
+designs <- redesign(design, ATE = seq(0, 0.5, 0.05))
+simulations <- simulate_design(designs, sims = 500)
+
+
+# Summarize simulations ---------------------------------------------------
+
+reshaped_simulations <-
+  simulations %>%
+  transmute(ATE,
+            sim_ID,
+            estimator_label,
+            estimate,
+            conf.high,
+            conf.low,
+            significant = p.value < 0.05) %>%
+  melt(measure.vars = c("estimate", "conf.high", "conf.low", "significant")) %>%
+  dcast(ATE + sim_ID  ~ estimator_label + variable)
+
+
+# Plot 1 ------------------------------------------------------------------
+
+gg_df <- 
+  reshaped_simulations %>%
+  group_by(ATE) %>%
+  summarize(`Significant for one group but not the other` = mean(xor(CATE_0_significant, CATE_1_significant)),
+            `Difference in subgroup effects is significant` = mean(interaction_significant)) %>%
+  gather(condition, power, -ATE)
+
+g1 <-
+  ggplot(gg_df, aes(ATE, power, color = condition)) +
+  geom_point() +
+  geom_line() +
+  geom_label(data = (. %>% filter(ATE == 0.2)),
+             aes(label = condition),
+             nudge_y = 0.02) +
+  theme_bw() +
+  scale_color_manual(values = c("red", "blue")) +
+  theme(legend.position = "none") +
+  labs(
+    x = "True constant effect size",
+    y = "Probability of result (akin to statistical power)",
+    title = "Research question: Are treatment effects different in group A versus group B?",
+    subtitle = "True answer: treatment effects are the same for both groups",
+    caption = "Code: https://gist.github.com/acoppock/803e7ca56ca1e6cbf757bdd9d46a2eb5"
+  )
+
+
+# Plot 2 ------------------------------------------------------------------
+
+g2 <-
+  ggplot(reshaped_simulations, aes(CATE_0_estimate, CATE_1_estimate)) +
+  geom_point(alpha = 0.1) +
+  geom_errorbarh(aes(xmin = CATE_0_conf.low, xmax = CATE_0_conf.high), alpha = 0.1) +
+  geom_errorbar(aes(ymin = CATE_1_conf.low, ymax = CATE_1_conf.high), alpha = 0.1) +
+  geom_vline(xintercept = 0,
+             color = "red",
+             linetype = "dashed") +
+  geom_hline(yintercept = 0,
+             color = "red",
+             linetype = "dashed") +
+  facet_wrap( ~ ATE, labeller = label_both) +
+  theme_bw() +
+  theme(strip.background = element_blank()) +
+  labs(x = "Effect size estimate in group A",
+       y = "Effect size estimate in group B",
+       title = "Joint distribution of subgroup treatment effect estimates under constant effects",
+       caption = "Code: https://gist.github.com/acoppock/803e7ca56ca1e6cbf757bdd9d46a2eb5")
+
+
+# Save plots --------------------------------------------------------------
+
+ggsave(filename = "het_fx_1.png", g1, height = 7, width = 7)
+ggsave(filename = "het_fx_2.png", g2, height = 7, width = 7)
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+```
+
+
+
 ### Declaration
 
 ### DAG
