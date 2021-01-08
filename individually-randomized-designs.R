@@ -101,72 +101,109 @@ g <-
   labs(y = "Diagnosand value", x = "Number of treated units (m)", title = "Simulating a two arm trial", subtitle = c("N = 100, var_Y0 = 1, var_Y1 = 2, cov_Y0_Y1 = 0.5, mean_Y0 = 1.0, mean_Y1 = 1.75"), caption = "Theoretical values and design targets in purple.")
 g
 
-## library(DeclareDesign)
-## library(tidyverse)
-## 
-## fixed_pop <-
-##   declare_population(
-##     N = 50,
-##     X1 = rbinom(N, 1, 0.5),
-##     X2 = rbinom(N, 1, 0.5),
-##     U = rnorm(N, sd = 0.1)
-##   )()
-## 
-## 
-## design <-
-##   declare_population(data = fixed_pop) +
-##   declare_potential_outcomes(Y ~ Z + X1 + X2 + U) +
-##   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
-## 
-## 
-## 
-##   d1 <-
-##   design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
-## d2 <-
-##   design + declare_assignment(blocks = X1) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
-## d3 <-
-##   design + declare_assignment(blocks = paste0(X1, X2)) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
-## d4 <-
-##   design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z + X1, model = lm_robust, estimand = "ATE")
-## d5 <-
-##   design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z + X1:X2 , model = lm_robust, estimand = "ATE")
-## 
-## balance_test <-
-##   declare_test(Z ~ X1:X2, model = lm_robust, model_summary = glance, label = "balance")
-## 
-## d1 <- d1 + balance_test
-## d2 <- d2 + balance_test
-## d3 <- d3 + balance_test
-## d4 <- d4 + balance_test
-## d5 <- d5 + balance_test
-## 
-## simulations <- simulate_designs(list(d1, d2, d3, d4, d5))
-## 
-## gg_df <-
-##   simulations %>%
-##   group_by(design_label, estimator_label) %>%
-##   summarise(sd_estimate = sd(estimate),
-##             power = mean(p.value <= 0.05)) %>%
-##   pivot_wider(id_cols = design_label, names_from = estimator_label, values_from = c(sd_estimate, power)) %>%
-##   transmute(design_label, sd_estimate = sd_estimate_estimator, power = power_estimator, prop_imbalance = 1 - power_balance)
-## 
-## 
-## simulations <-
-##   simulations %>%
-##   mutate(design = factor(
-##     design_label,
-##     levels = paste0("design_", c(3, 2, 1, 4, 5)),
-##     labels = c(
-##       "Block on two covariates",
-##       "Block on one covariate",
-##       "No blocks or controls",
-##       "Control for one covariate",
-##       "Control for two covariates"
-##     )
-##   ))
-## 
-## 
-## ggplot(simulations, aes(estimate)) +
-##   geom_histogram(bins = 30) +
-##   facet_wrap( ~ design, ncol = 5)
-## 
+
+
+
+
+
+gg_df <- 
+simulations %>%
+  select(sim_ID, estimator_label, estimate) %>%
+  pivot_wider(names_from = estimator_label, values_from = estimate) %>%
+  mutate(balanced = balance == 0 )
+
+ggplot(gg_df, aes(DIM, fill = balanced)) +geom_histogram(position = "identity", bins = 30, alpha = 0.8) +
+  scale_fill_manual(values = c(dd_light_gray, dd_dark_blue)) +
+  dd_theme() +
+  geom_vline(xintercept = 0.2, color = dd_dark_blue, linetype = "dashed") +
+  theme(legend.position = "none",
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  annotate("text", x = 0.30, y = 50, label = "Assignments that\nexactly balance X", color = dd_dark_blue,hjust = 0) +
+  annotate("text", x = -0.40, y = 20, label = "Assignments that do not\nexactly balance X", color = dd_light_gray,hjust = 1) +
+  xlim(-1.5, 1.5) +
+  xlab("Difference-in-means estimate")
+
+gg_df2 <-
+  gg_df %>%
+  pivot_longer(cols = c(DIM, OLS),
+               names_to = "estimator",
+               values_to = "estimate") %>%
+  mutate(estimator = factor(estimator, levels = c("OLS", "DIM")))
+
+
+
+ggplot(gg_df2, aes(estimate, estimator, color = balanced, group = sim_ID)) +
+  geom_line(data = (. %>% filter(balanced)), alpha = 0.9) +
+  geom_line(data = (. %>% filter(!balanced)), alpha = 0.3) +
+  scale_color_manual(values = c(dd_light_gray, dd_dark_blue)) +
+  geom_vline(xintercept = 0.2, color = dd_dark_blue, linetype = "dashed") +
+  annotate(
+    "text",
+    x = 0.20,
+    y = 2.25,
+    label = "Assignments that\nexactly balance X",
+    color = dd_dark_blue
+  ) +
+  annotate(
+    "text",
+    x = -0.40,
+    y = 1.25,
+    label = "Assignments that do not\nexactly balance X",
+    color = dd_light_gray,
+    hjust = 1
+  ) +
+  xlim(-1.5, 1.5) +
+  xlab("Average treatment effect estimate") +
+  theme(legend.position = "none")
+
+
+fixed_pop <-
+  fabricate(
+    N = 100,
+    X = rbinom(N, 1, 0.5),
+    U = rnorm(N)
+  )
+
+design <-
+  declare_population(data = fixed_pop) +
+  declare_potential_outcomes(Y ~ 0.2*Z + X + U) +
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+
+# Data strategies
+complete_assignment <- 
+  declare_assignment(Z = complete_ra(N = N), handler = fabricate) + 
+  declare_reveal()
+blocked_assignment <- 
+  declare_assignment(Z = block_ra(blocks = X), handler = fabricate) + 
+  declare_reveal()
+
+# Answer strategies
+unadjusted_estimator <- declare_estimator(Y ~ Z, estimand = "ATE")
+adjusted_estimator <- declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")
+
+design_1 <- design + complete_assignment + unadjusted_estimator
+design_2 <- design + blocked_assignment + unadjusted_estimator
+design_3 <- design + complete_assignment + adjusted_estimator
+design_4 <- design + blocked_assignment + adjusted_estimator
+
+## diagnose_designs(list(design_1, design_2, design_3, design_4))
+
+
+
+
+
+gg_df <-
+  simulations %>%
+  group_by(design_label) %>%
+  summarise(sd_estimate = sd(estimate), avg_std_error = mean(std.error), .groups = "drop") %>%
+  transmute(`Data Strategy` = if_else(design_label %in% c("design_1", "design_3"), 
+                                   "Complete Random Assignment",
+                                   "Block Random Assignment"),
+         `Answer Strategy` = if_else(design_label %in% c("design_1", "design_2"), 
+                                   "Difference-in-means",
+                                   "Covariate Adjustment"),
+         `True Standard Error` = sd_estimate,
+         `Average Estimated Standard Error` = avg_std_error)
+kable(gg_df, digits = 3)

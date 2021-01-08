@@ -173,106 +173,174 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 
 <span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu">diagnose_designs</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">200</span>, bootstrap_sims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <pre><code>##   design_label   N  m var_Y0 var_Y1 cov_Y0_Y1 mean_Y0 mean_Y1 estimand_label
-## 1     design_7 100 70      1      2         1       1    1.75            ATE
-##   estimator_label term        bias      rmse power coverage mean_estimate
-## 1       estimator    Z -0.02187367 0.1917612   0.9        1     0.7281263
+## 1     design_6 100 60      1      2         1       1    1.75            ATE
+##   estimator_label term       bias      rmse power coverage mean_estimate
+## 1       estimator    Z 0.01387209 0.2093836 0.915    0.965     0.7638721
 ##   sd_estimate   mean_se type_s_rate mean_estimand n_sims
-## 1   0.1914693 0.2470444           0          0.75    100</code></pre>
+## 1   0.2094478 0.2406971           0          0.75    200</code></pre>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-318-1.svg" width="100%"></div>
 </div>
 <div id="increasing-precision-through-blocking" class="section level3">
 <h3>
 <span class="header-section-number">17.1.3</span> Increasing precision through blocking<a class="anchor" aria-label="anchor" href="#increasing-precision-through-blocking"><i class="fas fa-link"></i></a>
 </h3>
-<ul>
-<li>Increase precision</li>
-<li>Watch out for IPW</li>
-<li>Blocking on many covariates</li>
-</ul>
+<p>Block random assignment almost always represents a precision improvement over complete random assignment. With block random assignment, we conduct “mini-experiments” within separate subsets of the sample (called blocks), defined by pre-treatment covariates. Within each block, we conduct complete random assignment.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;One mistake sometimes made by new experimenters is to conduct &lt;em&gt;simple&lt;/em&gt; random assignment within each block – none of the gains from blocking described here apply if simple random assignment is conducted in each block, because that procedure produces the identical randomization distribution as a simple random assignment procedure without any blocking, provided that the probability of assignment is the same in each block.&lt;/p&gt;"><sup>24</sup></a></p>
+<p>One way of thinking about why blocking reduces sampling variability is that it rules out (by design) random assignments in which too many or too few units is a particular subgroup are assigned to treatment: exactly <span class="math inline">\(m_B\)</span> units will be treated in each block <span class="math inline">\(B\)</span>. When potential outcomes are correlated the blocking variable, those “extreme” assignments produce estimates that are in the tails of the sampling distribution associated with complete random assignment.</p>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fixed_pop</span> <span class="op">&lt;-</span>
+  <span class="fu">fabricate</span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">12</span>,
+    X <span class="op">=</span> <span class="fu">complete_ra</span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>
+  <span class="op">)</span>
+
+<span class="va">design</span> <span class="op">&lt;-</span>
+  <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_pop</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.2</span><span class="op">*</span><span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fu">complete_ra</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, label <span class="op">=</span> <span class="st">"DIM"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">X</span> <span class="op">~</span> <span class="va">Z</span>, label <span class="op">=</span> <span class="st">"balance"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"OLS"</span><span class="op">)</span>
+
+<span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
+<p>This inuition behind blocking is illustrated in Figure <a href="experimental-designs-for-causal-inference.html#fig:completecovariate">17.1</a>, which shows the sampling distribution of the difference-in-means estimator under <em>complete</em> random assignment. The histogram is shaded according to whether the random assignment happened to perfectly balance a pre-treatment covariate <span class="math inline">\(X\)</span>. The sampling distribution of the estimator among the set of assignments that happen to be balanced is more tightly distributed around the true average treatment effect than the estimates associated with assignments that are not perfectly balanced. Here we can see the value of a blocking procedure – it <em>it rules out by design</em> those assignments that are not perfectly balanced.</p>
+<div class="figure">
+<span id="fig:completecovariate"></span>
+<img src="book_files/figure-html/completecovariate-1.svg" alt="Sampling distribution under complete random assignment, by covariate balance" width="100%"><p class="caption">
+Figure 17.1: Sampling distribution under complete random assignment, by covariate balance
+</p>
+</div>
 </div>
 <div id="increasing-precision-through-covariate-adjustment" class="section level3">
 <h3>
 <span class="header-section-number">17.1.4</span> Increasing precision through covariate adjustment<a class="anchor" aria-label="anchor" href="#increasing-precision-through-covariate-adjustment"><i class="fas fa-link"></i></a>
 </h3>
-<ul>
-<li>“like blocking” in the answer strategy</li>
-<li>Watch out for post-treatment variables</li>
-<li>the Lin adjustment</li>
-</ul>
+<p>Choosing block random assignment over complete random assignment is a method for incorporating covariate information into the data strategy for the purpose of decreasing sampling variability. We can also incorporate covariate information into the answer strategy for the same purpose, by controlling for covariates or otherwise conditioning on them when estimating the average treatment effect. In observational settings like the one we explore in [selection on observeables], conditioning on covariates is used to block back-door paths to address confounding. Here, confounding is no problem – the treatment is assigned at random by design, so we do not need to control for covariates in order to decrease bias. Instead, we control for covariates in order to reduce sampling variability.</p>
+<p>Figure <a href="experimental-designs-for-causal-inference.html#fig:completecovariate">17.1</a> illustrates this point. The sampling distribution under difference in means is shown on the top line and the sampling distribution under ordinary least squares (Y ~ Z + X) is shown on the bottom line. Estimates that are on the extreme ends of the distribution under difference-in-means are pulled in more tightly to center on the ATE. One interesting wrinkle that this graph reveals is that covariate adjustment does not tighen up the estimates for assignments that exactly balance X – they only help the assignments that are slightly imbalanced.</p>
+<div class="figure">
+<span id="fig:completecovariateadjustment"></span>
+<img src="book_files/figure-html/completecovariateadjustment-1.svg" alt="Impact of covariate adjustment on the sampling distribution" width="100%"><p class="caption">
+Figure 17.2: Impact of covariate adjustment on the sampling distribution
+</p>
+</div>
 </div>
 <div id="simulation-comparing-blocking-to-covariate-adjustment" class="section level3">
 <h3>
 <span class="header-section-number">17.1.5</span> Simulation comparing blocking to covariate adjustment<a class="anchor" aria-label="anchor" href="#simulation-comparing-blocking-to-covariate-adjustment"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org">DeclareDesign</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-
-<span class="va">fixed_pop</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
-    N <span class="op">=</span> <span class="fl">50</span>,
-    X1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,
-    X2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,
-    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
-  <span class="op">)</span><span class="op">(</span><span class="op">)</span>
-
+<p>Adjusting for pre-treatment covariates that are predictive of the outcome almost always increases precision; blocking on covariates that are predictive of the outcome almost always increases precision too. Another way of putting this is that covariate information can be incorporated in answer strategy (covariate adjustment) or in the data strategy (blocking) and that in this way, the two procedures are approximately equivalent.</p>
+<p>We’ll now declare and diagnose four closely-related experimental designs. To begin, we describe a fixed population of 100 units with a binary covariate <span class="math inline">\(X\)</span> and unobserved heterogeneity <span class="math inline">\(U\)</span>. Potential outcomes are a function of the treatment <span class="math inline">\(Z\)</span> and are correlated with <span class="math inline">\(X\)</span>. Throughout this exercise, our inquiry is the ATE.</p>
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fixed_pop</span> <span class="op">&lt;-</span>
+  <span class="fu">fabricate</span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">100</span>,
+    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+  <span class="op">)</span>
 
 <span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_pop</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span>
-  
-  
-  
-  <span class="va">d1</span> <span class="op">&lt;-</span>
-  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
-<span class="va">d2</span> <span class="op">&lt;-</span>
-  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">X1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
-<span class="va">d3</span> <span class="op">&lt;-</span>
-  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>blocks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">X1</span>, <span class="va">X2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
-<span class="va">d4</span> <span class="op">&lt;-</span>
-  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
-<span class="va">d5</span> <span class="op">&lt;-</span>
-  <span class="va">design</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X1</span><span class="op">:</span><span class="va">X2</span> , model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+  <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">fixed_pop</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.2</span><span class="op">*</span><span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>We have two answer strategies and two data strategies that we’ll mix-and-match.</p>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Data strategies</span>
+<span class="va">complete_assignment</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fu">complete_ra</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="op">)</span>
+<span class="va">blocked_assignment</span> <span class="op">&lt;-</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fu">block_ra</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">X</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="op">)</span>
 
-<span class="va">balance_test</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_test.html">declare_test</a></span><span class="op">(</span><span class="va">Z</span> <span class="op">~</span> <span class="va">X1</span><span class="op">:</span><span class="va">X2</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, model_summary <span class="op">=</span> <span class="va">glance</span>, label <span class="op">=</span> <span class="st">"balance"</span><span class="op">)</span>
-
-<span class="va">d1</span> <span class="op">&lt;-</span> <span class="va">d1</span> <span class="op">+</span> <span class="va">balance_test</span>
-<span class="va">d2</span> <span class="op">&lt;-</span> <span class="va">d2</span> <span class="op">+</span> <span class="va">balance_test</span>
-<span class="va">d3</span> <span class="op">&lt;-</span> <span class="va">d3</span> <span class="op">+</span> <span class="va">balance_test</span>
-<span class="va">d4</span> <span class="op">&lt;-</span> <span class="va">d4</span> <span class="op">+</span> <span class="va">balance_test</span>
-<span class="va">d5</span> <span class="op">&lt;-</span> <span class="va">d5</span> <span class="op">+</span> <span class="va">balance_test</span>
-
-<span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_designs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">d2</span>, <span class="va">d3</span>, <span class="va">d4</span>, <span class="va">d5</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">gg_df</span> <span class="op">&lt;-</span>
-  <span class="va">simulations</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">design_label</span>, <span class="va">estimator_label</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">summarise</span><span class="op">(</span>sd_estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span>,
-            power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">p.value</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">pivot_wider</span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">design_label</span>, names_from <span class="op">=</span> <span class="va">estimator_label</span>, values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">sd_estimate</span>, <span class="va">power</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">transmute</span><span class="op">(</span><span class="va">design_label</span>, sd_estimate <span class="op">=</span> <span class="va">sd_estimate_estimator</span>, power <span class="op">=</span> <span class="va">power_estimator</span>, prop_imbalance <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">power_balance</span><span class="op">)</span>
-
-
-<span class="va">simulations</span> <span class="op">&lt;-</span>
-  <span class="va">simulations</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>design <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span>
-    <span class="va">design_label</span>,
-    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"design_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,
-    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
-      <span class="st">"Block on two covariates"</span>,
-      <span class="st">"Block on one covariate"</span>,
-      <span class="st">"No blocks or controls"</span>,
-      <span class="st">"Control for one covariate"</span>,
-      <span class="st">"Control for two covariates"</span>
-    <span class="op">)</span>
-  <span class="op">)</span><span class="op">)</span>
-
-
-<span class="fu">ggplot</span><span class="op">(</span><span class="va">simulations</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_histogram</span><span class="op">(</span>bins <span class="op">=</span> <span class="fl">30</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">facet_wrap</span><span class="op">(</span> <span class="op">~</span> <span class="va">design</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<span class="co"># Answer strategies</span>
+<span class="va">unadjusted_estimator</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
+<span class="va">adjusted_estimator</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
+<p>These combine to create four designs, which we then diagnose.</p>
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design_1</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">complete_assignment</span> <span class="op">+</span> <span class="va">unadjusted_estimator</span>
+<span class="va">design_2</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">blocked_assignment</span> <span class="op">+</span> <span class="va">unadjusted_estimator</span>
+<span class="va">design_3</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">complete_assignment</span> <span class="op">+</span> <span class="va">adjusted_estimator</span>
+<span class="va">design_4</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">blocked_assignment</span> <span class="op">+</span> <span class="va">adjusted_estimator</span></code></pre></div>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">diagnose_designs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">design_1</span>, <span class="va">design_2</span>, <span class="va">design_3</span>, <span class="va">design_4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_designs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">design_1</span>, <span class="va">design_2</span>, <span class="va">design_3</span>, <span class="va">design_4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+Data Strategy
+</th>
+<th style="text-align:left;">
+Answer Strategy
+</th>
+<th style="text-align:right;">
+True Standard Error
+</th>
+<th style="text-align:right;">
+Average Estimated Standard Error
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Complete Random Assignment
+</td>
+<td style="text-align:left;">
+Difference-in-means
+</td>
+<td style="text-align:right;">
+0.200
+</td>
+<td style="text-align:right;">
+0.207
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Block Random Assignment
+</td>
+<td style="text-align:left;">
+Difference-in-means
+</td>
+<td style="text-align:right;">
+0.191
+</td>
+<td style="text-align:right;">
+0.207
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Complete Random Assignment
+</td>
+<td style="text-align:left;">
+Covariate Adjustment
+</td>
+<td style="text-align:right;">
+0.193
+</td>
+<td style="text-align:right;">
+0.193
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Block Random Assignment
+</td>
+<td style="text-align:left;">
+Covariate Adjustment
+</td>
+<td style="text-align:right;">
+0.191
+</td>
+<td style="text-align:right;">
+0.192
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>The diagnosis shows that incorporating covariate information either in the data strategy or in the answer strategy yields similar gains to the true standard error. Relative to the canonical design (complete random assignment with difference-in-means), any of the alternatives represents an improvement. Blocking on <span class="math inline">\(X\)</span> in the data strategy decreases sampling variability. Controlling for <span class="math inline">\(X\)</span> in the answer strategy decreases sampling variability. Doing both – blocking on <span class="math inline">\(X\)</span> and controlling for <span class="math inline">\(X\)</span> – does not yield <em>additional</em> gains, but controlling for <span class="math inline">\(X\)</span> is nevertheless appropriate when using a blocked design. The reason for this can be seen in the “average estimated standard error” diagnosand. If we block, but still use the difference-in-means estimator, the <em>estimated</em> standard errors do not decrease relative to complete random assignment. The usual Neyman variance estimator doesn’t “know” about the blocking. A number of fixes to this problem are available. You can, as we do in the simulation, control for the blocking variable in an OLS regression. Alternatively, you can use the “stratified” estimator that obtains block-level ATE estimates, then averages them together, weighting by block size. The stratified estimator has an associated standard error estimator – see gerber and green page 73-74. The stratified estimator is an instance of the “analyze as you randomize” principle. Respecting the data strategy in the answer strategy (by adjusting for the blocking) brings down the estimated standard error as well.</p>
 </div>
 <div id="randomization-checks" class="section level3">
 <h3>
@@ -316,9 +384,9 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
+  <span class="fu">declare_population</span><span class="op">(</span>
     V <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
       N <span class="op">=</span> <span class="fl">100</span>,
       X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">0.3</span><span class="op">)</span>,
@@ -326,16 +394,16 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     <span class="op">)</span>,
     I <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">5</span>,
                   U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> <span class="va">Q</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">V</span>,
+  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span> <span class="op">+</span> <span class="va">Q</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_assignment</span><span class="op">(</span>clusters <span class="op">=</span> <span class="va">V</span>,
                      blocks <span class="op">=</span> <span class="va">X</span>,
                      block_prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
+  <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
                     model <span class="op">=</span> <span class="va">difference_in_means</span>,
                     estimand <span class="op">=</span> <span class="st">"ATE"</span>,
                     label <span class="op">=</span> <span class="st">"Naive DIM"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
     clusters <span class="op">=</span> <span class="va">V</span>,
     blocks <span class="op">=</span> <span class="va">X</span>,
@@ -343,7 +411,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     estimand <span class="op">=</span> <span class="st">"ATE"</span>,
     label <span class="op">=</span> <span class="st">"Blocked and Clustered DIM"</span>
   <span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+  <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>,
     clusters <span class="op">=</span> <span class="va">V</span>,
     fixed_effects <span class="op">=</span> <span class="va">X</span>,
@@ -356,7 +424,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-14"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-325-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-333-1.svg" width="100%"></div>
 </div>
 <div id="example-11" class="section level3">
 <h3>
@@ -376,7 +444,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <li>treatment by subgroup interactions</li>
 <li>multi-arm trials varying aspects of the intervention</li>
 </ul>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org">DeclareDesign</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape">reshape2</a></span><span class="op">)</span>
@@ -508,7 +576,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-17"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 
@@ -549,14 +617,14 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <h3>
 <span class="header-section-number">17.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-16"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-337-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-345-1.svg" width="100%"></div>
 </div>
 <div id="example-13" class="section level3">
 <h3>
 <span class="header-section-number">17.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-13"><i class="fas fa-link"></i></a>
 </h3>
 <p>To do: demonstrate how violations of no defiers and excludability leads to bias.</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Never-Taker"</span>, <span class="st">"Complier"</span>, <span class="st">"Defier"</span><span class="op">)</span>
 <span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
@@ -594,7 +662,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="st">"Z"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"Z"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span>
   <span class="va">design</span>,
   proportion_defiers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
@@ -602,7 +670,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <span class="op">)</span>
 
 <span class="va">simulations_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-341-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-349-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -628,7 +696,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <li><p>Literature: “more T”, Durably reducing Transphobia. Nollywood is stepped wedge. Progressa for baseline endline?</p></li>
 <li><p>massive point is that we DONT use time to infer causal effects, we still use the random assignment.</p></li>
 </ul>
-<p>In a stepped wedge design, individuals are randomly assigned to enter into treatment in different stages and at each stage, their outcomes are remeasured. Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.1</a> illustrates where the study gets its name: as two units are randomly added to the treatment group in each of the three waves, the treatment group increases in “steps” while the control group diminishes.</p>
+<p>In a stepped wedge design, individuals are randomly assigned to enter into treatment in different stages and at each stage, their outcomes are remeasured. Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.3</a> illustrates where the study gets its name: as two units are randomly added to the treatment group in each of the three waves, the treatment group increases in “steps” while the control group diminishes.</p>
 <p>Often, stepped wedge designs are vaunted for their policy appeal because they allow for everyone to be (eventually) treated in the context of an experiment. However, you could achieve the same goal in a regular two-arm trial by treating everyone after the final wave of measurement, and not all stepped wedge designs involve treating everyone. Beyond its ethical and logistical appeal, the design can squeeze more power out of a small sample by treating each wave as though it were its own study.</p>
 <div id="declaration-18" class="section level3">
 <h3>
@@ -637,10 +705,10 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <ul>
 <li><p><strong>M</strong>odel: Eight units are randomized and remeasured at three time points. Importantly, any unit at any given point in time reveals one of only two potential outcomes — treated or untreated. Their untreated potential outcomes consist of a unit- and a unit-period-specific shock. Treated potential outcomes increase relative to the control potential outcome by a rate of 1 each period — in other words, there are bigger treatment effects in later periods.</p></li>
 <li><p><strong>I</strong>nquiry: Our estimand is the average treatment effect over all units and periods in the sample. Averaged over the three periods, the ATE is (1 + 2 + 3) / 3 = 2.</p></li>
-<li><p><strong>D</strong>ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all—see the remaining two orange squares at the top-right corner of Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.1</a>. Notice that, while every <em>unit</em> is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of <em>unit-periods</em> with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.</p></li>
-<li><p><strong>A</strong>nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy “under-represents” treated potential outcomes in the first wave and “over-represents” them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit’s IPW is represented in Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.1</a>. Using these weights, we get a “representative” estimate of the average control and treatment potential outcomes in each wave. If we didn’t apply the weights, we wouldn’t get a representative view of the unobserved potential outcomes we’re sampling, and our estimates would be biased. So what does all this buy us? We also declare a “two-arm” estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.</p></li>
+<li><p><strong>D</strong>ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all—see the remaining two orange squares at the top-right corner of Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.3</a>. Notice that, while every <em>unit</em> is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of <em>unit-periods</em> with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.</p></li>
+<li><p><strong>A</strong>nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy “under-represents” treated potential outcomes in the first wave and “over-represents” them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit’s IPW is represented in Figure <a href="experimental-designs-for-causal-inference.html#fig:steppedwedge">17.3</a>. Using these weights, we get a “representative” estimate of the average control and treatment potential outcomes in each wave. If we didn’t apply the weights, we wouldn’t get a representative view of the unobserved potential outcomes we’re sampling, and our estimates would be biased. So what does all this buy us? We also declare a “two-arm” estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.</p></li>
 </ul>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">8</span>,
@@ -683,7 +751,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <div class="figure">
 <span id="fig:steppedwedge"></span>
 <img src="book_files/figure-html/steppedwedge-1.svg" alt="Illustration of random assignment in a stepped-wedge design." width="100%"><p class="caption">
-Figure 17.1: Illustration of random assignment in a stepped-wedge design.
+Figure 17.3: Illustration of random assignment in a stepped-wedge design.
 </p>
 </div>
 </div>
@@ -691,7 +759,7 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <h3>
 <span class="header-section-number">17.5.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-17"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-347-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-355-1.svg" width="100%"></div>
 </div>
 <div id="example-14" class="section level3">
 <h3>
@@ -736,7 +804,7 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <li><p><strong>D</strong>ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.</p></li>
 </ul>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>,
@@ -764,7 +832,7 @@ Figure 17.1: Illustration of random assignment in a stepped-wedge design.
 <h3>
 <span class="header-section-number">17.6.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-18"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-353-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-361-1.svg" width="100%"></div>
 </div>
 <div id="exercises-7" class="section level3">
 <h3>
