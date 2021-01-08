@@ -166,7 +166,7 @@ dx <- diagnose_designs(designs, sims = 200, bootstrap_sims = FALSE)
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
-rds_file_path <- paste0(get_dropbox_path("two_arm"), "/dx.RDS")
+rds_file_path <- paste0(get_dropbox_path("two_arm_trials"), "/dx.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
   write_rds(dx, file = rds_file_path)
 }
@@ -214,92 +214,192 @@ g
 
 ### Increasing precision through blocking
 
-- Increase precision
-- Watch out for IPW
-- Blocking on many covariates
+Block random assignment almost always represents a precision improvement over complete random assignment. With block random assignment, we conduct "mini-experiments" within separate subsets of the sample (called blocks), defined by pre-treatment covariates. Within each block, we conduct complete random assignment.^[One mistake sometimes made by new experimenters is to conduct *simple* random assignment within each block -- none of the gains from blocking described here apply if simple random assignment is conducted in each block, because that procedure produces the identical randomization distribution as a simple random assignment procedure without any blocking, provided that the probability of assignment is the same in each block.] 
+
+One way of thinking about why blocking reduces sampling variability is that it rules out (by design) random assignments in which too many or too few units is a particular subgroup are assigned to treatment: exactly $m_B$ units will be treated in each block $B$. When potential outcomes are correlated the blocking variable, those "extreme" assignments produce estimates that are in the tails of the sampling distribution associated with complete random assignment.
 
 
-
-
-### Increasing precision through covariate adjustment
-
-- "like blocking" in the answer strategy
-- Watch out for post-treatment variables
-- the Lin adjustment
-
-### Simulation comparing blocking to covariate adjustment
-
-```{r, eval=FALSE}
-library(DeclareDesign)
-library(tidyverse)
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
 
 fixed_pop <-
-  declare_population(
-    N = 50,
-    X1 = rbinom(N, 1, 0.5),
-    X2 = rbinom(N, 1, 0.5),
-    U = rnorm(N, sd = 0.1)
-  )()
-
+  fabricate(
+    N = 12,
+    X = complete_ra(N),
+    U = rnorm(N, sd = 0.25)
+  )
 
 design <-
   declare_population(data = fixed_pop) +
-  declare_potential_outcomes(Y ~ Z + X1 + X2 + U) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
-  
-  
-  
-  d1 <-
-  design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
-d2 <-
-  design + declare_assignment(blocks = X1) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
-d3 <-
-  design + declare_assignment(blocks = paste0(X1, X2)) + declare_estimator(Y ~ Z, model = lm_robust, estimand = "ATE")
-d4 <-
-  design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z + X1, model = lm_robust, estimand = "ATE")
-d5 <-
-  design + declare_assignment(prob = 0.5) + declare_estimator(Y ~ Z + X1:X2 , model = lm_robust, estimand = "ATE")
+  declare_potential_outcomes(Y ~ 0.2*Z + X + U) +
+  declare_assignment(Z = complete_ra(N = N), handler = fabricate) + 
+  declare_reveal() +
+  declare_estimator(Y ~ Z, label = "DIM") +
+  declare_estimator(X ~ Z, label = "balance") +
+  declare_estimator(Y ~ Z + X, model = lm_robust, label = "OLS")
 
-balance_test <-
-  declare_test(Z ~ X1:X2, model = lm_robust, model_summary = glance, label = "balance")
-
-d1 <- d1 + balance_test
-d2 <- d2 + balance_test
-d3 <- d3 + balance_test
-d4 <- d4 + balance_test
-d5 <- d5 + balance_test
-
-simulations <- simulate_designs(list(d1, d2, d3, d4, d5))
-
-gg_df <-
-  simulations %>%
-  group_by(design_label, estimator_label) %>%
-  summarise(sd_estimate = sd(estimate),
-            power = mean(p.value <= 0.05)) %>% 
-  pivot_wider(id_cols = design_label, names_from = estimator_label, values_from = c(sd_estimate, power)) %>% 
-  transmute(design_label, sd_estimate = sd_estimate_estimator, power = power_estimator, prop_imbalance = 1 - power_balance)
+simulations <- simulate_design(design)
+```
 
 
-simulations <-
-  simulations %>%
-  mutate(design = factor(
-    design_label,
-    levels = paste0("design_", c(3, 2, 1, 4, 5)),
-    labels = c(
-      "Block on two covariates",
-      "Block on one covariate",
-      "No blocks or controls",
-      "Control for one covariate",
-      "Control for two covariates"
-    )
-  ))
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("two_arm_trials"), "/blocking_simulations.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(simulations, file = rds_file_path)
+}
+simulations <- read_rds(rds_file_path)
+```
+
+This inuition behind blocking is illustrated in Figure \@ref(fig:completecovariate), which shows the sampling distribution of the difference-in-means estimator under *complete* random assignment. The histogram is shaded according to whether the random assignment happened to perfectly balance a pre-treatment covariate $X$. The sampling distribution of the estimator among the set of assignments that happen to be balanced is more tightly distributed around the true average treatment effect than the estimates associated with assignments that are not perfectly balanced. Here we can see the value of a blocking procedure -- it *it rules out by design* those assignments that are not perfectly balanced. 
+
+```{r completecovariate, echo=FALSE, fig.cap='Sampling distribution under complete random assignment, by covariate balance', fig.height = 3, fig.width = 7, echo = FALSE}
+
+gg_df <- 
+simulations %>%
+  select(sim_ID, estimator_label, estimate) %>%
+  pivot_wider(names_from = estimator_label, values_from = estimate) %>%
+  mutate(balanced = balance == 0 )
+
+ggplot(gg_df, aes(DIM, fill = balanced)) +geom_histogram(position = "identity", bins = 30, alpha = 0.8) +
+  scale_fill_manual(values = c(dd_light_gray, dd_dark_blue)) +
+  dd_theme() +
+  geom_vline(xintercept = 0.2, color = dd_dark_blue, linetype = "dashed") +
+  theme(legend.position = "none",
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank()) +
+  annotate("text", x = 0.30, y = 50, label = "Assignments that\nexactly balance X", color = dd_dark_blue,hjust = 0) +
+  annotate("text", x = -0.40, y = 20, label = "Assignments that do not\nexactly balance X", color = dd_light_gray,hjust = 1) +
+  xlim(-1.5, 1.5) +
+  xlab("Difference-in-means estimate")
+```
+ 
+### Increasing precision through covariate adjustment
+
+Choosing block random assignment over complete random assignment is a method for incorporating covariate information into the data strategy for the purpose of decreasing sampling variability. We can also incorporate covariate information into the answer strategy for the same purpose, by controlling for covariates or otherwise conditioning on them when estimating the average treatment effect. In observational settings like the one we explore in [selection on observeables], conditioning on covariates is used to block back-door paths to address confounding. Here, confounding is no problem -- the treatment is assigned at random by design, so we do not need to control for covariates in order to decrease bias. Instead, we control for covariates in order to reduce sampling variability.
+
+Figure \@ref(fig:completecovariate) illustrates this point. The sampling distribution under difference in means is shown on the top line and the sampling distribution under ordinary least squares (Y ~ Z + X) is shown on the bottom line.  Estimates that are on the extreme ends of the distribution under difference-in-means are pulled in more tightly to center on the ATE. One interesting wrinkle that this graph reveals is that covariate adjustment does not tighen up the estimates for assignments that exactly balance X -- they only help the assignments that are slightly imbalanced.
+
+```{r completecovariateadjustment, echo=FALSE, fig.cap='Impact of covariate adjustment on the sampling distribution', fig.height = 3, fig.width = 7, echo = FALSE}
+gg_df2 <-
+  gg_df %>%
+  pivot_longer(cols = c(DIM, OLS),
+               names_to = "estimator",
+               values_to = "estimate") %>%
+  mutate(estimator = factor(estimator, levels = c("OLS", "DIM")))
 
 
-ggplot(simulations, aes(estimate)) +
-  geom_histogram(bins = 30) +
-  facet_wrap( ~ design, ncol = 5)
+
+ggplot(gg_df2, aes(estimate, estimator, color = balanced, group = sim_ID)) +
+  geom_line(data = (. %>% filter(balanced)), alpha = 0.9) +
+  geom_line(data = (. %>% filter(!balanced)), alpha = 0.3) +
+  scale_color_manual(values = c(dd_light_gray, dd_dark_blue)) +
+  geom_vline(xintercept = 0.2, color = dd_dark_blue, linetype = "dashed") +
+  annotate(
+    "text",
+    x = 0.20,
+    y = 2.25,
+    label = "Assignments that\nexactly balance X",
+    color = dd_dark_blue
+  ) +
+  annotate(
+    "text",
+    x = -0.40,
+    y = 1.25,
+    label = "Assignments that do not\nexactly balance X",
+    color = dd_light_gray,
+    hjust = 1
+  ) +
+  xlim(-1.5, 1.5) +
+  xlab("Average treatment effect estimate") +
+  theme(legend.position = "none")
 
 ```
+
+
+
+### Simulation comparing blocking to covariate adjustment
+
+Adjusting for pre-treatment covariates that are predictive of the outcome almost always increases precision; blocking on covariates that are predictive of the outcome almost always increases precision too. Another way of putting this is that covariate information can be incorporated in answer strategy (covariate adjustment) or in the data strategy (blocking) and that in this way, the two procedures are approximately equivalent.
+
+We'll now declare and diagnose four closely-related experimental designs. To begin, we describe a fixed population of 100 units with a binary covariate $X$ and unobserved heterogeneity $U$. Potential outcomes are a function of the treatment $Z$ and are correlated with $X$. Throughout this exercise, our inquiry is the ATE.
+
+```{r}
+fixed_pop <-
+  fabricate(
+    N = 100,
+    X = rbinom(N, 1, 0.5),
+    U = rnorm(N)
+  )
+
+design <-
+  declare_population(data = fixed_pop) +
+  declare_potential_outcomes(Y ~ 0.2*Z + X + U) +
+  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+```
+
+We have two answer strategies and two data strategies that we'll mix-and-match.
+
+```{r}
+# Data strategies
+complete_assignment <- 
+  declare_assignment(Z = complete_ra(N = N), handler = fabricate) + 
+  declare_reveal()
+blocked_assignment <- 
+  declare_assignment(Z = block_ra(blocks = X), handler = fabricate) + 
+  declare_reveal()
+
+# Answer strategies
+unadjusted_estimator <- declare_estimator(Y ~ Z, estimand = "ATE")
+adjusted_estimator <- declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")
+```
+
+These combine to create four designs, which we then diagnose.
+
+```{r}
+design_1 <- design + complete_assignment + unadjusted_estimator
+design_2 <- design + blocked_assignment + unadjusted_estimator
+design_3 <- design + complete_assignment + adjusted_estimator
+design_4 <- design + blocked_assignment + adjusted_estimator
+```
+
+```{r, eval=FALSE}
+diagnose_designs(list(design_1, design_2, design_3, design_4))
+```
+
+
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+simulations <- simulate_designs(list(design_1, design_2, design_3, design_4))
+```
+
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("two_arm_trials"), "/covariate_simulations.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(simulations, file = rds_file_path)
+}
+simulations <- read_rds(rds_file_path)
+```
+
+```{r, echo=FALSE}
+gg_df <-
+  simulations %>%
+  group_by(design_label) %>%
+  summarise(sd_estimate = sd(estimate), avg_std_error = mean(std.error), .groups = "drop") %>%
+  transmute(`Data Strategy` = if_else(design_label %in% c("design_1", "design_3"), 
+                                   "Complete Random Assignment",
+                                   "Block Random Assignment"),
+         `Answer Strategy` = if_else(design_label %in% c("design_1", "design_2"), 
+                                   "Difference-in-means",
+                                   "Covariate Adjustment"),
+         `True Standard Error` = sd_estimate,
+         `Average Estimated Standard Error` = avg_std_error)
+kable(gg_df, digits = 3)
+```
+
+The diagnosis shows that incorporating covariate information either in the data strategy or in the answer strategy yields similar gains to the true standard error. Relative to the canonical design (complete random assignment with difference-in-means), any of the alternatives represents an improvement. Blocking on $X$ in the data strategy decreases sampling variability. Controlling for $X$ in the answer strategy decreases sampling variability. Doing both -- blocking on $X$ and controlling for $X$ -- does not yield *additional* gains, but controlling for $X$ is nevertheless appropriate when using a blocked design. The reason for this can be seen in the "average estimated standard error" diagnosand. If we block, but still use the difference-in-means estimator, the *estimated* standard errors do not decrease relative to complete random assignment. The usual Neyman variance estimator doesn't "know" about the blocking. A number of fixes to this problem are available. You can, as we do in the simulation, control for the blocking variable in an OLS regression. Alternatively, you can use the "stratified" estimator that obtains block-level ATE estimates, then averages them together, weighting by block size. The stratified estimator has an associated standard error estimator -- see gerber and green page 73-74. The stratified estimator is an instance of the "analyze as you randomize" principle. Respecting the data strategy in the answer strategy (by adjusting for the blocking) brings down the estimated standard error as well.
+
 
 
 ### Randomization checks
