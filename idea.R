@@ -1,5 +1,5 @@
 # ---
-# Ethical Review
+# Idea
 # --- 
 
 packages <- c("tidyverse", "DeclareDesign")
