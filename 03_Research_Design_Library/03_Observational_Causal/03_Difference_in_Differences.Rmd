@@ -36,18 +36,18 @@ b_sims <- 1000
 ```{r}
 design <- 
   declare_population(
-    unit = add_level(N = 2, X = rnorm(N, sd = 0.5)),
+    unit = add_level(N = 2, Uu = rnorm(N, sd = 0.5)),
     period = add_level(N = 2, nest = FALSE),
     unit_period = cross_levels(by = join(unit, period), 
-                               U = rnorm(N, sd = 0.01))
+                               Ui = rnorm(N, sd = 0.01))
   ) + 
-  declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + D + U,
+  declare_potential_outcomes(Y ~ Uu + 0.5 * as.numeric(period) + D + Ui,
                              assignment_variable = D) + 
-  declare_estimand(ATE = mean(Y_D_1 - Y_D_0), subset = period == 2) + 
-  declare_step(D = X == max(X), handler = mutate) + 
+  declare_estimand(ATT = mean(Y_D_1 - Y_D_0), subset = period == 2) + 
+  declare_step(D = Uu == max(Uu), handler = mutate) + 
   reveal_outcomes(Y = if_else(D == 0 | period == 1, Y_D_0, Y_D_1), 
                   handler = mutate) +
-  declare_estimator(Y ~ D * period, model = lm_robust, se_type = "none")
+  declare_estimator(Y ~ period + unit + D, model = lm_robust, estimand = "ATT", se_type = "none")
 ```
 
 ### DAG
@@ -145,7 +145,7 @@ two_period_two_group_design <-
 diagnosis_two_period_two_group <- diagnose_design(
   two_period_two_group_design, 
   diagnosands = declare_diagnosands(bias = mean(estimate - estimand)),
-  sims = sims, bootstrap_sims = b_sims)
+  sims = sims, bootstrap_sims = FALSE)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}

@@ -51,19 +51,18 @@ design <-
   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_sampling(n = 215) + 
   declare_assignment(
-    Z = complete_ra(N, m_each = c(10, 40, 40, 40, 40, 40),
+    Z = complete_ra(N, m_each = c(15, 40, 40, 40, 40, 40),
                     conditions = c(
                       "backups",
                       "pure_control", 
                       "film_placebo_text_placebo",
                       "film_placebo_text_treat",
                       "film_treat_text_placebo",
-                      "film_treat_text_treat")), handler = fabricate) + 
-  # declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
-  declare_reveal(Y ~ Z) + 
-  declare_estimator(Y ~ Z, clusters = towers, model = lm_robust)
+                      "film_treat_text_treat"))) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
+  declare_estimator(Y ~ Z, model = lm_robust)
 
-draw_data(design, start = 1, end = 3) %>% nrow
+draw_data(design)
   
 ```
 
