@@ -64,7 +64,7 @@ design <-
     estimand_label = "ATT", handler = summarize)
 ```
 
-```{r}
+```{r, eval = FALSE}
 designs <- redesign(
   design, time_trend = c(0, 0.5), time_specific_effect = c(0, 1))
 
@@ -91,7 +91,7 @@ design <-
     estimand_label = "ATT", handler = summarize)
 ```
 
-```{r}
+```{r, eval = FALSE}
 designs <- redesign(design, unit_specific_effect = c(0, 1))
 
 diagnosis <- diagnose_design(designs, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)))
@@ -123,7 +123,7 @@ design <-
     estimand_label = "ATT", handler = summarize)
 ```
 
-```{r}
+```{r, eval = FALSE}
 designs <- redesign(design, 
                     time_trend = c(0, 0.5), 
                     time_specific_effect = c(0, 1), 
@@ -189,7 +189,9 @@ design <-
                     handler = synth_weights_tidy) +
   declare_estimator(Y ~ Z, subset = time == 1, weights = synth_weights, 
                     model = lm_robust, label = "synth")
+```
 
+```{r, eval = FALSE}
 designs <- redesign(design, 
                     time_trend = c(0, 0.5), 
                     time_specific_effect = c(0, 1), 
