@@ -1,5 +1,5 @@
 ---
-title: "Observational causal inference with a single unit"
+title: "Causal inquiries about a single unit"
 output:
   pdf_document: default
   html_document: default
@@ -24,117 +24,202 @@ source("scripts/before_chapter_script.R")
 ```{r observational-single-unit, echo = FALSE, output = FALSE, purl = FALSE}
 # run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
 do_diagnosis <- FALSE
-sims <- 100
-b_sims <- 20
+sims <- 5000
+b_sims <- 500
 ```
 
 ```{r, echo = FALSE}
 library(Synth)
 ```
 
-## Observational causal inference for a single unit
+## Causal inquiries about a single unit
 
 We often start a causal investigation wanting to know the causal effect for a single unit. For a unit that experienced an event or process, we want to know the causal effect of that event. To do so, we need to know what would have happened if the event did not happen, the *counter*factual outcome as opposed to the factual outcome that actually occurred. Due to the fundamental problem of causal inference, we cannot *observe* what would have happened if that counterfactual case had happened. The event can either happen, or not happen, to each unit. As a result, we have to guess what would have happened. Social scientists have developed a large array of tools for guessing, or imputing, the missing counterfactual outcome --- what would have happened in the counterfactual case, if the event had not happened.^[We are also interested in the opposite case sometimes: we have a unit that did not experience an event, and we want to know the causal effect of *not* having it. In this case, we need to guess what would have happened if the event did happen. The same tools apply in reverse.]
 
-### Qualitative imputation
+In this section, the inquiry is the treatment effect of the treated case (TET). The TET is the difference between the treated potential outcome and the control potential outcome in the posttreatment period for the treated unit of interest. 
 
-The simplest idea for imputing missing potential outcomes is to guess based on an assessment of the qualitative evidence for the case. 
+```{r, echo = FALSE}
+dag <- dagify(Y ~ X + D + U,
+              D ~ X)
+nodes <-
+  tibble(
+    name = c("X", "U", "D", "Y"),
+    label = c("X", "U", "D", "Y"),
+    annotation = c(
+      "**Control variable**",
+      "**Unknown heterogeneity**",
+      "**Treatment**",
+      "**Outcome variable**"
+    ),
+    x = c(1, 5, 3, 5),
+    y = c(4, 4, 2.5, 2.5),
+    nudge_direction = c("N", "N", "W", "S"),
+    data_strategy = "unmanipulated",
+    answer_strategy = c("controlled",  "uncontrolled", "uncontrolled", "uncontrolled")
+  )
+
+
+ggdd_df <- make_dag_df(dag, nodes)
+
+base_dag_plot %+% ggdd_df
+```
+
+### Process tracing
 
 <!-- fearon1991, biqq -->
 
-### Over-time change within unit
+### Before-after comparison
 
-A second natural idea for guessing what would have happened if an event did not occur for a single unit is to look within that unit at what happened *before* the event did occur. Within-unit over-time comparisons use outcomes in pretreatment periods to impute the posttreatment counterfactual outcome. 
+A natural idea for guessing what would have happened if an event did not occur for a single unit is to look within that unit at what happened *before* the event did occur. Within-unit over-time comparisons use outcomes in pretreatment periods to impute the posttreatment counterfactual outcome. 
+
+In order for the pretreatment outcome to be a good stand-in for the posttreatment control potential outcome, we must invoke two assumptions: excludability of time; and no interference between time periods. The excludability assumption says that the only change between pre and post is the fact that the treatment is administered. This rules out time trends and any other form of time-varying heterogeneity aside from the treatment status. The second assumption is that the unit is assigned to control in the pretreatment period cannot affect outcomes in the posttreatment period, and the fact that the unit is treated in the second period cannot affect outcomes in the first period. This is often called a no carryover assumption, and most importantly in this case rules out the possibility of effects of anticipating treatment in the next period. If the unit expects to be treated in period 1, this may affect the outcome in period 0 even though treatment has not yet been administered. Often anticipation effects wash out treatment effects; it is as if the treatment has already taken place. 
+
+To declare this design, we consider violations of the excludability assumption. The inquiry is the TET, as in all designs in this section. In the model, we consider two sources of heterogeneity in the outcome: time trends (an effect of time) and time-varying heterogeneity (an effect of $U_{\rm time}$). Potential outcomes are a function of these two variables and the treatment variable. Our data strategy is to measure $Y$ in both periods, and this will reveal the control potential outcome in the first period, before treatment, and the control potential outcome in the second period, after treatment. Our answer strategy is to take the difference in the outcome between the post- and pretreatment periods. 
 
 ```{r}
 design <- 
   declare_population(
     N = 2, 
-    time = 1:2,
+    time = 0:1,
     U_time = rnorm(N),
     potential_outcomes(
       Y ~ time_trend * time + time_specific_effect * U_time + 0.5 * Z
     ),
     Z = 1
   ) + 
-  declare_estimand(ATT = mean(Y_Z_1 - Y_Z_0), subset = time == 2) + 
-  declare_measurement(Y = ifelse(time == 1, Y_Z_0, Y_Z_1)) + 
+  declare_estimand(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
+  declare_measurement(Y = ifelse(time == 0, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
-    estimate = mean(Y[time == 2]) - mean(Y[time == 1]), 
-    estimand_label = "ATT", handler = summarize)
-```
+    estimate = Y[time == 1] - Y[time == 0], 
+    estimand_label = "TET", handler = summarize)
 
-```{r, eval = FALSE}
 designs <- redesign(
   design, time_trend = c(0, 0.5), time_specific_effect = c(0, 1))
-
-diagnosis <- diagnose_design(designs, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)))
-
-get_diagnosands(diagnosis) %>% select(time_trend, time_specific_effect, bias) %>% round(2)
 ```
 
-### Posttreatment difference
+
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+diagnosis <- diagnose_design(designs, sims = sims, bootstrap_sims = b_sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("single_case_inquiries"), "/diagnosis_over_time.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+We diagnose the design in four settings, the two-by-two of: with and without time trends, and with and without time-specific effects. We see that the over-time within-unit design is only unbiased when there are neither. If there are time trends, there is bias, due to a violation of the excludability of time assumption. If there is time-varying heterogeneity aside from the treatment, the excludability assumption is also violated. There is no test for these two conditions that lead to bias, and there is no diagnostic like the pretrends comparison for the difference-in-difference design. 
+
+```{r, echo = FALSE}
+kable(get_diagnosands(diagnosis) %>% select(time_trend, time_specific_effect, bias, `se(bias)`), booktabs = TRUE, digits = 3)
+```
+
+### Posttreatment comparison to an untreated case
+
+A second natural design is to compare the outcomes of the treated case after to treatment to the outcomes in another unit in the same time period that did not receive the treatment. Instead of filling in the control potential outcome of the treated unit with its own outcome in the pretreatment period, we fill it in with the outcomes of this second "control" unit.
+
+We can invoke an exactly parallel set of assumptions to the over time within unit design: excludability of the unit difference (rather than time), i.e., the only difference between the two units is the treatment status and not other unit-specific heterogeneity. This strong assumption is often relaxed in favor of a "selection-on-observables" assumption by accounting for observable differences between units and selecting a comparison unit that is similar in all observable ways. 
+
+In declaring the design, we target the same TET inquiry, and swap our model of over time heterogeneity with with between-unit heterogeneity ($U_{\rm unit}$) (there is not a parallel of time trends). Our data strategy is to measure Y for both the treated unit and the comparison unit in the posttreatment time period; the treated unit reveals its treated potential outcome, while the comparison unit reveals its control potential outcome. The answer strategy is the posttreatment comparison between the treated and control unit.
 
 ```{r}
 design <- 
   declare_population(
     N = 2, 
-    time = 2,
+    time = 1,
     U_unit = rnorm(N),
     potential_outcomes(Y ~ 0.5 * Z + unit_specific_effect * U_unit),
     Z = if_else(U_unit == max(U_unit), 1, 0)
   ) + 
-  declare_estimand(ATT = mean(Y_Z_1 - Y_Z_0), subset = time == 2) + 
+  declare_estimand(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
   declare_measurement(Y = ifelse(Z == 0, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
-    estimate = mean(Y[Z == 1]) - mean(Y[Z == 0]), 
-    estimand_label = "ATT", handler = summarize)
-```
+    estimate = Y[Z == 1] - Y[Z == 0], 
+    estimand_label = "TET", handler = summarize)
 
-```{r, eval = FALSE}
 designs <- redesign(design, unit_specific_effect = c(0, 1))
-
-diagnosis <- diagnose_design(designs, diagnosands = declare_diagnosands(bias = mean(estimate - estimand)))
-
-get_diagnosands(diagnosis) %>% select(unit_specific_effect, bias) %>% round(2)
 ```
 
-### Difference-in-difference 
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+diagnosis <- diagnose_design(designs, sims = sims, bootstrap_sims = b_sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("single_case_inquiries"), "/diagnosis_across_unit.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+We diagnose the two-unit posttreatment comparison design under two settings: with and without unit-specific differences not accounted for by observables, aside from the treatment. With these differences, the excludability assumption is violated. We see that the design is only unbiased for the TET if there are no such unit-specific differences besides treatment. 
+
+```{r, echo = FALSE}
+kable(get_diagnosands(diagnosis) %>% select(unit_specific_effect, bias, `se(bias)`), booktabs = TRUE, digits = 3)
+```
+
+### Difference-in-differences 
+
+When the over-time excludability of treatment and the selection-on-observables assumptions are unreasonable, an alternative is the difference-in-differences design. We difference out unit characteristics, whether observable or not, that do not vary over time by comparing the outcomes before and after treatment. What is left is time trends and other unit-invariant time-varying factors, and we difference these out by comparing the change over time in the treated unit to the change over time in the comparison unit. Each difference takes out one class of factors that would violate the excludability assumptions of over-time within unit designs alone or posttreatment comparison across-unit designs alone.
+
+The difference-in-difference design does not rely on the assumptions the earlier two designs do. But it adds a new assumption: the parallel trends assumption. In order for the difference-in-difference design to work, the change between before and after treatment in the control potential outcomes must be equal (i.e., parallel). Because this assumption depends on the change in values of the unrealized (and thus unobservable) control potential outcome in the treated unit, it cannot be tested. There is a widely-used diagnostic of the difference in observed trends before treatment [...]
+
+Declaring this design combines the elements of the within-unit over time and between-unit posttreatment designs. We have two units (the treated unit and its comparison unit), and two time periods, before (0) and after treatment (1). There is unit-specific, time invariant heterogeneity ($U_{\rm unit}$), and unit-invariant over time heterogeneity ($U_{\rm time}$). The potential outcomes are a function of treatment, these heterogeneity variables, and time trends. We target the same TET inquiry as the other designs. We measure the outcome in a way that combines the two previous designs: the control potential outcome is revealed in both periods for the comparison untreated unit *and* in the pretreatmetn period for the treated unit, and the treated potential outocme is revealed in the posttreatment period of the treated unit. The answer strategy is the difference-in-differences, first differencing off within-unit changes from first to second period then across-unit changes in the comparison unit.
 
 ```{r}
 design <- 
   declare_population(
     unit = add_level(N = 2, U_unit = rnorm(N, sd = 0.5), Z = if_else(U_unit == max(U_unit), 1, 0)),
-    period = add_level(N = 2, time = 1:2, U_time = rnorm(N), nest = FALSE),
+    period = add_level(N = 2, time = 0:1, U_time = rnorm(N), nest = FALSE),
     unit_period = cross_levels(
       by = join(unit, period), 
       U = rnorm(N, sd = 0.01),
-      potential_outcomes(Y ~ time_trend * 0.5 * time + time_specific_effect * U_time + 
+      potential_outcomes(
+        Y ~ time_trend * 0.5 * time + 
+          time_specific_effect * U_time + 
           unit_specific_effect * U_unit + 
-            1.25 * Z + U),
-      Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1)
+          1.25 * Z + U)
     )
   ) + 
-  declare_estimand(ATT = mean(Y_Z_1 - Y_Z_0), subset = period == 2) + 
+  declare_estimand(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
+  declare_measurement(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
     estimate = 
       (mean(Y[Z == 1 & time == 2]) - mean(Y[Z == 1 & time == 1])) - 
       (mean(Y[Z == 0 & time == 2]) - mean(Y[Z == 0 & time == 1])), 
     estimand_label = "ATT", handler = summarize)
-```
 
-```{r, eval = FALSE}
 designs <- redesign(design, 
                     time_trend = c(0, 0.5), 
                     time_specific_effect = c(0, 1), 
                     unit_specific_effect = c(0, 1))
-
-diagnosis <- diagnose_design(designs, diagnosands = declare_diagnosands(bias = mean(estimate - estimand, na.rm = TRUE)))
-
-get_diagnosands(diagnosis) %>% select(time_trend, time_specific_effect, unit_specific_effect, bias) %>% round(2)
 ```
 
-### Synthetic control 
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+diagnosis <- diagnose_design(designs, sims = sims, bootstrap_sims = b_sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("single_case_inquiries"), "/diagnosis_diff_in_diff.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+We diagnose the difference-in-difference design under eight cases, the combinations of: with and without time trends in outcomes; with and without other, time-varying unit-invariant heterogeneity; and with and without unit-specific time-invariant heterogeneity. We see the power of the difference-in-difference design: under any of these alternatives, the design is unbiased for the TET inquiry. In the over-time within-unit design and the posttreatment comparison across units design, the design is unbiased only if the relevant one of these conditions holds. Unfortunately, there are no tests of the validity of those assumptions.
+
+```{r, echo = FALSE}
+kable(get_diagnosands(diagnosis) %>% select(time_trend, time_specific_effect, unit_specific_effect, bias, `se(bias)`), booktabs = TRUE, digits = 3)
+```
+
+
+### Synthetic controls
 
 ```{r, echo=FALSE}
 synth_weights_tidy <- function(data, predictors, time.predictors.prior, dependent, unit.variable, time.variable, treatment.identifier, controls.identifier) {
