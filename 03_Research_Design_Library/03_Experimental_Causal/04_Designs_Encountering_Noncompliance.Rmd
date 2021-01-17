@@ -91,42 +91,98 @@ This design declaration will show how two-stage least squares provides good esti
 
 
 ```{r}
-direct_effect_of_encouragement <- 0.0
-proportion_defiers <- 0.0
-
 design <-
   declare_population(
     N = 100,
-    type = sample(
-      x = c("Always-Taker", "Never-Taker", "Complier", "Defier"),
-      prob = c(0.1, 0.1, 0.8, 0.0),
-      size = N, replace = TRUE
+    type = 
+      rep(c("Always-Taker", "Never-Taker", "Complier", "Defier"),
+          c(0.2, 0.2, 0.6, 0.0)*N),
+    U = rnorm(N),
+    potential_outcomes(
+      Y ~ case_when(
+        type == "Always-Taker" ~ -0.25 - 0.50 * D + U,
+        type == "Never-Taker" ~ 0.75 - 0.25 * D + U,
+        type == "Complier" ~ 0.25 + 0.50 * D + U,
+        type == "Defier" ~ -0.25 - 0.50 * D + U
+      ),
+      conditions = list(D = c(0, 1))
     ),
-    U = rnorm(N)
-  ) +
-  declare_potential_outcomes(
-    D ~ case_when(
-      Z == 1 & type %in% c("Always-Taker", "Complier") ~ 1,
-      Z == 1 & type %in% c("Never-Taker", "Defier") ~ 0,
-      Z == 0 & type %in% c("Never-Taker", "Complier") ~ 0,
-      Z == 0 & type %in% c("Always-Taker", "Defier") ~ 1
+    potential_outcomes(
+      D ~ case_when(
+        Z == 1 & type %in% c("Always-Taker", "Complier") ~ 1,
+        Z == 1 & type %in% c("Never-Taker", "Defier") ~ 0,
+        Z == 0 & type %in% c("Never-Taker", "Complier") ~ 0,
+        Z == 0 & type %in% c("Always-Taker", "Defier") ~ 1
+      ),
+      conditions = list(Z = c(0, 1))
     )
   ) +
-  declare_potential_outcomes(
-    Y ~ 0.5 * (type == "Complier") * D +
-      0.25 * (type == "Always-Taker") * D +
-      0.75 * (type == "Defier") * D +
-      # Building in NO excludability violation
-      0 * Z + U,
-    assignment_variables = c("D", "Z")
+  declare_estimand(
+    ATE = mean(Y_D_1 - Y_D_0),
+    CACE = mean(Y_D_1[type == "Complier"] - Y_D_0[type == "Complier"])) +
+  declare_assignment(Z = conduct_ra(N = N, prob = 0.5), handler = fabricate) +
+  declare_measurement(D = fabricatr::reveal_outcomes(D ~ Z),
+                      Y = fabricatr::reveal_outcomes(Y ~ D)) +
+  declare_estimator(
+    Y ~ D | Z,
+    model = iv_robust,
+    estimand = c("ATE", "CACE"),
+    label = "2SLS"
   ) +
-  declare_estimand(CACE = mean(Y_D_1_Z_1 - Y_D_0_Z_0),
-                   subset = type == "Complier") +
-  declare_assignment(prob = 0.5) +
-  reveal_outcomes(D, assignment_variable = "Z") +
-  reveal_outcomes(Y, assignment_variables = c("D", "Z")) +
-  declare_estimator(Y ~ D | Z, model = iv_robust, estimand = "CACE")
+  declare_estimator(
+    Y ~ D,
+    model = lm_robust,
+    estimand = c("ATE", "CACE"),
+    label = "As treated"
+  ) +
+  declare_estimator(
+    Y ~ D,
+    model = lm_robust,
+    estimand = c("ATE", "CACE"),
+    subset = D == Z,
+    label = "Per protocol"
+  )
+
 ```
+
+
+
+This chunk is set to `echo = TRUE` and `eval = do_diagnosis`
+```{r, eval = do_diagnosis & !exists("do_bookdown")}
+dx <- diagnose_design(design)
+```
+
+Right after you do simulations, you want to save the simulations rds. 
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("encouragement"), "/dx.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(dx, file = rds_file_path)
+}
+dx <- read_rds(rds_file_path)
+```
+
+```{r cacesim, echo=FALSE, fig.width = 6.5, fig.height=3, fig.cap="sampling distribution of three estimators"}
+inquiries_df <- draw_estimands(design) 
+
+label_df <- inquiries_df %>% mutate(estimator_label = "2SLS", 
+                                    x = c(-0.1, 0.8),
+                                    y = 75)
+
+dx$simulations_df %>% filter(estimand_label == "ATE") %>%
+  ggplot(aes(estimate)) +
+  geom_histogram(bins = 30) +
+  facet_wrap(~estimator_label, ncol = 1) +
+  geom_vline(data = inquiries_df, aes(xintercept = estimand, color = estimand_label), linetype = "dashed") +
+  geom_text(data = label_df, aes(x = x, y = y, label = estimand_label)) +
+  dd_theme() +
+  theme(legend.position = "none")
+  
+```
+
+
+
 
 ### DAG
 
