@@ -39,7 +39,7 @@
 <li><a class="" href="primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
+<li><a class="" href="declaration-4.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -50,17 +50,21 @@
 <li class="book-part">Research Design Library</li>
 <li><a class="" href="research-design-library.html"><span class="header-section-number">13</span> Research Design Library</a></li>
 <li><a class="" href="observational-designs-for-descriptive-inference.html"><span class="header-section-number">14</span> Observational designs for descriptive inference</a></li>
-<li><a class="" href="experimental-designs-for-descriptive-inference.html"><span class="header-section-number">15</span> Experimental designs for descriptive inference</a></li>
-<li><a class="" href="observational-designs-for-causal-inference.html"><span class="header-section-number">16</span> Observational designs for causal inference</a></li>
-<li><a class="" href="experimental-designs-for-causal-inference.html"><span class="header-section-number">17</span> Experimental designs for causal inference</a></li>
+<li><a class="" href="observational-designs-for-causal-inference.html"><span class="header-section-number">15</span> Observational designs for causal inference</a></li>
+<li><a class="" href="experimental-designs-for-causal-inference.html"><span class="header-section-number">16</span> Experimental designs for causal inference</a></li>
+<li><a class="" href="experimental-designs-for-descriptive-inference.html"><span class="header-section-number">17</span> Experimental designs for descriptive inference</a></li>
 <li><a class="" href="complex-designs-1.html"><span class="header-section-number">18</span> Complex designs</a></li>
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
+<li><a class="" href="model-2.html"><span class="header-section-number">22</span> Model</a></li>
+<li><a class="" href="inquiry-2.html"><span class="header-section-number">23</span> Inquiry</a></li>
+<li><a class="" href="data-strategy-2.html"><span class="header-section-number">24</span> Data strategy</a></li>
+<li><a class="" href="answer-strategy-2.html"><span class="header-section-number">25</span> Answer strategy</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">26</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">27</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">28</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -110,7 +114,7 @@
 </ul>
 <p>Consider for example a design in which we place a prior distribution over a treatment effect, <span class="math inline">\(b\)</span>. We consider designs that vary (a) the number of units studied and (b) the investment in careful measurement. Each comes with a cost. We imagine that results will be used as follows: if a <em>significant</em> treatment effect of <span class="math inline">\(b&gt;c\)</span> is estimated then an intervention is implemented which has value <span class="math inline">\(b\)</span> and cost <span class="math inline">\(c\)</span>. Our diagnosand is the expected utility from whatever policy is implemented after the study: <span class="math inline">\(b-c\)</span> if the policy is adopted, 0 otherwise. Thus it is responsive to different types of errors: implementing a weak intervention with <span class="math inline">\(b&lt;c\)</span> and failing to implement a strong intervention with <span class="math inline">\(b&gt;c\)</span>. Note of course that this policy decision rule is not <em>itself</em> optimal insofar as it is based on significance not on posteriors, yet it may still be the rule used and we may still need to know how to undertake optimal design given this rule.</p>
 <p>We illustrate with a simple design in which we explicitly provide a prior distribution over the estimand and build in decision relevant parameters as arguments.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Decision parameters</span>
 
 <span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>  <span class="co"># Number of cases</span>
@@ -126,7 +130,7 @@
   <span class="fu">declare_estimand</span><span class="op">(</span>b<span class="op">=</span><span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_seen</span> <span class="op">~</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span><span class="op">)</span> </code></pre></div>
 <p>The key step then is to define a diagnosand that reflects choices, benefits, and costs and then assess performance over a range of designs.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Utility as a diagnosand</span>
 
 <span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
@@ -142,7 +146,7 @@
 <!--   power = mean(statistic > 1.96), -->
 <!--   benefit_given_significant = mean(estimand[statistic > 1.96]) -->
 <!-- ) -->
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span id="fig:optimaldesign"></span>
