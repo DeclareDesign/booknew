@@ -18,15 +18,12 @@ jobs:
   build:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
         
-      - name: Install fortran on MacOS
-        if: runner.os == 'macOS'
-        run: brew install gcc@9 || brew upgrade gcc@9 || true
-
       - name: Setup R
         uses: r-lib/actions/setup-r@master
 
