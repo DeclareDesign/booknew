@@ -39,7 +39,7 @@
 <li><a class="" href="primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="declaration-4.html"><span class="header-section-number">5</span> Declaration</a></li>
+<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="active" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -58,13 +58,9 @@
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="model-2.html"><span class="header-section-number">22</span> Model</a></li>
-<li><a class="" href="inquiry-2.html"><span class="header-section-number">23</span> Inquiry</a></li>
-<li><a class="" href="data-strategy-2.html"><span class="header-section-number">24</span> Data strategy</a></li>
-<li><a class="" href="answer-strategy-2.html"><span class="header-section-number">25</span> Answer strategy</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">26</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">27</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">28</span> Part IV Exercises</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -118,7 +114,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 <li><p>Pearl (pg. XXX) denotes conditioning on a variable in the answer stragegy with a box around the variable; we do follow this convention.</p></li>
 <li><p>CITE introduces intervention nodes – in that framework, variables that are manipulated by the researcher (as in a random assignement) are marked with a []. In that spirit, we introduce shapes for all three kinds of operations in a data strategy: circles for random assignments, triangles for sampling, and squares for measurement procedures.</p></li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-148-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-104-1.svg" width="100%"></div>
 <!-- This is good text but for answer stratgy: -->
 <!-- Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting by applying the "back-door criterion," which asks whether a back-door path exists between a pair of causally-related variables. Here, the causal relationship between $X$ and $Y$ is confounded by the back-door path $X \leftarrow U \rightarrow Z$. (for much more on the back-door criterion, see XXX). Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned. There are no back door paths leading from $Z$ to $Y$, so we *can* learn more easily about average causal effects of $Z$ on $Y$. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances. -->
 </div>
@@ -134,7 +130,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 </ul>
 <p>Which population you have in mind affects how reference populations should be modeled and also how draws from a population should be interpreted.</p>
 <p>To illustrate consider a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z\)</span> is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this book, might be declared like this:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
@@ -335,7 +331,7 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 <p>DAGs convey beliefs about <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we will need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
 <p>A slightly more complex example helps demonstrate how we can use a model declaration to facilitate the representation of a class of possibly stochastic models. Suppose that according to our model, the effect of <span class="math inline">\(Z\)</span> should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in the design declaration below. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard deviation 1; <span class="math inline">\(X\)</span> follows a Bernoulli distribution. In the <code>declare_potential_outcomes</code> function, we describe how the average effect of treatment depends on <span class="math inline">\(X\)</span>.</p>
 <!-- I removed the confounding to keep focused on one point -->
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tau_X0</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">tau_X1</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 
@@ -369,7 +365,7 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 <p>We can conduct meta-analyses of past relevant studies on the same topic to identify the range of plausible effect sizes, intraclass correlations, correlations between variables, and other model parameters. Conduct such a meta-analysis might be as simple as collecting the three papers that measured similar outcomes in the past and calculating the average intraclass correlation and its range across the three. A more sophisticated but still straightforward analysis would be to calculate the precision-weighted average of effect sizes and use that as the baseline effect size in the model, but also calculate the predictive interval from a random effects meta-analysis to characterize the expected range of effect sizes across differing contexts.</p>
 <p>The key question in conducting such a meta-analysis is how to select studies that are “relevant.” There are four dimensions on which we might want to compare past studies to the current setting: similarity in the type of units, treatments, outcomes, and contexts <span class="citation">(Cronbach and Shapiro <a href="references.html#ref-cronbach1982" role="doc-biblioref">1982</a>)</span>. Except in the case of pure replication studies, we are typically studying a (possibly new) treatment in a new setting, with new participants, or with new outcomes, so there will not be perfect overlap. However, the variation in effects across contexts and these other dimensions will help structure the range of our guesses specified in the model.</p>
 <p>When there are past studies that are especially close to our own, we may want to not define probability distributions that approximate the causal model of the world, but use the data from that past study directly as a stand-in. To do so, instead of declaring variables and their distributions and potential outcomes, we can resample from the past data to obtain simulated alternative possible worlds.</p>
-<p>Where there are no past studies that are sufficiently similar in some dimensions, we can collect new data through pilot studies. We discuss the risks of relying on data from small pilot studies in planning new research in Chapter <a href="during.html#p4piloting">26.1</a>. In short, we should not rely on effect size estimates from small pilot studies, and only use parameters such as the range of outcome data and the standard errors of estimates which are less noisy in declaring our new design.</p>
+<p>Where there are no past studies that are sufficiently similar in some dimensions, we can collect new data through pilot studies. We discuss the risks of relying on data from small pilot studies in planning new research in Chapter <a href="during.html#p4piloting">22.1</a>. In short, we should not rely on effect size estimates from small pilot studies, and only use parameters such as the range of outcome data and the standard errors of estimates which are less noisy in declaring our new design.</p>
 <p>In some cases, we can define many of the variables from early data collection in a study, e.g., from a baseline survey. Once we conduct a baseline survey, we can use the set of individuals selected for the study and their baseline characteristics to define many of the variables in our model. We can define our expectations about effect sizes and other features of endogenous variables, but rely on the correlations between exogenous variables from the baseline data. The danger here is that if we fix the characteristics of our model using baseline data, we will not consider what data <em>could have</em> been revealed if our sampling procedure had yielded a different set of study participants or we had conducted data collection a month later.</p>
 </div>
 <div id="discursive-models" class="section level3">
@@ -429,7 +425,7 @@ Figure 6.4: 216 possible DAGs with acyclicity.
 <p>After enumerating each possibility, we draw on logic, theory, and past evidence to rule out implausible or impossible models. We do so judiciously: any model we rule out represents the addition of a possibly false assumption. Past evidence or a theoretical model may provide conclusive reasons to include or exclude certain edges in the reference models. One common exclusion is the assumption of acyclicity: we commonly operate under the view that cycling is not possible in the world, which would imply that these variables simultaneously cause each other. In Figure <a href="choosing-an-answer-strategy.html#fig:dagsadjustment">9.2</a>, DAGs in gray are ruled out by acyclicity.</p>
 <p>The final step in setting up our model is defining a mapping between theory and these possible DAGs. Our aim is to provide evidence about generalizable theories, and to do so we must know which theories are ruled in or out by empirical evidence. The first step to doing this is to define which DAGs are consistent or inconsistent with each theory. (Later, we will define what evidence will result in rejection or retention of each DAG; the two steps together will allow us to define which theories are rejected or retained from the evidence.)</p>
 <p>For example, we code each model in which <span class="math inline">\(D\)</span> causes <span class="math inline">\(Y\)</span> as consistent with “Theory A” and all those in which <span class="math inline">\(D\)</span> does not cause <span class="math inline">\(Y\)</span> as consistent with “Theory B” in Table <a href="specifying-the-model.html#tab:theorydags">6.2</a>.</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">possible_models</span> <span class="op">%&gt;%</span> 
   <span class="va">ungroup</span> <span class="op">%&gt;%</span> 
   <span class="fu">sample_n</span><span class="op">(</span>size <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -523,7 +519,7 @@ FALSE
 </tbody>
 </table></div>
 <p>With these DAGs in mind, we can declare a design in which we turn on and off each causal relationship:</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
@@ -545,7 +541,7 @@ FALSE
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="declaration-4.html"><span class="header-section-number">5</span> Declaration</a></div>
+<div class="prev"><a href="declaration.html"><span class="header-section-number">5</span> Declaration</a></div>
 <div class="next"><a href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></div>
 </div></main><div id="on-this-page-nav" class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>

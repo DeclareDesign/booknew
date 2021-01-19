@@ -39,7 +39,7 @@
 <li><a class="" href="primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="active" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="declaration-4.html"><span class="header-section-number">5</span> Declaration</a></li>
+<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -58,13 +58,9 @@
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="model-2.html"><span class="header-section-number">22</span> Model</a></li>
-<li><a class="" href="inquiry-2.html"><span class="header-section-number">23</span> Inquiry</a></li>
-<li><a class="" href="data-strategy-2.html"><span class="header-section-number">24</span> Data strategy</a></li>
-<li><a class="" href="answer-strategy-2.html"><span class="header-section-number">25</span> Answer strategy</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">26</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">27</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">28</span> Part IV Exercises</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -100,7 +96,7 @@
 <span class="header-section-number">4.2</span> Question 2<a class="anchor" aria-label="anchor" href="#question-2"><i class="fas fa-link"></i></a>
 </h2>
 <p>After reading Chapter <a href="primer.html#primer">3</a>, initialize the following design:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span> 
@@ -112,7 +108,7 @@
 <li><p>Draw data from the design using <code>draw_data(design)</code> and run a regression with <code>Y</code> as the outcome and <code>Z</code> and <code>X</code> as predictors. What is the estimated average treatment effect of <code>Z</code> on <code>Y</code> based on this regression?</p></li>
 <li><p>Add an estimator using that regression to the design, and link it to the ATE estimand using this code:</p></li>
 </ol>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
 <pre><code>## declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")</code></pre>
 <p>Diagnose the design by running <code>diagnose_design(design, sims = 500)</code>. What is the bias of the design? What is its statistical power?</p>
@@ -126,7 +122,7 @@
 <!-- start post here, do not edit above -->
 <div class="chapter-nav">
 <div class="prev"><a href="primer.html"><span class="header-section-number">3</span> Software primer</a></div>
-<div class="next"><a href="declaration-4.html"><span class="header-section-number">5</span> Declaration</a></div>
+<div class="next"><a href="declaration.html"><span class="header-section-number">5</span> Declaration</a></div>
 </div></main><div id="on-this-page-nav" class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">

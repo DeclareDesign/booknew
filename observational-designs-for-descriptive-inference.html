@@ -39,7 +39,7 @@
 <li><a class="" href="primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="declaration-4.html"><span class="header-section-number">5</span> Declaration</a></li>
+<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -58,13 +58,9 @@
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="model-2.html"><span class="header-section-number">22</span> Model</a></li>
-<li><a class="" href="inquiry-2.html"><span class="header-section-number">23</span> Inquiry</a></li>
-<li><a class="" href="data-strategy-2.html"><span class="header-section-number">24</span> Data strategy</a></li>
-<li><a class="" href="answer-strategy-2.html"><span class="header-section-number">25</span> Answer strategy</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">26</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">27</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">28</span> Part IV Exercises</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
+<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -88,11 +84,11 @@
 <p>Often, we are interested in features of a population, but data on the entire population is prohibitively expensive to collect. Instead, researchers obtain data on a small fraction of the population and use measurements taken on that sample to draw inferences about the population.</p>
 <p>Imagine we seek to estimate the average political ideology of adult residents of the small town of Portola, California (population 2,100). Households include between 1 and 3 adults; adults living in the same households typically have similar ideologies, but differ somewhat. The <em>latent</em> ideology of each subject is therefore composed of a household-level shock as well as an idiosyncratic individual-level shock. Our data strategy will involve administering a survey that asks subjects to place themselves on a left-right scale that varies from 1 (most liberal) to 7 (most conservative). We approximate this measurement procedure with a function that “cuts” the latent ideology into 7 separate groups. Note that here we define the measurement <em>before</em> the sampling to let us simulate what we <em>would</em> measure for any member of the population were we to sample them.</p>
 <p>Our inquiry is “data-dependent”, since we are interested the population mean of the <em>measured</em> variable <span class="math inline">\(Y\)</span>: <span class="math inline">\(\frac{1}{N} \sum_1^N Y_i = \bar{Y}\)</span> (or, what we would measure were we to be able to measure the population). Our first sampling strategy will be complete random sampling. We draw a sample of exactly <span class="math inline">\(n = 100\)</span>, where every member of the population has an equal probability of inclusion in the sample, <span class="math inline">\(\frac{n}{N}\)</span>. Our answer strategy is the sample mean estimator: <span class="math inline">\(\widehat{\overline{Y}} = \frac{1}{n} \sum_1^n Y_i\)</span>, implemented here as an ordinary least squares regression to facilitate the easy calculation of auxiliary statistics like the standard error of the estimate and the 95% confidence interval.</p>
-<div id="declaration-5" class="section level3">
+<div id="declaration-1" class="section level3">
 <h3>
-<span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-5"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">portola</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     households <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">500</span>, 
@@ -110,17 +106,17 @@
   <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="dag-5" class="section level3">
+<div id="dag" class="section level3">
 <h3>
-<span class="header-section-number">14.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-5"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-203-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-159-1.svg" width="100%"></div>
 <div id="diagnosis" class="section level4">
 <h4>
 <span class="header-section-number">14.1.2.1</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis"><i class="fas fa-link"></i></a>
 </h4>
 <p>Two main diagnosands for the simple random sampling design are bias and rmse. We want to know if we get the right answer on average and we want to know, on average, how far off from the truth we are.</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
   rmse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>
@@ -159,9 +155,9 @@ RMSE
 </table></div>
 <p>The diagnosis in table <a href="observational-designs-for-descriptive-inference.html#tab:completerandomsampling">14.1</a> indicates that under complete random sampling, the sample mean estimator of the population mean is unbiased and that the root mean squared error is manageable at 0.11.</p>
 </div>
-<div id="exercises-1" class="section level4">
+<div id="exercises" class="section level4">
 <h4>
-<span class="header-section-number">14.1.2.2</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.2.2</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises"><i class="fas fa-link"></i></a>
 </h4>
 <ol style="list-style-type: decimal">
 <li>Can you modify the design to define the estimand as the mean of the latent variable <code>Y_star</code>? What happens if you diagnose this design?</li>
@@ -176,7 +172,7 @@ RMSE
 </h3>
 <p>Researchers often cannot randomly sample at the individual level because it may, among other reasons, be too costly or logistically impractical. Instead, they may choose to randomly sample households, political precincts, or any group of individuals in order to draw inferences about the population. This strategy may be cheaper and simpler but may also introduce risks of less precise estimates.</p>
 <p>Let’s modify our first design to sample at the household level, rather than at the individual level. We’ll also add an additional estimator that clusters standard errors at the level of sampling, the household to compare to the estimator that ignores clustering. We’ll also add a new diagnosand, coverage, which will indicate whether the confidence intervals we construct (which depend on the flavor of standard errors we estimate) indeed include the true value of the inquiry 95% of the time.</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="va">portola</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_measurement</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">Ystar</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -274,9 +270,9 @@ Standard errors not clustered
 </tbody>
 </table></div>
 <p>The diagnosis shows the effect of clustering on the quality of our estimates. While the design remains unbiased for the population mean, the RMSE has gone up. We still interview (on average) 100 people in each sample, but since under the clustered design, we interview all adults in the household, the sampling distribution of the estimates has higher variance. The diagnosis also highlights the importance of matching your answer strategy to your data strategy. The sampling was clustered by household. The answer strategy that fails to account for clustering yields confidence intervals that are too small, as evidenced by the coverage rate well below the nominal 95%. When we estimate clustered standard errors instead, the coverage improves.</p>
-<div id="exercises-2" class="section level4">
+<div id="exercises-1" class="section level4">
 <h4>
-<span class="header-section-number">14.1.3.1</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.1.3.1</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
 </h4>
 <ol style="list-style-type: decimal">
 <li>Here the clusters were defined as part of the model, but they could be defined as part of the data strategy. Can you modify the design and generate sampling clusters by putting neighboring households into the same cluster. Your data will have a household identifier <code>households</code> so you could try making a single cluster out of each pair (for instance households <code>001</code> and <code>002</code>). How does sampling using pairs of households together affect your estimated rmse?</li>
@@ -290,9 +286,9 @@ Standard errors not clustered
 <span class="header-section-number">14.2</span> Poststratification<a class="anchor" aria-label="anchor" href="#poststratification"><i class="fas fa-link"></i></a>
 </h2>
 <p>Poststratification is a tool for learning about a population when you have a sample whose units were drawn with unequal (and usually unknown) probabilities. In essence, if you know features of the population that you can measure in your own sample, you can reweight your sample to look like the population—at least along the dimensions you can measure. In its simplest form, poststratification just involves counting and dividing. Say you want to poststratify your sample so that, in terms of gender and age, it looks like all people in their twenties in the United States population in 2010. That gives twenty groups—one for each age and each gender—whose size you need to count in the 2010 Decennial census and in your sample. Then, simply weight each person in the sample by the size of their group in the population divided by the size of their group in the sample. As we illustrate with the declaration below, it turns out that these weights are equivalent to the inverse sampling probabilities one would obtain were one to construct the sample using groups as strata. That’s where the “stratification” in poststratification comes from—it’s “post” because the weights are constructed after the sampling has already taken place. In the online example, we illustrate how multi-level regression and poststratification (MRP) can help address the problem that, as the number of group-defining features increases, the sample may contain no information at all about some of the groups defined by the combination of those features. A multi-level regression model helps by partially pooling across strata to combat this sparsity problem.</p>
-<div id="declaration-6" class="section level3">
+<div id="declaration-2" class="section level3">
 <h3>
-<span class="header-section-number">14.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-6"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-2"><i class="fas fa-link"></i></a>
 </h3>
 <!-- 
 JC comment: Original declaration doesn't have correlation between X and Y so this design works even if the estimator is just an intercept. Once I added the correlation, the design was biased. Don't quite understand the demeaning approach (doesn't appear to be using any population-level info?) so have just opted for a more conventional approach to poststratification that reweights to the population proportions. Have also called this poststratification since we are now only using MRP in the extended example. 
@@ -319,7 +315,7 @@ design <-
 <li><p><strong>D</strong>ata strategy: Ten individuals from each group are included in the sample. Thus, whereas 2/3 of the population belong to the <span class="math inline">\(X = 0\)</span> group, only 1/2 of the sample does. Conversely, while only 1/3 of the population belongs to the <span class="math inline">\(X = 1\)</span> group, 1/2 of the sample does.</p></li>
 <li><p><strong>A</strong>nswer strategy: The answer strategy involves taking a weighted average of <span class="math inline">\(Y\)</span> in the sample, where each unit’s weight is equal to the size of their group in the population divided by the size of their group in the sample. Specifically, those in the underrepresented group, <span class="math inline">\(X = 0\)</span>, get a weight of 100/10 = 10, while the overrepresented group, <span class="math inline">\(X = 1\)</span>, gets a weight of 50 / 10 = 5. When the poststratification groups perfectly line up with the sample strata, as they do here, the approach is equivalent to weighting by the inverse of the sampling probability: 1/(10/100) = 10 and 1/(10/50) = 5. In both cases, the weights tell us how many units in the population each unit in the sample represents.</p></li>
 </ul>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_population</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -347,15 +343,15 @@ design <-
     estimand <span class="op">=</span> <span class="st">"Ybar"</span>
   <span class="op">)</span></code></pre></div>
 </div>
-<div id="dag-6" class="section level3">
+<div id="dag-1" class="section level3">
 <h3>
-<span class="header-section-number">14.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-6"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-215-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-171-1.svg" width="100%"></div>
 </div>
-<div id="exercises-3" class="section level3">
+<div id="exercises-2" class="section level3">
 <h3>
-<span class="header-section-number">14.2.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.3</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
 </h3>
 <ul>
 <li>Add an unweighted estimator to the design and diagnose it. Explain why the unweighted estimator is biased, as well as the direction of the bias.</li>
@@ -369,9 +365,9 @@ design <-
 </li>
 </ul>
 </div>
-<div id="example-4" class="section level3">
+<div id="example-1" class="section level3">
 <h3>
-<span class="header-section-number">14.2.4</span> Example<a class="anchor" aria-label="anchor" href="#example-4"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.2.4</span> Example<a class="anchor" aria-label="anchor" href="#example-1"><i class="fas fa-link"></i></a>
 </h3>
 <!-- make sure to rename the section title below -->
 <p>MRP based on Lax and Philips APSR 2009</p>
@@ -463,12 +459,12 @@ design <-
 <p>Oftentimes researchers seek to measure a latent variable (<code>Y_star</code>) but have access only to proxies (<code>Y_1</code>, <code>Y_2</code>, <code>Y_3</code>). In such cases, the proxies are sometimes combined into an index which is thought to capture <code>Y_star</code> and then used for further analysis.</p>
 <p>A difficult feature of such problems is that we do not have access to the <em>scale</em> on which <code>Y_star</code> is measured and so it may seem like a hopeless exercise to try to assess whether we have got good or bad estimates of <code>Y_star</code> when we combine the measured data.</p>
 <p>One way around this is to normalize the scale of both the latent variable and the measured variable so that they have a mean of 0 and unit standard deviation. But in that case, we are guaranteed that our estimate of the mean of the normalized variable will be unbiased! We will certainly estimate a mean of 0! That may be but as we show in the declaration below, if your model is correct this approach may still be useful for calculating other quantities — such as conditional means—that you don’t just get right by construction.</p>
-<div id="declaration-7" class="section level3">
+<div id="declaration-3" class="section level3">
 <h3>
-<span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-3"><i class="fas fa-link"></i></a>
 </h3>
 <p>In the declaration below <code>Y_star</code> has a normal distribution but it is not centered on zero. The measured variables <code>Y_1</code>, <code>Y_2</code>, <code>Y_3</code> are also normally distributed but each has its own scale; they are all related to <code>Y_star</code>, though some more strongly than others. We construct two indices. One (<code>Y_av</code>) is constructed by first scaling each of these measured variables, then averaging and then scaling again. This is akin to the approach used in <span class="citation">Kling, Liebman, and Katz (<a href="references.html#ref-kling2007experimental" role="doc-biblioref">2007</a>)</span>. The second also weights the components but this time using weights generated by ‘principal components analysis’ which, intuitively, seeks to find a weighting that minimizes the distance to the measured variables.</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">250</span>, gender <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>, Y_star <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">gender</span> <span class="op">+</span> <span class="fl">2</span><span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>Y_bar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">[</span><span class="va">gender</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
@@ -480,9 +476,9 @@ design <-
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_av</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span>, subset <span class="op">=</span> <span class="va">gender</span> <span class="op">==</span><span class="fl">1</span>, label <span class="op">=</span> <span class="st">"Average"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_fa</span> <span class="op">~</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"Y_bar"</span>, subset <span class="op">=</span> <span class="va">gender</span> <span class="op">==</span><span class="fl">1</span>, label <span class="op">=</span> <span class="st">"principal components"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="dag-7" class="section level3">
+<div id="dag-2" class="section level3">
 <h3>
-<span class="header-section-number">14.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-7"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.3.2</span> Dag<a class="anchor" aria-label="anchor" href="#dag-2"><i class="fas fa-link"></i></a>
 </h3>
 <p>A DAG representing this design is given in Figure <a href="observational-designs-for-descriptive-inference.html#fig:indexdag">14.1</a>: an underlying measure gives rise to three observed measures which are then (mechanically) combined to produce a measured index.</p>
 <div class="figure">
@@ -499,7 +495,7 @@ Figure 14.1: Index
 <!--  -->
 <!-- Perhaps a good psychometric example would be worthwhile to explore here? Or an education example? -->
 <!-- make sure to rename the section title below -->
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span><span class="op">)</span> </code></pre></div>
 <p>The diagnosis is given in Table <a href="observational-designs-for-descriptive-inference.html#tab:latentmodel">14.3</a>. We show the RMSE and bias but also the average value of the estimand (and the estimate).</p>
 <div class="inline-table"><table class="table table-sm">
@@ -579,9 +575,9 @@ principal components
 </table></div>
 <p>We see from the diagnosis that we do quite well here in recovering the conditional mean of the standardized latent variable.</p>
 </div>
-<div id="exercises-4" class="section level3">
+<div id="exercises-3" class="section level3">
 <h3>
-<span class="header-section-number">14.3.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-4"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.3.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-3"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li>Modify the design so that only two rather than three observed components are used. How is the diagnosis affected? Does it matter which indices you use?
@@ -601,25 +597,25 @@ principal components
 <li><a class="nav-link" href="#observational-designs-for-descriptive-inference"><span class="header-section-number">14</span> Observational designs for descriptive inference</a></li>
 <li>
 <a class="nav-link" href="#random-sampling"><span class="header-section-number">14.1</span> Random sampling</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-5"><span class="header-section-number">14.1.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-5"><span class="header-section-number">14.1.2</span> DAG</a></li>
+<li><a class="nav-link" href="#declaration-1"><span class="header-section-number">14.1.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag"><span class="header-section-number">14.1.2</span> DAG</a></li>
 <li><a class="nav-link" href="#clustered-random-sampling"><span class="header-section-number">14.1.3</span> Clustered random sampling</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#poststratification"><span class="header-section-number">14.2</span> Poststratification</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-6"><span class="header-section-number">14.2.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-6"><span class="header-section-number">14.2.2</span> Dag</a></li>
-<li><a class="nav-link" href="#exercises-3"><span class="header-section-number">14.2.3</span> Exercises</a></li>
-<li><a class="nav-link" href="#example-4"><span class="header-section-number">14.2.4</span> Example</a></li>
+<li><a class="nav-link" href="#declaration-2"><span class="header-section-number">14.2.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-1"><span class="header-section-number">14.2.2</span> Dag</a></li>
+<li><a class="nav-link" href="#exercises-2"><span class="header-section-number">14.2.3</span> Exercises</a></li>
+<li><a class="nav-link" href="#example-1"><span class="header-section-number">14.2.4</span> Example</a></li>
 </ul>
 </li>
 <li>
 <a class="nav-link" href="#inference-about-unobserved-variables"><span class="header-section-number">14.3</span> Inference about unobserved variables</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#declaration-7"><span class="header-section-number">14.3.1</span> Declaration</a></li>
-<li><a class="nav-link" href="#dag-7"><span class="header-section-number">14.3.2</span> Dag</a></li>
+<li><a class="nav-link" href="#declaration-3"><span class="header-section-number">14.3.1</span> Declaration</a></li>
+<li><a class="nav-link" href="#dag-2"><span class="header-section-number">14.3.2</span> Dag</a></li>
 <li><a class="nav-link" href="#diagnosis-1"><span class="header-section-number">14.3.3</span> Diagnosis</a></li>
-<li><a class="nav-link" href="#exercises-4"><span class="header-section-number">14.3.4</span> Exercises</a></li>
+<li><a class="nav-link" href="#exercises-3"><span class="header-section-number">14.3.4</span> Exercises</a></li>
 </ul>
 </li>
 </ul>
