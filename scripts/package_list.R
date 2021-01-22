@@ -17,6 +17,8 @@ bookwide_packages <-
     "randomizr",
     "DeclareDesign",
     "DesignLibrary",
+    
+    "CausalQueries",
     # tidyverse packages
     "ggplot2",
     "patchwork",
