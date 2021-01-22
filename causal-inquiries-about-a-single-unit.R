@@ -6,6 +6,7 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 library(Synth)
+# library(CausalQueries)
 
 dag <- dagify(Y ~ X + D + U,
               D ~ X)
@@ -30,6 +31,20 @@ nodes <-
 ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
+
+
+
+## query_model(model,
+##             query = "Y[X=1] > Y[X=0]",
+##             given = list("Y==1 & X==1",
+##                          "Y==1 & X==1 & M==0",
+##                          "Y==1 & X==1 & M==1",
+##                          "Y==1 & X==1 & W==0",
+##                          "Y==1 & X==1 & W==1"),
+##             using = "parameters",
+##             expand_grid = TRUE)
+
+
 
 design <- 
   declare_population(

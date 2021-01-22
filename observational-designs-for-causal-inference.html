@@ -91,6 +91,100 @@
 <span class="header-section-number">15.1.1</span> Process tracing<a class="anchor" aria-label="anchor" href="#process-tracing"><i class="fas fa-link"></i></a>
 </h3>
 <!-- fearon1991, biqq -->
+<p>We consider a setting in which we have observed <span class="math inline">\(X=1\)</span> and <span class="math inline">\(Y=1\)</span> and we are interested in figuring out whether <span class="math inline">\(Y=1\)</span> <em>because</em> <span class="math inline">\(X=1\)</span>. One approach to answering this question articulates a model of the processes through which <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> and seeks information about whether those processes were in operation. Updating about the effects of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is then undertaken on the basis of ancillary data—data on “causal process observations.”</p>
+<p>We illustrate imagining a model in which <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> via <span class="math inline">\(M\)</span> and in which a third variable <span class="math inline">\(W\)</span> is a cause of both <span class="math inline">\(M\)</span> and <span class="math inline">\(Y\)</span>. We imagine that <span class="math inline">\(W=1\)</span> then <span class="math inline">\(X\)</span> causes <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> causes <span class="math inline">\(Y\)</span> for sure. Under this model <span class="math inline">\(M\)</span> and <span class="math inline">\(W\)</span> each serve as “clues” for the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. <span class="math inline">\(M\)</span> provides a “hoop” test—if data on <span class="math inline">\(M\)</span> is sought and you find that <span class="math inline">\(M=0\)</span> then you infer that <span class="math inline">\(X\)</span> did not cause <span class="math inline">\(Y\)</span>; if on the other hand you find that <span class="math inline">\(W=1\)</span> then you have a “smoking gun” and you infer that <span class="math inline">\(X\)</span> did indeed cause <span class="math inline">\(Y\)</span>. If you find both then you know your model is wrong.</p>
+<p>The model can be described using the <code>CausalQueries</code> package thus:</p>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y &lt;- W -&gt; M"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">set_restrictions</span><span class="op">(</span><span class="st">"M[X=1] &lt; M[X=0]"</span><span class="op">)</span>  <span class="op">%&gt;%</span>
+  <span class="fu">set_restrictions</span><span class="op">(</span><span class="st">"M[X=1, W=1] == M[X=0, W=1]"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">set_restrictions</span><span class="op">(</span><span class="st">"Y[M=1] &lt; Y[M=0]"</span><span class="op">)</span>  <span class="op">%&gt;%</span>
+  <span class="fu">set_restrictions</span><span class="op">(</span><span class="st">"Y[M=1, W=1] == Y[M=0, W=1]"</span><span class="op">)</span></code></pre></div>
+<p>We can then assess what inferences we might make given different sorts of observations thus:</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">query_model</span><span class="op">(</span><span class="va">model</span>, 
+            query <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,
+            given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Y==1 &amp; X==1"</span>, 
+                         <span class="st">"Y==1 &amp; X==1 &amp; M==0"</span>, 
+                         <span class="st">"Y==1 &amp; X==1 &amp; M==1"</span>, 
+                         <span class="st">"Y==1 &amp; X==1 &amp; W==0"</span>,
+                         <span class="st">"Y==1 &amp; X==1 &amp; W==1"</span><span class="op">)</span>,
+            using <span class="op">=</span> <span class="st">"parameters"</span>,
+            expand_grid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:unnamed-chunk-191">Table 15.1: </span>Inference upon observation of M or W for cases in which X=1 and Y = 1
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Given
+</th>
+<th style="text-align:left;">
+Using
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Y==1 &amp; X==1
+</td>
+<td style="text-align:left;">
+parameters
+</td>
+<td style="text-align:right;">
+0.714
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y==1 &amp; X==1 &amp; M==0
+</td>
+<td style="text-align:left;">
+parameters
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y==1 &amp; X==1 &amp; M==1
+</td>
+<td style="text-align:left;">
+parameters
+</td>
+<td style="text-align:right;">
+0.769
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y==1 &amp; X==1 &amp; W==0
+</td>
+<td style="text-align:left;">
+parameters
+</td>
+<td style="text-align:right;">
+0.200
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Y==1 &amp; X==1 &amp; W==1
+</td>
+<td style="text-align:left;">
+parameters
+</td>
+<td style="text-align:right;">
+1.000
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Given such a model, a case in which <span class="math inline">\(X=Y=1\)</span>, and limited resources, we now want to know whether we would be better gathering data on <span class="math inline">\(M\)</span> or on <span class="math inline">\(W\)</span>? How would we assess whether one or another strategy performs better in expectation?</p>
 </div>
 <div id="before-after-comparison" class="section level3">
 <h3>
@@ -99,7 +193,7 @@
 <p>A natural idea for guessing what would have happened if an event did not occur for a single unit is to look within that unit at what happened <em>before</em> the event did occur. Within-unit over-time comparisons use outcomes in pretreatment periods to impute the posttreatment counterfactual outcome.</p>
 <p>In order for the pretreatment outcome to be a good stand-in for the posttreatment control potential outcome, we must invoke two assumptions: excludability of time; and no interference between time periods. The excludability assumption says that the only change between pre and post is the fact that the treatment is administered. This rules out time trends and any other form of time-varying heterogeneity aside from the treatment status. The second assumption is that the unit is assigned to control in the pretreatment period cannot affect outcomes in the posttreatment period, and the fact that the unit is treated in the second period cannot affect outcomes in the first period. This is often called a no carryover assumption, and most importantly in this case rules out the possibility of effects of anticipating treatment in the next period. If the unit expects to be treated in period 1, this may affect the outcome in period 0 even though treatment has not yet been administered. Often anticipation effects wash out treatment effects; it is as if the treatment has already taken place.</p>
 <p>To declare this design, we consider violations of the excludability assumption. The inquiry is the TET, as in all designs in this section. In the model, we consider two sources of heterogeneity in the outcome: time trends (an effect of time) and time-varying heterogeneity (an effect of <span class="math inline">\(U_{\rm time}\)</span>). Potential outcomes are a function of these two variables and the treatment variable. Our data strategy is to measure <span class="math inline">\(Y\)</span> in both periods, and this will reveal the control potential outcome in the first period, before treatment, and the control potential outcome in the second period, after treatment. Our answer strategy is to take the difference in the outcome between the post- and pretreatment periods.</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">2</span>, 
@@ -118,7 +212,7 @@
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span>
   <span class="va">design</span>, time_trend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>, time_specific_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <p>We diagnose the design in four settings, the two-by-two of: with and without time trends, and with and without time-specific effects. We see that the over-time within-unit design is only unbiased when there are neither. If there are time trends, there is bias, due to a violation of the excludability of time assumption. If there is time-varying heterogeneity aside from the treatment, the excludability assumption is also violated. There is no test for these two conditions that lead to bias, and there is no diagnostic like the pretrends comparison for the difference-in-difference design.</p>
 <div class="inline-table"><table class="table table-sm">
@@ -203,7 +297,7 @@ se(bias)
 <p>A second natural design is to compare the outcomes of the treated case after to treatment to the outcomes in another unit in the same time period that did not receive the treatment. Instead of filling in the control potential outcome of the treated unit with its own outcome in the pretreatment period, we fill it in with the outcomes of this second “control” unit.</p>
 <p>We can invoke an exactly parallel set of assumptions to the over time within unit design: excludability of the unit difference (rather than time), i.e., the only difference between the two units is the treatment status and not other unit-specific heterogeneity. This strong assumption is often relaxed in favor of a “selection-on-observables” assumption by accounting for observable differences between units and selecting a comparison unit that is similar in all observable ways.</p>
 <p>In declaring the design, we target the same TET inquiry, and swap our model of over time heterogeneity with with between-unit heterogeneity (<span class="math inline">\(U_{\rm unit}\)</span>) (there is not a parallel of time trends). Our data strategy is to measure Y for both the treated unit and the comparison unit in the posttreatment time period; the treated unit reveals its treated potential outcome, while the comparison unit reveals its control potential outcome. The answer strategy is the posttreatment comparison between the treated and control unit.</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">2</span>, 
@@ -219,7 +313,7 @@ se(bias)
     estimand_label <span class="op">=</span> <span class="st">"TET"</span>, handler <span class="op">=</span> <span class="va">summarize</span><span class="op">)</span>
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">design</span>, unit_specific_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <p>We diagnose the two-unit posttreatment comparison design under two settings: with and without unit-specific differences not accounted for by observables, aside from the treatment. With these differences, the excludability assumption is violated. We see that the design is only unbiased for the TET if there are no such unit-specific differences besides treatment.</p>
 <div class="inline-table"><table class="table table-sm">
@@ -267,7 +361,7 @@ se(bias)
 <p>When the over-time excludability of treatment and the selection-on-observables assumptions are unreasonable, an alternative is the difference-in-differences design. We difference out unit characteristics, whether observable or not, that do not vary over time by comparing the outcomes before and after treatment. What is left is time trends and other unit-invariant time-varying factors, and we difference these out by comparing the change over time in the treated unit to the change over time in the comparison unit. Each difference takes out one class of factors that would violate the excludability assumptions of over-time within unit designs alone or posttreatment comparison across-unit designs alone.</p>
 <p>The difference-in-difference design does not rely on the assumptions the earlier two designs do. But it adds a new assumption: the parallel trends assumption. In order for the difference-in-difference design to work, the change between before and after treatment in the control potential outcomes must be equal (i.e., parallel). Because this assumption depends on the change in values of the unrealized (and thus unobservable) control potential outcome in the treated unit, it cannot be tested. There is a widely-used diagnostic of the difference in observed trends before treatment […]</p>
 <p>Declaring this design combines the elements of the within-unit over time and between-unit posttreatment designs. We have two units (the treated unit and its comparison unit), and two time periods, before (0) and after treatment (1). There is unit-specific, time invariant heterogeneity (<span class="math inline">\(U_{\rm unit}\)</span>), and unit-invariant over time heterogeneity (<span class="math inline">\(U_{\rm time}\)</span>). The potential outcomes are a function of treatment, these heterogeneity variables, and time trends. We target the same TET inquiry as the other designs. We measure the outcome in a way that combines the two previous designs: the control potential outcome is revealed in both periods for the comparison untreated unit <em>and</em> in the pretreatmetn period for the treated unit, and the treated potential outocme is revealed in the posttreatment period of the treated unit. The answer strategy is the difference-in-differences, first differencing off within-unit changes from first to second period then across-unit changes in the comparison unit.</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2</span>, U_unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">U_unit</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">U_unit</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,
@@ -294,7 +388,7 @@ se(bias)
                     time_trend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>, 
                     time_specific_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, 
                     unit_specific_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <p>We diagnose the difference-in-difference design under eight cases, the combinations of: with and without time trends in outcomes; with and without other, time-varying unit-invariant heterogeneity; and with and without unit-specific time-invariant heterogeneity. We see the power of the difference-in-difference design: under any of these alternatives, the design is unbiased for the TET inquiry. In the over-time within-unit design and the posttreatment comparison across units design, the design is unbiased only if the relevant one of these conditions holds. Unfortunately, there are no tests of the validity of those assumptions.</p>
 <div class="inline-table"><table class="table table-sm">
@@ -595,7 +689,7 @@ NA
 <h3>
 <span class="header-section-number">15.1.5</span> Synthetic controls<a class="anchor" aria-label="anchor" href="#synthetic-controls"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>
     units <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">10</span>, unit_ID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, U_unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, Z <span class="op">=</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">unit_ID</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="co"># if_else(U_unit == max(U_unit), 1, 0)),</span>
@@ -620,7 +714,7 @@ NA
                     handler <span class="op">=</span> <span class="va">synth_weights_tidy</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, subset <span class="op">=</span> <span class="va">time</span> <span class="op">==</span> <span class="fl">1</span>, weights <span class="op">=</span> <span class="va">synth_weights</span>, 
                     model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"synth"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">design</span>, 
                     time_trend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>, 
                     time_specific_effect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, 
@@ -687,7 +781,7 @@ NA
 <h3>
 <span class="header-section-number">15.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-4"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">D</span> <span class="op">~</span> <span class="fu">if_else</span><span class="op">(</span><span class="va">Z</span> <span class="op">+</span> <span class="va">U</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, 
@@ -705,7 +799,7 @@ NA
 <h3>
 <span class="header-section-number">15.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-3"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-215-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-218-1.svg" width="100%"></div>
 </div>
 <div id="redesign-3" class="section level3">
 <h3>
@@ -772,13 +866,13 @@ outcome variable is labor force participation.</p>
 <p>A major assumption required for regression discontinuity is that the conditional expectation functions for both treatment and control potential outcomes are continuous at the cutoff.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;An alternative motivation for some designs that do not rely on continuity at the cutoff is “local randomization”.&lt;/p&gt;"><sup>22</sup></a> To satisfy this assumption, we specify two smooth conditional expectation functions, one for each potential outcome. The figure plots <span class="math inline">\(Y\)</span> (the Democratic vote margin at time <span class="math inline">\(t\)</span>) against <span class="math inline">\(X\)</span> (the margin at time <span class="math inline">\(t-1\)</span>). We’ve also plotted the true conditional expectation functions for the treated and control potential outcomes. The solid lines correspond to the observed data and the dashed lines correspond to the unobserved data.</p>
 </li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-222-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-225-1.svg" width="100%"></div>
 <ul>
 <li><p><strong>I</strong>nquiry: Our estimand is the effect of a Democratic win in an election on the Democratic vote margin of the next election, when the Democratic vote margin of the first election is zero. Formally, it is the difference in the conditional expectation functions of the control and treatment potential outcomes when the running variable is exactly zero. The black vertical line in the plot shows this difference.</p></li>
 <li><p><strong>D</strong>ata strategy: We collect data on the Democratic vote share at time <span class="math inline">\(t-1\)</span> and time <span class="math inline">\(t\)</span> for all 1,000 pairs of elections. There is no sampling or random assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises.</p></li>
 </ul>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cutoff</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">control</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.7</span>, <span class="op">-</span><span class="fl">.8</span>, <span class="fl">.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
@@ -809,7 +903,7 @@ outcome variable is labor force participation.</p>
 <h3>
 <span class="header-section-number">15.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-4"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-224-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-227-1.svg" width="100%"></div>
 </div>
 <div id="example-3" class="section level3">
 <h3>

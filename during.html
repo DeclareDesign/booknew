@@ -190,7 +190,7 @@ Figure 22.1: Learning from pilot studies.
 - three dimensions of choice: continue or abandon; resample and randomize; retain or reduce number of treatments
 - constraints: treatment was out there in many places and had been text message blasted to every subscriber of the major phone company in the area; the film was produced for this region and filmed in the region, so we could not switch areas with the film treatment. (the whole measurement strategy was region-specific too, in its choice of language and pretesting.)
 - ultimate choice: step-wedge design for the SMS crossed with two arm trial of the film.</p>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">744</span>,
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
@@ -222,7 +222,7 @@ Figure 22.1: Learning from pilot studies.
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/draw_functions.html">draw_data</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     towers <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -992,7 +992,7 @@ Figure 22.2: Coefficient plot from Bonilla and Tillery design based on the study
 <p>In some cases, reconciliation will lead to additional learning beyond what can be inferred from the final design itself. When some units could refuse to be included in the study sample or some units refused measurement, we learn that important features about those units. Understanding sample exclusions, noncompliance, and attrition not only may inform future research design planning choices, but contribute substantively to our understanding of the social setting. A policy implemented in the same way the study would likely also not be able to work in the units who refused to participate, and future research could examine why or how to convince them of the policy’s benefits.</p>
 <p>What belongs in a reconciliation? At a minimum, we need a full description of the planned design, a full description of the implemented design, and a list of the differences. This can be made explicit through the declaration of both designs in computer code, then comparing the two design objects line-by-line.</p>
 <p>In <code>DeclareDesign</code> we take the first steps of comparing designs for you:</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>

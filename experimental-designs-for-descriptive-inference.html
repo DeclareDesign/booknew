@@ -155,7 +155,7 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <p>We’ll try to answer all three inquiries with the difference-in-means estimator, but as the diagnosis will reveal, this strategy works well for some inquiries but not others.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>,
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -179,7 +179,7 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <h3>
 <span class="header-section-number">17.1.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-10"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-291-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-294-1.svg" width="100%"></div>
 </div>
 <div id="takeaways" class="section level3">
 <h3>
@@ -244,7 +244,7 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <p>We also have a global parameter that reflects our expectations about the proportion of Trump supporters who are shy. It’s set at 20%.</p>
 </li>
 </ul>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -259,13 +259,13 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <li>
 <strong>I</strong>nquiry: Our estimand is the proportion of voters who actually plan to vote for Trump.</li>
 </ul>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">inquiry</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>proportion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_star</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>
 <strong>D</strong>ata strategy: We randomly assign 50% of our 100 subjects to treatment and the remainder to control. In the survey, we ask subjects both the direct question (<span class="math inline">\(Y_{\rm direct}\)</span>) and the list experiment question (<span class="math inline">\(Y_{\rm list}\)</span>).</li>
 </ul>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_measurement.html">declare_measurement</a></span><span class="op">(</span>Y_direct <span class="op">=</span> <span class="va">Y_star</span> <span class="op">-</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
@@ -274,14 +274,14 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <li>
 <strong>A</strong>nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.</li>
 </ul>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y_direct</span> <span class="op">~</span> <span class="fl">1</span>,
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     estimand <span class="op">=</span> <span class="st">"proportion"</span>,
                     label <span class="op">=</span> <span class="st">"direct"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y_list</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"proportion"</span>, label <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
 </div>
 <div id="dag-11" class="section level3">
@@ -289,16 +289,16 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <span class="header-section-number">17.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-11"><i class="fas fa-link"></i></a>
 </h3>
 <p>The no liars assumption of list experiments is evident in the DAG: Sensitivity bias <span class="math inline">\(S\)</span> is not a parent of the list experiment outcome <span class="math inline">\(Y^L\)</span> by assumption (no liars). The no design effects assumption is not directly visible.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-302-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-305-1.svg" width="100%"></div>
 </div>
 <div id="diagnosis-2" class="section level3">
 <h3>
 <span class="header-section-number">17.2.3</span> Diagnosis<a class="anchor" aria-label="anchor" href="#diagnosis-2"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">design</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <p>The plot shows the sampling distribution of the direct and list experiment estimators. The sampling distribution of the direct question is tight but biased; the list experiment (if the requisite assumptions hold) is unbiased, but higher variance. The choice between these two estimators of the prevalence rate depends on which – bias or variance – is more important in a particular setting. See <span class="citation">Blair, Coppock, and Moor (<a href="references.html#ref-blair2018list" role="doc-biblioref">2020</a>)</span> for an extended discussion of how the choice of research design depends deeply on the purpose of the project.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-305-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-308-1.svg" width="100%"></div>
 </div>
 <div id="assumption-violations" class="section level3">
 <h3>
@@ -307,7 +307,7 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 <p>Recent work on list experiments emphasizes the possibility of violations of both the no liars and the no design effects assumptions. We can diagnose the properties of our design under plausible violations of each.</p>
 <p>First, we consider violations of the no design effects assumption, which means that the control item count differs depending on whether a subject is assigned to treatment or control. Typically, this means that the inclusion of the sensitive item changes responses to the control items, because they are judged in relative terms or because the respondent became suspicious of the researcher’s intentions due to the taboo of asking a sensitive question.</p>
 <p>We declare a modified design below that defines two different potential control item counts depending on whether the respondent is in the treatment group (<span class="math inline">\(X_{\rm treat}\)</span>) or control group (<span class="math inline">\(X_{\rm control}\)</span>). The potential outcomes for the list outcome also change: <span class="math inline">\(X_{\rm treat}\)</span> is revealed in treatment and <span class="math inline">\(X_{\rm control}\)</span> in control.</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_design_effects</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -324,7 +324,7 @@ In the design, we assume a distribution of types with 40% <em>A</em>, 5% <em>B</
 
 <span class="va">design_design_effects</span> <span class="op">&lt;-</span> 
   <span class="va">model_design_effects</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnose_design_effects</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">design_design_effects</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -373,7 +373,7 @@ proportion
 </tbody>
 </table></div>
 <p>Second, a violation of no liars implies that respondents do not respond truthfully even when provided with the privacy protection of the list experiment. Two common circumstances researchers worry about are ceiling effects and floor effects. In ceiling effects, respondents respond with the maximum number of control items rather than with their truthful response of that plus one, to avoid being identified as holding the sensitive trait. The floor effects problem is the reverse, when respondents hide not holding the sensitive trait by responding one <em>more</em> than their truthful count in the treatment group.</p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_liars</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -388,7 +388,7 @@ proportion
   <span class="op">)</span>
 
 <span class="va">design_liars</span> <span class="op">&lt;-</span> <span class="va">model_liars</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnose_liars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">design_liars</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -445,7 +445,7 @@ proportion
 <p>Researchers have control of three important design parameters that affect the inferential power of list experiments: sample size, the number of control items, the selection of control items, and the proportion of the sample assigned to treatment.</p>
 <!-- sample size -->
 <p><strong>Sample size.</strong> The bias-variance tradeoff in the choice between list and direct questioning can be diagnosed by examining the root mean-squared error (a measure of the efficiency of the design) across two varying parameters: sample size and the amount of sensitivity. We declare a new design with varying <span class="math inline">\(N\)</span> and varying <span class="math inline">\(\mathrm{proportion_shy}\)</span>, the proportion of Trump voters who withhold their truthful response when asked directly:</p>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_sample_size</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="va">N</span>,
@@ -460,10 +460,10 @@ proportion
 <span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model_sample_size</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">design</span>, proportion_shy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">0.5</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>, N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">500</span>, to <span class="op">=</span> <span class="fl">5000</span>, by <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_tradeoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <p>Diagnosing this design, we see that at low levels of sensitivity and low sample sizes, the direct question is preferred on RMSE grounds. This is because though the direct question is biased for the proportion of Trump voters in the presence of any sensitivity bias (positive <span class="math inline">\({\rm proportion_shy}\)</span>), it is much more efficient than the list experiment. When we have a large sample size, then we begin to prefer the list experiment for its low bias. At high levels of sensitivity, we prefer the list on RMSE grounds despite its inefficiency, because bias will be so large. Beyond the list experiment, this diagnosis illustrates that when comparing two possible designs we need to understand both the bias and the variance of the designs in order to select the best one in our setting. In other designs, it will not be the proportion who are shy but some other feature of the model or data and answer strategy that affect bias.</p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># make a plot</span>
 <span class="va">diagnosis_tradeoff</span> <span class="op">%&gt;%</span>
   <span class="va">get_diagnosands</span> <span class="op">%&gt;%</span>
@@ -477,11 +477,11 @@ proportion
   <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">proportion_shy</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">dd_theme</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-317-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-320-1.svg" width="100%"></div>
 <p>In the upper left, we see that when there is no sensitivity bias we always prefer the direct question due to the inefficiency of the list experiment. The red line is always below the blue. However, when we get to 0.1, there are sample sizes at which we prefer the direct question to the list: below 3000 subjects. However, above 3000 subjects the RMSE of the list experiment is better than the direct question. When we get to 25 percent of Trump supporters misreporting, we always prefer the list experiment in terms of RMSE. In other words, at such high levels of sensitivity bias we are always willing to tolerate the efficiency loss to get an unbiased estimate in this region.</p>
 <!-- N control items -->
 <p><strong>How many control items</strong>. After sample size, an early choice list researchers must make is how many control items to select. Here we also face a tradeoff: the more control items, the more privacy protection for the respondent; but the more items the more variance and the less efficient our estimator of the proportion holding the sensitive item. We can quantify the amount of privacy protection provided as the average width of the confidence interval on the posterior prediction of the sensitive item given the observed count. The efficiency can be quantified as the RMSE.</p>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_control_item_count</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -496,7 +496,7 @@ proportion
 <span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model_control_item_count</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">design</span>, J <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis_control_item_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -558,7 +558,7 @@ rmse
 </tbody>
 </table></div>
 <!-- selection of control items --><p><strong>Which control items</strong>. The choice of which set of control items to ask can be as or more important than the number. There are three aims with their selection: reduce bias from ceiling and floor effects, provide sufficient cover to respondents so the no liars assumption is met, and increase efficiency of the estimates. The first goal can be met by reducing the number of people whose latent control count is between one and <span class="math inline">\(J-1\)</span>, one above and one below the lowest and highest numbers possible in the treated group. Respondents in this band will not feel pressured to subtract (add) from their responses to hide that they (do not) hold the sensitive item. One solution to this is to add an item with high prevalance and an item with low prevalence. Though this would address problem one, it would violate problem two: items that are obviously high and low prevalence do nothing to add to privacy protection. The ideal control item count is one with low variance around the middle of the range of the count. To achieve this while providing sufficient cover, items that are inversely correlated can be added.</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model_control_item_correlation</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -576,7 +576,7 @@ rmse
 <span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model_control_item_correlation</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">design</span>, rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnose_control_item_correlation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -685,7 +685,7 @@ proportion
 </tbody>
 </table></div>
 <!-- proportion of sample treated --><p><strong>Proportion treated.</strong> A design parameter not often carefully considered in experiments in general and list experiments in particular is the proportion who are treated in the random assignment procedure. Often, researchers retain the default of 50-50 allocation in two-arm trials. However, as shown in Section XX, when the variance in the outcome differs across treatment and control, this is not the optimal allocation rule. Instead, more units should be assigned to the group in which the variance is higher. In the list experiment, the variance of the outcome is typically higher in the treatment group for the simple reason that the number of control items is higher. There is more variability from more items. To address this, researchers can set the proportion treated to be higher than 50%. We explore this tradeoff by redesigning the study with varying probabilities of assignment from 20% to 80% and examining the RMSE.</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data_strategy_prop_treated</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_measurement.html">declare_measurement</a></span><span class="op">(</span>Y_direct <span class="op">=</span> <span class="va">Y_star</span> <span class="op">-</span> <span class="va">S</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="va">prop_treated</span><span class="op">)</span> <span class="op">+</span> 
@@ -694,7 +694,7 @@ proportion
 <span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy_prop_treated</span> <span class="op">+</span> <span class="va">answer_strategy</span>
 
 <span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">design</span>, prop_treated <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0.2</span>, to <span class="op">=</span> <span class="fl">0.8</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnose_prop_treated</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -824,7 +824,7 @@ proportion
 <li>block total response</li>
 </ul>
 <p>The list experiment is one of several experimental designs for answering descriptive inquiries about sensitive topics (for a review see XX). Most can target the same inquiry: the proportion of subjects who hold a sensitive trait. The randomized response technique is another such design, itself with many variants. In a “forced response” randomized response design (see <span class="citation">(<span class="citeproc-not-found" data-reference-id="blairimaizhou"><strong>???</strong></span>)</span>), respondents are asked to roll a dice, and depending on the dice result they either answer honestly or are “forced” to answer either “yes” or “no.” With a six-sided dice, respondents might be asked to answer “yes” if they roll a 6, “no” if they roll a “1”, and to answer the question truthfully if they roll any other number, two through five. Because the probability of rolling a 1 and 6 are known, we can back out the probability of answering the sensitive item from the observed data. Declaring this design necessitates changes in M (potential outcomes are a function of the dice roll); D (random assignment is the dice roll itself); and A (an estimator that is a function of the observed outcomes and the known probability of being forced into each response). We declare one below:</p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rr</span><span class="op">)</span>
 
 <span class="va">model_rr</span> <span class="op">&lt;-</span> 
@@ -893,7 +893,7 @@ proportion
 <h3>
 <span class="header-section-number">17.3.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-14"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># applies the function to each pair</span>
 <span class="va">Y_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">data</span> <span class="op">%&gt;%</span>
@@ -926,7 +926,7 @@ proportion
 <h3>
 <span class="header-section-number">17.3.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-12"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-338-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-341-1.svg" width="100%"></div>
 </div>
 <div id="example-9" class="section level3">
 <h3>
@@ -955,7 +955,7 @@ proportion
 <h3>
 <span class="header-section-number">17.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-15"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     games <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,
@@ -996,7 +996,7 @@ proportion
 <h3>
 <span class="header-section-number">17.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-13"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-345-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-348-1.svg" width="100%"></div>
 </div>
 <div id="example-10" class="section level3">
 <h3>

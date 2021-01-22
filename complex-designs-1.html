@@ -103,7 +103,7 @@
 <span class="header-section-number">18.1.2</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-16"><i class="fas fa-link"></i></a>
 </h3>
 <p>The declaration makes use of two conditional estimators.</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># An estimator that estimates on testing data only if </span>
 <span class="co"># estimates on training data were significant</span>
 
@@ -127,7 +127,7 @@
     term <span class="op">=</span> <span class="st">"Z:X"</span>,
     stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></code></pre></div>
 <p>We now declare the design:</p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># The design</span>
 
 <span class="va">discovery</span> <span class="op">&lt;-</span> 
@@ -167,7 +167,7 @@
     estimand <span class="op">=</span> <span class="st">"het"</span>,
     label <span class="op">=</span> <span class="st">"Comparison"</span><span class="op">)</span></code></pre></div>
 <p>We include diagnosands that take account of the fact that some runs of the designs do not produce estimates for the new estimand.</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">discovery</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/set_diagnosands.html">set_diagnosands</a></span><span class="op">(</span><span class="va">discovery</span>, <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_diagnosands.html">declare_diagnosands</a></span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   RMSE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
@@ -413,7 +413,7 @@ Discovery
 <li><p><strong>A</strong>nalysis is implemented using maximum likelihood to identify which parameter values are most consistent with the data (which collection of parameter values produce the observed data with greatest likelihood). In this declaration the model employed in <strong>A</strong> is the same as that employed in <strong>M</strong>. We will report analysis results from both differences in means and structural estimation generated both from using the <span class="math inline">\(n=2\)</span> data (<code>DIM_two, Struc_two</code>) and from using <span class="math inline">\(n=\infty\)</span> data (<code>DIM_inf, Struc_inf</code>)</p></li>
 </ul>
 <p>The most complex part of the design is the specification of the estimator, shown next:</p>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">structural_estimator</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">pi</span>, <span class="va">y</span>, <span class="va">chi</span> <span class="op">=</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span>
     
     <span class="co"># Define negative log likelihood as a function of k, d and q</span>
@@ -451,7 +451,7 @@ Discovery
 <p>The design makes use of this estimator to estimate parameter values as well as treatment effects. It is accompanied by a simpler difference in means estimator of treatment effects.</p>
 <p>An attraction of structural estimation is that, with a fitted model, one can generate estimates of effects of treatments that have not been implemented. In this case the
 same parameters that describe the equilibrium outcomes in a two round game are sufficient to describe outcomes in the infinitely repeated game. So if you understand the effects of a treatment in one case you understand it in the other. At least if the model is correct. In the design below we generate such estimates for the effects of unimplemented treatments.</p>
-<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Declare the design ----------------------------------------------------------</span>
 
 <span class="co"># Define parameter values:</span>
@@ -1261,7 +1261,7 @@ Struc_two
 <!-- two kinds of populations, one in which the study type determines the subject types and you select on study type -->
 <!--   a second kind where study type determines study shock  -->
 <!--   in second type if you adjust for subject type then you will be able to unbiased recover global -->
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">single_site_design</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
     site <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -1299,7 +1299,7 @@ Struc_two
 <span class="va">single_site_large_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">single_site_design</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span>
 
 <span class="va">small_study_five_sites</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span><span class="va">multi_site_design</span>, n_study_sites <span class="op">=</span> <span class="fl">5</span>, n_subjects_per_site <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations_small_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">single_site_large_design</span>, <span class="va">small_study_five_sites</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span>
 <span class="va">diagnosis_small_large</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">simulations_small_large</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
@@ -1525,7 +1525,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <li><p><strong>D</strong>ata strategy: We conduct and collect independent datasets on <span class="math inline">\(N\)</span> datasets of size <code>n</code>. In the example below, we conduct three studies, assuming we only observe <code>X</code> and <code>Y</code> in the first, only <code>M</code> and <code>X</code> in the second, and <code>Y</code>, <code>M</code>, and <code>X</code>, in the third.</p></li>
 <li><p><strong>A</strong>nswer strategy: Using linear regression, we estimate the bivariate correlation between <code>X</code> and <code>Y</code> in study 1, the bivariate correlation between <code>X</code> and <code>M</code> in study 2, and the interaction between <code>X</code> and <code>M</code> on <code>Y</code> in study 3.</p></li>
 </ul>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">n3</span> <span class="op">&lt;-</span> <span class="fl">100</span>
@@ -1579,7 +1579,7 @@ When <code>tau</code> is positive, our theory is correct. When it is zero or neg
 <h3>
 <span class="header-section-number">18.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-14"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-384-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-387-1.svg" width="100%"></div>
 </div>
 <div id="takeaways-1" class="section level3">
 <h3>
@@ -1590,7 +1590,7 @@ approaches to theory confirmation when the theory is “correct” (<code>tau</c
 versus when it is “incorrect” (both parameters zero).
 In the first approach, a theory is deemed “supported” by the evidence when all effects
 are significant. In the second, the theory is supported by the evidence when the signs of all effects are positive.</p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Simulate design</span>
 <span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">three_study_design</span><span class="op">)</span>
 
@@ -1799,7 +1799,7 @@ accordingly. As the number of studies increases, so too does the probability
 of discordant results, and using the unanimity of signs to judge whether
 the theory is correct becomes increasingly unwise.</p></li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-392-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-395-1.svg" width="100%"></div>
 
 <!-- bibliography: ../../bib/book.bib  -->
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
