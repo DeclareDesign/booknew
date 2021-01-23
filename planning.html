@@ -59,11 +59,9 @@
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
 <li><a class="" href="brainstorming.html"><span class="header-section-number">21</span> Brainstorming</a></li>
 <li><a class="active" href="planning.html"><span class="header-section-number">22</span> Planning</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">23</span> During</a></li>
-<li><a class="" href="planning-1.html"><span class="header-section-number">24</span> Planning</a></li>
-<li><a class="" href="realization.html"><span class="header-section-number">25</span> Realization</a></li>
-<li><a class="" href="integration.html"><span class="header-section-number">26</span> Integration</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">27</span> Part IV Exercises</a></li>
+<li><a class="" href="realization.html"><span class="header-section-number">23</span> Realization</a></li>
+<li><a class="" href="integration.html"><span class="header-section-number">24</span> Integration</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">25</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -184,11 +182,1599 @@ Figure 22.1: Navigating research partnerships.
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
 </div>
+<div id="p4piloting" class="section level2">
+<h2>
+<span class="header-section-number">22.5</span> Piloting<a class="anchor" aria-label="anchor" href="#p4piloting"><i class="fas fa-link"></i></a>
+</h2>
+<!-- make sure to rename the section title below -->
+<!-- -- can't learn causal effect -->
+<!-- -- what can you learn? about Y0, about M, about se -->
+<!-- -- bring in blog post -->
+<p>The designs and results of past studies are important guides for selecting M, I, D, and A. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. However, researchers face a problem in being guided by past research: the research context and our inquiries often differ in at least subtle ways from any past study. Even when we are replicating a past study, we are collecting data in a different time period and if effects vary over time then aspects of M may differ from the original study. To deal with this, we often run pilot studies. These take many forms: focus groups to learn about features of M or to learn how to ask survey questions; small-scale tests of measurement tools to verify our data collection technology works; up to mini studies with the planned design but on a smaller scale.</p>
+<p>Pilot studies are constrained by our time and by money. If we were not constrained, we would run the full study and learn what is wrong with our design and then run a corrected design for the main study. Since we cannot due to our constraints, we run either smaller mini studies or test out only a subset of the elements of our planned design. This places us in a bind: we are running a design smaller or less complete than the study we imagine conducting, and so the properties of the pilot design will not measure up.</p>
+<p>MIDA provides a framework for thinking about what can be learned from a pilot through research design diagnosis. Just like for a full study, we can define inquiries about the decisions we would make and the parameter estimates we would draw on in designing the full study.</p>
+<p>In Figure <a href="planning.html#fig:pilotingfig">22.2</a>, we display the results of a diagnosis of a 50-unit pilot study that we are conducting to prepare for a larger main study. We consider two strategies: (1) determining the sample size from a power analysis of the main study, selecting the minimum <span class="math inline">\(N\)</span> such that the study is 80% powered to detect the pilot study’s effect size); (2) setting a fixed <span class="math inline">\(N\)</span> determined by our budget constraint, in this case to 500, and using the standard deviation of units in the treated and control group from the pilot to determine the minimum detectable effect size of our 500-unit main study.</p>
+<p>In the left panel is the sampling distribution of effect size estimates, i.e., a histogram of the effect estimates from the pilot. In the design, the standard deviation of the outcome is set to one, so effect estimates are in standard deviation units. The true effect size is set to 0.2. We can see that the sampling distribution has a huge range, from nearly -0.5 to nearly 0.75. The first problem with the sampling distribution is that many estimates, in fact nearly a quarter of them, are negative (the wrong sign!). This might lead us not only to choose the wrong sample size but to choose one-sided tests in the wrong direction. The second is that we have a high likelihood of guessing the effect size is <em>much</em> higher than it really is. If we obtain one of the estimates over 0.75 or even over 0.5, we would choose an <span class="math inline">\(N\)</span> too small to detect the true effect size of 0.2. In short, our estimates of the effect size from our 50-person pilot study are simply too variable to be useful in designing our main study.</p>
+<p>However, there is good news: we can learn a lot about the power of our main study from the pilot study, just not from the effect estimates. In the right panel of Figure <a href="planning.html#fig:pilotingfig">22.2</a>, we estimate the minimum detectable effect size of a 500-unit main study, relying on the estimated standard deviation in the control group and the estimated standard deviation in the treatment group to calculate the estimated standard error of the effect estimate in the main study. We then calculate the minimum detectable effect size using the approximation from <span class="citation">Gelman and Hill (<a href="references.html#ref-gelman2006data" role="doc-biblioref">2006</a>)</span>: 2.8 times the estimated standard error (pg. 441). We find that our estimates of the MDE for the full study are much more precise, tightly centered around 0.25. Since we don’t know if that is larger or smaller than the true effect size, we then must make an argument based on past studies’ effect sizes to justify whether that minimum size is sufficiently large or whether we should increase the sample size in order to detect even smaller effects. The reason the MDE is more precisely estimated is that the standard deviation of the control group is a much less variable estimate of the true standard deviation of the control potential outcome than the effect size estimate is of the true effect size.</p>
+<div class="figure">
+<span id="fig:pilotingfig"></span>
+<img src="book_files/figure-html/pilotingfig-1.svg" alt="Learning from pilot studies." width="100%"><p class="caption">
+Figure 22.2: Learning from pilot studies.
+</p>
+</div>
+<p>By diagnosing our pilot studies in this way, we can learn what decisions can be made with confidence from pilot data and what should be shaped instead by expectations from past studies and qualitative knowledge. Diagnosis can also help us to decide how large a pilot study we need in order to estimate quantities like the MDE of the full study with precision.</p>
+<p>Beyond estimating the MDE of studies, other facts that can often be usefully learned from pilot studies take the form of existence proofs. We often wish to study how variation in <span class="math inline">\(D\)</span> (a treatment) affects variation in <span class="math inline">\(Y\)</span> (an outcome), but in the absence of past data from these two variables, we may not know even if there is variation in <span class="math inline">\(Y\)</span> to explain. In experimental studies, we can learn whether a treatment <em>can</em> be implemented, and in an observational study, we can learn whether there is variation in the treatment variable.</p>
+<p>Baseline measurement may often be used instead of a pilot study to learn about some empirical features. If our sample size is fixed and we are interested in learning whether some outcome measures vary across units or how they covary, we can measure them in the baseline and then make adjustments before a posttreatment survey. We will still control for our imperfect measures at baseline to improve efficiency.</p>
+<!-- Diagnosing the pilot study on its own provides stark insights, which amount to: we cannot provide answers to the inquiry in the main study, and should not try to do so. There are also aspects of the logistics of research that within time and financial constraints we simply cannot learn until we run the main study. Science is imperfect, and also iterative, but these mistakes or suboptimal design choices also often lead to discoveries. -->
+<!-- -- how does it help to diagnose the design together? the properties of the main study *change* when we do a pilot. This is because if we run the pilot study, we are doing so to make decisions about how to run the main study, and so our *design* of the main study and thus its results may depend on the *results* (and design) of the pilot study.  -->
+<!-- In this section, we illustrate several general principles that flow from diagnosing pilot studies.  -->
+<!-- Purposes of pilot studies: -->
+<!-- Existence proofs: -->
+<!-- -- is there variation in Y -->
+<!-- -- is there variation in X -->
+<!-- -- what are nodes in M -->
+<!-- -- what are feasible D's, what are feasible treatments / can you implement the treatment (existence proof) -->
+<!-- Harder questions requiring bigger sample sizes: -->
+<!-- -- what is the distribution of X (helps select stratification proportions etc.) -->
+<!-- -- what is the standard deviation of Y0 -->
+<!-- #### Assessing a pilot design -->
+<!-- declare pilot itself and diagnose just as if it were the main study -->
+<!-- if you can't learn the answer, don't make any decisions based on it -->
+<!-- #### Assessing a sequenced design -->
+<!-- if you are making decisions about MIDA for main study based on pilot, diagnose the procedure of two studies, think about POs of pilot -->
+<!-- #### Pilots and baselines -->
+<!-- Designs can be reassessed after baselines and before treatment assignment -- so some of the questions you might do a pilot for can just be answered in a baseline -->
+<!-- #### BLOG material -->
+<!-- Data collection is expensive, and we often only get one bite at the apple. In response, we often conduct an inexpensive (and small) pilot test to help better design the study. Pilot studies have many virtues, including practicing the logistics of data collection and improving measurement tools. But using pilots to get noisy estimates in order to determine sample sizes for scale up comes with risks. -->
+<!-- Pilot studies are often used to get a guess of the average effect size, which is then plugged into power calculators when designing the full study. -->
+<!-- The procedure is: -->
+<!-- 1. Conduct a small pilot study (say, N = 50) -->
+<!-- 2. Obtain an estimate of the effect size (this is noisy, but better than nothing!) -->
+<!-- 3. Conduct a power analysis for a larger study (say, N = 500) on the basis of the estimated effect size in the pilot -->
+<!-- We show in this post that this procedure turns out to be dangerous: at common true effect sizes found in the social sciences, you are at risk of selecting an underpowered design based on the noisy effect estimate in your pilot study. -->
+<!-- A different procedure has better properties: -->
+<!-- 1. Conduct a small pilot study (say, N = 50) -->
+<!-- 2. Obtain an estimate of the **standard deviation of the outcome variable** (again, this is a noisy estimate but better than nothing!) -->
+<!-- 3. Estimate the minimum detectable effect (MDE) for a larger study (say, N = 500), using the estimated standard deviation -->
+<!-- We show what happens in each procedure, using DeclareDesign. In each case, we'll think about a decision the researcher wants to make based on the pilot: should I move forward with my planned study, or should I go back to the drawing board? We'll rely on power to make that decision in the first procedure and the MDE in the second procedure. -->
+<!-- [omitting code] -->
+<!-- For each true effect size, the simulations will give us a distribution of estimated effects that a researcher might use as a basis for power analysis. For example, for a true effect size of 0 the researcher might still estimate an effect of 0.10, and so conduct their power analysis assuming that the true effect is 0.10. For each true effect, we can thus construct a distribution of *power estimates* a researcher might obtain from *estimated* effects. Since we know the true power for the true underlying effect, we can compare the distribution of post-hoc power estimates to the true power one would estimate if one knew the true effect size. -->
+<!-- What did we find? In the plot, we show our guesses for the power of the main study based on our pilot effect size estimates.  -->
+<!-- At high true effect sizes (top row), we do pretty well. Most of our guesses are above 80\% power, leading us to the correct decision that the study is powered. Indeed we often *underestimate* our power in these cases meaning that we run larger studies than we need to. -->
+<!-- However, at low true effect sizes (bottom row) we show we are equally likely to find that the design is in fact powered as underpowered. We are equally likely to guess the power of the design is 90% as 10%. There is a good chance that we will falsely infer that our design is well powered just because we happened to get a high estimate from a noisy pilot. -->
+<!-- ### How about estimating the standard deviation of the outcome? -->
+<!-- Now, let's look at the second approach. Here, instead of using our pilot study to estimate the effect size for a power calculation, we estimate the **standard deviation of the outcome** and use this to calculate the main study's minimum detectable effect. The decision we want to make is: is this MDE small enough to be able to rule out substantively important effects? -->
+<!-- We calculate the minimum detectable effect size using the approximation from [@gelman2006data, pg. 441], 2.8 times the estimated standard error. We estimate the standard error using Equation 3.6 from @gerber2012field.  -->
+<!-- In summary, pilot studies can be valuable in planning research for many reasons, but power calculations based on noisy effect size estimates can be misleading. A better approach is to use the pilot to learn about the distribution of outcome variables. The variability of the outcome variable can then be plugged into MDE formulas or even power calculations with, say, the smallest effect size of political, economic, or social importance. -->
+<!-- In the same spirit, pilot studies could also be used to learn the strength of the correlation between pre-treatment covariates and the outcome variable. With this knowledge in hand, researchers can develop their expectations about how much precision there is to be gained from covariate control or blocking. -->
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+<!-- start post here, do not edit above -->
+</div>
+<div id="criticism" class="section level2">
+<h2>
+<span class="header-section-number">22.6</span> Criticism<a class="anchor" aria-label="anchor" href="#criticism"><i class="fas fa-link"></i></a>
+</h2>
+<!-- make sure to rename the section title below -->
+<p>A vital part of the research design process is gathering criticism and feedback from others. Timing is delicate here. Asking for comments on a project that is underdeveloped can sometimes lead to brainstorming sessions about what research questions one might look into – possibly quite useful, but essentially restarts the research design lifecycle from the begining. Sharing work only after a full draft has been produced is worse, since the data strategy will have already produced the realized data <span class="math inline">\(d\)</span>. Feedback can only help a project so much if the fieldwork has already been conducted, the treatments have already been allocated, or the outcomes have already been measured. While critics can always suggest changes to <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> post-data collection, an almost-finished project is fundamentally constrained by the data strategy as it was implemented.</p>
+<p>The best moments to seek advice come before the registration of preanalysis plans or, if not pre-registereing, before the implemation of major data strategy elements. The point is not to seek advice exclusively on sampling, assignment, or measurement procedures – it’s that when there’s still time to modify those design elements, feedback about the design as a whole can inform changes to the data strategy.</p>
+<p>Feedback will come in many forms. Sometimes the comments are directly about diagnosands – the critic may think the design has too many arms and so won’t be well-powered for many inquiries. The critic may be concerned about bias due to excludability violations or selection issues. Other comments are harder to pin down. A fruitful exercise in such cases is to understand how the criticism fits in to M, I, D, and A. A comment like, “I’m concerned about external validity here” might seem to be about the data strategy – since the units weren’t randomly sampled from some well-specified population, we can’t generalize from the sample to the population. But if the inquiry is not actually a population quantity, then this inability to use sample data to estimate a population quantity is irrelevant. Now the question is whether knowing the answer to your sample inquiry helps make theoretical progress, or whether we need to switch the inquiry to the population quantity in order to make headway. Critics will not usually specificy how their cricitism relates to M, I, D, or A, so it is up to the person seeking feedback to understand the implications of the criticism for the design.</p>
+<p>Possibly the most common forum for feedback is the causal in-passing converation. Someone will ask you what you’re working on – “Oh, we’re doing this cool RCT on the effect of PSAs on social norms” and they’ll say “Oh neat, have you read [article they know about], it seems related.” This kind of exchange is often more useful when you can quickly convey what you’re trying to learn (your inquiry) and how you’re trying to learn about it (your data and answer strategies) while in line for coffee or milling about before a talk.</p>
+<p>More formal settings include meetings with your advisor or colleagues in which you are specifically asking for help. In order to give good feedback, the advisor needs to understand M, I, D, and A – so sending documents in advance that describe these elements is crucial.</p>
+<p>TIMING</p>
+<p>Before implimentations of D.</p>
+<p>After implementations of D, and your levers are restricted to changes in A or I– those are usually quite limited</p>
+<p>WORKSHOP setting</p>
+<p>don’t defend yourself.
+The point is not to defeed the research. The goal is to break it before implementation.</p>
+<p>Learn to interpret criticism as changes to MIDA</p>
+<p>you’re saying to change to question</p>
+<p>Telling me to do diffeerent analysis. How to tell whether to accept this criticms.</p>
+<p>Too many arms
+not enough data
+I don’t think that’s how it works
+wrong estimator
+lots of excludability
+dont by selection on obseervables
+I already knew that
+meansurement strategy not good for ystar
+Spillovers
+I dont care
+This doesn’t distinguish between theories (can you rule out alternatives)</p>
+<ul>
+<li><p>there is a silent piece in the declare-diagnose-redesign framework: getting outside advice on the design and diagnosis <em>before</em> implementation</p></li>
+<li><p>most scientific criticism takes place ex post, when</p></li>
+<li><p>why before? you can’t change it afterward</p></li>
+<li><p>research design document</p></li>
+</ul>
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
+</div>
+<div id="p4pap" class="section level2">
+<h2>
+<span class="header-section-number">22.7</span> Preanalysis Plan<a class="anchor" aria-label="anchor" href="#p4pap"><i class="fas fa-link"></i></a>
+</h2>
+<!-- make sure to rename the section title below -->
+<p>In many research communities, it is becoming standard practice to publicly register a pre-analysis plan (PAP) prior to the implementation of some or all of the data strategy. PAPs serve many functions, but most importantly, they clarify which design choices were made before data collection and which were made afterward. Sometimes – perhaps every time! – we conduct a research study, aspects of <span class="math inline">\(M\)</span>, <span class="math inline">\(I\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span> shift along the way. A concern is that they shift in ways that invalidate the apparent conclusions of the study. For example, “<span class="math inline">\(p\)</span>-hacking” is the shady practice of trying out many regression specifications until the <span class="math inline">\(p\)</span>-value associated with an important test attains statistical significance. PAPs protect researchers by communicating to skeptics <em>when</em> design decisions were made: if the regression specification was detailed in a PAP posted before any data were collected, the test cannot be the result of a <span class="math inline">\(p\)</span>-hack.</p>
+<p>PAPs are sometimes misinterpreted as a binding commitment to report all pre-registered analyses and nothing but. This view is unrealistic and unnecessarily rigid. While we think that researchers should report all pre-registered analyses <em>somewhere</em> (see Section <a href="realization.html#p4populatedpap">23.3</a> on “populated PAPs”), study write-ups inevitably deviate in some way from the PAP – and that’s a good thing. Researchers learn more by conducting research; this learning can and should be reflected in the finalized answer strategy. Even if not binding, the main point of publicly posting pre-analysis plan is to communicate at what stage in the research process choices were made.</p>
+<p>Our hunch is that the main consequence of actually writing a PAP is the improvement of the research design itself. Just like research design declaration forces us to think through the details of our model, inquiry, data strategy, and answer strategy, describing those choices in a publicly-posted document surely causes deeper reflection about the design. In this way, the main audience for a PAP is the study authors themselves.</p>
+<p>What belongs in a PAP? Recommendations for the set of decisions that should be specified in a PAP remain remarkably unclear and inconsistent across research communities. PAP templates and checklists are proliferating, and the number of items they suggest ranges from nine to sixty. PAPs themselves are becoming longer and more detailed, with some in the American Economic Association (AEA) and Evidence in Governance and Politics (EGAP) study registries reaching hundreds of pages as researchers seek to be ever more comprehensive. Some registries emphasize the registration of the hypotheses to be tested, while others emphasize the registration of the tests that will used. We read many PAPs and found it is hard to assess whether these detailed plans actually contain the key analytically-relevant details.</p>
+<p>Our view is, minimally, a PAP should include a design declaration. A good deal of the discussion of what goes in a PAP centers on the answer strategy <span class="math inline">\(A\)</span> – what estimator to use, what covariates to condition on, what subsets of the data to include. But of course, we also need to know the details of <span class="math inline">\(D\)</span> – how units were sampled, how treatments were assigned, how the outcomes will be measured. We need these details to assess the properties of the design and also to gauge whether the principles of analysis as you randomize are being followed. We need to know about <span class="math inline">\(I\)</span> because we need to know the target of inference.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;A major concern in medical trials is “outcome switching,” wherein the eventual report focuses on different health outcomes than originally intended. When we switch outcomes, we switch inquiries!&lt;/p&gt;"><sup>28</sup></a> We need enough of <span class="math inline">\(M\)</span> to describe <span class="math inline">\(I\)</span> in sufficient detail. In short, a design declaration is what belongs in a PAP, because a design declaration specifies all of the analytically-relevant design decisions.</p>
+<p>In addition to a design declaration, a PAP should include mock analyses conducted on simulated data. If the design declaration is done formally in code, creating simulated data that resemble the eventual realized data is quite straightforward. We think researchers should run their answer strategy on the mock data, creating mock figures and tables that will eventually be made with real data. In our experience, <em>this</em> is the step that really causes researchers to think hard about all aspects of their design.</p>
+<p>Strictly speaking, preanalysis plans should include design declaration, but they do not <em>require</em> design diagnosis. But since the design that is finally settled on as the design to be implemented is usually chosen as the result of a diagnosis, it can be informative to describe, in a preanalysis plan, the reasons why the particular design was chosen. For this reason, a PAP might include estimates of diagnosands like power, RMSE, or bias. If a researcher writes in a PAP that the power to detect a very small effect is large, then if the study comes back null, the eventual writeup can much more credibly rule out “low power” as an explanation for the null. Moreover, ex ante design diagnosis communicates the assumptions under which they thought the design was a good one before they ran the study. These reasons are often the basis on which we convince skeptics of the value of the design, so writing them down <em>before</em> the results are known increases the faith we put in them.</p>
+<div id="example-11" class="section level3">
+<h3>
+<span class="header-section-number">22.7.1</span> Example<a class="anchor" aria-label="anchor" href="#example-11"><i class="fas fa-link"></i></a>
+</h3>
+<p>In this section, we provide an example of how to supplement a PAP with design declaration. We follow the actual PAP for <span class="citation">Bonilla and Tillery (<a href="references.html#ref-bonilla_tillery_2020" role="doc-biblioref">2020</a>)</span>, which was posted to the As Predicted registry here: <a href="https://aspredicted.org/q56qq.pdf" class="uri">https://aspredicted.org/q56qq.pdf</a>. The goal of the study is to estimate the causal effects of alternative framings of the Black Lives Matter (BLM) movement on support for the movement among Black Americans overall as well as among subsets of the Black community. These study authors are models of research transparency: they prominently link to the PAP in the published article, they conduct no non-preregistered analyses except those requested during the review process, and their replication archive includes all materials required to confirm their analyses, all of which we were able to reproduce exactly with minimal effort. Our goal with this section is to show how design declaration can supplement and complement existing planning practices.</p>
+<div id="model-2" class="section level4">
+<h4>
+<span class="header-section-number">22.7.1.1</span> Model<a class="anchor" aria-label="anchor" href="#model-2"><i class="fas fa-link"></i></a>
+</h4>
+<p>The authors write in their PAP:</p>
+<blockquote>
+<p>We hypothesize that: H1: Black Nationalist frames of the BLM movement will increase perceived effectiveness of BLM among African American test subjects. H2: Feminist frames of the BLM movement will increase perceived effectiveness of BLM among African American women, but decrease perceived effectiveness in male subjects. H3: LGBTQ and Intersectional frames of the BLM movement will have no effect (or a demobilizing effect) on the perceived effectiveness of BLM African American subjects.</p>
+</blockquote>
+<p>These hypotheses reflect a model of coalition politics that emphasizes the tensions induced by overlapping identities. Framing the BLM movement as feminist or pro-LGBTQ may increase support among Black women or Black LGBTQ identifiers, but that increase may come at the expense of support among Black men or Blacks who do not identify as LGBTQ. Similarly, this model predicts that subjects with stronger attachment to their Black identity will have a larger response to a Black nationalist framing of BLM than those with weaker attachments.</p>
+<p>The model also includes beliefs about the distributions of gender, LGBTQ status, and Black identity strength. In the Data strategy, Black identity will be measured with the standard linked fate measure. Other background characteristics that may be correlated with support for BLM include age, religiosity, income, education, and familiarity with the movement, so these are included in the model as well.</p>
+<p>The focus of the study will be on the causal effects of the nationalism, feminism, and intersectional frames relative to a general description of the Black Lives Matter movement. Model beliefs about treatment effect heterogeneity are embedded in the <code>declare_potential_outcomes</code> call. The effect of the nationalism treatment is hypothesized to be stronger, the greater subjects’ sense of linked fate; the effect of the feminism treatment should be negative for men but positive for women; the effect of the intersectionality treatment should be positive for LGBTQ identifies, but negative for non-identifiers.</p>
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rescale</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
+<span class="va">likert_cut</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">100</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">model</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_population.html">declare_population</a></span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">800</span>,
+    female <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.51</span><span class="op">)</span>,
+    lgbtq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,
+    linked_fate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, 
+                         prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
+    age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">18</span><span class="op">:</span><span class="fl">80</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+    religiosity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+    income <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+    college <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,
+    blm_familiarity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="va">N</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    blm_support_latent <span class="op">=</span> <span class="fu">rescale</span><span class="op">(</span>
+      <span class="va">U</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">blm_familiarity</span> <span class="op">+</span> 
+        <span class="fl">0.45</span> <span class="op">*</span> <span class="va">linked_fate</span> <span class="op">+</span> 
+        <span class="fl">0.001</span> <span class="op">*</span> <span class="va">age</span> <span class="op">+</span> 
+        <span class="fl">0.25</span> <span class="op">*</span> <span class="va">lgbtq</span> <span class="op">+</span> 
+        <span class="fl">0.01</span> <span class="op">*</span> <span class="va">income</span> <span class="op">+</span> 
+        <span class="fl">0.1</span> <span class="op">*</span> <span class="va">college</span> <span class="op">+</span> 
+        <span class="op">-</span><span class="fl">0.1</span> <span class="op">*</span> <span class="va">religiosity</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span>
+    blm_support_Z_general <span class="op">=</span> 
+      <span class="fu">likert_cut</span><span class="op">(</span><span class="va">blm_support_latent</span><span class="op">)</span>,
+    blm_support_Z_nationalism <span class="op">=</span> 
+      <span class="fu">likert_cut</span><span class="op">(</span><span class="va">blm_support_latent</span> <span class="op">+</span> <span class="fl">0.01</span> <span class="op">+</span> 
+                   <span class="fl">0.01</span> <span class="op">*</span> <span class="va">linked_fate</span> <span class="op">+</span> 
+                   <span class="fl">0.01</span> <span class="op">*</span> <span class="va">blm_familiarity</span><span class="op">)</span>,
+    blm_support_Z_feminism <span class="op">=</span> 
+      <span class="fu">likert_cut</span><span class="op">(</span><span class="va">blm_support_latent</span> <span class="op">-</span> <span class="fl">0.02</span> <span class="op">+</span> 
+                   <span class="fl">0.07</span> <span class="op">*</span> <span class="va">female</span> <span class="op">+</span> 
+                   <span class="fl">0.01</span> <span class="op">*</span> <span class="va">blm_familiarity</span><span class="op">)</span>,
+    blm_support_Z_intersectional <span class="op">=</span> 
+      <span class="fu">likert_cut</span><span class="op">(</span><span class="va">blm_support_latent</span>  <span class="op">-</span> <span class="fl">0.05</span> <span class="op">+</span> 
+                   <span class="fl">0.15</span> <span class="op">*</span> <span class="va">lgbtq</span> <span class="op">+</span> 
+                   <span class="fl">0.01</span> <span class="op">*</span> <span class="va">blm_familiarity</span><span class="op">)</span>
+  <span class="op">)</span></code></pre></div>
+</div>
+<div id="inquiry-2" class="section level4">
+<h4>
+<span class="header-section-number">22.7.1.2</span> Inquiry<a class="anchor" aria-label="anchor" href="#inquiry-2"><i class="fas fa-link"></i></a>
+</h4>
+<p>The inquiries for this study naturally include the average effects of all three treatments relative to the “general” framing, as well as the differences in average effects for subgroups. When describing their planned analyses, the authors write:</p>
+<blockquote>
+<p>We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation.</p>
+</blockquote>
+<p>In the code below, we specify how each treatment effect changes with its corresponding covariate <span class="math inline">\(X\)</span> with <span class="math inline">\(\frac{\mathrm{cov}(\tau_i, X)}{\mathbb{V}(X)}\)</span>, which is identical to the difference-in-difference for the binary covariates (<code>female</code> and <code>lgbtq</code>) and is the slope of the best linear predictor of how the effect changes over the range of <code>linked_fate</code>, and <code>blm_familiarity</code> which we are treating as quasi-continuous here.</p>
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">slope</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+
+<span class="va">inquiry</span> <span class="op">&lt;-</span>  
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimands</a></span><span class="op">(</span>
+    <span class="co"># Average effects</span>
+    ATE_nationalism <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">blm_support_Z_nationalism</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span><span class="op">)</span>,
+    ATE_feminism <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">blm_support_Z_feminism</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span><span class="op">)</span>,
+    ATE_intersectional <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">blm_support_Z_intersectional</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span><span class="op">)</span>,
+    
+    <span class="co"># Overall heterogeneity w.r.t. blm_familiarity</span>
+    DID_nationalism_familiarity <span class="op">=</span> 
+      <span class="fu">slope</span><span class="op">(</span><span class="va">blm_support_Z_nationalism</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span>, 
+            <span class="va">blm_familiarity</span><span class="op">)</span>,
+    DID_feminism_familiarity <span class="op">=</span> 
+      <span class="fu">slope</span><span class="op">(</span><span class="va">blm_support_Z_feminism</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span>, 
+            <span class="va">blm_familiarity</span><span class="op">)</span>,
+    DID_intersectional_familiarity <span class="op">=</span> 
+      <span class="fu">slope</span><span class="op">(</span><span class="va">blm_support_Z_intersectional</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span>, 
+            <span class="va">blm_familiarity</span><span class="op">)</span>,
+    
+    <span class="co"># Treatment-specific heterogeneity</span>
+    DID_nationalism_linked_fate <span class="op">=</span> 
+      <span class="fu">slope</span><span class="op">(</span><span class="va">blm_support_Z_nationalism</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span>, 
+            <span class="va">linked_fate</span><span class="op">)</span>,
+    DID_feminism_gender <span class="op">=</span> 
+      <span class="fu">slope</span><span class="op">(</span><span class="va">blm_support_Z_feminism</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span>,
+            <span class="va">female</span><span class="op">)</span>,
+    DID_intersectional_lgbtq <span class="op">=</span> 
+      <span class="fu">slope</span><span class="op">(</span><span class="va">blm_support_Z_intersectional</span> <span class="op">-</span> <span class="va">blm_support_Z_general</span>, 
+            <span class="va">lgbtq</span><span class="op">)</span>
+  <span class="op">)</span></code></pre></div>
+</div>
+<div id="data-strategy-2" class="section level4">
+<h4>
+<span class="header-section-number">22.7.1.3</span> Data strategy<a class="anchor" aria-label="anchor" href="#data-strategy-2"><i class="fas fa-link"></i></a>
+</h4>
+<p>The subjects for this study are 800 Black Americans recruited by the survey firm Qualtrics using a quota sampling procedure. We elide this sampling step in our declaration – the 800 subjects are described by the <code>declare_population</code> call. The reason is that, as is common practice in the analysis of survey experiments on convenience samples, authors do not formally extrapolate out from their data to make generalizations about the population of Black Americans. The inquiries they study are sample average effects. If the authors had used a different sampling strategy, using random sampling through random digit dialing for example, we would have defined the population from which they were sampling and the random sampling procedure.</p>
+<p>After subjects’ background characteristics are measured, they were assigned to one of four treatment conditions. Since the survey was conducted on Qualtrics, we assume that the authors used the built-in randomization tools, which typically use simple (Bernoulli) random assignment.</p>
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data_strategy</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span>
+    conditions <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"general"</span>, <span class="st">"nationalism"</span>, <span class="st">"feminism"</span>, <span class="st">"intersectional"</span><span class="op">)</span>, 
+    simple <span class="op">=</span> <span class="cn">TRUE</span>
+  <span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">declare_reveal</a></span><span class="op">(</span><span class="va">blm_support</span>, <span class="va">Z</span><span class="op">)</span> </code></pre></div>
+</div>
+<div id="answer-strategy-2" class="section level4">
+<h4>
+<span class="header-section-number">22.7.1.4</span> Answer strategy<a class="anchor" aria-label="anchor" href="#answer-strategy-2"><i class="fas fa-link"></i></a>
+</h4>
+<p>The authors write:</p>
+<blockquote>
+<p>We will run an OLS regression predicting the support for, effectiveness of, and trust in BLM on each treatment condition. […] We will also look at differences in responses between those indicating a pre-treatment familiarity BLM (4-Extensive knowledge to 1-Never heard of BLM), gender (particularly on the Feminist treatment), linked fate (particularly on the Nationalist treatment), and LGBT+ affiliation (particularly on the LGBT+ treatment), though we are not necessarily expecting these moderations to have a strong effect because samples may lack adequate representation. We plan to conduct analyses without controls. As we will check for between group balance, we may also run OLS analyses with demographic controls (age, linked fate, gender, sexual orientation, religiosity, income, education, and ethnic or multi-racial backgrounds), and will report differences in OLS results.</p>
+</blockquote>
+<p>In DeclareDesign, this corresponds to five estimators, with two shooting at the ATEs and three shooting at the differences-in-CATEs. We use OLS for all five – the majority of the code is bookkeeping to ensure we match the right regression coefficient with the appropriate estimand.</p>
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">answer_strategy</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span>,
+    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Znationalism"</span>, <span class="st">"Zfeminism"</span>, <span class="st">"Zintersectional"</span><span class="op">)</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    estimand <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_nationalism"</span>, <span class="st">"ATE_feminism"</span>, <span class="st">"ATE_intersectional"</span><span class="op">)</span>,
+    label <span class="op">=</span> <span class="st">"OLS"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">female</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">linked_fate</span><span class="op">)</span> <span class="op">+</span> <span class="va">lgbtq</span>,
+    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Znationalism"</span>, <span class="st">"Zfeminism"</span>, <span class="st">"Zintersectional"</span><span class="op">)</span>,
+    estimand <span class="op">=</span> 
+      <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_nationalism"</span>, <span class="st">"ATE_feminism"</span>, <span class="st">"ATE_intersectional"</span><span class="op">)</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    label <span class="op">=</span> <span class="st">"OLS with controls"</span>
+  <span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span><span class="op">*</span><span class="va">blm_familiarity</span>,
+    term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Znationalism:blm_familiarity"</span>, 
+             <span class="st">"Zfeminism:blm_familiarity"</span>, 
+             <span class="st">"Zintersectional:blm_familiarity"</span><span class="op">)</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    estimand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DID_nationalism_familiarity"</span>, 
+                 <span class="st">"DID_feminism_familiarity"</span>, 
+                 <span class="st">"DID_intersectional_familiarity"</span><span class="op">)</span>,
+    label <span class="op">=</span> <span class="st">"DID_familiarity"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">linked_fate</span>,
+    term <span class="op">=</span> <span class="st">"Zfeminism:linked_fate"</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    estimand <span class="op">=</span> <span class="st">"DID_nationalism_linked_fate"</span>,
+    label <span class="op">=</span> <span class="st">"DID_nationalism_linked_fate"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">female</span>,
+    term <span class="op">=</span> <span class="st">"Zfeminism:female"</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    estimand <span class="op">=</span> <span class="st">"DID_feminism_gender"</span>,
+    label <span class="op">=</span> <span class="st">"DID_feminism_gender"</span>
+  <span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span>
+    <span class="va">blm_support</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">lgbtq</span>,
+    term <span class="op">=</span> <span class="st">"Zintersectional:lgbtq"</span>,
+    model <span class="op">=</span> <span class="va">lm_robust</span>,
+    estimand <span class="op">=</span> <span class="st">"DID_intersectional_lgbtq"</span>,
+    label <span class="op">=</span> <span class="st">"DID_intersectional_lgbtq"</span>
+  <span class="op">)</span></code></pre></div>
+</div>
+<div id="mock-analysis" class="section level4">
+<h4>
+<span class="header-section-number">22.7.1.5</span> Mock analysis<a class="anchor" aria-label="anchor" href="#mock-analysis"><i class="fas fa-link"></i></a>
+</h4>
+<p>Putting it all together, we can declare the complete design and draw mock data from it.</p>
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span>
+<span class="va">mock_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/draw_functions.html">draw_data</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:unnamed-chunk-459">Table 22.1: </span>Mock analysis from Bonilla and Tillery design.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+ID
+</th>
+<th style="text-align:right;">
+female
+</th>
+<th style="text-align:right;">
+lgbtq
+</th>
+<th style="text-align:right;">
+linked_fate
+</th>
+<th style="text-align:right;">
+age
+</th>
+<th style="text-align:right;">
+religiosity
+</th>
+<th style="text-align:right;">
+income
+</th>
+<th style="text-align:right;">
+college
+</th>
+<th style="text-align:right;">
+blm_familiarity
+</th>
+<th style="text-align:right;">
+U
+</th>
+<th style="text-align:right;">
+blm_support_latent
+</th>
+<th style="text-align:right;">
+blm_support_Z_general
+</th>
+<th style="text-align:right;">
+blm_support_Z_nationalism
+</th>
+<th style="text-align:right;">
+blm_support_Z_feminism
+</th>
+<th style="text-align:right;">
+blm_support_Z_intersectional
+</th>
+<th style="text-align:left;">
+Z
+</th>
+<th style="text-align:right;">
+Z_cond_prob
+</th>
+<th style="text-align:right;">
+blm_support
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+001
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.976
+</td>
+<td style="text-align:right;">
+0.758
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+nationalism
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+002
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.274
+</td>
+<td style="text-align:right;">
+0.429
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+feminism
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+003
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+78
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.349
+</td>
+<td style="text-align:right;">
+0.491
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+feminism
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+004
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.929
+</td>
+<td style="text-align:right;">
+0.841
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+feminism
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+005
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+69
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.351
+</td>
+<td style="text-align:right;">
+0.540
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+feminism
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Table <a href="#tab:bonillatilleryregtable"><strong>??</strong></a> shows a mock analysis average effects (estimated with and without covariate adjustment) as well as the heterogeneous effects analyses with respect to the quasicontinuous moderators.</p>
+<div class="inline-table"><table class="texreg" style="margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;">
+<caption>
+Mock regression table from Bonilla and Tillery design.
+</caption>
+<thead><tr>
+<th style="padding-left: 5px;padding-right: 5px;">
+ 
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+Model 1
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+Model 2
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+Model 3
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+Model 4
+</th>
+</tr></thead>
+<tbody>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+(Intercept)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+3.667<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+1.248<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+1.578<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+3.530<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.055)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.100)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.127)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.142)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Znationalism
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.430<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.360<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.019
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.057
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.087)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.045)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.192)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.209)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zfeminism
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.174<sup>*</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.161<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.059
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.190
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.082)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.046)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.207)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.200)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zintersectional
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.144
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.163<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.326
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.373
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.088)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.049)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.200)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.209)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+female
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.104<sup>**</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.034)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+lgbtq
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.374<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.100)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+age
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.000
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.001)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+religiosity
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.141<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.010)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+income
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.013<sup>**</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.005)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+college
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.158<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.034)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+linked_fate
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.564<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.523<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.015)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.032)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+blm_familiarity
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.170<sup>***</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.055
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.015)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.054)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Znationalism:linked_fate
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.087
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.046)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zfeminism:linked_fate
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.032
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.051)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zintersectional:linked_fate
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.045
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.050)
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Znationalism:blm_familiarity
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.147
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.076)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zfeminism:blm_familiarity
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.153<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.075)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Zintersectional:blm_familiarity
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.089
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.080)
+</td>
+</tr>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+R<sup>2</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.052
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.729
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.598
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.092
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Adj. R<sup>2</sup>
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.049
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.726
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.594
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.084
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Num. obs.
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+800
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+800
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+800
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+800
+</td>
+</tr>
+<tr style="border-bottom: 2px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+RMSE
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.884
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.475
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.577
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.868
+</td>
+</tr>
+</tbody>
+<tfoot><tr>
+<td style="font-size: 0.8em;" colspan="5">
+<sup><em><strong></strong></em></sup>p &lt; 0.001; <sup></sup>p &lt; 0.01; <sup></sup>p &lt; 0.05
+</td>
+</tr></tfoot>
+</table></div>
+<div class="figure">
+<span id="fig:bonillatilleryresultsfig"></span>
+<img src="book_files/figure-html/bonillatilleryresultsfig-1.svg" alt="Mock coefficient plot from Bonilla and Tillery design." width="100%"><p class="caption">
+Figure 22.3: Mock coefficient plot from Bonilla and Tillery design.
+</p>
+</div>
+</div>
+<div id="design-diagnosis" class="section level4">
+<h4>
+<span class="header-section-number">22.7.1.6</span> Design diagnosis<a class="anchor" aria-label="anchor" href="#design-diagnosis"><i class="fas fa-link"></i></a>
+</h4>
+<p>Finally, while a design diagnosis is not a necessary component of a preanalysis plan, it can be useful to show readers why a particular design was chosen over others. This diagnosis shows that the design produces unbiased estimates of all estimands, but that we are better powered from some inquires than others (under the above assumptions about effect size, which were our own and not the original authors’). We are well-powered for the average effects, and the power increases when we include covariate controls. The design is probably too small for most of the heterogeneous effect analyses, which is a point directly conceded in the authors’ original PAP.</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:bonillatillerydiagnosis">Table 22.2: </span>Design diagnosis for Bonilla and Tillery design.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+Estimand
+</th>
+<th style="text-align:left;">
+Estimator
+</th>
+<th style="text-align:right;">
+Bias
+</th>
+<th style="text-align:right;">
+Power
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ATE feminism
+</td>
+<td style="text-align:left;">
+OLS
+</td>
+<td style="text-align:right;">
+-0.015
+</td>
+<td style="text-align:right;">
+0.45
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE feminism
+</td>
+<td style="text-align:left;">
+OLS with controls
+</td>
+<td style="text-align:right;">
+-0.001
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE intersectional
+</td>
+<td style="text-align:left;">
+OLS
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE intersectional
+</td>
+<td style="text-align:left;">
+OLS with controls
+</td>
+<td style="text-align:right;">
+-0.002
+</td>
+<td style="text-align:right;">
+0.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE nationalism
+</td>
+<td style="text-align:left;">
+OLS
+</td>
+<td style="text-align:right;">
+-0.006
+</td>
+<td style="text-align:right;">
+0.97
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ATE nationalism
+</td>
+<td style="text-align:left;">
+OLS with controls
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DID feminism familiarity
+</td>
+<td style="text-align:left;">
+DID familiarity
+</td>
+<td style="text-align:right;">
+-0.002
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DID feminism gender
+</td>
+<td style="text-align:left;">
+DID feminism gender
+</td>
+<td style="text-align:right;">
+0.006
+</td>
+<td style="text-align:right;">
+0.43
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DID intersectional familiarity
+</td>
+<td style="text-align:left;">
+DID familiarity
+</td>
+<td style="text-align:right;">
+-0.008
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DID intersectional lgbtq
+</td>
+<td style="text-align:left;">
+DID intersectional lgbtq
+</td>
+<td style="text-align:right;">
+0.027
+</td>
+<td style="text-align:right;">
+0.34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DID nationalism familiarity
+</td>
+<td style="text-align:left;">
+DID familiarity
+</td>
+<td style="text-align:right;">
+-0.019
+</td>
+<td style="text-align:right;">
+0.08
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DID nationalism linked fate
+</td>
+<td style="text-align:left;">
+DID nationalism linked fate
+</td>
+<td style="text-align:right;">
+-0.053
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+</tr>
+</tbody>
+</table></div>
+<!-- ## Debates over the value of PAPs --><!-- PAPs are often described as a tool for tying researchers' hand and reducing "researcher degrees of freedom" to seek out congenial analyses. PAPs are sometimes criticized because (A) they don't *actually* constrain what researchers do and (B) they *shouldn't*.   --><!-- PAPs might not actually constrain researchers because most journals and pressess do not check against PAPs. As reviewers, we have sometimes requested that authors send in the PAPs referenced in their papers. In nearly every case, some analyses promised in the PAP were not included, even in an appendix. Some analyses that appear in the paper were not included in the PAP. As we discuss in greater detail in section XXX on reconciliation, current practice is clearly too causal when distinguishing which analyses were pre-specified and which were not. --><!-- Some critics of PAPs charge that we shouldn't pre-register our analysis plans because we should be open to discovery. We learn once we arrive in the field what the interesting questions are, so we shouldn't be constrained by what we thought would happen when sitting in our offices. Furthermore, sometimes people pre-register analyses that are biased, misspecified, or are otherwise inappropriate, so they shouldn't be required to present them. We agree with all the above points -- researchers should create post-implementation reports (CITE JENS in PA) that follow the PAP. Analyses over and above the PAP should simply be labeled as such. --><!-- Our take is that PAPs are helpful tools for researchers to plan research better and they are useful for clarifying what the researcher was thinking at each stage.  --><!-- ## Other benefits of PAPS --><!-- - involving partners: agreeing on the analysis procedure ex ante reduces ex post conflict --><!-- - frontloading research design decisions (get more specific, identify problems) --><!-- - Anticipating what might go wrong: attrition, noncompliance, study failure, missing covariate data, etc. --><!-- - Faithful reanalysis. Reanalysts lose a degree of freedom in determining what an author might have intended by a given analysis.  --><!-- - Easier design comparison. If a design is declared at the preanalysis plan phase, then it enables direct comparison with the design as implemented in the final write-up. Side-by-side comparison of the code neatly clarifies which design choices were made ex-ante and ex-post. Side-by-side comparison of the performance of a planned and implemented designs clarify under what conditions deviations from plans are defensible improvements. --><!-- - ethics (summarize and cite Jay's ideas here: http://www.jasonlyall.com/wp-content/uploads/2020/08/PreregisterYourEthics.pdf) --><!-- - ethical outcomes are potential outcomes, so we need to think about them ex ante not just on the basis of revealed outcomes --><!-- ### countering objections: --><!-- - Time-consuming. Yes but in our experience we only pay this cost for failed studies. Fur successful studies, nearly all work that goes in to the pap pays off in terms of higher qualtity design, literal words we already wrote, and written-in-advance analysis code. --><!-- - Won't stop determined cheaters. Yes -- remember that the goal is not to prevent fraud, it's to help *researchers* improve their designs. Science depends on trust. --><!-- - Replication is better (@Coffman2015). These are complements, not substitutes. --><!-- - I can't preregister what I will do because I don't know what I will find. That's fine too, just write down how you will go about "finding" things so we (and YOU) can understand your own process. --><!-- ### Other thoughts --><!-- - when is the right moment to write a pap? --><!-- - relationship to registered reports? --><!-- - SOPs --><!-- ### citations on paps --><p><strong>Further reading</strong>.</p>
+<ul>
+<li>
+<span class="citation">Casey, Glennerster, and Miguel (<a href="references.html#ref-Casey2012" role="doc-biblioref">2012</a>)</span>: early entry</li>
+<li>
+<span class="citation">Olken (<a href="references.html#ref-Olken2015" role="doc-biblioref">2015</a>)</span>: halfway skeptical</li>
+<li>
+<span class="citation">Green and Lin (<a href="references.html#ref-Green2015" role="doc-biblioref">2016</a>)</span>: Standard operating procedures</li>
+<li>
+<span class="citation">Christensen and Miguel (<a href="references.html#ref-Christensen2018" role="doc-biblioref">2018</a>)</span>: review</li>
+<li>
+<span class="citation">Coffman and Niederle (<a href="references.html#ref-Coffman2015" role="doc-biblioref">2015</a>)</span>: a skeptical take (prefer replications).</li>
+<li>
+<span class="citation">Humphreys, Sierra, and Windt (<a href="references.html#ref-Humphreys2013a" role="doc-biblioref">2013</a>)</span>: nonbinding</li>
+<li>
+<span class="citation">Miguel et al. (<a href="references.html#ref-Miguel2014" role="doc-biblioref">2014</a>)</span>: distinguishes between disclosure and PAP</li>
+<li>
+<span class="citation">Ofosu and Posner (<a href="references.html#ref-Ofosu2020" role="doc-biblioref">2020</a>)</span>: apparently paps hinder publication?</li>
+<li><span class="citation">Rennie (<a href="references.html#ref-Rennie2004" role="doc-biblioref">2004</a>)</span></li>
+<li><span class="citation">Zarin and Tse (<a href="references.html#ref-Zarin2008" role="doc-biblioref">2008</a>)</span></li>
+<li><span class="citation">Nosek et al. (<a href="references.html#ref-Nosek2015a" role="doc-biblioref">2015</a>)</span></li>
+<li>
+<span class="citation">Findley et al. (<a href="references.html#ref-Findley:2016" role="doc-biblioref">2016</a>)</span> on results-blind review</li>
+</ul>
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
+</div>
+</div>
+</div>
 </div>
 
   <div class="chapter-nav">
 <div class="prev"><a href="brainstorming.html"><span class="header-section-number">21</span> Brainstorming</a></div>
-<div class="next"><a href="during.html"><span class="header-section-number">23</span> During</a></div>
+<div class="next"><a href="realization.html"><span class="header-section-number">23</span> Realization</a></div>
 </div></main><div id="on-this-page-nav" class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -199,6 +1785,11 @@ Figure 22.1: Navigating research partnerships.
 <li><a class="nav-link" href="#approvals"><span class="header-section-number">22.2</span> Approvals</a></li>
 <li><a class="nav-link" href="#partners"><span class="header-section-number">22.3</span> Partners</a></li>
 <li><a class="nav-link" href="#funding"><span class="header-section-number">22.4</span> Funding</a></li>
+<li><a class="nav-link" href="#p4piloting"><span class="header-section-number">22.5</span> Piloting</a></li>
+<li><a class="nav-link" href="#criticism"><span class="header-section-number">22.6</span> Criticism</a></li>
+<li>
+<a class="nav-link" href="#p4pap"><span class="header-section-number">22.7</span> Preanalysis Plan</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#example-11"><span class="header-section-number">22.7.1</span> Example</a></li></ul>
+</li>
 </ul>
 
       <div class="book-extra">
