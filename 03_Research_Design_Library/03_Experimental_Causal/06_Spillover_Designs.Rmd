@@ -54,7 +54,7 @@ design <-
     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
   declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-  reveal_outcomes(Y, c(Z, S)) +
+  declare_reveal(Y, c(Z, S)) +
   declare_estimator(Y ~ Z + S,
                     weights = 1 / (S_cond_prob * Z_cond_prob),
                     model = lm_robust,
@@ -163,13 +163,13 @@ base_dag_plot %+% ggdd_df
 <!--   declare_estimand(high = mean(Y_Z_0_S_high - Y_Z_0_S_low), -->
 <!--                    med =  mean(Y_Z_0_S_med - Y_Z_0_S_low),  -->
 <!--                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) + -->
-<!--   reveal_outcomes(Z,S) + -->
+<!--   declare_reveal(Z,S) + -->
 <!--   declare_step( -->
 <!--     w = 1 / (S_cond_prob * (Z_S_low_cond_prob * (S == "low") +  -->
 <!--                    Z_S_med_cond_prob * (S == "med") +  -->
 <!--                    Z_S_high_cond_prob * (S == "high"))), -->
 <!--     handler = fabricate) + -->
-<!--   reveal_outcomes(Y,c(Z, S)) + -->
+<!--   declare_reveal(Y,c(Z, S)) + -->
 <!--   declare_estimator(model = lm_robust,  -->
 <!--                     formula = Y ~ S, -->
 <!--                     subset = Z == 0 & S %in% c("high","low"),  -->
