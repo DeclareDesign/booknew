@@ -19,6 +19,7 @@ bookwide_packages <-
     "DesignLibrary",
     
     "CausalQueries",
+    "Rcpp",
     # tidyverse packages
     "ggplot2",
     "patchwork",
