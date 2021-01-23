@@ -209,7 +209,7 @@ design <-
     Y ~ 0.1 * D + X + U, assignment_variables = D
   ) +
   declare_assignment(D = if_else(U > 0.5, 1, 0), handler = mutate) +
-  reveal_outcomes(outcome_variables = Y, assignment_variables = D)
+  declare_reveal(outcome_variables = Y, assignment_variables = D)
 
 simulated_df <- draw_data(design)
 

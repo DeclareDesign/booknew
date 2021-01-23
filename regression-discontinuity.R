@@ -26,7 +26,7 @@ design <-
     assignment_variable = D
   ) +
   declare_estimand(LATE = treatment(0) - control(0)) +
-  reveal_outcomes(Y, D) +
+  declare_reveal(Y, D) +
   declare_estimator(
     Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE"
   )
@@ -83,7 +83,7 @@ design <-
     assignment_variable = D
   ) +
   declare_estimand(LATE = treatment(0) - control(0)) +
-  reveal_outcomes(Y, D) +
+  declare_reveal(Y, D) +
   declare_estimator(
     Y ~ poly(X, 4) * D, 
     model = lm_robust, 

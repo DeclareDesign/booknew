@@ -143,10 +143,10 @@ M <-
   declare_potential_outcomes(Y ~ X2 + X1 + M + U, 
                              assignment_variables = c(M)) +
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(D, Z) +
-  reveal_outcomes(M, c(D)) +
-  reveal_outcomes(K, c(D)) +
-  reveal_outcomes(Y, c(M))
+  declare_reveal(D, Z) +
+  declare_reveal(M, D) +
+  declare_reveal(K, D) +
+  declare_reveal(Y, M)
 # draw_data(design)
 
 

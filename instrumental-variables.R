@@ -16,8 +16,8 @@ design <-
   declare_estimand(LATE = mean(Y_D_1[D_Z_1 == 1 & D_Z_0 == 0] - 
                                  Y_D_0[D_Z_1 == 1 & D_Z_0 == 0])) +
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(D, Z) + 
-  reveal_outcomes(Y, D) + 
+  declare_reveal(D, Z) + 
+  declare_reveal(Y, D) + 
   declare_estimator(Y ~ D | Z, model = iv_robust, estimand = "LATE") 
 
 dag <- dagify(Y ~ D + U,

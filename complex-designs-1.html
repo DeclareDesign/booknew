@@ -57,10 +57,13 @@
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
-<li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
+<li><a class="" href="brainstorming.html"><span class="header-section-number">21</span> Brainstorming</a></li>
+<li><a class="" href="planning.html"><span class="header-section-number">22</span> Planning</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">23</span> During</a></li>
+<li><a class="" href="planning-1.html"><span class="header-section-number">24</span> Planning</a></li>
+<li><a class="" href="realization.html"><span class="header-section-number">25</span> Realization</a></li>
+<li><a class="" href="integration.html"><span class="header-section-number">26</span> Integration</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">27</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -142,7 +145,7 @@
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_potential_outcomes.html">declare_potential_outcomes</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">het_effect</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">u</span><span class="op">)</span> <span class="op">+</span> 
     <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimand.html">declare_estimand</a></span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">declare_reveal</a></span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
     
   <span class="co"># Main analysis</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, label <span class="op">=</span> <span class="st">"Main"</span><span class="op">)</span> <span class="op">+</span>
@@ -486,7 +489,7 @@ same parameters that describe the equilibrium outcomes in a two round game are s
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_assignment.html">declare_assignment</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Declare revealed potential outcomes</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">pi_two</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">reveal_outcomes</a></span><span class="op">(</span><span class="va">pi_inf</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">declare_reveal</a></span><span class="op">(</span><span class="va">pi_two</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/reveal_outcomes.html">declare_reveal</a></span><span class="op">(</span><span class="va">pi_inf</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   
   <span class="co"># Get draws from beta distribution given means for n = 2 and n = infinity</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_measurement.html">declare_measurement</a></span><span class="op">(</span>

@@ -26,7 +26,7 @@ data_strategy <-
     clusters = villages, 
     conditions = c("neutral", "personal", "social")
   ) + 
-  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
+  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
   declare_measurement(Yobs = if_else(Y > 0.97, 1, 0))
 
 answer_strategy <- 

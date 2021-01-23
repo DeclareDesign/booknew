@@ -90,7 +90,7 @@ data_strategy <-
       c("general", "nationalism", "feminism", "intersectional"), 
     simple = TRUE
   ) + 
-  reveal_outcomes(blm_support, Z) 
+  declare_reveal(blm_support, Z) 
 
 answer_strategy <-
   declare_estimator(

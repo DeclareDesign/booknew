@@ -138,8 +138,8 @@ design <-
                                  (Y_D_0_Z_1 + Y_D_0_Z_0) / 2),
                    subset = type == "Complier") +
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(D, assignment_variable = "Z") +
-  reveal_outcomes(Y, assignment_variables = c("D", "Z")) +
+  declare_reveal(D, assignment_variable = Z) +
+  declare_reveal(Y, assignment_variables = c(D, Z)) +
   declare_estimator(Y ~ D | Z, model = iv_robust, estimand = "CACE")
 
 

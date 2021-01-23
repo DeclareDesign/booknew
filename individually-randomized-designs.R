@@ -44,7 +44,7 @@ eq_3.4_designer <-
     declare_population(data = fixed_sample) +
       declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
       declare_assignment(m = m) +
-      reveal_outcomes() +
+      declare_reveal(Y, Z) +
       declare_estimator(Y ~ Z, estimand = "ATE")
     
   }

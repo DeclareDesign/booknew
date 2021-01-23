@@ -48,7 +48,7 @@ model <-
                      D = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ 0.5 * D + U, 
                              assignment_variable = "D") +
-  reveal_outcomes(Y, D)
+  declare_reveal(Y, D)
 
 inquiry <-
   declare_estimand(
@@ -66,7 +66,7 @@ model <-
                      D = rbinom(N, 1, .5)) +
   declare_potential_outcomes(Y ~ 0.5 * D + U, 
                              assignment_variable = "D") +
-  reveal_outcomes(Y, D)
+  declare_reveal(Y, D)
 
 inquiry <-
   declare_estimand(

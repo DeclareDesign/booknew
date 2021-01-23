@@ -34,7 +34,7 @@ lapply(packages, require, character.only = TRUE)
 ##       "film_treat_text_treat"
 ##     )
 ##   ), handler = fabricate) +
-##   declare_measurement(Y = fabricatr::reveal_outcomes(Y ~ Z)) +
+##   declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
 ##   declare_estimator(Y ~ Z, model = lm_robust)
 ## 
 ## draw_data(design)
@@ -56,9 +56,8 @@ lapply(packages, require, character.only = TRUE)
 ##   declare_sampling(n = 109, order_by = U_tower, handler = slice_max) +
 ##   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
 ##   declare_assignment(Z_film = cluster_ra(N, clusters = towers, prob = 0.5), handler = fabricate) +
-##   declare_assignment(Z_)
-## declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+##   declare_assignment(Z_sms = cluster_ra(N, clusters = towers, conditions = 7:14), handler = fabricate) +
+##   declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
 ##   declare_estimator(Y ~ Z, clusters = towers, model = lm_robust)
 ## 
 ## draw_data(design)
-## 

@@ -78,7 +78,7 @@ design <-
   declare_assignment() +
   
   # Declare revealed potential outcomes
-  reveal_outcomes(pi_two, Z) + reveal_outcomes(pi_inf, Z) +
+  declare_reveal(pi_two, Z) + declare_reveal(pi_inf, Z) +
   
   # Get draws from beta distribution given means for n = 2 and n = infinity
   declare_measurement(

@@ -20,7 +20,7 @@ design <-
     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
   declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
-  reveal_outcomes(Y, c(Z, S)) +
+  declare_reveal(Y, c(Z, S)) +
   declare_estimator(Y ~ Z + S,
                     weights = 1 / (S_cond_prob * Z_cond_prob),
                     model = lm_robust,

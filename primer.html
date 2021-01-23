@@ -57,10 +57,13 @@
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
-<li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
+<li><a class="" href="brainstorming.html"><span class="header-section-number">21</span> Brainstorming</a></li>
+<li><a class="" href="planning.html"><span class="header-section-number">22</span> Planning</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">23</span> During</a></li>
+<li><a class="" href="planning-1.html"><span class="header-section-number">24</span> Planning</a></li>
+<li><a class="" href="realization.html"><span class="header-section-number">25</span> Realization</a></li>
+<li><a class="" href="integration.html"><span class="header-section-number">26</span> Integration</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">27</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -409,7 +412,7 @@ REP
 </tr>
 <tr class="even">
 <td></td>
-<td><code>reveal_outcomes()</code></td>
+<td><code>declare_reveal()</code></td>
 <td>link potential outcomes to revealed outcomes via assignment</td>
 </tr>
 <tr class="odd">
@@ -1227,7 +1230,7 @@ S_inclusion_prob
 <code class="sourceCode R"><span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
 <p>After treatments are assigned, some <em>potential</em> outcomes are <em>revealed</em>. Treated units reveal their treated potential outcomes and untreated units reveal their untreated potential outcomes. The <code>reveal_outcomes</code> function performs this switching operation.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">declare_reveal</span><span class="op">(</span><span class="va">Y</span>, <span class="va">Z</span><span class="op">)</span></code></pre></div>
 <p>Adding these two declarations to the design results in a data frame with an additional indicator <code>Z</code> for the assignment as well as its corresponding probability of assignment. Again, here the assignment probabilities are constant, but in other designs described in Section <a href="crafting-a-data-strategy.html#p2assignment">8.2</a> they are not and this is crucial information for the analysis stage. The outcome variable <code>Y</code> is composed of each unit’s potential outcomes depending on its treatment status.</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
@@ -1908,7 +1911,7 @@ Y
   <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> 
 
 <span class="va">reveal</span> <span class="op">&lt;-</span> 
-  <span class="fu">reveal_outcomes</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> 
+  <span class="fu">declare_reveal</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> 
 
 <span class="va">estimator</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span>
@@ -1927,7 +1930,7 @@ Y
   <span class="fu">declare_estimand</span><span class="op">(</span>PATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_reveal</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, estimand <span class="op">=</span> <span class="st">"PATE"</span>
   <span class="op">)</span></code></pre></div>
@@ -2470,7 +2473,7 @@ Power
     <span class="fu">declare_estimand</span><span class="op">(</span>PATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu">declare_sampling</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu">reveal_outcomes</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu">declare_reveal</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu">declare_estimator</span><span class="op">(</span>
       <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, estimand <span class="op">=</span> <span class="st">"PATE"</span>
     <span class="op">)</span>
@@ -2493,7 +2496,7 @@ Power
 <h3>
 <span class="header-section-number">3.6.2</span> Comparing designs<a class="anchor" aria-label="anchor" href="#comparing-designs"><i class="fas fa-link"></i></a>
 </h3>
-<p>Alternatively, we can compare a pair of designs directly with the <code>compare_designs</code> function. This function is most useful for comparing the differences between a planned design and an implemented design (see Section <a href="during.html#p4reconciliation">22.5</a>).</p>
+<p>Alternatively, we can compare a pair of designs directly with the <code>compare_designs</code> function. This function is most useful for comparing the differences between a planned design and an implemented design (see Section <a href="realization.html#p4reconciliation">25.4</a>).</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">compare_designs</span><span class="op">(</span><span class="va">planned_design</span>, <span class="va">implemented_design</span><span class="op">)</span></code></pre></div>
 <p>Similarly, we can compare two designs on the basis of their diagnoses:</p>

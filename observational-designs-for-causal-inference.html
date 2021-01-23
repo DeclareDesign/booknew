@@ -57,10 +57,13 @@
 <li><a class="" href="part-iii-exercises.html"><span class="header-section-number">19</span> Part III Exercises</a></li>
 <li class="book-part">Research Design Lifecycle</li>
 <li><a class="" href="research-design-lifecycle.html"><span class="header-section-number">20</span> Research Design Lifecycle</a></li>
-<li><a class="" href="before.html"><span class="header-section-number">21</span> Before</a></li>
-<li><a class="" href="during.html"><span class="header-section-number">22</span> During</a></li>
-<li><a class="" href="after.html"><span class="header-section-number">23</span> After</a></li>
-<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">24</span> Part IV Exercises</a></li>
+<li><a class="" href="brainstorming.html"><span class="header-section-number">21</span> Brainstorming</a></li>
+<li><a class="" href="planning.html"><span class="header-section-number">22</span> Planning</a></li>
+<li><a class="" href="during.html"><span class="header-section-number">23</span> During</a></li>
+<li><a class="" href="planning-1.html"><span class="header-section-number">24</span> Planning</a></li>
+<li><a class="" href="realization.html"><span class="header-section-number">25</span> Realization</a></li>
+<li><a class="" href="integration.html"><span class="header-section-number">26</span> Integration</a></li>
+<li><a class="" href="part-iv-exercises.html"><span class="header-section-number">27</span> Part IV Exercises</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -791,8 +794,8 @@ NA
   <span class="fu">declare_estimand</span><span class="op">(</span>LATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_D_1</span><span class="op">[</span><span class="va">D_Z_1</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">D_Z_0</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">-</span> 
                                  <span class="va">Y_D_0</span><span class="op">[</span><span class="va">D_Z_1</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">D_Z_0</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">D</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="va">D</span>, <span class="va">Z</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, estimand <span class="op">=</span> <span class="st">"LATE"</span><span class="op">)</span> </code></pre></div>
 </div>
 <div id="dag-3" class="section level3">
@@ -891,7 +894,7 @@ outcome variable is labor force participation.</p>
     assignment_variable <span class="op">=</span> <span class="va">D</span>
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimand</span><span class="op">(</span>LATE <span class="op">=</span> <span class="fu">treatment</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span> <span class="op">-</span> <span class="fu">control</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_reveal</span><span class="op">(</span><span class="va">Y</span>, <span class="va">D</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>
     <span class="va">Y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="va">D</span>, 
     model <span class="op">=</span> <span class="va">lm_robust</span>, 
