@@ -121,8 +121,8 @@ design <-
     ATE = mean(Y_D_1 - Y_D_0),
     CACE = mean(Y_D_1[type == "Complier"] - Y_D_0[type == "Complier"])) +
   declare_assignment(Z = conduct_ra(N = N, prob = 0.5), handler = fabricate) +
-  declare_measurement(D = declare_reveal(D ~ Z),
-                      Y = declare_reveal(Y ~ D)) +
+  declare_measurement(D = reveal_outcomes(D ~ Z),
+                      Y = reveal_outcomes(Y ~ D)) +
   declare_estimator(
     Y ~ D | Z,
     model = iv_robust,
