@@ -115,7 +115,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 <li><p>Pearl (pg. XXX) denotes conditioning on a variable in the answer stragegy with a box around the variable; we do follow this convention.</p></li>
 <li><p>CITE introduces intervention nodes – in that framework, variables that are manipulated by the researcher (as in a random assignement) are marked with a []. In that spirit, we introduce shapes for all three kinds of operations in a data strategy: circles for random assignments, triangles for sampling, and squares for measurement procedures.</p></li>
 </ul>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-104-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-95-1.svg" width="100%"></div>
 <!-- This is good text but for answer stratgy: -->
 <!-- Possibly the most important thing that a DAG can teach us is which research questions are even answerable in a given setting by applying the "back-door criterion," which asks whether a back-door path exists between a pair of causally-related variables. Here, the causal relationship between $X$ and $Y$ is confounded by the back-door path $X \leftarrow U \rightarrow Z$. (for much more on the back-door criterion, see XXX). Since we have no information about what is in $U$, we can't learn about the effects of $X$ on $Y$. However, the treatment variable $Z$ has no edges leading in to it, which represents the idea that $Z$ is randomly assigned. There are no back door paths leading from $Z$ to $Y$, so we *can* learn more easily about average causal effects of $Z$ on $Y$. We could also draw descriptive inferences about the distributions of the observed variables like their ranges and averages or their variances and covariances. -->
 </div>
@@ -131,7 +131,7 @@ Figure 6.1: Simple DAG. U is unobserved.
 </ul>
 <p>Which population you have in mind affects how reference populations should be modeled and also how draws from a population should be interpreted.</p>
 <p>To illustrate consider a very simple model in which we believe that <span class="math inline">\(Y\)</span> depends upon <span class="math inline">\(Z\)</span> and <span class="math inline">\(Z\)</span> is randomly assigned, with probability .5. Say we believe that potential outcomes, and treatment effects, are different for each person. This model, like many in this book, might be declared like this:</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
@@ -332,7 +332,7 @@ Figure 6.2: A DAG with an explanatory variable of interest (D), an outcome of in
 <p>DAGs convey beliefs about <em>whether</em> two variables are causally related, but they do not encode beliefs about <em>how</em> they are related. This is no criticism of DAGs — they just don’t encode all of our causal beliefs about a system. To assess many properties of a research design we need to go further. We need to specify the probability distribution of exogenous variables and the functional forms of the endogenous variables (how they relate to parent variables). This will include incorporating beliefs about effect sizes, but also correlations between variables, intra-class correlations (ICCs), and interactions. All of this to say: in order to declare and diagnose our designs, we will need to make the leap from nonparametric models to <em>parametric</em> structural causal models. This move is not without costs – each specific choice we make over and above the nonparametric model is an opportunity to be more wrong about the world!</p>
 <p>A slightly more complex example helps demonstrate how we can use a model declaration to facilitate the representation of a class of possibly stochastic models. Suppose that according to our model, the effect of <span class="math inline">\(Z\)</span> should be larger for units with <span class="math inline">\(X = 1\)</span>. We can encode this belief in the design declaration below. In the <code>declare_population</code> function, we write that <span class="math inline">\(U\)</span> is normally distributed with mean 0 and standard deviation 1; <span class="math inline">\(X\)</span> follows a Bernoulli distribution. In the <code>declare_potential_outcomes</code> function, we describe how the average effect of treatment depends on <span class="math inline">\(X\)</span>.</p>
 <!-- I removed the confounding to keep focused on one point -->
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tau_X0</span> <span class="op">&lt;-</span> <span class="fl">0.5</span>
 <span class="va">tau_X1</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 
@@ -426,7 +426,7 @@ Figure 6.4: 216 possible DAGs with acyclicity.
 <p>After enumerating each possibility, we draw on logic, theory, and past evidence to rule out implausible or impossible models. We do so judiciously: any model we rule out represents the addition of a possibly false assumption. Past evidence or a theoretical model may provide conclusive reasons to include or exclude certain edges in the reference models. One common exclusion is the assumption of acyclicity: we commonly operate under the view that cycling is not possible in the world, which would imply that these variables simultaneously cause each other. In Figure <a href="choosing-an-answer-strategy.html#fig:dagsadjustment">9.2</a>, DAGs in gray are ruled out by acyclicity.</p>
 <p>The final step in setting up our model is defining a mapping between theory and these possible DAGs. Our aim is to provide evidence about generalizable theories, and to do so we must know which theories are ruled in or out by empirical evidence. The first step to doing this is to define which DAGs are consistent or inconsistent with each theory. (Later, we will define what evidence will result in rejection or retention of each DAG; the two steps together will allow us to define which theories are rejected or retained from the evidence.)</p>
 <p>For example, we code each model in which <span class="math inline">\(D\)</span> causes <span class="math inline">\(Y\)</span> as consistent with “Theory A” and all those in which <span class="math inline">\(D\)</span> does not cause <span class="math inline">\(Y\)</span> as consistent with “Theory B” in Table <a href="specifying-the-model.html#tab:theorydags">6.2</a>.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">possible_models</span> <span class="op">%&gt;%</span> 
   <span class="va">ungroup</span> <span class="op">%&gt;%</span> 
   <span class="fu">sample_n</span><span class="op">(</span>size <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -520,7 +520,7 @@ FALSE
 </tbody>
 </table></div>
 <p>With these DAGs in mind, we can declare a design in which we turn on and off each causal relationship:</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span>
   <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, 
                      U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, 
