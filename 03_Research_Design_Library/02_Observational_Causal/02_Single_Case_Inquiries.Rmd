@@ -37,7 +37,7 @@ library(CausalQueries)
 
 We sometimes start a causal investigation wanting to know the causal effect for a single unit. For example, for a unit that experienced an event or process, we want to know the causal effect of that event. To do so, we need to know what would have happened if the event did not happen, the *counter*factual outcome as opposed to the factual outcome that actually occurred. Due to the fundamental problem of causal inference, we cannot *observe* what would have happened if that counterfactual case had happened. We have to guess---or infer---what would have happened. Social scientists have developed a large array of tools for guessing missing counterfactual outcomes --- what would have happened in the counterfactual case, if the event had not happened.^[We are also interested in the opposite case sometimes: we have a unit that did not experience an event, and we want to know the causal effect of *not* having it. In this case, we need to guess what would have happened if the event did happen. The same tools apply in reverse.]
 
-A common estimand in this setting is whether an outcome was *due* to a cause. This "attribution" estimand or "Cause of Effect" estimand can be written $CoE:=1-Y(0)| X=1 \& Y=1$. For a unit with  $X=1 \& Y=1$ if $Y(0)=0$ then $Q=1$. One might also be interest in the treatment effect of the treated case (TET). The TET is the difference between the treated potential outcome and the control potential outcome in the posttreatment period for the treated unit of interest---but not conditioning on knowledge of the outcome. 
+A common estimand in this setting is whether an outcome was *due* to a cause. This "attribution" estimand or "Cause of Effect" estimand can be written $CoE:=1-Y(0)| X=1 \text{ \& } Y=1$. For a unit with  $X=1$ and $Y=1$,  $CoE=1$ if $Y(0)=0$. One might also be interested in the treatment effect of the treated case (TET). The TET is the difference between the treated potential outcome and the control potential outcome in the posttreatment period for the treated unit of interest---but not conditioning on knowledge of the outcome. 
 
 ```{r, echo = FALSE, include = FALSE}
 dag <- dagify(Y ~ X + D + U,
@@ -69,9 +69,11 @@ base_dag_plot %+% ggdd_df
 
 <!-- fearon1991, biqq -->
 
-"Process tracing" is a prominent strategy for assessing causes of effects. As we interpret it here (following for example @humphreys2017qualitative) we think of process tracing a procedure in which researchers provide a theory, in he form of a causal model, rich enough to characertize the probability of observing ancillary data ("Causal process observations" [@brady2004data]) given underlying causal relations that in turn lets one form posteriors over causal relations when these observations are observed. For instance we wonder whether a policy caused a change in economic outcomes; we expect that for the policy to matter it at least had to be implemented and so if we find out that  it was not implemented we infer that it did not matter. 
+"Process tracing" is a prominent strategy for assessing causes of effects [@BennettCheckel2015PT; @fairfield2017explicit]. Here, following for example @humphreys2017qualitative, we think of process tracing as a procedure in which researchers provide a theory, in the form of a causal model, that is rich enough to characterize the probability of observing ancillary data ("Causal process observations" [@brady2004data]) given underlying causal relations. If equipped with priors, such a model in turn lets one use Bayes' rule to form posteriors over causal relations when these observations are observed. 
 
-We consider a setting in which we have observed $X=1$ and $Y=1$ and we are interested in figuring out whether $Y=1$ *because* $X=1$. More specifically we imagine a model in which $X$ causes $Y$ via $M$ and in which a third variable $W$ is a cause of both $M$ and $Y$. We imagine that $W=1$ then $X$ causes  $M$ and $M$ causes $Y$ for sure. Under this model $M$ and $W$ each serve as "clues" for the causal effect of $X$ on $Y$. Using the language popularized by @VanEvera1997 $M$ provides a "hoop" test---if data on $M$ is sought and you find that $M=0$ then you infer that $X$ did not cause $Y$; if on the other hand you find that $W=1$ then you have a "smoking gun" test and you infer that $X$ did indeed cause $Y$. If you find both then you know your model is wrong. 
+For intuition, say we are interested in whether a policy caused a change in economic outcomes. We expect that for the policy to matter it at least had to be implemented and so if we find out that it was not implemented we infer that it did not matter. Thus we make theory dependent inferences that are reasonable *insofar as* the theory is reasonable. In this example, if there are plausible channels through which a policy might have mattered even if not implemented, then our conclusion would not be warranted.
+
+To illustrate design choices for a process tracing study we consider a setting in which we have observed $X=1$ and $Y=1$ and we are interested in figuring out whether $Y=1$ *because* $X=1$. More specifically we imagine a model with two ancillary variables, $M$ and  $W$. We posit that $X$ causes $Y$ via $M$---with negative effects of $X$ on $M$ and of $M$ and $Y$ ruled out. And we posit that $W$ is a cause of both $M$ and $Y$, specifically we posit that if $W=1$ then $X$ causes  $M$ and $M$ causes $Y$ for sure. Under this model $M$ and $W$ each serve as "clues" for the causal effect of $X$ on $Y$. Using the language popularized by @VanEvera1997, $M$ provides a "hoop" test---if you look for data on $M$ and find that $M=0$ then you infer that $X$ did not cause $Y$; if on the other hand you examine $W$ and find that $W=1$ then you have a "smoking gun" test and you infer that $X$ did indeed cause $Y$. If you find both $M=0$ and $W=1$ then you know your model is wrong. 
 
 The model can be described using the `CausalQueries` package thus:
 
@@ -83,42 +85,50 @@ model <- make_model("X -> M -> Y <- W -> M") %>%
 plot(model)
 ```
 
-This description describes the DAG but also specifies a set of restrictions on causal relations. By default flat priors are then placed over all other possible causal relations (though other beliefs can be specified also). We then have all we need to assess what inferences we might make given different sorts of observations thus:
+This model definition describes the DAG but also specifies a set of restrictions on causal relations. By default flat priors are then placed over all other possible causal relations, though  other prior beliefs could also be  specified. 
+
+We now have all we need to assess what inferences we might make given different sorts of observations using `CausalQueries::query_model`.  `CausalQueries::query_model` lets you ask any causal question of of a model conditional on observed (or counterfactual) conditions. We can use it to calculate beliefs, likely data, and conditional inferences thus: 
 
 ```{r}  
 queries <- 
-  query_model(
+  CausalQueries::query_model(
     model,
-    query = list('Prior on PC' = "Y[X=1] > Y[X=0]",
-                 'Prob M=1'    = "M==1",
-                 'Inference given M=1' = "Y[X=1] > Y[X=0]",
-                 'Inference given M=0' = "Y[X=1] > Y[X=0]"),
+    query = list('Prob(CoE=1)' = "Y[X=1] > Y[X=0]",
+                 'Prob(M=1)' = "M==1",
+                 'Prob(M=1 | CoE=0)' = "M==1",
+                 'Prob(CoE=1 | M=0)' = "Y[X=1] > Y[X=0]",
+                 'Prob(CoE=1 | M=1)' = "Y[X=1] > Y[X=0]"),
     given = list("Y==1 & X==1",
                  "Y==1 & X==1",
+                 "Y==1 & X==1 & Y[X=0]==1",
                  "Y==1 & X==1 & M==0",
                  "Y==1 & X==1 & M==1"),
     using = "parameters") 
 ```
 
 ```{r ptprobative, echo = FALSE}
-queries %>%
-  kable(caption = "First row gives the prior on the probability of causation (given X=1 and Y=1). The second row gives the expecation that M=1, if M is observed. The last rows give the inferences on PC if M is observed, depending on what is found.", digits = 2)
+queries %>% select(-Using, - Case.estimand) %>%
+  kable(caption = "Beliefs for a case with $X=1, Y=1$. The first row gives the prior belief that $X=1$ caused $Y=1$.  The second row gives the expecation that M=1. The last rows gives posterior beliefs that X=1 caused Y=1 after M is observed, depending on what is found.", digits = 2)
 ```
 
-From the model specification, we can calculate directly the probability of observing $M=0$ or $M=1$ (or $W=0$ or $W=1$) and what we would infer in each case. Table \@ref(ptprobative) shows an example of these values. From a table like this we can calculate directly the expected posterior variance associated with a data and Bayesian answer strategy. For instance, here our prior on PC is `r round(queries$mean[1],2)` which implies a variance of `r round((1-queries$mean[1])*queries$mean[1],2)`. If we gather data on $M$ however our posterior variance will be either `r round((1-queries$mean[4])*queries$mean[4],2)` (with probability `r round(queries$mean[2],2)`) or 0 otherwise.
+From the model specification, we can calculate directly the probability of observing $M=0$ or $M=1$ (or $W=0$ or $W=1$) and what we would infer in each case. Table \@ref(tab:ptprobative) shows an example of these values. From a table like this we can calculate directly the expected posterior variance associated with a process tracing data and a Bayesian answer strategy. For instance, here our prior on CoE is `r round(queries$mean[1],2)` which implies a variance of `r round((1-queries$mean[1])*queries$mean[1],2)`. If we gather data on $M$ however our posterior variance will be either `r round((1-queries$mean[5])*queries$mean[5],2)` (with probability `r round(queries$mean[2],2)`) or 0.
 
-Thus we see that we can already imagine how our a design will perform in expectation in terms of reducing our uncertainty.  Even still, we think it useful to fold these quantities into a design declaration so that users can access the data strategies and  answer strategies in the same way as they would for any other problem.
+Thus we see that we can already imagine how our a design in which we seek data on $M$ only will perform in expectation in terms of reducing our uncertainty.  No simulation is required. Even still, we think it useful to fold these quantities into a design declaration so that users can access and interrogate the data strategies and answer strategies in the same way as they would for any other design.
 
-The design declaration below uses a custom data function that draws a value of the estimand (EoC) using the prior in the first row of Table \@ref(ptprobative)  and then draws values of $M$,  using values from the second row of Table \@ref(ptprobative) (and similarly for $W$). The estimation step also uses a custom function, which simply returns the posterior estimates---like those in hte last rows of    Table \@ref(ptprobative), but for both $M$ and $W$. No data strategy is provided because we imagine estimation given all possible data strategies (observation of $M$, of $W$, and of both).
+The design declaration below uses a custom data function that draws a value of the estimand (CoE) using the prior in the first row of Table \@ref(tab:ptprobative)  and then draws values of $M$,  using values like those in the third row of Table \@ref(tab:ptprobative) which given the probability of observing a given value given the underlying causal type. Similarly for $W$. The estimation step also uses a custom function, which simply returns the posterior estimates---like those in the last rows of Table \@ref(tab:ptprobative), but for both $M$ and $W$. No data strategy is provided because we imagine estimation given all possible data strategies (observation of $M$, of $W$, and of both).
 
-The answers are given in Table \@ref(tab:ptdiagnosis). We see only modest declines in expected posterior variance from observation of the mediator $M$, consistent with the manual calculation above; but large declines from observing $W$.
 
 ```{r, eval = FALSE}
 design <- 
   declare_population(data = data_function()) + 
-  declare_inquiry(TE = TE) +
+  declare_inquiry(CoE = CoE) +
   declare_estimator(handler = my_estimator_function)
 ```
+
+Given such a model, a case in which $X=Y=1$, and limited resources, we now want to know whether we would be better gathering data on $M$ or on $W$ or both?  The answers are given in Table \@ref(tab:ptdiagnosis). We see only modest declines in expected posterior variance from observation of the mediator $M$, consistent with the manual calculation above; but large declines from observing $W$.
+
+
+Note here that the model used for $M$ and $I$ is the same model used for $A$. This does not have to be the case however. If instead we used different models in these two parts we could assess how well or poorly our strategy performs when our model is wrong. In this case, and unlike the results in table   \@ref(tab:ptdiagnosis), we would find that the expected posterior variance (where the expectation is taken with respect to the model in $M$ but posterior taken with respect to the model in $A$) will not be the same as the expected mean squared error. Can you see why not?
 
 ```{r ptdiagnosis, echo = FALSE, purl = FALSE, fig.cap = "Diagnosis of process tracing strategies"}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
@@ -144,9 +154,9 @@ data_probabilities <-
       using = "parameters", expand_grid = TRUE) %>%
       mutate(M = M, W = W))) %>% 
   bind_rows %>%
-  mutate(TE = Given == "X==1 & Y==1 & Y[X=0]==0") %>% 
+  mutate(CoE = Given == "X==1 & Y==1 & Y[X=0]==0") %>% 
   arrange(Given) %>%
-  select(M, W, TE, mean) 
+  select(M, W, CoE, mean) 
 
 my_estimator_function <- function(data){
   
@@ -160,19 +170,19 @@ my_estimator_function <- function(data){
     mutate(
       estimate = mean,
       estimator_label = c("Prior", "M only", "W only", "Both"),
-      inquiry_label = "TE") %>% 
+      inquiry_label = "CoE") %>% 
     data.frame(stringsAsFactors = FALSE)
 }
 
 data_function <- function() {
     type <- runif(1) < probative_values %>% filter(Given == "X==1 & Y==1") %>% pull(mean)
-    data_type <- rmultinom(1,1, data_probabilities %>% filter(TE==type) %>% pull(mean))==1
-    data_probabilities %>% filter(TE==type) %>% filter(data_type)
+    data_type <- rmultinom(1,1, data_probabilities %>% filter(CoE==type) %>% pull(mean))==1
+    data_probabilities %>% filter(CoE==type) %>% filter(data_type)
 }
 
 design <- 
   declare_population(data =  data_function()) + 
-  declare_inquiry(TE = TE) +
+  declare_inquiry(CoE = CoE) +
   declare_estimator(handler = my_estimator_function)
 
 diagnosands <- declare_diagnosands(
@@ -192,13 +202,13 @@ diagnosis <- read_rds(rds_file_path)
 
 diagnosis$diagnosands_df  <- diagnosis$diagnosands_df %>% mutate(estimator_label = factor(estimator_label, c("Prior", "M only", "W only", "Both")))
 
-diagnosis %>% reshape_diagnosis() %>%
-  kable(caption = "Inference upon observation of M or W for cases in which X=1 and Y = 1. We see that expected posterior variance (equivalently, expected mean squared error) falls modestly when $M$ is observed but substantially when $W$ is observed. The gains from observing $W$ are modest if $M$ is already observed.", digits = 3)
+diagnosis %>% reshape_diagnosis() %>% select(-`Design Label`) %>%
+  kable(caption = "Inference upon observation of $M$ or $W$ for cases in which $X = 1$ and $Y = 1$. We see that expected posterior variance (equivalently, expected mean squared error) falls modestly when $M$ is observed but substantially when $W$ is observed. The gains from observing $W$ are modest if $M$ is already observed.", digits = 3)
 
 ```
 
 
-Given such a model, a case in which $X=Y=1$, and limited resources, we now want to know whether we would be better gathering data on $M$ or on $W$? How would we assess whether one or another strategy performs better in expectation?  
+ 
 
 ### Before-after comparison
 
