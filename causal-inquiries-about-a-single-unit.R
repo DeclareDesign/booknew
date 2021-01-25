@@ -6,7 +6,7 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 library(Synth)
-# library(CausalQueries)
+library(CausalQueries)
 
 dag <- dagify(Y ~ X + D + U,
               D ~ X)
@@ -32,17 +32,32 @@ ggdd_df <- make_dag_df(dag, nodes)
 
 base_dag_plot %+% ggdd_df
 
+model <- make_model("X -> M -> Y <- W -> M") %>%
+  set_restrictions("(M[X=1] < M[X=0]) | (M[X=1, W=1] == M[X=0, W=1])") %>%
+  set_restrictions("(Y[M=1] < Y[M=0]) | (Y[M=1, W=1] == Y[M=0, W=1])")
 
+plot(model)
 
-## query_model(model,
-##             query = "Y[X=1] > Y[X=0]",
-##             given = list("Y==1 & X==1",
-##                          "Y==1 & X==1 & M==0",
-##                          "Y==1 & X==1 & M==1",
-##                          "Y==1 & X==1 & W==0",
-##                          "Y==1 & X==1 & W==1"),
-##             using = "parameters",
-##             expand_grid = TRUE)
+queries <- 
+  query_model(
+    model,
+    query = list('Prior on PC' = "Y[X=1] > Y[X=0]",
+                 'Prob M=1'    = "M==1",
+                 'Inference given M=1' = "Y[X=1] > Y[X=0]",
+                 'Inference given M=0' = "Y[X=1] > Y[X=0]"),
+    given = list("Y==1 & X==1",
+                 "Y==1 & X==1",
+                 "Y==1 & X==1 & M==0",
+                 "Y==1 & X==1 & M==1"),
+    using = "parameters") 
+
+queries %>%
+  kable(caption = "First row gives the prior on the probability of causation (given X=1 and Y=1). The second row gives the expecation that M=1, if M is observed. The last rows give the inferences on PC if M is observed, depending on what is found.", digits = 2)
+
+## design <-
+##   declare_population(data = data_function()) +
+##   declare_inquiry(TE = TE) +
+##   declare_estimator(handler = my_estimator_function)
 
 
 
