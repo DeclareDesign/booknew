@@ -8,7 +8,7 @@
 <meta name="author" content="Graeme Blair, Alexander Coppock, and Macartan Humphreys">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.3.9000/tabs.js"></script><script src="libs/bs3compat-0.2.3.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
@@ -85,14 +85,15 @@
 <span class="header-section-number">15.1</span> Causal inquiries about a single unit<a class="anchor" aria-label="anchor" href="#causal-inquiries-about-a-single-unit"><i class="fas fa-link"></i></a>
 </h2>
 <p>We sometimes start a causal investigation wanting to know the causal effect for a single unit. For example, for a unit that experienced an event or process, we want to know the causal effect of that event. To do so, we need to know what would have happened if the event did not happen, the <em>counter</em>factual outcome as opposed to the factual outcome that actually occurred. Due to the fundamental problem of causal inference, we cannot <em>observe</em> what would have happened if that counterfactual case had happened. We have to guess—or infer—what would have happened. Social scientists have developed a large array of tools for guessing missing counterfactual outcomes — what would have happened in the counterfactual case, if the event had not happened.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;We are also interested in the opposite case sometimes: we have a unit that did not experience an event, and we want to know the causal effect of &lt;em&gt;not&lt;/em&gt; having it. In this case, we need to guess what would have happened if the event did happen. The same tools apply in reverse.&lt;/p&gt;"><sup>20</sup></a></p>
-<p>A common estimand in this setting is whether an outcome was <em>due</em> to a cause. This “attribution” estimand or “Cause of Effect” estimand can be written <span class="math inline">\(CoE:=1-Y(0)| X=1 \&amp; Y=1\)</span>. For a unit with <span class="math inline">\(X=1 \&amp; Y=1\)</span> if <span class="math inline">\(Y(0)=0\)</span> then <span class="math inline">\(Q=1\)</span>. One might also be interest in the treatment effect of the treated case (TET). The TET is the difference between the treated potential outcome and the control potential outcome in the posttreatment period for the treated unit of interest—but not conditioning on knowledge of the outcome.</p>
+<p>A common estimand in this setting is whether an outcome was <em>due</em> to a cause. This “attribution” estimand or “Cause of Effect” estimand can be written <span class="math inline">\(CoE:=1-Y(0)| X=1 \text{ \&amp; } Y=1\)</span>. For a unit with <span class="math inline">\(X=1\)</span> and <span class="math inline">\(Y=1\)</span>, <span class="math inline">\(CoE=1\)</span> if <span class="math inline">\(Y(0)=0\)</span>. One might also be interested in the treatment effect of the treated case (TET). The TET is the difference between the treated potential outcome and the control potential outcome in the posttreatment period for the treated unit of interest—but not conditioning on knowledge of the outcome.</p>
 <div id="process-tracing" class="section level3">
 <h3>
 <span class="header-section-number">15.1.1</span> Process tracing<a class="anchor" aria-label="anchor" href="#process-tracing"><i class="fas fa-link"></i></a>
 </h3>
 <!-- fearon1991, biqq -->
-<p>“Process tracing” is a prominent strategy for assessing causes of effects. As we interpret it here (following for example <span class="citation">Humphreys and Jacobs (<a href="references.html#ref-humphreys2017qualitative" role="doc-biblioref">2017</a>)</span>) we think of process tracing a procedure in which researchers provide a theory, in he form of a causal model, rich enough to characertize the probability of observing ancillary data (“Causal process observations” <span class="citation">(Brady <a href="references.html#ref-brady2004data" role="doc-biblioref">2004</a>)</span>) given underlying causal relations that in turn lets one form posteriors over causal relations when these observations are observed. For instance we wonder whether a policy caused a change in economic outcomes; we expect that for the policy to matter it at least had to be implemented and so if we find out that it was not implemented we infer that it did not matter.</p>
-<p>We consider a setting in which we have observed <span class="math inline">\(X=1\)</span> and <span class="math inline">\(Y=1\)</span> and we are interested in figuring out whether <span class="math inline">\(Y=1\)</span> <em>because</em> <span class="math inline">\(X=1\)</span>. More specifically we imagine a model in which <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> via <span class="math inline">\(M\)</span> and in which a third variable <span class="math inline">\(W\)</span> is a cause of both <span class="math inline">\(M\)</span> and <span class="math inline">\(Y\)</span>. We imagine that <span class="math inline">\(W=1\)</span> then <span class="math inline">\(X\)</span> causes <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> causes <span class="math inline">\(Y\)</span> for sure. Under this model <span class="math inline">\(M\)</span> and <span class="math inline">\(W\)</span> each serve as “clues” for the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. Using the language popularized by <span class="citation">Van Evera (<a href="references.html#ref-VanEvera1997" role="doc-biblioref">1997</a>)</span> <span class="math inline">\(M\)</span> provides a “hoop” test—if data on <span class="math inline">\(M\)</span> is sought and you find that <span class="math inline">\(M=0\)</span> then you infer that <span class="math inline">\(X\)</span> did not cause <span class="math inline">\(Y\)</span>; if on the other hand you find that <span class="math inline">\(W=1\)</span> then you have a “smoking gun” test and you infer that <span class="math inline">\(X\)</span> did indeed cause <span class="math inline">\(Y\)</span>. If you find both then you know your model is wrong.</p>
+<p>“Process tracing” is a prominent strategy for assessing causes of effects <span class="citation">(Bennett and Checkel <a href="references.html#ref-BennettCheckel2015PT" role="doc-biblioref">2015</a>; Fairfield and Charman <a href="references.html#ref-fairfield2017explicit" role="doc-biblioref">2017</a>)</span>. Here, following for example <span class="citation">Humphreys and Jacobs (<a href="references.html#ref-humphreys2017qualitative" role="doc-biblioref">2017</a>)</span>, we think of process tracing as a procedure in which researchers provide a theory, in the form of a causal model, that is rich enough to characterize the probability of observing ancillary data (“Causal process observations” <span class="citation">(Brady <a href="references.html#ref-brady2004data" role="doc-biblioref">2004</a>)</span>) given underlying causal relations. If equipped with priors, such a model in turn lets one use Bayes’ rule to form posteriors over causal relations when these observations are observed.</p>
+<p>For intuition, say we are interested in whether a policy caused a change in economic outcomes. We expect that for the policy to matter it at least had to be implemented and so if we find out that it was not implemented we infer that it did not matter. Thus we make theory dependent inferences that are reasonable <em>insofar as</em> the theory is reasonable. In this example, if there are plausible channels through which a policy might have mattered even if not implmenented, then our conclusion would not be warranted.</p>
+<p>To illustrate design choices for a process tracing study we consider a setting in which we have observed <span class="math inline">\(X=1\)</span> and <span class="math inline">\(Y=1\)</span> and we are interested in figuring out whether <span class="math inline">\(Y=1\)</span> <em>because</em> <span class="math inline">\(X=1\)</span>. More specifically we imagine a model with two ancillary variables, <span class="math inline">\(M\)</span> and <span class="math inline">\(W\)</span>. We posit that <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> via <span class="math inline">\(M\)</span>—with negative effects of <span class="math inline">\(X\)</span> on <span class="math inline">\(M\)</span> and of <span class="math inline">\(M\)</span> and <span class="math inline">\(Y\)</span> ruled out. And we posit that <span class="math inline">\(W\)</span> is a cause of both <span class="math inline">\(M\)</span> and <span class="math inline">\(Y\)</span>, specifically we posit that if <span class="math inline">\(W=1\)</span> then <span class="math inline">\(X\)</span> causes <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> causes <span class="math inline">\(Y\)</span> for sure. Under this model <span class="math inline">\(M\)</span> and <span class="math inline">\(W\)</span> each serve as “clues” for the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. Using the language popularized by <span class="citation">Van Evera (<a href="references.html#ref-VanEvera1997" role="doc-biblioref">1997</a>)</span>, <span class="math inline">\(M\)</span> provides a “hoop” test—if you look for data on <span class="math inline">\(M\)</span> and find that <span class="math inline">\(M=0\)</span> then you infer that <span class="math inline">\(X\)</span> did not cause <span class="math inline">\(Y\)</span>; if on the other hand you examine <span class="math inline">\(W\)</span> and find that <span class="math inline">\(W=1\)</span> then you have a “smoking gun” test and you infer that <span class="math inline">\(X\)</span> did indeed cause <span class="math inline">\(Y\)</span>. If you find both <span class="math inline">\(M=0\)</span> and <span class="math inline">\(W=1\)</span> then you know your model is wrong.</p>
 <p>The model can be described using the <code>CausalQueries</code> package thus:</p>
 <div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">make_model</span><span class="op">(</span><span class="st">"X -&gt; M -&gt; Y &lt;- W -&gt; M"</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -101,15 +102,16 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-180-1.svg" width="100%"></div>
-<p>This description describes the DAG but also specifies a set of restrictions on causal relations. By default flat priors are then placed over all other possible causal relations (though other beliefs can be specified also). We then have all we need to assess what inferences we might make given different sorts of observations thus:</p>
+<p>This model definition describes the DAG but also specifies a set of restrictions on causal relations. By default flat priors are then placed over all other possible causal relations, though other prior beliefs could also be specified.</p>
+<p>We now have all we need to assess what inferences we might make given different sorts of observations using <code><a href="https://rdrr.io/pkg/CausalQueries/man/query_model.html">CausalQueries::query_model</a></code>. This function lets you ask any causal question of of a model conditional on observed (or counterfactual) conditions. We can use it to calculate beliefs, likely data, and conditional inferences thus:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">queries</span> <span class="op">&lt;-</span> 
-  <span class="fu">query_model</span><span class="op">(</span>
+  <span class="fu">CausalQueries</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/CausalQueries/man/query_model.html">query_model</a></span><span class="op">(</span>
     <span class="va">model</span>,
-    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">'Prior on PC'</span> <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,
-                 <span class="st">'Prob M=1'</span>    <span class="op">=</span> <span class="st">"M==1"</span>,
-                 <span class="st">'Inference given M=1'</span> <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,
-                 <span class="st">'Inference given M=0'</span> <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span><span class="op">)</span>,
+    query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">'Prob(CoE=1)'</span> <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,
+                 <span class="st">'Prob(M=1)'</span> <span class="op">=</span> <span class="st">"M==1"</span>,
+                 <span class="st">'Prob(CoE=1 | M=0)'</span> <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span>,
+                 <span class="st">'Prob(CoE=1 | M=1)'</span> <span class="op">=</span> <span class="st">"Y[X=1] &gt; Y[X=0]"</span><span class="op">)</span>,
     given <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Y==1 &amp; X==1"</span>,
                  <span class="st">"Y==1 &amp; X==1"</span>,
                  <span class="st">"Y==1 &amp; X==1 &amp; M==0"</span>,
@@ -117,7 +119,7 @@
     using <span class="op">=</span> <span class="st">"parameters"</span><span class="op">)</span> </code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:ptprobative">Table 15.1: </span>First row gives the prior on the probability of causation (given X=1 and Y=1). The second row gives the expecation that M=1, if M is observed. The last rows give the inferences on PC if M is observed, depending on what is found.
+<span id="tab:ptprobative">Table 15.1: </span>Beliefs for a case with <span class="math inline">\(X=1, Y=1\)</span>. The first row gives the prior belief that <span class="math inline">\(X=1\)</span> caused <span class="math inline">\(Y=1\)</span>. The second row gives the expecation that M=1. The last rows gives posterior beliefs that X=1 caused Y=1 after M is observed, depending on what is found.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -126,9 +128,6 @@ Query
 <th style="text-align:left;">
 Given
 </th>
-<th style="text-align:left;">
-Using
-</th>
 <th style="text-align:right;">
 mean
 </th>
@@ -136,13 +135,10 @@ mean
 <tbody>
 <tr>
 <td style="text-align:left;">
-Prior on PC
+Prob(CoE=1)
 </td>
 <td style="text-align:left;">
 Y==1 &amp; X==1
-</td>
-<td style="text-align:left;">
-parameters
 </td>
 <td style="text-align:right;">
 0.71
@@ -150,13 +146,10 @@ parameters
 </tr>
 <tr>
 <td style="text-align:left;">
-Prob M=1
+Prob(M=1)
 </td>
 <td style="text-align:left;">
 Y==1 &amp; X==1
-</td>
-<td style="text-align:left;">
-parameters
 </td>
 <td style="text-align:right;">
 0.93
@@ -164,13 +157,10 @@ parameters
 </tr>
 <tr>
 <td style="text-align:left;">
-Inference given M=1
+Prob(CoE=1 | M=0)
 </td>
 <td style="text-align:left;">
 Y==1 &amp; X==1 &amp; M==0
-</td>
-<td style="text-align:left;">
-parameters
 </td>
 <td style="text-align:right;">
 0.00
@@ -178,13 +168,10 @@ parameters
 </tr>
 <tr>
 <td style="text-align:left;">
-Inference given M=0
+Prob(CoE=1 | M=1)
 </td>
 <td style="text-align:left;">
 Y==1 &amp; X==1 &amp; M==1
-</td>
-<td style="text-align:left;">
-parameters
 </td>
 <td style="text-align:right;">
 0.77
@@ -192,25 +179,23 @@ parameters
 </tr>
 </tbody>
 </table></div>
-<p>From the model specification, we can calculate directly the probability of observing <span class="math inline">\(M=0\)</span> or <span class="math inline">\(M=1\)</span> (or <span class="math inline">\(W=0\)</span> or <span class="math inline">\(W=1\)</span>) and what we would infer in each case. Table <a href="#ptprobative"><strong>??</strong></a> shows an example of these values. From a table like this we can calculate directly the expected posterior variance associated with a data and Bayesian answer strategy. For instance, here our prior on PC is 0.71 which implies a variance of 0.2. If we gather data on <span class="math inline">\(M\)</span> however our posterior variance will be either 0.18 (with probability 0.93) or 0 otherwise.</p>
-<p>Thus we see that we can already imagine how our a design will perform in expectation in terms of reducing our uncertainty. Even still, we think it useful to fold these quantities into a design declaration so that users can access the data strategies and answer strategies in the same way as they would for any other problem.</p>
-<p>The design declaration below uses a custom data function that draws a value of the estimand (EoC) using the prior in the first row of Table <a href="#ptprobative"><strong>??</strong></a> and then draws values of <span class="math inline">\(M\)</span>, using values from the second row of Table <a href="#ptprobative"><strong>??</strong></a> (and similarly for <span class="math inline">\(W\)</span>). The estimation step also uses a custom function, which simply returns the posterior estimates—like those in hte last rows of Table <a href="#ptprobative"><strong>??</strong></a>, but for both <span class="math inline">\(M\)</span> and <span class="math inline">\(W\)</span>. No data strategy is provided because we imagine estimation given all possible data strategies (observation of <span class="math inline">\(M\)</span>, of <span class="math inline">\(W\)</span>, and of both).</p>
-<p>The answers are given in Table <a href="observational-designs-for-causal-inference.html#tab:ptdiagnosis">15.2</a>. We see only modest declines in expected posterior variance from observation of the mediator <span class="math inline">\(M\)</span>, consistent with the manual calculation above; but large declines from observing <span class="math inline">\(W\)</span>.</p>
+<p>From the model specification, we can calculate directly the probability of observing <span class="math inline">\(M=0\)</span> or <span class="math inline">\(M=1\)</span> (or <span class="math inline">\(W=0\)</span> or <span class="math inline">\(W=1\)</span>) and what we would infer in each case. Table <a href="observational-designs-for-causal-inference.html#tab:ptprobative">15.1</a> shows an example of these values. From a table like this we can calculate directly the expected posterior variance associated with a process tracing data strategy and a Bayesian answer strategy. For instance, here our prior on CoE is 0.71 which implies a variance of 0.2. If we gather data on <span class="math inline">\(M\)</span> however our posterior variance will be either 0.18 (with probability 0.93) or 0.</p>
+<p>Thus we see that we can already imagine how our a design in which we seek data on <span class="math inline">\(M\)</span> only will perform in expectation in terms of reducing our uncertainty. No simulation is required. Even still, we think it useful to fold these quantities into a design declaration so that users can access the data strategies and answer strategies in the same way as they would for any other problem.</p>
+<p>The design declaration below uses a custom data function that draws a value of the estimand (EoC) using the prior in the first row of Table <a href="observational-designs-for-causal-inference.html#tab:ptprobative">15.1</a> and then draws values of <span class="math inline">\(M\)</span>, using values from the second row of Table <a href="observational-designs-for-causal-inference.html#tab:ptprobative">15.1</a> (and similarly for <span class="math inline">\(W\)</span>). The estimation step also uses a custom function, which simply returns the posterior estimates—like those in the last rows of Table <a href="observational-designs-for-causal-inference.html#tab:ptprobative">15.1</a>, but for both <span class="math inline">\(M\)</span> and <span class="math inline">\(W\)</span>. No data strategy is provided because we imagine estimation given all possible data strategies (observation of <span class="math inline">\(M\)</span>, of <span class="math inline">\(W\)</span>, and of both).</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_population</span><span class="op">(</span>data <span class="op">=</span> <span class="fu">data_function</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_inquiry</span><span class="op">(</span>TE <span class="op">=</span> <span class="va">TE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">declare_inquiry</span><span class="op">(</span>CoE <span class="op">=</span> <span class="va">CoE</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span>handler <span class="op">=</span> <span class="va">my_estimator_function</span><span class="op">)</span></code></pre></div>
+<p>Given such a model, a case in which <span class="math inline">\(X=Y=1\)</span>, and limited resources, we now want to know whether we would be better gathering data on <span class="math inline">\(M\)</span> or on <span class="math inline">\(W\)</span> or both? The answers are given in Table <a href="observational-designs-for-causal-inference.html#tab:ptdiagnosis">15.2</a>. We see only modest declines in expected posterior variance from observation of the mediator <span class="math inline">\(M\)</span>, consistent with the manual calculation above; but large declines from observing <span class="math inline">\(W\)</span>.</p>
+<p>Note here that model used for <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> is the same model used for <span class="math inline">\(A\)</span>. This does not <em>have</em> to be the case however. If instead we used different models in these two parts we could assess how well or poorly our strategy performs when our model is wrong. In this case, and unlike the results in table <a href="observational-designs-for-causal-inference.html#tab:ptdiagnosis">15.2</a> we woudl find that hte expected posterior variance (where the expectation is taken with respect to the model in <span class="math inline">\(M\)</span> but posterior taken with respect to the model in <span class="math inline">\(A\)</span>) will not be the same as the expected mean squared error. Can you see why not?</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:ptdiagnosis">Table 15.2: </span>Inference upon observation of M or W for cases in which X=1 and Y = 1. We see that expected posterior variance (equivalently, expected mean squared error) falls modestly when <span class="math inline">\(M\)</span> is observed but substantially when <span class="math inline">\(W\)</span> is observed. The gains from observing <span class="math inline">\(W\)</span> are modest if <span class="math inline">\(M\)</span> is already observed.
+<span id="tab:ptdiagnosis">Table 15.2: </span>Inference upon observation of <span class="math inline">\(M\)</span> or <span class="math inline">\(W\)</span> for cases in which <span class="math inline">\(X = 1\)</span> and <span class="math inline">\(Y = 1\)</span>. We see that expected posterior variance (equivalently, expected mean squared error) falls modestly when <span class="math inline">\(M\)</span> is observed but substantially when <span class="math inline">\(W\)</span> is observed. The gains from observing <span class="math inline">\(W\)</span> are modest if <span class="math inline">\(M\)</span> is already observed.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
-Design Label
-</th>
-<th style="text-align:left;">
-Inquiry Label
+Estimand Label
 </th>
 <th style="text-align:left;">
 Estimator Label
@@ -231,22 +216,19 @@ Mean Posterior Var
 Mean Estimate
 </th>
 <th style="text-align:left;">
-Mean Inquiry
+Mean Estimand
 </th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-TE
+CoE
 </td>
 <td style="text-align:left;">
 Prior
 </td>
 <td style="text-align:left;">
-500
+1000
 </td>
 <td style="text-align:left;">
 0.01
@@ -272,9 +254,7 @@ Prior
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 <td style="text-align:left;">
 (0.01)
@@ -286,24 +266,21 @@ Prior
 (0.00)
 </td>
 <td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-TE
+CoE
 </td>
 <td style="text-align:left;">
 M only
 </td>
 <td style="text-align:left;">
-500
+1000
 </td>
 <td style="text-align:left;">
-0.00
+0.01
 </td>
 <td style="text-align:left;">
 0.17
@@ -312,7 +289,7 @@ M only
 0.16
 </td>
 <td style="text-align:left;">
-0.70
+0.71
 </td>
 <td style="text-align:left;">
 0.70
@@ -326,9 +303,7 @@ M only
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 <td style="text-align:left;">
 (0.01)
@@ -340,21 +315,18 @@ M only
 (0.01)
 </td>
 <td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-TE
+CoE
 </td>
 <td style="text-align:left;">
 W only
 </td>
 <td style="text-align:left;">
-500
+1000
 </td>
 <td style="text-align:left;">
 0.00
@@ -366,15 +338,13 @@ W only
 0.06
 </td>
 <td style="text-align:left;">
-0.70
+0.71
 </td>
 <td style="text-align:left;">
 0.70
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
-</td>
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
@@ -391,24 +361,21 @@ W only
 (0.00)
 </td>
 <td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 <td style="text-align:left;">
-(0.02)
+(0.01)
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-design
-</td>
-<td style="text-align:left;">
-TE
+CoE
 </td>
 <td style="text-align:left;">
 Both
 </td>
 <td style="text-align:left;">
-500
+1000
 </td>
 <td style="text-align:left;">
 0.00
@@ -417,10 +384,10 @@ Both
 0.05
 </td>
 <td style="text-align:left;">
-0.05
+0.06
 </td>
 <td style="text-align:left;">
-0.70
+0.71
 </td>
 <td style="text-align:left;">
 0.70
@@ -434,26 +401,23 @@ Both
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-(0.01)
-</td>
-<td style="text-align:left;">
 (0.01)
 </td>
 <td style="text-align:left;">
 (0.00)
 </td>
 <td style="text-align:left;">
-(0.02)
+(0.00)
 </td>
 <td style="text-align:left;">
-(0.02)
+(0.01)
+</td>
+<td style="text-align:left;">
+(0.01)
 </td>
 </tr>
 </tbody>
 </table></div>
-<p>Given such a model, a case in which <span class="math inline">\(X=Y=1\)</span>, and limited resources, we now want to know whether we would be better gathering data on <span class="math inline">\(M\)</span> or on <span class="math inline">\(W\)</span>? How would we assess whether one or another strategy performs better in expectation?</p>
 </div>
 <div id="before-after-comparison" class="section level3">
 <h3>

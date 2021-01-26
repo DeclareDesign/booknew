@@ -39,24 +39,24 @@ model <- make_model("X -> M -> Y <- W -> M") %>%
 plot(model)
 
 queries <- 
-  query_model(
+  CausalQueries::query_model(
     model,
-    query = list('Prior on PC' = "Y[X=1] > Y[X=0]",
-                 'Prob M=1'    = "M==1",
-                 'Inference given M=1' = "Y[X=1] > Y[X=0]",
-                 'Inference given M=0' = "Y[X=1] > Y[X=0]"),
+    query = list('Prob(CoE=1)' = "Y[X=1] > Y[X=0]",
+                 'Prob(M=1)' = "M==1",
+                 'Prob(CoE=1 | M=0)' = "Y[X=1] > Y[X=0]",
+                 'Prob(CoE=1 | M=1)' = "Y[X=1] > Y[X=0]"),
     given = list("Y==1 & X==1",
                  "Y==1 & X==1",
                  "Y==1 & X==1 & M==0",
                  "Y==1 & X==1 & M==1"),
     using = "parameters") 
 
-queries %>%
-  kable(caption = "First row gives the prior on the probability of causation (given X=1 and Y=1). The second row gives the expecation that M=1, if M is observed. The last rows give the inferences on PC if M is observed, depending on what is found.", digits = 2)
+queries %>% select(-Using) %>% #, - Case.estimand) %>%
+  kable(caption = "Beliefs for a case with $X=1, Y=1$. The first row gives the prior belief that $X=1$ caused $Y=1$.  The second row gives the expecation that M=1. The last rows gives posterior beliefs that X=1 caused Y=1 after M is observed, depending on what is found.", digits = 2)
 
 ## design <-
 ##   declare_population(data = data_function()) +
-##   declare_inquiry(TE = TE) +
+##   declare_inquiry(CoE = CoE) +
 ##   declare_estimator(handler = my_estimator_function)
 
 
