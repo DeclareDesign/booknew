@@ -126,7 +126,6 @@ design <-
 Given such a model, a case in which $X=Y=1$, and limited resources, we now want to know whether we would be better gathering data on $M$ or on $W$ or both?  The answers are given in Table \@ref(tab:ptdiagnosis). We see only modest declines in expected posterior variance from observation of the mediator $M$, consistent with the manual calculation above; but large declines from observing $W$.
 
 
-Note here that model used for $M$ and $M$ is the same model used for $A$. This does not *have* to be the case however. If instead we used different models in these two parts we could assess how well or poorly our strategy performs when our model is wrong. In this case, and unlike the results in table   \@ref(tab:ptdiagnosis) we woudl find that hte expected posterior variance (where the expectation is taken with respect to the model in $M$ but posterior taken with respect to the model in $A$) will not be the same as the expected mean squared error. Can you see why not?
 
 ```{r ptdiagnosis, echo = FALSE, purl = FALSE, fig.cap = "Diagnosis of process tracing strategies"}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
@@ -215,6 +214,7 @@ diagnosis %>% reshape_diagnosis() %>% select(-`Design Label`) %>%
 
 ```
 
+Note here that the causal model used for $M$ and $I$ is the same model used for $A$. This does not *have* to be the case however. If instead we used different models for these two parts we could assess how well or poorly our strategy performs when our model is wrong. In this case, and unlike the results in table   \@ref(tab:ptdiagnosis) we would find that the expected posterior variance (where the expectation is taken with respect to the model in $M$ but posterior taken with respect to the model in $A$) will not be the same as the expected mean squared error. Can you see why not?
 
  
 
