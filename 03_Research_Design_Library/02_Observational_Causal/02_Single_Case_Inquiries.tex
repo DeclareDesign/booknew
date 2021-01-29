@@ -124,17 +124,16 @@
 \subsection{Causal inquiries about a single
 unit}\label{causal-inquiries-about-a-single-unit}}
 
-We often start a causal investigation wanting to know the causal effect
-for a single unit. For a unit that experienced an event or process, we
-want to know the causal effect of that event. To do so, we need to know
-what would have happened if the event did not happen, the
-\emph{counter}factual outcome as opposed to the factual outcome that
-actually occurred. Due to the fundamental problem of causal inference,
-we cannot \emph{observe} what would have happened if that counterfactual
-case had happened. The event can either happen, or not happen, to each
-unit. As a result, we have to guess what would have happened. Social
-scientists have developed a large array of tools for guessing, or
-imputing, the missing counterfactual outcome --- what would have
+We sometimes start a causal investigation wanting to know the causal
+effect for a single unit. For example, for a unit that experienced an
+event or process, we want to know the causal effect of that event. To do
+so, we need to know what would have happened if the event did not
+happen, the \emph{counter}factual outcome as opposed to the factual
+outcome that actually occurred. Due to the fundamental problem of causal
+inference, we cannot \emph{observe} what would have happened if that
+counterfactual case had happened. We have to guess---or infer---what
+would have happened. Social scientists have developed a large array of
+tools for guessing missing counterfactual outcomes --- what would have
 happened in the counterfactual case, if the event had not
 happened.\footnote{We are also interested in the opposite case
   sometimes: we have a unit that did not experience an event, and we
@@ -142,33 +141,52 @@ happened.\footnote{We are also interested in the opposite case
   we need to guess what would have happened if the event did happen. The
   same tools apply in reverse.}
 
-In this section, the inquiry is the treatment effect of the treated case
-(TET). The TET is the difference between the treated potential outcome
-and the control potential outcome in the posttreatment period for the
-treated unit of interest.
-
-\includegraphics{02_Single_Case_Inquiries_files/figure-latex/unnamed-chunk-4-1.pdf}
+A common estimand in this setting is whether an outcome was \emph{due}
+to a cause. This ``attribution'' estimand or ``Cause of Effect''
+estimand can be written \(CoE:=1-Y(0)| X=1 \text{ \& } Y=1\). For a unit
+with \(X=1\) and \(Y=1\), \(CoE=1\) if \(Y(0)=0\). One might also be
+interested in the treatment effect of the treated case (TET). The TET is
+the difference between the treated potential outcome and the control
+potential outcome in the posttreatment period for the treated unit of
+interest---but not conditioning on knowledge of the outcome.
 
 \hypertarget{process-tracing}{%
 \subsubsection{Process tracing}\label{process-tracing}}
 
-We consider a setting in which we have observed \(X=1\) and \(Y=1\) and
-we are interested in figuring out whether \(Y=1\) \emph{because}
-\(X=1\). One approach to answering this question articulates a model of
-the processes through which \(X\) causes \(Y\) and seeks information
-about whether those processes were in operation. Updating about the
-effects of \(X\) on \(Y\) is then undertaken on the basis of ancillary
-data---data on ``causal process observations.''
+``Process tracing'' is a prominent strategy for assessing causes of
+effects (Bennett and Checkel 2015; Fairfield and Charman 2017). Here,
+following for example Humphreys and Jacobs (2017), we think of process
+tracing as a procedure in which researchers provide a theory, in the
+form of a causal model, that is rich enough to characterize the
+probability of observing ancillary data (``Causal process observations''
+(Brady 2004)) given underlying causal relations. If equipped with
+priors, such a model in turn lets one use Bayes' rule to form posteriors
+over causal relations when these observations are observed.
 
-We illustrate imagining a model in which \(X\) causes \(Y\) via \(M\)
-and in which a third variable \(W\) is a cause of both \(M\) and \(Y\).
-We imagine that \(W=1\) then \(X\) causes \(M\) and \(M\) causes \(Y\)
-for sure. Under this model \(M\) and \(W\) each serve as ``clues'' for
-the causal effect of \(X\) on \(Y\). \(M\) provides a ``hoop'' test---if
-data on \(M\) is sought and you find that \(M=0\) then you infer that
-\(X\) did not cause \(Y\); if on the other hand you find that \(W=1\)
-then you have a ``smoking gun'' and you infer that \(X\) did indeed
-cause \(Y\). If you find both then you know your model is wrong.
+For intuition, say we are interested in whether a policy caused a change
+in economic outcomes. We expect that for the policy to matter it at
+least had to be implemented and so if we find out that it was not
+implemented we infer that it did not matter. Thus we make theory
+dependent inferences that are reasonable \emph{insofar as} the theory is
+reasonable. In this example, if there are plausible channels through
+which a policy might have mattered even if not implmenented, then our
+conclusion would not be warranted.
+
+To illustrate design choices for a process tracing study we consider a
+setting in which we have observed \(X=1\) and \(Y=1\) and we are
+interested in figuring out whether \(Y=1\) \emph{because} \(X=1\). More
+specifically we imagine a model with two ancillary variables, \(M\) and
+\(W\). We posit that \(X\) causes \(Y\) via \(M\)---with negative
+effects of \(X\) on \(M\) and of \(M\) and \(Y\) ruled out. And we posit
+that \(W\) is a cause of both \(M\) and \(Y\), specifically we posit
+that if \(W=1\) then \(X\) causes \(M\) and \(M\) causes \(Y\) for sure.
+Under this model \(M\) and \(W\) each serve as ``clues'' for the causal
+effect of \(X\) on \(Y\). Using the language popularized by Van Evera
+(1997), \(M\) provides a ``hoop'' test---if you look for data on \(M\)
+and find that \(M=0\) then you infer that \(X\) did not cause \(Y\); if
+on the other hand you examine \(W\) and find that \(W=1\) then you have
+a ``smoking gun'' test and you infer that \(X\) did indeed cause \(Y\).
+If you find both \(M=0\) and \(W=1\) then you know your model is wrong.
 
 The model can be described using the \texttt{CausalQueries} package
 thus:
@@ -176,55 +194,142 @@ thus:
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{model <-}\StringTok{ }\KeywordTok{make_model}\NormalTok{(}\StringTok{"X -> M -> Y <- W -> M"}\NormalTok{) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{set_restrictions}\NormalTok{(}\StringTok{"M[X=1] < M[X=0]"}\NormalTok{)  }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{set_restrictions}\NormalTok{(}\StringTok{"M[X=1, W=1] == M[X=0, W=1]"}\NormalTok{) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{set_restrictions}\NormalTok{(}\StringTok{"Y[M=1] < Y[M=0]"}\NormalTok{)  }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{set_restrictions}\NormalTok{(}\StringTok{"Y[M=1, W=1] == Y[M=0, W=1]"}\NormalTok{)}
+\StringTok{  }\KeywordTok{set_restrictions}\NormalTok{(}\StringTok{"(M[X=1] < M[X=0]) | (M[X=1, W=1] == M[X=0, W=1])"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{set_restrictions}\NormalTok{(}\StringTok{"(Y[M=1] < Y[M=0]) | (Y[M=1, W=1] == Y[M=0, W=1])"}\NormalTok{)}
+
+\KeywordTok{plot}\NormalTok{(model)}
 \end{Highlighting}
 \end{Shaded}
 
-We can then assess what inferences we might make given different sorts
-of observations thus:
+\includegraphics{02_Single_Case_Inquiries_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+This model definition describes the DAG but also specifies a set of
+restrictions on causal relations. By default flat priors are then placed
+over all other possible causal relations, though other prior beliefs
+could also be specified.
+
+We now have all we need to assess what inferences we might make given
+different sorts of observations using
+\texttt{CausalQueries::query\_model}. This function lets you ask any
+causal question of of a model conditional on observed (or
+counterfactual) conditions. We can use it to calculate beliefs, likely
+data, and conditional inferences thus:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{query_model}\NormalTok{(model, }
-            \DataTypeTok{query =} \StringTok{"Y[X=1] > Y[X=0]"}\NormalTok{,}
-            \DataTypeTok{given =} \KeywordTok{list}\NormalTok{(}\StringTok{"Y==1 & X==1"}\NormalTok{, }
-                         \StringTok{"Y==1 & X==1 & M==0"}\NormalTok{, }
-                         \StringTok{"Y==1 & X==1 & M==1"}\NormalTok{, }
-                         \StringTok{"Y==1 & X==1 & W==0"}\NormalTok{,}
-                         \StringTok{"Y==1 & X==1 & W==1"}\NormalTok{),}
-            \DataTypeTok{using =} \StringTok{"parameters"}\NormalTok{,}
-            \DataTypeTok{expand_grid =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{queries <-}\StringTok{ }
+\StringTok{  }\NormalTok{CausalQueries}\OperatorTok{::}\KeywordTok{query_model}\NormalTok{(}
+\NormalTok{    model,}
+    \DataTypeTok{query =} \KeywordTok{list}\NormalTok{(}\StringTok{'Prob(CoE=1)'}\NormalTok{ =}\StringTok{ "Y[X=1] > Y[X=0]"}\NormalTok{,}
+                 \StringTok{'Prob(M=1)'}\NormalTok{ =}\StringTok{ "M==1"}\NormalTok{,}
+                 \StringTok{'Prob(CoE=1 | M=0)'}\NormalTok{ =}\StringTok{ "Y[X=1] > Y[X=0]"}\NormalTok{,}
+                 \StringTok{'Prob(CoE=1 | M=1)'}\NormalTok{ =}\StringTok{ "Y[X=1] > Y[X=0]"}\NormalTok{),}
+    \DataTypeTok{given =} \KeywordTok{list}\NormalTok{(}\StringTok{"Y==1 & X==1"}\NormalTok{,}
+                 \StringTok{"Y==1 & X==1"}\NormalTok{,}
+                 \StringTok{"Y==1 & X==1 & M==0"}\NormalTok{,}
+                 \StringTok{"Y==1 & X==1 & M==1"}\NormalTok{),}
+    \DataTypeTok{using =} \StringTok{"parameters"}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-7}Inference upon observation of M or W for cases in which X=1 and Y = 1}
+\caption{\label{tab:ptprobative}Beliefs for a case with $X=1, Y=1$. The first row gives the prior belief that $X=1$ caused $Y=1$.  The second row gives the expecation that M=1. The last rows gives posterior beliefs that X=1 caused Y=1 after M is observed, depending on what is found.}
 \centering
 \begin{tabular}[t]{l|l|r}
 \hline
-Given & Using & mean\\
+Query & Given & mean\\
 \hline
-Y==1 \& X==1 & parameters & 0.714\\
+Prob(CoE=1) & Y==1 \& X==1 & 0.71\\
 \hline
-Y==1 \& X==1 \& M==0 & parameters & 0.000\\
+Prob(M=1) & Y==1 \& X==1 & 0.93\\
 \hline
-Y==1 \& X==1 \& M==1 & parameters & 0.769\\
+Prob(CoE=1 | M=0) & Y==1 \& X==1 \& M==0 & 0.00\\
 \hline
-Y==1 \& X==1 \& W==0 & parameters & 0.200\\
-\hline
-Y==1 \& X==1 \& W==1 & parameters & 1.000\\
+Prob(CoE=1 | M=1) & Y==1 \& X==1 \& M==1 & 0.77\\
 \hline
 \end{tabular}
 \end{table}
 
+From the model specification, we can calculate directly the probability
+of observing \(M=0\) or \(M=1\) (or \(W=0\) or \(W=1\)) and what we
+would infer in each case. Table @ref(tab:ptprobative) shows an example
+of these values. From a table like this we can calculate directly the
+expected posterior variance associated with a process tracing data
+strategy and a Bayesian answer strategy. For instance, here our prior on
+CoE is 0.71 which implies a variance of 0.2. If we gather data on \(M\)
+however our posterior variance will be either 0.18 (with probability
+0.93) or 0.
+
+Thus we see that we can already imagine how our a design in which we
+seek data on \(M\) only will perform in expectation in terms of reducing
+our uncertainty. No simulation is required. Even still, we think it
+useful to fold these quantities into a design declaration so that users
+can access the data strategies and answer strategies in the same way as
+they would for any other problem.
+
+The design declaration below uses a custom data function that draws a
+value of the estimand (EoC) using the prior in the first row of Table
+@ref(tab:ptprobative) and then draws values of \(M\), using values from
+the second row of Table @ref(tab:ptprobative) (and similarly for \(W\)).
+The estimation step also uses a custom function, which simply returns
+the posterior estimates---like those in the last rows of Table
+@ref(tab:ptprobative), but for both \(M\) and \(W\). No data strategy is
+provided because we imagine estimation given all possible data
+strategies (observation of \(M\), of \(W\), and of both).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{design <-}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_population}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{data_function}\NormalTok{()) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{CoE =}\NormalTok{ CoE) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}\DataTypeTok{handler =}\NormalTok{ my_estimator_function)}
+\end{Highlighting}
+\end{Shaded}
+
 Given such a model, a case in which \(X=Y=1\), and limited resources, we
 now want to know whether we would be better gathering data on \(M\) or
-on \(W\)? How would we assess whether one or another strategy performs
-better in expectation?
+on \(W\) or both? The answers are given in Table @ref(tab:ptdiagnosis).
+We see only modest declines in expected posterior variance from
+observation of the mediator \(M\), consistent with the manual
+calculation above; but large declines from observing \(W\).
+
+Note here that model used for \(M\) and \(M\) is the same model used for
+\(A\). This does not \emph{have} to be the case however. If instead we
+used different models in these two parts we could assess how well or
+poorly our strategy performs when our model is wrong. In this case, and
+unlike the results in table @ref(tab:ptdiagnosis) we woudl find that hte
+expected posterior variance (where the expectation is taken with respect
+to the model in \(M\) but posterior taken with respect to the model in
+\(A\)) will not be the same as the expected mean squared error. Can you
+see why not?
+
+\begin{table}
+
+\caption{\label{tab:ptdiagnosis}Inference upon observation of $M$ or $W$ for cases in which $X = 1$ and $Y = 1$. We see that expected posterior variance (equivalently, expected mean squared error) falls modestly when $M$ is observed but substantially when $W$ is observed. The gains from observing $W$ are modest if $M$ is already observed.}
+\centering
+\begin{tabular}[t]{l|l|l|l|l|l|l|l}
+\hline
+Estimand Label & Estimator Label & N Sims & Bias & Mse & Mean Posterior Var & Mean Estimate & Mean Estimand\\
+\hline
+CoE & Prior & 1000 & 0.01 & 0.21 & 0.20 & 0.71 & 0.70\\
+\hline
+ &  &  & (0.01) & (0.01) & (0.00) & (0.00) & (0.01)\\
+\hline
+CoE & M only & 1000 & 0.01 & 0.17 & 0.16 & 0.71 & 0.70\\
+\hline
+ &  &  & (0.01) & (0.01) & (0.00) & (0.01) & (0.01)\\
+\hline
+CoE & W only & 1000 & 0.00 & 0.06 & 0.06 & 0.71 & 0.70\\
+\hline
+ &  &  & (0.01) & (0.01) & (0.00) & (0.01) & (0.01)\\
+\hline
+CoE & Both & 1000 & 0.00 & 0.05 & 0.06 & 0.71 & 0.70\\
+\hline
+ &  &  & (0.01) & (0.00) & (0.00) & (0.01) & (0.01)\\
+\hline
+\end{tabular}
+\end{table}
 
 \hypertarget{before-after-comparison}{%
 \subsubsection{Before-after comparison}\label{before-after-comparison}}
@@ -276,7 +381,7 @@ pretreatment periods.
 \NormalTok{    ),}
     \DataTypeTok{Z =} \DecValTok{1}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{Y =} \KeywordTok{ifelse}\NormalTok{(time }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
     \DataTypeTok{estimate =}\NormalTok{ Y[time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{Y[time }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{], }
@@ -352,7 +457,7 @@ between the treated and control unit.
     \KeywordTok{potential_outcomes}\NormalTok{(Y }\OperatorTok{~}\StringTok{ }\FloatTok{0.5} \OperatorTok{*}\StringTok{ }\NormalTok{Z }\OperatorTok{+}\StringTok{ }\NormalTok{unit_specific_effect }\OperatorTok{*}\StringTok{ }\NormalTok{U_unit),}
     \DataTypeTok{Z =} \KeywordTok{if_else}\NormalTok{(U_unit }\OperatorTok{==}\StringTok{ }\KeywordTok{max}\NormalTok{(U_unit), }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{Y =} \KeywordTok{ifelse}\NormalTok{(Z }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
     \DataTypeTok{estimate =}\NormalTok{ Y[Z }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{Y[Z }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{], }
@@ -441,7 +546,7 @@ then across-unit changes in the comparison unit.
 \StringTok{          }\FloatTok{1.25} \OperatorTok{*}\StringTok{ }\NormalTok{Z }\OperatorTok{+}\StringTok{ }\NormalTok{U)}
 \NormalTok{    )}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{Y =} \KeywordTok{if_else}\NormalTok{(Z }\OperatorTok{==}\StringTok{ }\DecValTok{0} \OperatorTok{|}\StringTok{ }\NormalTok{period }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
     \DataTypeTok{estimate =} 
@@ -516,7 +621,7 @@ time\_trend & time\_specific\_effect & unit\_specific\_effect & bias & se(bias)\
       \DataTypeTok{Y =} \KeywordTok{if_else}\NormalTok{(Z }\OperatorTok{==}\StringTok{ }\DecValTok{0} \OperatorTok{|}\StringTok{ }\NormalTok{time }\OperatorTok{<=}\StringTok{ }\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)}
 \NormalTok{    )}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{ATT =} \KeywordTok{mean}\NormalTok{(Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{), }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{ATT =} \KeywordTok{mean}\NormalTok{(Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{), }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{predictors =} \StringTok{"X"}\NormalTok{,}
                     \DataTypeTok{time.predictors.prior =} \DecValTok{-1}\OperatorTok{:}\DecValTok{0}\NormalTok{,}
                     \DataTypeTok{dependent =} \StringTok{"Y"}\NormalTok{,}
@@ -542,5 +647,31 @@ time\_trend & time\_specific\_effect & unit\_specific\_effect & bias & se(bias)\
 \KeywordTok{get_diagnosands}\NormalTok{(diagnosis) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(time_trend, time_specific_effect, unit_specific_effect, bias, }\StringTok{`}\DataTypeTok{se(bias)}\StringTok{`}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{round}\NormalTok{(}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-BennettCheckel2015PT}{}%
+Bennett, Andrew, and Jeffrey Checkel. 2015. ``Process Tracing: From
+Philosophical Roots to Best Practices.'' In \emph{Process Tracing: From
+Metaphor to Analytic Tool}, edited by Andrew Bennett and Jeffrey
+Checkel, 3--37. New York: Cambridge University Press.
+
+\leavevmode\hypertarget{ref-brady2004data}{}%
+Brady, Henry E. 2004. ``Data-Set Observations Versus Causal-Process
+Observations: The 2000 Us Presidential Election.'' \emph{Rethinking
+Social Inquiry: Diverse Tools, Shared Standards}, 267--72.
+
+\leavevmode\hypertarget{ref-fairfield2017explicit}{}%
+Fairfield, Tasha, and Andrew E Charman. 2017. ``Explicit Bayesian
+Analysis for Process Tracing: Guidelines, Opportunities, and Caveats.''
+\emph{Political Analysis} 25 (3): 363--80.
+
+\leavevmode\hypertarget{ref-humphreys2017qualitative}{}%
+Humphreys, Macartan, and Alan Jacobs. 2017. ``Qualitative Inference from
+Causal Models.'' \emph{Draft Manuscript (Version 0.2). Retrieved
+November} 27: 2017.
+
+\leavevmode\hypertarget{ref-VanEvera1997}{}%
+Van Evera, Stephen. 1997. \emph{Guide to Methods for Students of
+Political Science}. Ithaca: Cornell University Press.
 
 \end{document}

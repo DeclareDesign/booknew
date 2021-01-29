@@ -204,45 +204,30 @@ Like all designs, those with causal attribution inquiries can be declared, simul
 Table \@ref(tab:MI1b) shows the "draws" of three  estimands. We declare a simple reference model and then an inquiry---or rather a set of inquiries. The estimand draws are then implemented by drawing a particular model $m$ from $M$ and then applying $I$ to the draw. 
 
 
-```{r MI1a, comment = "", eval = FALSE}
+```{r MI1a, comment = "", output = FALSE}
 model <-
-  declare_population(N = 100,
-                     U = rnorm(N),
-                     D = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * D + U, 
-                             assignment_variable = "D") +
-  declare_reveal(Y, D)
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    potential_outcomes(Y ~ 0.5 * D + U, 
+                       conditions = list(D = c(0, 1))),
+    D = rbinom(N, 1, .5)
+  ) +
+  declare_measurement(Y = reveal_outcomes(Y ~ D))
 
 inquiry <-
-  declare_estimand(
+  declare_inquiry(
     treatment_group_mean = mean(Y[D == 1]),
     ATE = mean(Y_D_1 - Y_D_0),
     probability_of_causation = mean((Y_D_0 < 0)[D == 1 & Y_D_1 > 0])
   )
 
-draw_estimands(model + inquiry)
-
+draw_inquiries(model + inquiry)
 ```
 
 ```{r MI1b, comment = "", echo  = FALSE}
-model <-
-  declare_population(N = 100,
-                     U = rnorm(N),
-                     D = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * D + U, 
-                             assignment_variable = "D") +
-  declare_reveal(Y, D)
-
-inquiry <-
-  declare_estimand(
-    treatment_group_mean = mean(Y[D == 1]),
-    ATE = mean(Y_D_1 - Y_D_0),
-    probability_of_causation = mean((Y_D_0 < 0)[D == 1 & Y_D_1 > 0])
-  )
-
-draw_estimands(model + inquiry) %>% 
+draw_inquiries(model + inquiry) %>% 
   kable(caption = "One model three estimands.", digits = 3, booktabs = TRUE)
-
 ```
 
 The first estimand is a descriptive estimand: the average outcome for $Y$ when $D = 1$. Note that the declaration of the estimand does not make use of any counterfactual quantities.   

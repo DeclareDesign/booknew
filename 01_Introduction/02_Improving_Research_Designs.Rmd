@@ -1,5 +1,5 @@
 ---
-title: "Better Design"
+title: "Improving research designs"
 output: html_document
 bibliography: ../bib/book.bib 
 ---
@@ -31,19 +31,17 @@ b_sims <- 200
 
 # Improving research designs
 
-The purpose of conducting an empirical research study is to learn the answers to questions that, if known, would rule out incorrect theories. If a theory incorrectly predicts that the average causal effect of D on Y is positive, but though good research design we learn that it is negative, we've made scientific progress. Ruling out incorrect theories -- or even just the incorrect portions of otherwise correct theories -- is the main goal of empirical research. 
+Social science is awash in theoretical speculation and our main scientific problem is that we don't know which (if any) of our theories are correct. The purpose of conducting an empirical research study is to learn the answers to inquiries that, if known, would bring our theoretical models of the world closer to the truth. If a theory predicts that the average causal effect of D on Y is positive, but though good research design we learn that it is negative, we've made scientific progress. Ruling out incorrect theories -- or even just the incorrect portions of otherwise correct theories -- is the main goal of empirical research. 
 
-How can we rule out theoretical models? First, we need to enumerate the many models that are possible, at least in theory. The exhaustive enumeration of possible theoretical models is a daunting challenge. We describe below an approach that begins with a "kernel" -- a small portion of a theoretical model from which we grow theoretical possibilities. Suppose we have a list of possibilities in hand. A research question -- what we call an "inquiry" -- refers to a fact that, if known, would rule out some models in favor of others. If we can show through a credible research design that $Z$ causes $Y$, we can rule out all models in which $Z$ does not cause $Y$. The *reason* that we seek to learn about inquiries is to distinguish among theoretical possibilities. 
-
-Research designs are procedures for learning about inquiries. This book offers a language for describing research designs and an algorithm for selecting among them. Remarkably, the same basic structure can be used whether researchers are interested in causal questions or descriptive questions, whether they are focused on theory testing and inductive learning, and whether they use quantitative, qualitative, or mixed methods. The same language we use to talk to the computer can be used to talk to others. Reviewers, advisors, students, funders, journalists, and the public -- and yes the computer too -- need to know four basic things to understand your design.
+Research designs are procedures for learning about inquiries. This book offers a language for describing research designs and an algorithm for selecting among them. Remarkably, the same basic structure can be used whether researchers are interested in causal questions or descriptive questions, whether they are focused on theory testing and inductive learning, and whether they use quantitative, qualitative, or mixed methods. Once a design is *declared* in simple enough language that a computer can understand it, then we can implement our *diagnosis* algorithm for assessing the properties of a desigm at the click of a button. We can then engage in *redesign*, or the process of comparing among alternative designs to select a strong one. The same language we use to talk to the computer can be used to talk to others. Reviewers, advisors, students, funders, journalists, and the public -- and yes the computer too -- need to know four basic things to understand your design.
 
 ## The four components of research design
 
 Empirical research designs share in common that they all have a model, an inquiry, a data strategy, and an answer strategy. The four together, which we refer to as MIDA, represent both your suppositions about how the world works and the choices you make as the researcher to intervene in and learn about the world.
 
-The model is your background theory of the system under study. It includes beliefs about what causes what and why. It includes beliefs about how important variables are distributed, how things are correlated, the sequences of events. Of course, we do not know the true model---if we did we would not have to do any further research. By *stipulating* sets alternative possible models we can assess how our research design would perform if each model were in fact correct. We hope that the true, unknown causal model is in the set of models we entertain so that we can correctly imagine what will happen when our design is applied in the real world.
+The model comprises our uncertain beliefs about what causes what and how. It includes (possibly quite well-informed) guesses about how important variables are distributed, how things are correlated, the sequences of events. Of course, we don't know the true model---if we did we wouldn't have to do any empirical research. We are uncertain about which of many alternative theories is the true one. We hope that the true, unknown causal model is in the set of models we entertain so that we can correctly imagine what will happen when our design is applied in the real world.
 
-The model defines a set of units, people or neighborhoods or social groups, that we wish to study. Often, this set of units is a large population of units we cannot afford to take measurements of, but we can nevertheless define and make inferences about through sampling and studying a subset of its units. The model then includes a set of baseline characteristics that describe each unit and the probability distributions of each characteristic (i.e., are heights normally distributed, or is there skew that comes from stunting in infants). Finally, the model includes a set of endogenous outcome variables that may be functions of exogenous (pretreatment) characteristics and the effects of interventions. Each endogenous outcome variable has a function that defines the variables that affect what values it takes on. When an outcome depends on an intervention, it will be a potential outcome, where we can define what value the outcome would take on if a unit received the treatment and what outcome that unit would take on if it did not receive the treatment. Typically, endogenous outcome variables are random variables, either because they are a function of an exogenous baseline variable for which we defined a probability distributions or because assignment to treatment or control is random as part of the data strategy.
+The model defines a set of units (such as people or neighborhoods or social groups) that we wish to study. Often, this set of units is a large population of units we cannot afford to take measurements of, but we can nevertheless define and make inferences about through sampling and studying a subset of its units.  The model includes theoretical beliefs about baseline characteristics that describe each unit and the probability distributions of each characteristic. Finally, the model includes a set of outcome variables that may be functions of baseline characteristics and the effects of interventions. The values that an outcome variable take on depending on the level of an intervention are called *potential* outcomes. A unit's treated potential outcome arises when that unit receives the treatment; the untreated potential outcome aries when it does not. The model includes therefore includes beliefs about causal effects, which are defined with respect to these potential outcomes. The treatment effect of a particular intervention is usually defined as the difference between the treated and untreated potential outcomes (though other definitions, like the ratio of the potential outcomes, are possible too). 
 
 Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. The confusion can be allayed by thinking of the model as a kind of "reference model", against which you can assess performance. Declaring a reference model is often unavoidable when declaring research designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section \@ref(p2diagnosis)). Further, researchers can inform their reference models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
 
@@ -61,78 +59,106 @@ The answer strategy is more than the choice of an estimator. It includes the ful
 
 The theoretical and empirical halves of research design go hand-in-hand and a complete description of a research design generally needs both halves. If we ask, "What's your research design?" and you respond "It's a regression discontinuity design," we've maybe learned what your answer strategy might be, but we don't yet have enough information to decide whether it's a strong design until we learn more about the model, the inquiry, and whether the data and answer strategies are indeed well suited for them. 
 
-Declaring a design entails separating out which parts of your design belong in $M$, $I$, $D$, and $A$. The declaration process can be a challenge because mapping your ideas and excitement about your project into MIDA is not always straightforward. We promise it is a rewarding task. When you can express your research design in terms of these four components you are newly able to think about its properties. 
-
-
-<!-- ## How to choose MIDA -->
-
-<!-- - grow the dag to M-vector -->
-<!-- - pick an inquiry that distinguishes among the many models -->
-<!-- - ensure parallelism across theoretical and empirical halves -->
-
 ## Declare-Diagnose-Redesign
 
+### Declaration
 
-### Declaring a design in code
+Declaring a design entails separating out which parts of your design belong in $M$, $I$, $D$, and $A$. The declaration process can be a challenge because mapping your ideas and excitement about your project into MIDA is not always straightforward. We promise it is a rewarding task. When you can express your research design in terms of these four components you are newly able to think about its properties. 
 
 You can implement the MIDA framework in any software package. Indeed, a design could be declared in writing or mathematical notation and then diagnosed using analytical formula. We discuss in Section \@ref(p2diagnosis) why analytical diagnoses are challenging for the majority of designs in the social sciences: they do not account for the specific features of research designs such as varying numbers of units per cluster and the interaction of choices made in the model, inquiry, data strategy, and answer strategy.
 
 Social scientists use a number of tools for conducting statistical analysis: Stata, R, Python, Julia, SPSS, SAS, Mathematica, and more. At the time of writing, Stata and R are commonly used platforms for academic work by social scientists. We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other useful tools in R and because it is free, open-source, and high-quality.
 
-We illustrate the application of the MIDA framework to a study of the motivations of political office-seekers in Pakistan. @Gulzar2020 conducted an experiment to test whether prosocial or personal benefits were more important motivations for running for office. They randomly-assigned villages to receive different encouragements to run and measured how this affected the rate of running for office, the types of people who chose to run, and the congruence of their policy positions with the general population. 
+With the design declared, you can learn about it in a number of ways. You can "diagnose" or simulate its properties via `diagnose_design(design)`. You can simulate data from it to explore possible estimation strategies before analyzing the real data with `draw_data(design)`. You can use it to implement your study, for instance by implementing assignment with your real units. You can obtain simulated estimates via `draw_estimates(design)` and you can apply the planned design to your data via `get_estimates(design, data = study_data)`. 
 
-The *model* describes the citizens in the villages they conduct the study, and which village they live in. It gives a description of  their individual characteristics and of their potential outcomes in response to the possible treatment assignments. The *inquiry* is the average treatment effect: the difference in potential outcomes between receiving and not receiving an encouragement to run for office. The *data strategy* is (1) random sampling of 50 citizens per village; (2) random assignment of villages into either an encouragement to run for office (treatment) or no encouragement (control); and (3) measurement via a posttreatment survey. The *answer strategy* is calculating the difference-in-means, with standard errors accounting for the clustering of the treatment assignment by village.
+We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have  [pointers](https://declaredesign.org/pap) to how you might  declare steps in Stata, Python, and Excel. In addition, we link to a ["Design wizard"](https://eos.wzb.eu/ipi/DDWizard/) that lets you declare and diagnose variations of standard designs via a web interface.
 
-To illustrate declaring a design in code, we declare a simplified version of the @Gulzar2020 study--we declare the complete design in Section \@ref(p2gulzarkhanrevisited).
+### Diagnosis
+
+Once you've declared your design, you can diagnose it. Design diagnosis is the process of simulating your research design in order to understand the range of possible ways the study could turn out. It is in the diagnosis stage that we define the design properties that are most desirable in our research setting. We let computers do the simulations for us because imagining how design choices influence sampling distributions is---to put it mildly---cognitively demanding. 
+
+Diagnosis is an opportunity to write down what would make the study a success. For a long time, researchers have classified studies as successful or not based on statistical significance. Accordingly, statistical power (the probability of a statistically significant result) has been the most front-of-mind statistic when researchers have set to designing studies. As we learn more about the pathologies of relying on statistical significance, we learn that features beyond power are just as, if not more important. For example, the "credibility revolution" throughout social science has trained a laser-like focus on bias. Studies are coming under new criticism for lacking "strong identification," which usually implies that the data and answer strategies could lead to biased answers depending on how incorrect the model is. Randomized experimentation promises unbiased answers for some inquiries, at least when the data and answer strategies are implemented well.
+
+Design diagnosis relies on two further concepts, both functions of research designs. These are quantities that a researcher or a third party could calculate with respect to a design. 
+
+The first is a **diagnostic statistic,** which is a summary statistic generated from a "run" of a design---that is, the results given a possible realization of variables, given the model and data strategy. For example, the statistic $e$ refers to the "difference between the estimated and the actual average treatment effect."  The $e$ statistics depends on the model (since the ATE depends on the model's assumptions about potential outcomes). The statistic $s = \mathbb{1}(p \leq 0.05)$, interpreted as "the result is considered statistically significant at the 5% level," presupposes an answer strategy that reports a $p$-value. Diagnostic statistics are governed by probability distributions that arise because both the model and the data generation, given the model, may be stochastic.
+
+Second, a **diagnosand** is a summary of the distribution of a diagnostic statistic. For example, *bias* is the average value of the $e$ statistic and *power* is is the average value of the $s$ statistic. Other diagnosands include things like root-mean-squared-error (RMSE), Type I, Type II, Type M, and Type S error rates. 
+
+One especially important diagnosand is the "success rate," which is the average value of the "success" diagnostic statistic. As a researcher, *you* get to decide what would make your study a success. What matters most in your research scenario? Is it statistical significance? If so, optimize your design with respect to power. Is what matters most in your research setting with the answer has the correct sign or not? Then diagnose how frequently your answer strategy yields an answer with the same sign as your inquiry. Diagnosis is an opportunity for you to articulate what would make your study a success and then to figure out, through simulation, how often you obtain that success. Often, success is a multidimensional aggregation of multiple diagnosands.
+
+
+<-- By *stipulating* sets of alternatives we can assess how our research design would perform if each specific causal model were in fact correct. -->
+
+
+### Redesign
+
+The subtitle of this book is "Declaration, Diagnosis, Redesign" to emphasize three important steps in the conceptualization of a research design. So far, we've outlined the first two points: declaration and diagnosis. Once your design has been declared, and you have learned to diagnose it with respect to the most important diagnosands, the last step is redesign.
+
+Redesign entails playing with each of the design parameters to understand the implications of each for your most important diagnosands. This can mean a variety of things. Many diagnosands (power, RMSE) depend on the size of the study. We can redesign the study, varying the "sample size" feature of the data strategy to determine how big it needs to be to achieve a target diagnosand: 90% power, say, or an RMSE of 0.02. We could also vary an aspect of the answer strategy, say, the covariates used to adjust a regression model. Sometimes the changes to the data and answer strategies interact: if we use better covariates to increase the precision of the estimates in the answer strategy, we have to collect that information as a part of the data strategy. The redesign question now becomes, is it better to collect pre-treatment information from all subjects or is the money better spent on increasing the total number of subjects? Finally, redesign sometimes means changing the model. That is, sometimes we want to understand whether our design yields the right inferences even when the underlying data generating processes shift beneath our feet. In summary, redesign entails enumerating a set of possible designs given resource and theoretical constraints then picking the best one.
+
+In `DeclareDesign`, the `redesign()` function replaces key inputs to the design to form a new design.
+
+### Example: Candidacy in Pakistan
+
+We illustrate the application of the MIDA framework to a study of the motivations of political office-seekers in Pakistan. @Gulzar2020 conducted an experiment that estimated the effects of two alterative motivations for becoming a politician: helping the community or generating personal benefits. The researchers randomly assigned villages to receive different encouragements to run and measured the rates of running for office, the types of people who chose to run, and the congruence of elected politicians' policy positions with those of the general population. 
+
+The model describes the citizens in the villages they conduct the study, and which village they live in. It gives a description of their individual characteristics and of their potential outcomes in response to the possible treatment assignments. The alternative theories that the model encompasses is that politicians run for office only to help themselves, only to help others, neither, or both. Among theories that include room for both motivations, some claim that intrinsic motivations are more powerful than extrinstic, while other claim the reverse. We define these potential outcomes in terms of subjects' latent probability of running for office which is tightly related to, but distinct from, the choice to run, as measured by the data strategy.
+
+The study has two inquiries are the average treatment effects of each enccouragment, defined as the average difference in potential outcomes between receiving and not receiving each encouragement to run for office. We could imagine a third inquiry that is the difference between these two average treatment effects, but we'll leave that complication to the side for the moment.
+
+The *data strategy* includes three elements. First, we randomly sample 50 citizens who are eligible to stand for election from each village. Next, we assign subjects to a personal benefits encouragement, a prosocial encouragement, or no encouragement (control). All subjects in a village are assigned to the same treatment condition, which is to say that this experiment used cluster random assignment. Lastly, the data strategy measures the decision to run for office by checking whether a subject's name appears on the official candidate lists of released by the Election Commission of Pakistan. In contrast to the continuous latent outcome variable, measured outcome variable is binary.
+
+The *answer strategy* is the difference-in-means estimator with standard errors clustered at the village level. The clustering of the errors at the village level is an example of how choices in the answer strategy must respect choices made in the data strategy.
+
+To illustrate design declaration in code, we declare a simplified version of the @Gulzar2020 study--we declare the complete design in Section \@ref(p2gulzarkhanrevisited).
 
 <!-- # we should turn this into a picture labeling MIDA -->
 
-In the model, we describe a hierarchical structure with 192 villages each of which is home to 48 randomly sampled citizens who are eligible to run for elected office. Each citizen harbors three potential outcomes, `Y_Z_neutral`, `Y_Z_personal`, and `Y_Z_social`. `Y_Z_neutral` is the citizen's latent probability of standing for election if treated with a neutral appeal; `Y_Z_personal` is the probability if treated with an appeal that emphasizes the personal returns to office, and `Y_Z_social` is the probability if treated with an appeal that underlines the benefits to the community . Our simplified model includes a constant treatment effect of 2 percentage points for the personal appeal and 3 percentage points for the social appeal.
+In the model, we describe a hierarchical structure with 192 villages each of which is home to 100 citizens who are eligible to run for elected office. Each citizen harbors three potential outcomes, `Y_Z_neutral`, `Y_Z_personal`, and `Y_Z_social`. `Y_Z_neutral` is the citizen's latent probability of standing for election if treated with a neutral appeal; `Y_Z_personal` is the probability if treated with an appeal that emphasizes the personal returns to office, and `Y_Z_social` is the probability if treated with an appeal that underlines the benefits to the community . Our simplified model includes a constant treatment effect of 2 percentage points for the personal appeal and 3 percentage points for the social appeal.
 
 ```{r}
 model <-
-  declare_population(
+  declare_model(
     villages = add_level(N = 192),
-    citizens = add_level(N = 48, U = runif(N))
-  ) +
-  declare_potential_outcomes(Y_Z_neutral = U,
-                             Y_Z_personal = Y_Z_neutral + 0.02,
-                             Y_Z_social = Y_Z_neutral + 0.03)
+    citizens = add_level(N = 100, U = runif(N)),
+    potential_outcomes(Y_Z_neutral = U,
+                       Y_Z_personal = Y_Z_neutral + 0.02,
+                       Y_Z_social = Y_Z_neutral + 0.03))
 ```
 
-Our inquiry is the average treatment effect in the population, defined as the average difference in potential outcomes:
+Our inquiry is the average treatment effects in the population, defined as the average differences in potential outcomes:
   
+
 ```{r}
-inquiry <- declare_estimand(
+inquiry <- declare_inquiry(
   ATE_personal = mean(Y_Z_personal - Y_Z_neutral),
   ATE_social = mean(Y_Z_social - Y_Z_neutral)
 )
 ```
-  
-The data strategy consists of four steps:
 
-* assignment: We randomly assign one third to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal.
-* reveal outcomes: Subjects reveal outcomes (i.e., their probability of running for office) according to their randomly-assigned condition.
-* measurement: We measure a binary outcome `Yobs` from the unobserved, latent variable `Y`: units that have a latent outcome above 0.97 have `Yobs` of 1 and 0 otherwise.
+The data strategy consists of three steps: sampling, assignment, and measuremenet. In sampling, we sample 48 of the eligibile citizens from each village into the study.  In assignment, we cluster assign one third of the villages to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal. The measurement step maps the realized (but still latent!) potential outcome to the observed choice to run or not.
   
+
 ```{r}
 data_strategy <-
+  declare_sampling(S = strata_rs(strata = villages, n = 48), legacy = FALSE) +
   declare_assignment(
-    clusters = villages, 
-    conditions = c("neutral", "personal", "social")
-  ) + 
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
-  declare_measurement(Yobs = if_else(Y > 0.97, 1, 0))
+  	Z = cluster_ra(clusters = villages, 
+  	               conditions = c("neutral", "personal", "social")),
+  	legacy = FALSE) + 
+  declare_measurement(Y_latent = reveal_outcomes(Y, Z),
+                      Y_observed = if_else(Y_latent > 0.97, 1, 0))
 ```
 
-The answer strategy consists of the difference-in-means of $Y$ depending on $Z$, with standard errors clustered at the village level in order to respect the clustering of the assignment in the data strategy. We link this estimator to the ATE estimand to explicitly link the answer strategy to the inquiry. This principle is one we always try to maintain---if you have an estimator you should have an estimand to link it to.
-  
+The answer strategy consists of an ordinary least squares regression (as implmented by `lm_robust`) of the outcome on the treatments. The standard errors clustered at the village level in order to account for the clustering in the assignment procedure. The regression will return three coefficients: an intercept and two treatment effect estimates. We ensure that the estimates are mapped to the relevant inquiry by explicitly linking them.
+
 ```{r}
 answer_strategy <- 
   declare_estimator(Y ~ Z, term = c("Zpersonal", "Zsocial"), 
                     clusters = villages, 
                     model = lm_robust,
-                    estimand = c("ATE_personal", "ATE_social"))
+                    inquiry = c("ATE_personal", "ATE_social"))
 ```
 
 When we concatenate all four aspects we get a design:
@@ -169,32 +195,6 @@ ggdd_df <- make_dag_df(dag, nodes)
 base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon))
 ```
 
-With the design declared, you can learn about it in a number of ways: 
-
-* You can "diagnose" or simulate its properties via `diagnose_design(design)`
-* You can simulate data from it to explore possible estimation strategies before analyzing the real data with `draw_data(design)`
-* You can use it to implement your study, for instance by implementing assignment with your real units,
-* You can obtain simulated estimates via `draw_estimates(design)`, and after the data comes in, 
-* You can apply the planned design to your data via `get_estimates(design, data = study_data)`. 
-
-We introduce the software in more detail in the next section.
-
-We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have  [pointers](https://declaredesign.org/pap) to how you might  declare steps in Stata, Python, and Excel. In addition, we link to a ["Design wizard"](https://eos.wzb.eu/ipi/DDWizard/) that lets you declare and diagnose variations of standard designs via a web interface.
-
-### Assessing research design quality: design diagnosis
-
-Once you've declared your design, you can diagnose it. Design diagnosis is the process of simulating your research design in order to understand the range of possible ways the study could turn out. It is in the diagnosis stage that we define the design properties that are most desirable in our research setting. We let computers do the simulations for us because imagining how design choices influence sampling distributions is---to put it mildly---cognitively demanding. 
-
-Diagnosis is an opportunity to write down what would make the study a success. For a long time, researchers have classified studies as successful or not based on statistical significance. Accordingly, statistical power (the probability of a statistically significant result) has been the most front-of-mind statistic when researchers have set to designing studies. As we learn more about the pathologies of relying on statistical significance, we learn that features beyond power are just as, if not more important. For example, the "credibility revolution" throughout social science has trained a laser-like focus on bias. Studies are coming under new criticism for lacking "strong identification," which usually implies that the data and answer strategies could lead to biased answers depending on how incorrect the model is. Randomized experimentation promises unbiased answers for some inquiries, at least when the data and answer strategies are implemented well.
-
-Design diagnosis relies on two further concepts, both functions of research designs. These are quantities that a researcher or a third party could calculate with respect to a design. 
-
-The first is a **diagnostic statistic,** which is a summary statistic generated from a "run" of a design---that is, the results given a possible realization of variables, given the model and data strategy. For example, the statistic $e$ refers to the "difference between the estimated and the actual average treatment effect."  The $e$ statistics depends on the model (since the ATE depends on the model's assumptions about potential outcomes). The statistic $s = \mathbb{1}(p \leq 0.05)$, interpreted as "the result is considered statistically significant at the 5% level," presupposes an answer strategy that reports a $p$-value. Diagnostic statistics are governed by probability distributions that arise because both the model and the data generation, given the model, may be stochastic.
-
-Second, a **diagnosand** is a summary of the distribution of a diagnostic statistic. For example, *bias* is the average value of the $e$ statistic and *power* is is the average value of the $s$ statistic. Other diagnosands include things like root-mean-squared-error (RMSE), Type I, Type II, Type M, and Type S error rates. 
-
-One especially important diagnosand is the "success rate," which is the average value of the "success" diagnostic statistic. As a researcher, *you* get to decide what would make your study a success. What matters most in your research scenario? Is it statistical significance? If so, optimize your design with respect to power. Is what matters most in your research setting with the answer has the correct sign or not? Then diagnose how frequently your answer strategy yields an answer with the same sign as your inquiry. Diagnosis is an opportunity for you to articulate what would make your study a success and then to figure out, through simulation, how often you obtain that success. Often, success is a multidimensional aggregation of multiple diagnosands.
-
 To diagnose the design, we first define a set of diagnosands (see Section \@ref(p2diagnosis)), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.
 
 ```{r}
@@ -226,38 +226,36 @@ get_diagnosands(simple_design_diagnosis) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 ```
 
-### Redesign
-
-The subtitle of this book is "Declaration, Diagnosis, Redesign" to emphasize three important steps in the conceptualization of a research design. So far, we've outlined the first two points: declaration and diagnosis. Once your design has been declared, and you have learned to diagnose it with respect to the most important diagnosands, the last step is redesign.
-
-Redesign entails playing with each of the design parameters to understand the implications of each for your most important diagnosands. This can mean a variety of things. Many diagnosands (power, RMSE) depend on the size of the study. We can redesign the study, varying the "sample size" feature of the data strategy to determine how big it needs to be to achieve a target diagnosand: 90% power, say, or an RMSE of 0.02. We could also vary an aspect of the answer strategy, say, the covariates used to adjust a regression model. Sometimes the changes to the data and answer strategies interact: if we use better covariates to increase the precision of the estimates in the answer strategy, we have to collect that information as a part of the data strategy. The redesign question now becomes, is it better to collect pre-treatment information from all subjects or is the money better spent on increasing the total number of subjects? Finally, redesign sometimes means changing the model. That is, sometimes we want to understand whether our design yields the right inferences even when the underlying data generating processes shift beneath our feet. In summary, redesign entails enumerating a set of possible designs given resource and theoretical constraints then picking the best one.
-
-In `DeclareDesign`, the `redesign()` function replaces key inputs to the design to form a new design.
+[GLOSS DIAGNOSIS; DO A REDESIGN]
 
 ### Avoiding declaration and diagnosis pitfalls
 
-Designing high-quality research is difficult and comes with many pitfalls, only a subset of which are addressed by the *MIDA* framework. Others we fail to help with entirely and, in some cases, we may even exacerbate them. We outline four concerns.
+Designing high-quality research is difficult and comes with many pitfalls, only a subset of which are addressed by the *MIDA* framework. Others we fail to help with entirely and, in some cases, we may even exacerbate them. We outline three concerns.
 
-The first is the worry that evaluative weight could get placed on essentially meaningless diagnoses. Given that design declaration includes declarations of conjectures about the world it is possible to choose inputs so that a design passes any diagnostic test set for it. For instance, a simulation-based claim to unbiasedness that incorporates all features of a design is still only good with respect to the precise conditions of the simulation (in contrast, analytic results, when available, may extend over general classes of designs). Still worse, simulation parameters might be selected because of their properties. A power analysis, for instance, may be useless if implausible parameters are chosen to raise power artificially. While our framework may encourage more honest declarations, there is nothing about it that enforces them. As ever, garbage-in, garbage-out.
+The first is the worry that evaluative weight could get placed on essentially meaningless diagnoses. Given that design declaration includes declarations of conjectures about the world it is possible to choose inputs so that a design passes any diagnostic test set for it. For instance, a simulation-based claim to unbiasedness that incorporates all features of a design is still only good with respect to the precise conditions of the simulation (in contrast, analytic results, when available, may extend over general classes of designs). Still worse, simulation parameters might be selected because of their properties. A power analysis, for instance, may be useless if implausible parameters are chosen to raise power artificially. While our framework may encourage more honest declarations, nothing about it enforces honesty. As ever, garbage-in, garbage-out.
 
-Second, we see a risk that research may get evaluated on the basis of a narrow, but perhaps inappropriate set of diagnosands. Statistical power is often invoked as a key design feature -- but even well-powered studies that are biased away from their targets of interest are of little theoretical use. The appropriateness of the diagnosand depends on the purposes of the study. Our framework cannot guide researchers or critics to the appropriate set of diagnosands by which to evaluate a design. An advantage of the approach however is that the choice of diagnosands gets highlighted and new diagnosands can be generated in response to substantive concerns.
+Second, we see a risk that research may get evaluated on the basis of a narrow, but perhaps inappropriate set of diagnosands. Statistical power is often invoked as a key design feature -- but well-powered studies that are biased are of little theoretical use. The appropriateness of the diagnosand depends on the purposes of the study. Our framework cannot guide researchers or critics to the appropriate set of diagnosands by which to evaluate a design. An advantage of the approach however is that the choice of diagnosands gets highlighted and new diagnosands can be generated in response to substantive concerns.
 
-Third, emphasis on the statistical properties of a design can obscure the substantive importance of a question being answered or other qualitative features of a design. A similar concern has been raised, for example by @huber2013, regarding the ``identification revolution'' where a focus on identification risks crowding out attention to the importance of questions being addressed. Our framework can help researchers determine whether a particular design answers a question well (or at all), and it also nudges them to make sure that their questions are defined clearly and *independently of their answer strategies*. It cannot, however, help researchers choose good questions.
-
-Finally, we see a risk that the variation in the suitability of design declaration to different research strategies may be taken as evidence of the relative superiority of different types of research strategies. While we believe that the range of strategies that can be declared and diagnosed is wider than what one might at first think possible, some strong designs might not be declarable, either ex ante or ex post. An advantage of our framework, we hope, is that it can help clarify when a strategy can or cannot be completely declared. When a design cannot be declared, nondeclarability is all the framework provides, and in such cases we urge caution in drawing conclusions about design quality.
-
-A specification of the model, inquiry, data strategy, and answer strategy captures the analysis-relevant features of a design, but it does not describe substantive elements, such as how theories are derived or interventions are implemented. Yet many other aspects of a design that are not explicitly labeled in these features enter into this framework if they are analytically relevant. For example, logistical details of data collection such as the duration of time between a treatment being administered and endline data collection enter into the model if the longer time until data collection affects subjects' recall of the treatment. However, information in a design declaration is typically insufficient to assess those substantive elements, an important and separate part of assessing the quality of a research study.
-
-
-
+Third, emphasis on the statistical properties of a design can obscure the substantive importance of a question being answered or other qualitative features of a design. A similar concern has been raised, for example by @huber2013, regarding the ``identification revolution'' where a focus on identification risks crowding out attention to the importance of questions being addressed. Our framework can help researchers determine whether a particular design answers a question well (or at all), and it also nudges them to make sure that their inquiries are defined clearly and *independently of their answer strategies*. The responsibility for the choice of inquiry, however, lies with the researcher.
 
 
 ## Putting designs to use
+
+The two pillars of our approach are the language for describing research designs (MIDA) and the algorithm for selecting high-quality designs (Declare-Diagnose-Redesign). Together, these two ideas can shape research design decisions throughout the lifecycle of a project. 
+
+Broadly speaking, the lifecycle of an empirical research project has four phases: Brainstorming, Planning, Realiziation, and Integration. Brainstorming is the process of growing a research idea from a kernel into a skeleton specification of the model, inquiry, data strategy, and answer strategy. After an idea has been fleshed out sufficiently, its time to conduct an ethical review, seek IRB approval, gather criticism from colleagues and mentors, run pilot studies, and prepare preanalysis documents. The design as encapsulated by M, I, D, and A will go through many iteratations and refinements during this period. Planning is the time when frequent re-application of the Declare-Diagnose-Redesign algorithm will pay the highest dividends. How should you investigate the ethics of a study? By casting the ethical costs and benefits as diagnosands. How should you respond to (good and bad) criticism? By re-interpreting the feedback in terms of M, I, D, and A. How can you convince funders and partners that your research project is worth investing in? By credibly communicating your study's diagnosands -- its statistical power, its unbiasedness, its high chance of success, however the partner  or funder defines it. What belongs in a pre-analysis plan? You guessed it -- a specification of the model, inquiry, data strategy and answer strategy. Iterating and improving design details is the essence of good planning.
+
+Realization is the phase of research in which all those plans are executed. You implment your data strategy in order to gather information from the world. Once that's done, you follow your answer strategy in order to finally generate answers to the inquiry. Of course, that's only if things go exactly according to plan -- which has never once happened once in our own careers. Survey questions don't work as we imagined, partner organizations overpromise and underdeliver, subjects move or become otherwise unreachable. A critic or a reviewer may insist you change your answer strategy -- or may think a different inquiry altogether is the theoretically-appropriate one. You may yourself change how you think of the design as you embark on writing up the research project. It is inevitable that some features of M, I, D, and A will change during the realization phase. Some changes have very bad properties, like sifting through the data ex-post, finding a statisticially significant result, then back-fitting an new M and a new I to match the new A. This bad practice goes by the name HARKing -- Hypothesizing After Results are Known. Indeed, if we declare and diagnose this actual answer strategy (sifting through data ex-post), we can show through design diagnosis that it is badly biased (away from zero) for any of the inquiries it could end up choosing. Other changes may help the design quite a bit -- if the planned design did not include covariate adjustment but a friendly critic suggests adjusting for the pre-treatment measure of the outcome, the RMSE diagnosand might drop nicely. The point here is that design changes during the implementation process -- whether necessitated by unforseen logisitcal constraints or required by the review process -- can be understood using in terms of M, I, D, and A through declaration, diagnosis, and redeesign.
+
+[INTEGRATION.]
+
+
+
+
+
 REWRITE to preview research design lifecycle
 
-
-
-Adding a design declaration stage to your workflow in busy times may seem onerous. We think though that it may be easier than it seems at first and it delivers multiple payoffs. We think too that when design declaration is hard it is hard for a good reason, for instance by making clear that features of your research question or answer strategy are not as clear to you as you thought they were. 
+<!-- Adding a design declaration stage to your workflow in busy times may seem onerous. We think though that it may be easier than it seems at first and it delivers multiple payoffs. We think too that when design declaration is hard it is hard for a good reason, for instance by making clear that features of your research question or answer strategy are not as clear to you as you thought they were. 
 
 <!-- Fortunately, much of the work of declaring and diagnosing designs is already part of how social scientists conduct research: grant proposals, IRB protocols, preanalysis plans, and dissertation prospectuses contain design information and justifications for why the design is appropriate for the question. However, the lack of a common language to describe designs and their properties, however, seriously hampers the utility of these practices for assessing and improving design quality. The inclusion of a declaration-diagnosis-redesign step to the research process can help address this basic difficulty. -->
 
@@ -282,43 +280,64 @@ In addition to rendering the design more transparent, design declaration can all
 A more coherent strategy facilitated by design simulations would be to use a design declaration to conduct "design replication." In a design replication, a scholar restates the essential design characteristics to learn about what the study *could have* revealed, not just what the original author reports *revealed*. This procedure helps us to understand the conditions under which the results of a study can be believed. By emphasizing abstract properties of the design, design replication provides grounds to support alternative analyses on the basis of the original authors' intentions and not on the basis of the degree of divergence of results. Conversely, it provides authors with grounds to question claims made by their critics. 
 
 
-## Principles of good research design
-
-This book develops a set of principles for choosing good research designs.
-
-**General principles**
-
-1. **Design before you build**
-
-**Model Principles**
-
-1. Know for what worlds your design performs poorly
-2. Recycle. Use the same code for design and implementation.
-
-**Inquiry Principles**
-
-1. **Inquiries should be robust to models**
-2. **Every answer needs a question**
-
-**Data strategy principles**
-
-1. Anticipate errors in implementation
-
-**Analysis principles**
-1. Plug in principle 
-2. Some generalization of analyze as ye randomize
+## Research design principles
 
 
-**Diagnosis principles**
+### Declaration principles
 
-1. Encode the goals of a design in a diagnosand
-2. Make sure your design is diagnosand complete  
-3. If you can diagnose with analytic results do, if not don't.   
+**Declaration changes that which is declared.**
 
-<!-- 1. The properties of a design are measured by its diagnosands; the most important diagnosand is the ability to distinguish among theories. -->
-<!-- 2. The two halves of a research design (theoretical and empirical) should be aligned. That is, estimates obtained from analysis of empirical data should be targeted at well-posed theoretical questions. -->
-<!-- 3. Data strategies should approximate random sampling of units, potential outcomes, and measurements. -->
-<!-- 4. Deviations from random sampling in the data strategy should be addressed in the answer strategy. -->
+
+**Designs should be implemented as they are declared**
+
+
+### Diagnosis principles
+
+**Ethical, logistical, and scientific goals should be encoded in diagnosands.**
+
+**Design declarations should be diagnosand complete.**
+
+**Designs should be diagnosed over the declared model possibilities.**
+
+
+### Redesign principles
+
+**Designs should be redesigned with respect to feasible data and answer strategies.**
+
+**Optimization over diagnosand tradeoffs should guide the selection of a particular design among the set of feasible designs.**
+
+**Unforeseen implementation complications should be addressed through redesign**
+
+
+### Model Principles
+
+**Models should include how you might be right about the world and how you might be wrong.**
+
+**Models should be mapped to theories.**
+
+### Inquiry Principles
+
+**Inquiries should be identifiable**
+
+Example of a non identifiable inquiry. Model is that Y = (a + b)*X. Inquiry is b. Even if we randomize X and measure Y, we can't estimate b. Many mediation inquiries are unidentifiable in this sense.
+
+**Inquiries must be defined across all models under consideration.**
+
+**Inquiries should distinguish among theories.**
+
+### Data strategy principles
+
+**Data strategies should rule out threats to validity with known features of the sampling, assignment, and measurement procedures.**
+
+**Data strategies should sample the units, reveal the treatment conditions, and measure the outcomes that define the inquiry and are required by the answer strategy.**
+
+### Answer strategy principles
+
+**Answer strategies should explicitly target inquiries.**
+
+**When data strategies introduce no distortions, answer strategies can be directly analogous to inquiries. When data strategies do introduce distortions, they must be compensated for in the answer strategy.**
+
+
 
 
 ## Further Reading
@@ -348,7 +367,7 @@ This book develops a set of principles for choosing good research designs.
 
 <!-- Our language for research designs helps with both problems. -->
 
-<!-- Once a design is "declared" in simple enough language that a computer can understand it, then we can implement our "diagnosis" algorithm for assessing the properties of a design at the click of a button. This process makes it easy to compare among alternative designs and pick a strong one.  -->
+<!-- -->
 
 
 
@@ -356,3 +375,10 @@ This book develops a set of principles for choosing good research designs.
 
 
 <!-- An inquiry is a function of the exogenous characteristics of units, of endogenous outcome variables, or both. It may be defined over all units in the population defined by the model, as in the average treatment effect for all units, or it may be defined over a subset of units, as in the conditional average treatment effect for women. Because we defined the distribution of the variables in the model, we can define the probability distribution of inquiries, which are a function of those variables.  -->
+
+
+<!-- How can we rule out theoretical models? First, we need to enumerate the many models that are possible, at least in theory. The exhaustive enumeration of possible theoretical models is a daunting challenge. We describe below an approach that begins with a "kernel" -- a small portion of a theoretical model from which we grow theoretical possibilities. Suppose we have a list of possibilities in hand. A research question -- what we call an "inquiry" -- refers to a fact that, if known, would rule out some models in favor of others. If we can show through a credible research design that $Z$ causes $Y$, we can rule out all models in which $Z$ does not cause $Y$. The *reason* that we seek to learn about inquiries is to distinguish among theoretical possibilities. -->
+
+
+
+<!-- Typically, endogenous outcome variables are random variables, either because they are a function of an exogenous baseline variable for which we defined a probability distributions or because assignment to treatment or control is random as part of the data strategy. -->

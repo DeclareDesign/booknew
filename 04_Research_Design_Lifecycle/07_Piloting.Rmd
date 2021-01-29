@@ -17,8 +17,6 @@ source("scripts/before_chapter_script.R")
 
 <!-- start post here, do not edit above -->
 
-# During
-
 ## Piloting {#p4piloting}
 
 <!-- make sure to rename the section title below -->
@@ -38,6 +36,8 @@ b_sims <- 20
 <!-- -- what can you learn? about Y0, about M, about se -->
 <!-- -- bring in blog post -->
 
+<!-- mini MIDA in each piloting exercise -->
+
 The designs and results of past studies are important guides for selecting M, I, D, and A. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. However, researchers face a problem in being guided by past research: the research context and our inquiries often differ in at least subtle ways from any past study. Even when we are replicating a past study, we are collecting data in a different time period and if effects vary over time then aspects of M may differ from the original study. To deal with this, we often run pilot studies. These take many forms: focus groups to learn about features of M or to learn how to ask survey questions; small-scale tests of measurement tools to verify our data collection technology works; up to mini studies with the planned design but on a smaller scale. 
 
 Pilot studies are constrained by our time and by money. If we were not constrained, we would run the full study and learn what is wrong with our design and then run a corrected design for the main study. Since we cannot due to our constraints, we run either smaller mini studies or test out only a subset of the elements of our planned design. This places us in a bind: we are running a design smaller or less complete than the study we imagine conducting, and so the properties of the pilot design will not measure up. 
@@ -56,7 +56,7 @@ sd_estimator <- function(data){
 }
 
 design <- 
-  declare_population(N = 50, U = rnorm(N, mean = 0, sd = 1)) + 
+  declare_model(N = 50, U = rnorm(N, mean = 0, sd = 1)) + 
   declare_potential_outcomes(Y ~ 0.2 * Z + U) + 
   declare_assignment() + 
   declare_estimator(Y ~ Z) + 

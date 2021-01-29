@@ -68,13 +68,13 @@ synth_weights_tidy <- function(data, predictors, time.predictors.prior, dependen
 
 ```{r}
 design <- 
-  declare_population(
+  declare_model(
     unit = add_level(N = 10, units = 1:N, X = rnorm(N, sd = 0.5)),
     period = add_level(N = 3, time = 1:N, nest = FALSE),
     unit_period = cross_levels(by = join(unit, period), U = rnorm(N))
   ) + 
   declare_potential_outcomes(Y ~ X + 0.5 * as.numeric(period) + Z + U) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 3) + 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0), subset = period == 3) + 
   declare_step(handler = mutate, Z = unit == "01") + 
   reveal_outcomes(Y = if_else(Z == 0 | period < 3, Y_Z_0, Y_Z_1), 
                   handler = mutate) +
@@ -200,7 +200,7 @@ base_dag_plot %+% ggdd_df
 
 <!-- # note need to clean up the range of the data, currently over 1 -->
 <!-- design <- -->
-<!--   declare_population( -->
+<!--   declare_model( -->
 <!--     states = add_level( -->
 <!--       N = 50,  -->
 <!--       state = state.abb, -->
@@ -228,7 +228,7 @@ base_dag_plot %+% ggdd_df
 <!--   declare_potential_outcomes( -->
 <!--     prop_non_hispanic_below_hs ~ prop_non_hispanic_below_hs_baseline + 0.25 * legal_worker_act,  -->
 <!--     assignment_variable = legal_worker_act) + -->
-<!--   declare_estimand( -->
+<!--   declare_inquiry( -->
 <!--     ATE_AZ = mean(prop_non_hispanic_below_hs_legal_worker_act_1 -  -->
 <!--                     prop_non_hispanic_below_hs_legal_worker_act_0),  -->
 <!--     subset = legal_worker_act == TRUE) + -->

@@ -57,15 +57,16 @@ Y_function <- function(data) {
     ungroup
 }
 design <- 
-  declare_population(
+  declare_model(
     subject = add_level(N = 500),
     pair = add_level(N = 4),
     candidate = add_level(N = 2, U = runif(N))
   ) +
-  declare_assignment(assignment_variable = "A1") +
-  declare_assignment(assignment_variable = "A2", 
-                     conditions = c("young", "middle", "old")) +
-  declare_assignment(assignment_variable = "A3")  +
+  declare_assignment(A1 = complete_ra(N), legacy = FALSE) +
+  declare_assignment(
+    A2 = complete_ra(N, conditions = c("young", "middle", "old")), 
+    legacy = FALSE) +
+  declare_assignment(A3 = complete_ra(N), legacy = FALSE)  +
   declare_step(
     E = 
       0.05 * A1 + 

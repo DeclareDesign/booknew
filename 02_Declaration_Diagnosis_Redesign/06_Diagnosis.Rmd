@@ -265,11 +265,11 @@ Usually, we consider many diagnostic statistics at the same time. Here's a desig
 
 ```{r, eval=FALSE}
 design <-
-  declare_population(N = 100, 
+  declare_model(N = 100, 
                      tau = rnorm(N, mean = 0.1, sd = 0.1),
                      U = rnorm(N, 0, 0.2)) +
   declare_potential_outcomes(Y ~  tau * Z + U) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
   declare_estimator(Y ~ Z, estimand = "ATE")
 ```
@@ -279,11 +279,11 @@ design <-
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 set.seed(343)
 design <-
-  declare_population(N = 500, 
+  declare_model(N = 500, 
                      tau = rnorm(N, mean = 0.1, sd = 0.1),
                      U = rnorm(N)) +
   declare_potential_outcomes(Y ~ tau * Z + U) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
   declare_estimator(Y ~ Z, estimand = "ATE")
 
@@ -905,10 +905,10 @@ Ethical considerations also often enter the process of assessing research design
 We are always uncertain about M -- if we were certain of M (or there was no real dispute about it), there would be no need to conduct new empirical research about it. Research design diagnosis can account for this uncertainty by evaluating the performance of the design under alternative models. We are unsure of the exact value of the intra-class correlation of outcomes we will encounter, so we simulate the variance of the estimator under a range of plausible ICC values. We are unsure of the true average treatment effect, so we simulate the power of the study over a range of plausible effect sizes. Uncertainty over model inputs like the means, variances, and covariances in data that will eventually be collected is a major reason to simulate under a range of plausible values. 
 
 ```{r, include = FALSE, eval = FALSE}
-model <- declare_population(
+model <- declare_model(
   case_level = add_level(N = 1, b = rnorm(N, 1, 1)),
   unit_level = add_level(N = 20, Z = rep(0:1, N/2), Y = b*Z + rnorm(N))) +
-  declare_estimand(super_b = 1, case_b = b[1]) + 
+  declare_inquiry(super_b = 1, case_b = b[1]) + 
   declare_estimator(Y~Z, estimand = c("super_b", "case_b"))
 
 diagnose_design(model, sims = 100)
@@ -947,7 +947,7 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 <!-- ATE <- 0.0 -->
 
 <!-- design <-  -->
-<!--   declare_population(N = 1000, -->
+<!--   declare_model(N = 1000, -->
 <!--                      binary_covariate = rbinom(N, 1, 0.5), -->
 <!--                      normal_error = rnorm(N)) + -->
 <!--   # crucial step in POs: effects are not heterogeneous -->
@@ -1065,11 +1065,11 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 <!-- } -->
 
 <!-- design <- -->
-<!--   declare_population(     -->
+<!--   declare_model(     -->
 <!--     N = 100, X = rbinom(N, 1, 0.5), U = rnorm(N) -->
 <!--   ) +  -->
 <!--   declare_potential_outcomes(Y ~ 0.25 * Z + 10 * X + U) +  -->
-<!--   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +  -->
+<!--   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +  -->
 <!--   declare_assignment(prob = 0.5) +  -->
 <!--   declare_reveal(Y, Z) +  -->
 <!--   declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") +  -->
@@ -1104,13 +1104,13 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 <!-- } -->
 
 <!-- robustness_checks_design <-  -->
-<!--   declare_population( -->
+<!--   declare_model( -->
 <!--     N = 100, -->
 <!--     x = rnorm(N), -->
 <!--     y1 = rnorm(N), -->
 <!--     y2 = 0.15 * y1 + 0.01 * x + rnorm(N) -->
 <!--   ) + -->
-<!--   declare_estimand(y1_y2_are_related = TRUE) +  -->
+<!--   declare_inquiry(y1_y2_are_related = TRUE) +  -->
 <!--   declare_estimator(handler = label_estimator(bivariate_correlation_decision), label = "bivariate") +  -->
 <!--   declare_estimator(handler = label_estimator(robustness_check_decision), label = "robustness-check") -->
 
@@ -1131,7 +1131,7 @@ robustness_checks_design_dgp2 <- replace_step(
   robustness_checks_design,
   step = 1,
   new_step = 
-    declare_population(
+    declare_model(
       N = 100,
       x = rnorm(N),
       y1 = rnorm(N),
@@ -1143,7 +1143,7 @@ robustness_checks_design_dgp3 <- replace_step(
   robustness_checks_design,
   step = 1,
   new_step = 
-    declare_population(
+    declare_model(
       N = 100,
       x = rnorm(N),
       y1 = 0.15 * x + rnorm(N),
@@ -1154,7 +1154,7 @@ robustness_checks_design_dgp3 <- replace_step(
 robustness_checks_design_dgp3 <- replace_step(
   robustness_checks_design_dgp3, 
   step = 2,
-  new_step = declare_estimand(y1_y2_are_related = FALSE)
+  new_step = declare_inquiry(y1_y2_are_related = FALSE)
 )
 
 decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand))

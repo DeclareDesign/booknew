@@ -45,17 +45,17 @@ What belongs in a reconciliation? At a minimum, we need a full description of th
 In `DeclareDesign` we take the first steps of comparing designs for you:
 
 ```{r, eval = FALSE}
-design1 <- declare_population(N = 100, U = rnorm(N)) +
+design1 <- declare_model(N = 100, U = rnorm(N)) +
   declare_potential_outcomes(Y ~ Z + U) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 75) +
   declare_assignment(m = 50) +
   declare_reveal(Y, Z) +
   declare_estimator(Y ~ Z, estimand = "ATE")
 
-design2 <- declare_population(N = 200, U = rnorm(N)) +
+design2 <- declare_model(N = 200, U = rnorm(N)) +
   declare_potential_outcomes(Y ~ 0.5*Z + U) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 100) +
   declare_assignment(m = 25) +
   declare_reveal(Y, Z) +

@@ -35,7 +35,7 @@ b_sims <- 1000
 
 ```{r}
 design <- 
-  declare_population(
+  declare_model(
     unit = add_level(N = 2, Uu = rnorm(N, sd = 0.5)),
     period = add_level(N = 2, nest = FALSE),
     unit_period = cross_levels(by = join(unit, period), 
@@ -43,7 +43,7 @@ design <-
   ) + 
   declare_potential_outcomes(Y ~ Uu + 0.5 * as.numeric(period) + D + Ui,
                              assignment_variable = D) + 
-  declare_estimand(ATT = mean(Y_D_1 - Y_D_0), subset = period == 2) + 
+  declare_inquiry(ATT = mean(Y_D_1 - Y_D_0), subset = period == 2) + 
   declare_step(D = Uu == max(Uu), handler = mutate) + 
   reveal_outcomes(Y = if_else(D == 0 | period == 1, Y_D_0, Y_D_1), 
                   handler = mutate) +
@@ -94,7 +94,7 @@ N_time_periods <- 2
 
 two_period_two_group_design <- 
   
-  declare_population(
+  declare_model(
     units = add_level(N = N_units, unit_shock = rnorm(N, sd = 0.5)),
     periods = add_level(N = N_time_periods, nest = FALSE,
                         time = (1:N_time_periods) - N_time_periods + 1),
@@ -107,7 +107,7 @@ two_period_two_group_design <-
     Y_D_0 = unit_shock + 0.5 * time + unit_time_shock, 
     Y_D_1 = Y_D_0 + 1) +
   
-  declare_estimand(ATE = mean(Y_D_1 - Y_D_0), subset = time == 1) + 
+  declare_inquiry(ATE = mean(Y_D_1 - Y_D_0), subset = time == 1) + 
   
   declare_assignment(
     D = unit_shock == max(unit_shock), 
@@ -195,7 +195,7 @@ N_time_periods <- 20
 
 multi_period_design <- 
   
-  declare_population(
+  declare_model(
     units = add_level(
       N = N_units, 
       unit_shock = rnorm(N), 
@@ -216,7 +216,7 @@ multi_period_design <-
     Y_D_0 = unit_shock + 0.5 * time + noise, 
     Y_D_1 = Y_D_0 + 0.2) +
   
-  declare_estimand(ATE = mean(Y_D_1 - Y_D_0), subset = time == 1) + 
+  declare_inquiry(ATE = mean(Y_D_1 - Y_D_0), subset = time == 1) + 
   
   declare_assignment(D = 1*(unit_treated & pretreatment == FALSE), 
                      handler = fabricate) + 
