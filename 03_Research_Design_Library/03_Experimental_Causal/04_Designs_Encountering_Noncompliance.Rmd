@@ -92,7 +92,7 @@ This design declaration will show how two-stage least squares provides good esti
 
 ```{r}
 design <-
-  declare_population(
+  declare_model(
     N = 100,
     type = 
       rep(c("Always-Taker", "Never-Taker", "Complier", "Defier"),
@@ -117,7 +117,7 @@ design <-
       conditions = list(Z = c(0, 1))
     )
   ) +
-  declare_estimand(
+  declare_inquiry(
     ATE = mean(Y_D_1 - Y_D_0),
     CACE = mean(Y_D_1[type == "Complier"] - Y_D_0[type == "Complier"])) +
   declare_assignment(Z = conduct_ra(N = N, prob = 0.5), handler = fabricate) +
@@ -224,7 +224,7 @@ direct_effect_of_encouragement <- 0.0
 proportion_defiers <- 0.0
 
 design <-
-  declare_population(
+  declare_model(
     N = 500,
     type = sample(
       types,
@@ -249,7 +249,7 @@ design <-
       direct_effect_of_encouragement * Z + noise,
     assignment_variables = c("D", "Z")
   ) +
-  declare_estimand(CACE = mean((Y_D_1_Z_1 + Y_D_1_Z_0) / 2 -
+  declare_inquiry(CACE = mean((Y_D_1_Z_1 + Y_D_1_Z_0) / 2 -
                                  (Y_D_0_Z_1 + Y_D_0_Z_0) / 2),
                    subset = type == "Complier") +
   declare_assignment(prob = 0.5) +

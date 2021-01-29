@@ -381,7 +381,7 @@ pretreatment periods.
 \NormalTok{    ),}
     \DataTypeTok{Z =} \DecValTok{1}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{Y =} \KeywordTok{ifelse}\NormalTok{(time }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
     \DataTypeTok{estimate =}\NormalTok{ Y[time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{Y[time }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{], }
@@ -457,7 +457,7 @@ between the treated and control unit.
     \KeywordTok{potential_outcomes}\NormalTok{(Y }\OperatorTok{~}\StringTok{ }\FloatTok{0.5} \OperatorTok{*}\StringTok{ }\NormalTok{Z }\OperatorTok{+}\StringTok{ }\NormalTok{unit_specific_effect }\OperatorTok{*}\StringTok{ }\NormalTok{U_unit),}
     \DataTypeTok{Z =} \KeywordTok{if_else}\NormalTok{(U_unit }\OperatorTok{==}\StringTok{ }\KeywordTok{max}\NormalTok{(U_unit), }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{Y =} \KeywordTok{ifelse}\NormalTok{(Z }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
     \DataTypeTok{estimate =}\NormalTok{ Y[Z }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{] }\OperatorTok{-}\StringTok{ }\NormalTok{Y[Z }\OperatorTok{==}\StringTok{ }\DecValTok{0}\NormalTok{], }
@@ -546,7 +546,7 @@ then across-unit changes in the comparison unit.
 \StringTok{          }\FloatTok{1.25} \OperatorTok{*}\StringTok{ }\NormalTok{Z }\OperatorTok{+}\StringTok{ }\NormalTok{U)}
 \NormalTok{    )}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{TET =}\NormalTok{ Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{, }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{Y =} \KeywordTok{if_else}\NormalTok{(Z }\OperatorTok{==}\StringTok{ }\DecValTok{0} \OperatorTok{|}\StringTok{ }\NormalTok{period }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_estimator}\NormalTok{(}
     \DataTypeTok{estimate =} 
@@ -621,7 +621,7 @@ time\_trend & time\_specific\_effect & unit\_specific\_effect & bias & se(bias)\
       \DataTypeTok{Y =} \KeywordTok{if_else}\NormalTok{(Z }\OperatorTok{==}\StringTok{ }\DecValTok{0} \OperatorTok{|}\StringTok{ }\NormalTok{time }\OperatorTok{<=}\StringTok{ }\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{0}\NormalTok{, Y_Z_}\DecValTok{1}\NormalTok{)}
 \NormalTok{    )}
 \NormalTok{  ) }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{declare_estimand}\NormalTok{(}\DataTypeTok{ATT =} \KeywordTok{mean}\NormalTok{(Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{), }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{declare_inquiry}\NormalTok{(}\DataTypeTok{ATT =} \KeywordTok{mean}\NormalTok{(Y_Z_}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{Y_Z_}\DecValTok{0}\NormalTok{), }\DataTypeTok{subset =}\NormalTok{ time }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{declare_measurement}\NormalTok{(}\DataTypeTok{predictors =} \StringTok{"X"}\NormalTok{,}
                     \DataTypeTok{time.predictors.prior =} \DecValTok{-1}\OperatorTok{:}\DecValTok{0}\NormalTok{,}
                     \DataTypeTok{dependent =} \StringTok{"Y"}\NormalTok{,}

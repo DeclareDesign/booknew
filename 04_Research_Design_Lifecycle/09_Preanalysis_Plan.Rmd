@@ -70,7 +70,7 @@ rescale <- function(x) (x - min(x)) / (max(x) - min(x))
 likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
 
 model <- 
-  declare_population(
+  declare_model(
     N = 800,
     female = rbinom(N, 1, prob = 0.51),
     lgbtq = rbinom(N, 1, prob = 0.05),
@@ -121,7 +121,7 @@ In the code below, we specify how each treatment effect changes with its corresp
 slope <- function(y, x) cov(y, x) / var(x)
 
 inquiry <-  
-  declare_estimands(
+  declare_inquirys(
     # Average effects
     ATE_nationalism = 
       mean(blm_support_Z_nationalism - blm_support_Z_general),

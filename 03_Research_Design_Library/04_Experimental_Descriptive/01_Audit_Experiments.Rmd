@@ -68,22 +68,24 @@ Table: (\#tab:auditcausaltypes) Causal Types
 
 ```{r}
 design <- 
-  declare_population(N = 100,
-                     U = rnorm(N)) +
-  declare_potential_outcomes(
-    R ~ if_else(Z + U > 0.5, 1, 0), conditions = list(Z = c(0, 1))) +
-  declare_potential_outcomes(
-    Q ~ if_else(R == 1, Z + U, NA_real_), 
-    conditions = list(Z = c(0, 1), R = c(0, 1))) +
-  declare_estimand(ATE_R = mean(R_Z_1 - R_Z_0)) + 
-  declare_estimand(CATE_ar = mean(Q_Z_1_R_1 - Q_Z_0_R_1), 
+  declare_model(N = 100,
+                U = rnorm(N),
+                potential_outcomes(
+                  R ~ ifelse(Z + U > 0.5, 1, 0), 
+                  conditions = list(Z = c(0, 1))),
+                potential_outcomes(
+                  Q ~ ifelse(R == 1, Z + U, NA_real_),
+                  conditions = list(Z = c(0, 1), R = c(0, 1)))) +
+  declare_inquiry(ATE_R = mean(R_Z_1 - R_Z_0)) + 
+  declare_inquiry(CATE_ar = mean(Q_Z_1_R_1 - Q_Z_0_R_1), 
                    subset = (R_Z_1 == 1 & R_Z_0 == 0)) + 
-  declare_assignment(prob = 0.5) +
-  declare_reveal(R, Z) +
-  declare_reveal(Q, c(Z, R)) +
-  declare_estimator(R ~ Z, estimand = "ATE_R", label = "ATE_R") +
+  declare_assignment(Z = complete_ra(N, prob = 0.5), legacy = FALSE) +
+  declare_measurement(R = reveal_outcomes(R ~ Z),
+                      Q = reveal_outcomes(Q ~ Z + R)) + 
+  # declare_reveal(Q, c(Z, R)) +
+  declare_estimator(R ~ Z, inquiry = "ATE_R", label = "ATE_R") +
   declare_estimator(Q ~ Z, subset = (R == 1), 
-                    estimand = "CATE_ar", 
+                    inquiry = "CATE_ar", 
                     label = "CATE_ar")
 ```
 

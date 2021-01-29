@@ -58,7 +58,7 @@ Of course, it is rare to have such certainty---we typically attach varying degre
 types <- c('Z_caused_Y', 'Z_caused_not_Y', 'always_Y', 'always_not_Y')
 
 design <-
-  declare_population(
+  declare_model(
     N = 195,
     Z = draw_binary(prob = .3, N = N),
     type = sample(x = types, size = N, replace = TRUE, 
@@ -79,7 +79,7 @@ design <-
       filter(Z == 1 & Y == 1) %>%
       sample_n(size = 1)
     }) +
-  declare_estimand(did_Z_cause_Y = type == 'Z_caused_Y') +
+  declare_inquiry(did_Z_cause_Y = type == 'Z_caused_Y') +
   declare_estimator(
     pr_type_Z_caused_Y = 0.500,
     pr_C_1_type_Z_caused_Y = 0.250,
@@ -229,7 +229,7 @@ diagnose_design(design,
 <!-- #  -->
 <!-- #  -->
 <!-- # design <- -->
-<!-- #   declare_population(N = 20, -->
+<!-- #   declare_model(N = 20, -->
 <!-- #                      Z = draw_binary(prob = .5, N = N), -->
 <!-- #                      type = sample(x = types, size = N, replace = TRUE, prob = c(.5, 0, .5, 0)))  + -->
 <!-- #   declare_potential_outcomes( -->
@@ -252,7 +252,7 @@ diagnose_design(design,
 <!-- #                      conditions = c("00","01","10","11"),  -->
 <!-- #                      assignment_variable = "C1C2") +   -->
 <!-- #   declare_sampling(handler = function(data) data %>% filter(Z==1 & Y==1) %>% sample_n(size = 1)) + -->
-<!-- #   declare_estimand(did_Z_cause_Y = type == 'Z_caused_Y') + -->
+<!-- #   declare_inquiry(did_Z_cause_Y = type == 'Z_caused_Y') + -->
 <!-- #   declare_measurement( -->
 <!-- #   C1 = ifelse(C1C2 == "10" | C1C2 == "11", 1, 0), -->
 <!-- #   C2 = ifelse(C1C2 == "01" | C1C2 == "11", 1, 0), -->

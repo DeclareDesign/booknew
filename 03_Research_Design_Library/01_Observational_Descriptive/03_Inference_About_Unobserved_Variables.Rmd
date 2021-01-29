@@ -32,8 +32,8 @@ In the declaration below `Y_star` has a normal distribution but it is not center
 ```{r}
 
 design <-
-  declare_population(N = 250, gender = rep(0:1, N/2), Y_star = 1 + gender + 2* rnorm(N)) +
-  declare_estimand(Y_bar = mean(scale(Y_star)[gender == 1])) + 
+  declare_model(N = 250, gender = rep(0:1, N/2), Y_star = 1 + gender + 2* rnorm(N)) +
+  declare_inquiry(Y_bar = mean(scale(Y_star)[gender == 1])) + 
   declare_measurement(Y_1 = 3 + 0.1 * Y_star + rnorm(N, sd = 0.5),
                       Y_2 = 2 + 1.0 * Y_star + rnorm(N, sd = 1),
                       Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.5),

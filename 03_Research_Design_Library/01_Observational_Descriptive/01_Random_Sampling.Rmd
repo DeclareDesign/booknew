@@ -47,9 +47,9 @@ portola <-
     )
 
 design <- 
-  declare_population(data = portola) + 
+  declare_model(data = portola) + 
   declare_measurement(Y = as.numeric(cut(Ystar, 7))) + 
-  declare_estimand(Y_bar = mean(Y)) + 
+  declare_inquiry(Y_bar = mean(Y)) + 
   declare_sampling(n = 100) + 
   declare_estimator(Y ~ 1, model = lm_robust, estimand = "Y_bar")
 ```
@@ -133,9 +133,9 @@ Let's modify our first design to sample at the household level, rather than at t
 
 ```{r}
 design <-
-  declare_population(data = portola) +
+  declare_model(data = portola) +
   declare_measurement(Y = as.numeric(cut(Ystar, 7))) +
-  declare_estimand(Y_bar = mean(Y)) +
+  declare_inquiry(Y_bar = mean(Y)) +
   declare_sampling(clusters = households, n = 50) +
   declare_estimator(Y ~ 1,
                     model = lm_robust,

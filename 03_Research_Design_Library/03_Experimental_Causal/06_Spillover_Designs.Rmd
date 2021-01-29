@@ -40,11 +40,11 @@ Randomized saturation designs are used to measure the diffusion of treatment eff
 
 ```{r}
 design <-
-  declare_population(
+  declare_model(
     group = add_level(N = 50, X = rnorm(N)),
     unit = add_level(N = 50, U = rnorm(N))
   ) +
-  declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
+  declare_assignment(S = cluster_ra(N, clusters = group, conditions = c("low", "high")), legacy = FALSE) +
   declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
   declare_assignment(blocks = group, prob_unit = S_prob) +
   declare_step(spillover = ave(Z, group, FUN = mean),
@@ -52,7 +52,7 @@ design <-
   declare_potential_outcomes(
     Y ~ Z + spillover * (S == "low") + Z * spillover * (S == "high") + X + U,
     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
-  declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
+  declare_inquiry(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
   declare_reveal(Y, c(Z, S)) +
   declare_estimator(Y ~ Z + S,
@@ -131,7 +131,7 @@ base_dag_plot %+% ggdd_df
 <!-- G_per_saturation <- c(5,5,5) -->
 
 <!-- design <-  -->
-<!--   declare_population(N = N_individuals,  -->
+<!--   declare_model(N = N_individuals,  -->
 <!--                      X = 1:N,  -->
 <!--                      U = rnorm(N), -->
 <!--                      G = ntile(X, N_groups)) +  -->
@@ -160,7 +160,7 @@ base_dag_plot %+% ggdd_df
 <!--       spillover_med * (S == "med") +  -->
 <!--       spillover_high * (S == "high"), -->
 <!--     conditions = list(Z = c(0,1), S = c("low","med","high"))) + -->
-<!--   declare_estimand(high = mean(Y_Z_0_S_high - Y_Z_0_S_low), -->
+<!--   declare_inquiry(high = mean(Y_Z_0_S_high - Y_Z_0_S_low), -->
 <!--                    med =  mean(Y_Z_0_S_med - Y_Z_0_S_low),  -->
 <!--                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) + -->
 <!--   declare_reveal(Z,S) + -->

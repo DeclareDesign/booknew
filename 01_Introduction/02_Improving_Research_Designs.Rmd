@@ -91,42 +91,46 @@ In the model, we describe a hierarchical structure with 192 villages each of whi
 
 ```{r}
 model <-
-  declare_population(
+  declare_model(
     villages = add_level(N = 192),
-    citizens = add_level(N = 48, U = runif(N))
-  ) +
-  declare_potential_outcomes(Y_Z_neutral = U,
-                             Y_Z_personal = Y_Z_neutral + 0.02,
-                             Y_Z_social = Y_Z_neutral + 0.03)
+    citizens = add_level(N = 48, 
+                         U = runif(N),
+                         Y_Z_neutral = U,
+                         Y_Z_personal = Y_Z_neutral + 0.02,
+                         Y_Z_social = Y_Z_neutral + 0.03),
+  )
 ```
 
 Our inquiry is the average treatment effect in the population, defined as the average difference in potential outcomes:
-  
+
 ```{r}
-inquiry <- declare_estimand(
+inquiry <- declare_inquiry(
   ATE_personal = mean(Y_Z_personal - Y_Z_neutral),
   ATE_social = mean(Y_Z_social - Y_Z_neutral)
 )
 ```
-  
+
 The data strategy consists of four steps:
 
 * assignment: We randomly assign one third to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal.
 * reveal outcomes: Subjects reveal outcomes (i.e., their probability of running for office) according to their randomly-assigned condition.
 * measurement: We measure a binary outcome `Yobs` from the unobserved, latent variable `Y`: units that have a latent outcome above 0.97 have `Yobs` of 1 and 0 otherwise.
-  
+
 ```{r}
 data_strategy <-
   declare_assignment(
-    clusters = villages, 
-    conditions = c("neutral", "personal", "social")
+    Z = cluster_ra(N, 
+                   clusters = villages, 
+                   conditions = c("neutral", "personal", "social"))
   ) + 
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
-  declare_measurement(Yobs = if_else(Y > 0.97, 1, 0))
+  declare_measurement(
+    Y = reveal_outcome(Y ~ Z),
+    Yobs = if_else(Y > 0.97, 1, 0)
+  )
 ```
 
 The answer strategy consists of the difference-in-means of $Y$ depending on $Z$, with standard errors clustered at the village level in order to respect the clustering of the assignment in the data strategy. We link this estimator to the ATE estimand to explicitly link the answer strategy to the inquiry. This principle is one we always try to maintain---if you have an estimator you should have an estimand to link it to.
-  
+
 ```{r}
 answer_strategy <- 
   declare_estimator(Y ~ Z, term = c("Zpersonal", "Zsocial"), 
