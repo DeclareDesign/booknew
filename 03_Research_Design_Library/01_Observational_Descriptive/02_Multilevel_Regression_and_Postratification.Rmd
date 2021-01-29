@@ -27,13 +27,13 @@ Poststratification is a tool for learning about a population when you have a sam
 JC comment: Original declaration doesn't have correlation between X and Y so this design works even if the estimator is just an intercept. Once I added the correlation, the design was biased. Don't quite understand the demeaning approach (doesn't appear to be using any population-level info?) so have just opted for a more conventional approach to poststratification that reweights to the population proportions. Have also called this poststratification since we are now only using MRP in the extended example. 
 
 ```{r}
-fixed_population <- declare_population(N = 500, 
+fixed_population <- declare_model(N = 500, 
                                        X = sample(c("A", "B", "C"), N, replace = TRUE),
                                        Y = sample(1:7, N, replace = TRUE))()
 
 design <- 
-  declare_population(data = fixed_population) + 
-  declare_estimand(Ybar = mean(Y)) + 
+  declare_model(data = fixed_population) + 
+  declare_inquiry(Ybar = mean(Y)) + 
   declare_sampling(strata_prob = c(0.2, 0.1, 0.3), strata = X) + 
   declare_step(B_demeaned = (X == "B") - mean(X == "B"),
                C_demeaned = (X == "C") - mean(X == "C"), mutate) + 
@@ -63,8 +63,8 @@ fixed_population <-
   )
 
 design <-
-  declare_population(data = fixed_population) +
-  declare_estimand(Ybar = mean(Y)) +
+  declare_model(data = fixed_population) +
+  declare_inquiry(Ybar = mean(Y)) +
   declare_sampling(strata_n = c(10, 10), strata = X) +
   declare_step(handler = group_by, groups = X) +
   declare_step(handler = mutate,
@@ -172,7 +172,7 @@ MRP based on Lax and Philips APSR 2009
 <!-- # Policies are coded dichotomously, 1 for the progay policy and 0 otherwise: Adoption (9 states allow second-parent adoption in all jurisdictions) -->
 
 <!-- design <- -->
-<!--   declare_population( -->
+<!--   declare_model( -->
 <!--     data = delaware_population_df,  -->
 
 <!--     districts = modify_level(district_effect = rnorm(N)), -->
@@ -185,7 +185,7 @@ MRP based on Lax and Philips APSR 2009
 <!--     ) -->
 <!--   ) +  -->
 
-<!--   declare_estimand(handler = function(data) { -->
+<!--   declare_inquiry(handler = function(data) { -->
 <!--     data %>% -->
 <!--       group_by(district) %>% -->
 <!--       summarize(estimand = mean(policy_support)) %>% -->

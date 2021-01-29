@@ -124,20 +124,22 @@ model <-
     citizens = add_level(N = 100, U = runif(N)),
     potential_outcomes(Y_Z_neutral = U,
                        Y_Z_personal = Y_Z_neutral + 0.02,
-                       Y_Z_social = Y_Z_neutral + 0.03)
+                       Y_Z_social = Y_Z_neutral + 0.03))
 ```
 
 Our inquiry is the average treatment effects in the population, defined as the average differences in potential outcomes:
   
+
 ```{r}
 inquiry <- declare_inquiry(
   ATE_personal = mean(Y_Z_personal - Y_Z_neutral),
   ATE_social = mean(Y_Z_social - Y_Z_neutral)
 )
 ```
-  
+
 The data strategy consists of three steps: sampling, assignment, and measuremenet. In sampling, we sample 48 of the eligibile citizens from each village into the study.  In assignment, we cluster assign one third of the villages to the neutral condition, one third to the personal appeal, and the remaining third to the social appeal. The measurement step maps the realized (but still latent!) potential outcome to the observed choice to run or not.
   
+
 ```{r}
 data_strategy <-
   declare_sampling(S = strata_rs(strata = villages, n = 48), legacy = FALSE) +
@@ -150,7 +152,7 @@ data_strategy <-
 ```
 
 The answer strategy consists of an ordinary least squares regression (as implmented by `lm_robust`) of the outcome on the treatments. The standard errors clustered at the village level in order to account for the clustering in the assignment procedure. The regression will return three coefficients: an intercept and two treatment effect estimates. We ensure that the estimates are mapped to the relevant inquiry by explicitly linking them.
-  
+
 ```{r}
 answer_strategy <- 
   declare_estimator(Y ~ Z, term = c("Zpersonal", "Zsocial"), 

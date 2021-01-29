@@ -12,7 +12,7 @@ inquiry <- function(x) {
 }
 
 design <-
-  declare_population(
+  declare_model(
     N = 100,
     X_star = seq(0, 1, length.out = N),
     prob_Y = inquiry(X_star),

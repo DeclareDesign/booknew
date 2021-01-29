@@ -88,11 +88,11 @@ c <- .2   # Cost of policy
 
 # Design
 design <- 
-  declare_population(
+  declare_model(
     b = add_level(N = 1, b = rnorm(1,0,1)),
     i = add_level(N = N, X = rnorm(N), Y = 1+b*X + rnorm(N))) +
   declare_measurement(Y_seen = Y + rnorm(N, 0, r)) +
-  declare_estimand(b=b[1]) +
+  declare_inquiry(b = b[1]) +
   declare_estimator(Y_seen ~ X, model = lm_robust) 
 ```
 

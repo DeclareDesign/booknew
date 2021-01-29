@@ -14,7 +14,7 @@
 library(DeclareDesign)
 
 design <-
-  declare_population(
+  declare_model(
     county = add_level(
       20,
       county_shock = c(0.5, rnorm(N - 1)),
@@ -27,7 +27,7 @@ design <-
     individual = add_level(2, individual_shock = rnorm(N))
   ) +
   declare_potential_outcomes(Y ~ Z * county_shock + county_shock + household_shock + individual_shock) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0),
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0),
                    CATE_NorCal = mean(Y_Z_1[place == "NorCal"] - Y_Z_0[place == "NorCal"])) +
   
   declare_assignment(blocks = place,

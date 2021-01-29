@@ -12,9 +12,9 @@ dd_pink <- "#D43981"
 dd_gray <- gray(0.2)
 
 design <-
-  declare_population(N = 100, U = rnorm(N, 0, 0.2)) +
+  declare_model(N = 100, U = rnorm(N, 0, 0.2)) +
   declare_potential_outcomes(Y ~ rnorm(N, mean = 0.1, sd = 0.1) * Z + U) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment() +
   declare_estimator(Y ~ Z, estimand = "ATE", model = lm_robust)
 
