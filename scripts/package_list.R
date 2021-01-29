@@ -11,6 +11,11 @@ bookwide_packages <-
     "kableExtra",
     "gridExtra",
     "texreg",
+    
+    # CausalQueries
+    "CausalQueries",
+    "Rcpp",
+    
     # DeclareDesign packages
     "estimatr",
     "fabricatr",
@@ -18,8 +23,6 @@ bookwide_packages <-
     "DeclareDesign",
     "DesignLibrary",
     
-    "CausalQueries",
-    "Rcpp",
     # tidyverse packages
     "ggplot2",
     "patchwork",

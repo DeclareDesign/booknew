@@ -79,8 +79,8 @@ design <-
   declare_estimand(CATE_ar = mean(Q_Z_1_R_1 - Q_Z_0_R_1), 
                    subset = (R_Z_1 == 1 & R_Z_0 == 0)) + 
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(R, Z) +
-  reveal_outcomes(Q, c(Z, R)) +
+  declare_reveal(R, Z) +
+  declare_reveal(Q, c(Z, R)) +
   declare_estimator(R ~ Z, estimand = "ATE_R", label = "ATE_R") +
   declare_estimator(Q ~ Z, subset = (R == 1), 
                     estimand = "CATE_ar", 

@@ -53,7 +53,7 @@ design <-
   declare_potential_outcomes(Y ~ D + X_1 + X_2 + U,
                              assignment_variable = D) +
   declare_estimand(ATE = mean(Y_D_1 - Y_D_0)) +
-  reveal_outcomes(Y, D) +
+  declare_reveal(Y, D) +
   declare_estimator(Y ~ D + X_1 + X_2, model = lm_robust, 
                     estimand = "ATE") 
 ```
@@ -106,7 +106,7 @@ design <-
   declare_potential_outcomes(Y ~ D + X_1 + X_2 + U,
                              assignment_variable = D) +
   declare_estimand(ATE = mean(Y_D_1 - Y_D_0)) +
-  reveal_outcomes(Y, D) +
+  declare_reveal(Y, D) +
   declare_estimator(Y ~ D + X_1 + X_2, model = lm_robust, 
                     estimand = "ATE") 
 ```
@@ -153,7 +153,7 @@ design <-
   declare_potential_outcomes(Y ~ D + X_2 + U,
                              assignment_variable = D) +
   declare_estimand(ATE = mean(Y_D_1 - Y_D_0)) +
-  reveal_outcomes(Y, D) +
+  declare_reveal(Y, D) +
   declare_measurement(X_1 =  D + rnorm(N)) +
   declare_estimator(Y ~ D + X_1 + X_2, model = lm_robust, 
                     estimand = "ATE") 

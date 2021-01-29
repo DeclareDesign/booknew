@@ -220,7 +220,7 @@ multi_period_design <-
   
   declare_assignment(D = 1*(unit_treated & pretreatment == FALSE), 
                      handler = fabricate) + 
-  reveal_outcomes(Y, D) + 
+  declare_reveal(Y, D) + 
   
   declare_estimator(Y ~ D + time, fixed_effects = ~ units + periods, 
                     model = lm_robust, 

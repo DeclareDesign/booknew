@@ -119,9 +119,9 @@ Every step of a research design declaration can be written using one of the `dec
 | Inquiry          | `declare_estimand()`             | define research question                                        |
 | Data strategy    | `declare_sampling()`             | specify sampling procedures                                     |
 |                  | `declare_assignment()`           | specify assignment procedures                                   |
-|                  | `reveal_outcomes()`              | link potential outcomes to revealed outcomes via assignment     |
+|                  | `declare_reveal()`               | link potential outcomes to revealed outcomes via assignment     |
 |                  | `declare_measurement()`          | specify measurement procedures                                  |
-| Answer strategy  | `declare_estimator()`             | specify data summary procedures                                 |
+| Answer strategy  | `declare_estimator()`            | specify data summary procedures                                 |
 
 Table: (\#tab:declarationfunctions) Declaration functions in `DeclareDesign`
 
@@ -318,7 +318,7 @@ declare_assignment(prob = 0.5)
 After treatments are assigned, some *potential* outcomes are *revealed*. Treated units reveal their treated potential outcomes and untreated units reveal their untreated potential outcomes. The `reveal_outcomes` function performs this switching operation.
 
 ```{r, eval = FALSE}
-reveal_outcomes(Y, Z)
+declare_reveal(Y, Z)
 ```
 
 Adding these two declarations to the design results in a data frame with an additional indicator `Z` for the assignment as well as its corresponding probability of assignment. Again, here the assignment probabilities are constant, but in other designs described in Section \@ref(p2assignment) they are not and this is crucial information for the analysis stage. The outcome variable `Y` is composed of each unit's potential outcomes depending on its treatment status.
@@ -330,7 +330,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) +
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(Y, Z)
+  declare_reveal(Y, Z)
 
 draw_data(simple_design) %>% 
   head(5) %>% 
@@ -371,7 +371,7 @@ simple_design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) +
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
+  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
   declare_estimator(Y ~ Z, model = difference_in_means, estimand = "PATE")
 
 simple_design_data <- draw_data(simple_design)
@@ -500,7 +500,7 @@ assignment <-
   declare_assignment(prob = 0.5) 
 
 reveal <- 
-  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) 
+  declare_reveal(outcome_variables = Y, assignment_variables = Z) 
 
 estimator <- 
   declare_estimator(
@@ -525,7 +525,7 @@ design <-
   declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_sampling(n = 50) +
   declare_assignment(prob = 0.5) +
-  reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
+  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
   declare_estimator(
     Y ~ Z, model = difference_in_means, estimand = "PATE"
   )
@@ -658,7 +658,7 @@ simple_designer <- function(sample_size, effect_size) {
     declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) +
     declare_sampling(n = 50) +
     declare_assignment(prob = 0.5) +
-    reveal_outcomes(outcome_variables = Y, assignment_variables = Z) +
+    declare_reveal(outcome_variables = Y, assignment_variables = Z) +
     declare_estimator(
       Y ~ Z, model = difference_in_means, estimand = "PATE"
     )
