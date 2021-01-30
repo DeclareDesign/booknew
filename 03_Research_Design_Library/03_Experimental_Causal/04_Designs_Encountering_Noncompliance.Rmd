@@ -170,12 +170,12 @@ label_df <- inquiries_df %>% mutate(estimator_label = "2SLS",
                                     x = c(-0.1, 0.8),
                                     y = 75)
 
-dx$simulations_df %>% filter(estimand_label == "ATE") %>%
+dx$simulations_df %>% filter(inquiry_label == "ATE") %>%
   ggplot(aes(estimate)) +
   geom_histogram(bins = 30) +
   facet_wrap(~estimator_label, ncol = 1) +
-  geom_vline(data = inquiries_df, aes(xintercept = estimand, color = estimand_label), linetype = "dashed") +
-  geom_text(data = label_df, aes(x = x, y = y, label = estimand_label)) +
+  geom_vline(data = inquiries_df, aes(xintercept = estimand, color = inquiry_label), linetype = "dashed") +
+  geom_text(data = label_df, aes(x = x, y = y, label = inquiry_label)) +
   dd_theme() +
   theme(legend.position = "none")
   

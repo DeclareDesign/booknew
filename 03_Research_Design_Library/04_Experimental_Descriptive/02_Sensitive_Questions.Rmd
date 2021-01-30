@@ -167,7 +167,7 @@ The plot shows the sampling distribution of the direct and list experiment estim
 ```{r, echo=FALSE}
 summary_df <- 
   simulations_list %>%
-  filter(estimand_label == "proportion_truthful_trump_vote") %>% 
+  filter(inquiry_label == "proportion_truthful_trump_vote") %>% 
   gather(key, value, estimand, estimate) %>%
   group_by(estimator_label, key) %>%
   summarize(average_value = mean(value))
@@ -220,7 +220,7 @@ diagnose_design_effects <- read_rds(rds_file_path)
 ```{r, echo = FALSE}
 diagnose_design_effects %>%
   get_diagnosands %>%
-  select(estimator_label, estimand_label, bias, rmse) %>%
+  select(estimator_label, inquiry_label, bias, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 ```
 
@@ -259,7 +259,7 @@ diagnose_liars <- read_rds(rds_file_path)
 ```{r, echo = FALSE}
 diagnose_liars %>%
   get_diagnosands %>%
-  select(estimator_label, estimand_label, bias, rmse) %>%
+  select(estimator_label, inquiry_label, bias, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 ```
 
@@ -406,7 +406,7 @@ diagnose_control_item_correlation <- read_rds(rds_file_path)
 diagnose_control_item_correlation %>%
   get_diagnosands %>%
   filter(estimator_label == "list") %>% 
-  select(rho, estimator_label, estimand_label, bias, rmse) %>%
+  select(rho, estimator_label, inquiry_label, bias, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 ```
 
@@ -443,7 +443,7 @@ diagnose_prop_treated <- read_rds(rds_file_path)
 diagnose_prop_treated %>%
   get_diagnosands %>%
   filter(estimator_label == "list") %>% 
-  select(prop_treated, estimator_label, estimand_label, rmse) %>%
+  select(prop_treated, estimator_label, inquiry_label, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 ```
 

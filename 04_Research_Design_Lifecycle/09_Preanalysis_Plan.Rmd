@@ -328,12 +328,12 @@ diagnosis <- read_rds(rds_file_path)
 ```{r bonillatillerydiagnosis, echo = FALSE}
 diagnosis %>% 
   get_simulations %>% 
-  group_by(estimand_label, estimator_label) %>% 
+  group_by(inquiry_label, estimator_label) %>% 
   summarize(
     bias = mean(estimate - estimand, na.rm = TRUE),
     power = mean(p.value <= 0.05, na.rm = TRUE)
   ) %>% 
-  mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
+  mutate(inquiry_label = str_replace_all(inquiry_label, "_", " "),
          estimator_label = str_replace_all(estimator_label, "_", " ")) %>% 
   kable(digits = 3, col.names = c("Estimand", "Estimator", "Bias", "Power"), 
         caption = "Design diagnosis for Bonilla and Tillery design.", booktabs = TRUE)

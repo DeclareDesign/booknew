@@ -241,7 +241,7 @@ design <-
   declare_measurement(Y = ifelse(time == 0, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
     estimate = Y[time == 1] - Y[time == 0], 
-    estimand_label = "TET", handler = summarize)
+    inquiry_label = "TET", handler = summarize)
 
 designs <- redesign(
   design, time_trend = c(0, 0.5), time_specific_effect = c(0, 1))
@@ -288,7 +288,7 @@ design <-
   declare_measurement(Y = ifelse(Z == 0, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
     estimate = Y[Z == 1] - Y[Z == 0], 
-    estimand_label = "TET", handler = summarize)
+    inquiry_label = "TET", handler = summarize)
 
 designs <- redesign(design, unit_specific_effect = c(0, 1))
 ```
@@ -341,7 +341,7 @@ design <-
     estimate = 
       (mean(Y[Z == 1 & time == 2]) - mean(Y[Z == 1 & time == 1])) - 
       (mean(Y[Z == 0 & time == 2]) - mean(Y[Z == 0 & time == 1])), 
-    estimand_label = "ATT", handler = summarize)
+    inquiry_label = "ATT", handler = summarize)
 
 designs <- redesign(design, 
                     time_trend = c(0, 0.5), 
