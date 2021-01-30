@@ -285,6 +285,7 @@ design <-
   declare_potential_outcomes(Y ~ tau * Z + U) + 
   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
   declare_estimator(Y ~ Z, inquiry = "ATE")
 
 simulations <- 
@@ -909,7 +910,7 @@ model <- declare_model(
   case_level = add_level(N = 1, b = rnorm(N, 1, 1)),
   unit_level = add_level(N = 20, Z = rep(0:1, N/2), Y = b*Z + rnorm(N))) +
   declare_inquiry(super_b = 1, case_b = b[1]) + 
-  declare_estimator(Y~Z, estimand = c("super_b", "case_b"))
+  declare_estimator(Y~Z, inquiry = c("super_b", "case_b"))
 
 diagnose_design(model, sims = 100)
 ```

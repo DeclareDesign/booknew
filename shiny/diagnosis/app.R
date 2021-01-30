@@ -21,7 +21,7 @@ sims_df <- tibble(
     estimator_label = character(), term = character(), estimate = numeric(), 
     std.error = numeric(), statistic = numeric(), p.value = numeric(), 
     conf.low = numeric(), conf.high = numeric(), df = numeric(), 
-    outcome = character(), estimand_label = character(), estimand = numeric()
+    outcome = character(), estimand_label = character(), inquiry = numeric()
 )
 
 # Define UI for application that draws a histogram

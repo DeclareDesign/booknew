@@ -37,7 +37,7 @@ design <-
   declare_sampling(strata_prob = c(0.2, 0.1, 0.3), strata = X) + 
   declare_step(B_demeaned = (X == "B") - mean(X == "B"),
                C_demeaned = (X == "C") - mean(X == "C"), mutate) + 
-  declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, estimand = "Ybar")
+  declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, inquiry = "Ybar")
 ```
 
 -->
@@ -199,7 +199,7 @@ MRP based on Lax and Philips APSR 2009
 <!--     data %>% -->
 <!--       group_by(district) %>% -->
 <!--       summarize(estimate = mean(policy_support)) -->
-<!--   }), label = "strata_means", estimand = "mean_policy_support") +  -->
+<!--   }), label = "strata_means", inquiry = "mean_policy_support") +  -->
 
 <!--   # this estimator owes code to https://timmastny.rbind.io/blog/multilevel-mrp-tidybayes-brms-stan/ -->
 <!--   declare_estimator(handler = tidy_estimator(function(data) { -->
@@ -218,7 +218,7 @@ MRP based on Lax and Philips APSR 2009
 <!--       group_by(district) %>% -->
 <!--       summarize(estimate = sum(support_predicted_weighted)) -->
 
-<!--   }), label = "mrp_mle", estimand = "mean_policy_support") -->
+<!--   }), label = "mrp_mle", inquiry = "mean_policy_support") -->
 
 <!-- dat <- draw_data(design) -->
 
