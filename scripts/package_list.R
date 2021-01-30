@@ -44,5 +44,7 @@ bookwide_packages <-
     "ggrepel",
     # extras
     "dddag",
-    "latex2exp"
+    "latex2exp",
+    
+    "rstan"
   )
