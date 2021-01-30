@@ -46,5 +46,6 @@ bookwide_packages <-
     "dddag",
     "latex2exp",
     
-    "rstan"
+    "rstan",
+    "StanHeaders"
   )
