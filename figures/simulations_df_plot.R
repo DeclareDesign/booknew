@@ -16,7 +16,7 @@ design <-
   declare_potential_outcomes(Y ~ rnorm(N, mean = 0.1, sd = 0.1) * Z + U) + 
   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment() +
-  declare_estimator(Y ~ Z, estimand = "ATE", model = lm_robust)
+  declare_estimator(Y ~ Z, inquiry = "ATE", model = lm_robust)
 
 # diagnose_design(design, sims = 250)
 

@@ -271,7 +271,7 @@ design <-
   declare_potential_outcomes(Y ~  tau * Z + U) + 
   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, estimand = "ATE")
+  declare_estimator(Y ~ Z, inquiry = "ATE")
 ```
 
 
@@ -285,7 +285,7 @@ design <-
   declare_potential_outcomes(Y ~ tau * Z + U) + 
   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, estimand = "ATE")
+  declare_estimator(Y ~ Z, inquiry = "ATE")
 
 simulations <- 
   simulate_design(design, sims = 10) %>%
@@ -1072,12 +1072,12 @@ We can apply the same principle to *competing* models. Imagine that you believe 
 <!--   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +  -->
 <!--   declare_assignment(prob = 0.5) +  -->
 <!--   declare_reveal(Y, Z) +  -->
-<!--   declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", estimand = "ATE") +  -->
-<!--   declare_estimator(Y ~ Z, model = lm_robust, label = "cov", estimand = "ATE") +  -->
+<!--   declare_estimator(Y ~ Z, model = lm_robust, label = "nocov", inquiry = "ATE") +  -->
+<!--   declare_estimator(Y ~ Z, model = lm_robust, label = "cov", inquiry = "ATE") +  -->
 <!--   declare_estimator( -->
 <!--     handler = label_estimator(report_lower_p_value), -->
 <!--     label = "select-lower-p-value", -->
-<!--     estimand = "ATE")  -->
+<!--     inquiry = "ATE")  -->
 
 <!-- diags <- diagnose_design(design, sims = sims) -->
 <!-- ``` -->
