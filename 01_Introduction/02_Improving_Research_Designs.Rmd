@@ -123,10 +123,11 @@ We are now ready to delare the @Gulzar2020 study in code. In the model, we descr
 model <-
   declare_model(
     villages = add_level(N = 192),
-    citizens = add_level(N = 100, U = runif(N)),
-    potential_outcomes(Y_Z_neutral = U,
-                       Y_Z_personal = Y_Z_neutral + 0.02,
-                       Y_Z_social = Y_Z_neutral + 0.03))
+    citizens = add_level(N = 100, 
+                         U = runif(N),
+                         Y_Z_neutral = U,
+                         Y_Z_personal = Y_Z_neutral + 0.02,
+                         Y_Z_social = Y_Z_neutral + 0.03))
 ```
 
 Our inquiry is the average treatment effects in the population, defined as the average differences in potential outcomes:
@@ -149,7 +150,7 @@ data_strategy <-
   	Z = cluster_ra(clusters = villages, 
   	               conditions = c("neutral", "personal", "social")),
   	legacy = FALSE) + 
-  declare_measurement(Y_latent = reveal_outcomes(Y, Z),
+  declare_measurement(Y_latent = reveal_outcomes(Y ~ Z),
                       Y_observed = if_else(Y_latent > 0.97, 1, 0))
 ```
 
@@ -157,7 +158,7 @@ The answer strategy consists of an ordinary least squares regression (as impleme
 
 ```{r}
 answer_strategy <- 
-  declare_estimator(Y ~ Z, term = c("Zpersonal", "Zsocial"), 
+  declare_estimator(Y_observed ~ Z, term = c("Zpersonal", "Zsocial"), 
                     clusters = villages, 
                     model = lm_robust,
                     inquiry = c("ATE_personal", "ATE_social"))
@@ -217,13 +218,13 @@ diagnosis <- diagnose_design(design, diagnosands = diagnosands)
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("02_Improving_Research_Designs"), "/simple_design_diagnosis.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simple_design_diagnosis, path = rds_file_path)
+  write_rds(diagnosis, file = rds_file_path)
 }
-simple_design_diagnosis <- read_rds(rds_file_path)
+diagnosis <- read_rds(rds_file_path)
 ```
 
 ```{r simpledesigndiagnosis, echo = FALSE}
-get_diagnosands(simple_design_diagnosis) %>% 
+get_diagnosands(diagnosis) %>% 
   select(inquiry_label, estimator_label, bias, rmse, power) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 ```
