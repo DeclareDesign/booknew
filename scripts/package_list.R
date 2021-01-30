@@ -12,10 +12,6 @@ bookwide_packages <-
     "gridExtra",
     "texreg",
     
-    # CausalQueries
-    "CausalQueries",
-    "Rcpp",
-    
     # DeclareDesign packages
     "estimatr",
     "fabricatr",
@@ -44,8 +40,5 @@ bookwide_packages <-
     "ggrepel",
     # extras
     "dddag",
-    "latex2exp",
-    
-    "rstan",
-    "StanHeaders"
+    "latex2exp"
   )
