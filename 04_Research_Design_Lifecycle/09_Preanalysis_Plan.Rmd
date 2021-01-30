@@ -185,14 +185,14 @@ answer_strategy <-
     blm_support ~ Z,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
     model = lm_robust,
-    estimand = 
+    inquiry = 
       c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     label = "OLS"
   ) +
   declare_estimator(
     blm_support ~ Z + age + female + as.factor(linked_fate) + lgbtq,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
-    estimand = 
+    inquiry = 
       c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     model = lm_robust,
     label = "OLS with controls"
@@ -203,7 +203,7 @@ answer_strategy <-
              "Zfeminism:blm_familiarity", 
              "Zintersectional:blm_familiarity"),
     model = lm_robust,
-    estimand = c("DID_nationalism_familiarity", 
+    inquiry = c("DID_nationalism_familiarity", 
                  "DID_feminism_familiarity", 
                  "DID_intersectional_familiarity"),
     label = "DID_familiarity"
@@ -212,21 +212,21 @@ answer_strategy <-
     blm_support ~ Z * linked_fate,
     term = "Zfeminism:linked_fate",
     model = lm_robust,
-    estimand = "DID_nationalism_linked_fate",
+    inquiry = "DID_nationalism_linked_fate",
     label = "DID_nationalism_linked_fate"
   ) +
   declare_estimator(
     blm_support ~ Z * female,
     term = "Zfeminism:female",
     model = lm_robust,
-    estimand = "DID_feminism_gender",
+    inquiry = "DID_feminism_gender",
     label = "DID_feminism_gender"
   ) +
   declare_estimator(
     blm_support ~ Z * lgbtq,
     term = "Zintersectional:lgbtq",
     model = lm_robust,
-    estimand = "DID_intersectional_lgbtq",
+    inquiry = "DID_intersectional_lgbtq",
     label = "DID_intersectional_lgbtq"
   )
 ```

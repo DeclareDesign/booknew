@@ -126,19 +126,19 @@ design <-
   declare_estimator(
     Y ~ D | Z,
     model = iv_robust,
-    estimand = c("ATE", "CACE"),
+    inquiry = c("ATE", "CACE"),
     label = "2SLS"
   ) +
   declare_estimator(
     Y ~ D,
     model = lm_robust,
-    estimand = c("ATE", "CACE"),
+    inquiry = c("ATE", "CACE"),
     label = "As treated"
   ) +
   declare_estimator(
     Y ~ D,
     model = lm_robust,
-    estimand = c("ATE", "CACE"),
+    inquiry = c("ATE", "CACE"),
     subset = D == Z,
     label = "Per protocol"
   )

@@ -59,7 +59,7 @@ design <-
                     weights = 1 / (S_cond_prob * Z_cond_prob),
                     model = lm_robust,
                     term = c("Z", "Shigh"),
-                    estimand = c("ATE_saturation", "ate_no_spill"),
+                    inquiry = c("ATE_saturation", "ate_no_spill"),
                     label = "main effect")
 ```
 
@@ -173,20 +173,20 @@ base_dag_plot %+% ggdd_df
 <!--   declare_estimator(model = lm_robust,  -->
 <!--                     formula = Y ~ S, -->
 <!--                     subset = Z == 0 & S %in% c("high","low"),  -->
-<!--                     estimand = "high", -->
+<!--                     inquiry = "high", -->
 <!--                     weights = w, -->
 <!--                     label = "high vs low") + -->
 <!--   declare_estimator(model = lm_robust,  -->
 <!--                     formula = Y ~ S, -->
 <!--                     subset = Z == 0 & S %in% c("med","low"),  -->
 <!--                     weights = w, -->
-<!--                     estimand = "med", -->
+<!--                     inquiry = "med", -->
 <!--                     label = "med vs low") + -->
 <!--   declare_estimator(model = lm_robust,  -->
 <!--                     formula = Y ~ Z + S, -->
 <!--                     term = "Z",  -->
 <!--                     weights = w, -->
-<!--                     estimand = "ate_no_spill", -->
+<!--                     inquiry = "ate_no_spill", -->
 <!--                     label = "main effect") -->
 <!-- ``` -->
 

@@ -39,7 +39,7 @@ design <-
     fixed_effects = ~ county,
     clusters = household,
     se_type = "stata",
-    estimand = c("ATE", "CATE_NorCal"),
+    inquiry = c("ATE", "CATE_NorCal"),
     label = "County Fixed Effects"
   ) +
   declare_estimator(
@@ -47,7 +47,7 @@ design <-
     model = lm_robust,
     clusters = household,
     se_type = "stata",
-    estimand = c("ATE", "CATE_NorCal"),
+    inquiry = c("ATE", "CATE_NorCal"),
     label = "No controls"
   )
 
