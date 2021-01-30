@@ -47,7 +47,7 @@ design <-
   declare_step(D = Uu == max(Uu), handler = mutate) + 
   reveal_outcomes(Y = if_else(D == 0 | period == 1, Y_D_0, Y_D_1), 
                   handler = mutate) +
-  declare_estimator(Y ~ period + unit + D, model = lm_robust, estimand = "ATT", se_type = "none")
+  declare_estimator(Y ~ period + unit + D, model = lm_robust, inquiry = "ATT", se_type = "none")
 ```
 
 ### DAG

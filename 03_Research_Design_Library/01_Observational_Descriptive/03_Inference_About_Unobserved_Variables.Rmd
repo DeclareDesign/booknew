@@ -39,8 +39,8 @@ design <-
                       Y_3 = 1 + 0.5 * Y_star + rnorm(N, sd = 0.5),
                       Y_av = scale((scale(Y_1) + scale(Y_2) + scale(Y_3))),
                       Y_fa  = princomp(~ Y_1 + Y_2 + Y_2, cor = TRUE)$scores[,1]) + 
-  declare_estimator(Y_av ~ 1, model = lm_robust, estimand = "Y_bar", subset = gender ==1, label = "Average") +
-  declare_estimator(Y_fa ~ 1, model = lm_robust, estimand = "Y_bar", subset = gender ==1, label = "principal components")
+  declare_estimator(Y_av ~ 1, model = lm_robust, inquiry = "Y_bar", subset = gender ==1, label = "Average") +
+  declare_estimator(Y_fa ~ 1, model = lm_robust, inquiry = "Y_bar", subset = gender ==1, label = "principal components")
 
 ```
 
