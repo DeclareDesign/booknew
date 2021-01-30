@@ -157,7 +157,7 @@ simulations_list <- simulate_design(design, sims = sims)
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("sensitive_questions"), "/simulations_list.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulations_list, path = rds_file_path)
+  write_rds(simulations_list, file = rds_file_path)
 }
 simulations_list <- read_rds(rds_file_path)
 ```
@@ -170,7 +170,7 @@ summary_df <-
   filter(inquiry_label == "proportion_truthful_trump_vote") %>% 
   gather(key, value, estimand, estimate) %>%
   group_by(estimator_label, key) %>%
-  summarize(average_value = mean(value))
+  summarize(average_value = mean(value), .groups = "drop")
 
 simulations_list %>%
   ggplot(aes(estimate)) +

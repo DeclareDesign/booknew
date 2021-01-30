@@ -180,17 +180,8 @@ data_function <- function() {
 
 design <- 
   declare_population(data =  data_function()) + 
-#  declare_inquiry(CoE = CoE) +
   declare_estimand(CoE = CoE) +
   declare_estimator(handler = my_estimator_function)
-
-# diagnosands <- declare_diagnosands(
-#   bias = mean(estimate - inquiry_value),
-#   mse = mean((estimate - inquiry_value) ^ 2),
-#   mean_posterior_var = mean(estimate*(1-estimate)),
-#   mean_estimate = mean(estimate),
-#   mean_inquiry = mean(inquiry_value)
-# )
 
 diagnosands <- declare_diagnosands(
   bias = mean(estimate - estimand),
