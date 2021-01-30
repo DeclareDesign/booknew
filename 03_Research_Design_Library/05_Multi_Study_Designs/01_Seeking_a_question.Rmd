@@ -94,7 +94,7 @@ discovery <-
     potential_outcomes(Y ~ Z + het_effect * Z * X + u)) + 
   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(Z = complete_ra(N = N), legacy = FALSE) +
-  declare_measurement(Y = reveal_outcomes(Y ~ Z))
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
     
   # Main analysis
   declare_estimator(Y ~ Z, inquiry = "ATE", label = "Main") +
@@ -145,7 +145,7 @@ diagnosis <-
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("discovery"), "/discovery1.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(diagnosis, path = rds_file_path)
+  write_rds(diagnosis, file = rds_file_path)
 }
 diagnosis <- read_rds(rds_file_path)
 ```
