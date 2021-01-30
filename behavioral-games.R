@@ -8,7 +8,7 @@ lapply(packages, require, character.only = TRUE)
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 design <-
-  declare_population(
+  declare_model(
     games = add_level(N = 100),
     players = add_level(
       N = 2,
@@ -17,12 +17,11 @@ design <-
       cutoff = pmax(prosociality - 0.25, 0)
     )
   ) +
-  declare_estimand(mean_fairness = mean(fairness),
-                   mean_cutoff = mean(cutoff)) +
+  declare_inquiries(mean_fairness = mean(fairness),
+                    mean_cutoff = mean(cutoff)) +
   declare_assignment(
-    blocks = games, 
-    conditions = c("proposer", "responder"),
-    assignment_variable = "role"
+    role = block_ra(blocks = games, 
+                    conditions = c("proposer", "responder"))
   ) + 
   declare_step(
     id_cols = games, 
@@ -36,18 +35,17 @@ design <-
   ) + 
   declare_estimator(proposal ~ 1,
                     model = lm_robust,
-                    estimand = "mean_fairness",
+                    inquiry = "mean_fairness",
                     label = "mean_fairness") +
   declare_estimator(response ~ 1,
                     model = lm_robust,
-                    estimand = "mean_cutoff",
+                    inquiry = "mean_cutoff",
                     label = "mean_cutoff")
 
 dag <- dagify(fairness ~ prosociality,
               cutoff ~ prosociality,
               proposal ~ fairness + role,
               response ~ proposal + cutoff + role)
-
 
 nodes <-
   tibble(
@@ -68,7 +66,6 @@ nodes <-
     data_strategy = c("unmanipulated", "unmanipulated", "unmanipulated", "assignment", "unmanipulated", "unmanipulated"),
     answer_strategy = "uncontrolled"
   )
-
 
 ggdd_df <- make_dag_df(dag, nodes)
 

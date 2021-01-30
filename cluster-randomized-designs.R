@@ -6,7 +6,7 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 design <-
-  declare_population(
+  declare_model(
     V = add_level(
       N = 100,
       X = rbinom(N, 1, 0.3),
@@ -15,20 +15,20 @@ design <-
     I = add_level(N = 5,
                   U = rnorm(N))) +
   declare_potential_outcomes(Y ~ Z * X + U + Q) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(clusters = V,
                      blocks = X,
                      block_prob = c(0.1, 0.5)) +
   declare_estimator(Y ~ Z,
                     model = difference_in_means,
-                    estimand = "ATE",
+                    inquiry = "ATE",
                     label = "Naive DIM") +
   declare_estimator(
     Y ~ Z,
     clusters = V,
     blocks = X,
     model = difference_in_means,
-    estimand = "ATE",
+    inquiry = "ATE",
     label = "Blocked and Clustered DIM"
   ) +
   declare_estimator(
@@ -36,7 +36,7 @@ design <-
     clusters = V,
     fixed_effects = X,
     model = lm_robust,
-    estimand = "ATE",
+    inquiry = "ATE",
     label = "Naive FE"
   )
 

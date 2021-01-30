@@ -35,21 +35,19 @@ comparison_estimator <- function(data){
 # The design
 
 discovery <- 
-  
-  declare_population(
+  declare_model(
     N = 200, 
     X = sample(1:N %% 2)==1,
     het_effect = sample(c(0,.5),1,TRUE),
     train = sample(1:N %% 2)==1,
-    u = rnorm(N)) +
-  
-  declare_potential_outcomes(Y ~ Z + het_effect * Z * X + u) + 
-    declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
-    declare_assignment() +
-    declare_reveal(Y, Z) +
+    u = rnorm(N),
+    potential_outcomes(Y ~ Z + het_effect * Z * X + u)) + 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N = N), legacy = FALSE) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
     
   # Main analysis
-  declare_estimator(Y ~ Z, estimand = "ATE", label = "Main") +
+  declare_estimator(Y ~ Z, inquiry = "ATE", label = "Main") +
   
   # Exploration
   declare_step(
@@ -57,27 +55,27 @@ discovery <-
       all_p   = (lm_robust(Y ~ Z * X) %>% tidy())[4,4],
       handler = fabricate) +
     
-  declare_estimand(
+  declare_inquiry(
     het = mean(Y_Z_1[X] - Y_Z_0[X]) - mean(Y_Z_1[!X] - Y_Z_0[!X])) +
   
   # Handler estimates only if p low in training group  
   declare_estimator(
-    handler = tidy_estimator(new_estimator), 
-    estimand = "het",
+    handler = label_estimator(new_estimator), 
+    inquiry = "het",
     label = "Discovery") +
     
   declare_estimator(
-    handler = tidy_estimator(comparison_estimator), 
-    estimand = "het",
+    handler = label_estimator(comparison_estimator), 
+    inquiry = "het",
     label = "Comparison")
 
-discovery <- set_diagnosands(discovery, declare_diagnosands(
-  bias = mean((estimate - estimand), na.rm = TRUE),
-  RMSE = sqrt(mean((estimate - estimand)^2, na.rm = TRUE)),
-  frequency = mean(!is.na(estimate)),
-  false_pos = mean(p.value[estimand == 0] < 0.05, na.rm = TRUE),
-  false_neg = 1 - mean(p.value[estimand != 0] < 0.05, na.rm = TRUE)))
-
+discovery_diagnosands <-
+  declare_diagnosands(
+    bias = mean((estimate - estimand), na.rm = TRUE),
+    RMSE = sqrt(mean((estimate - estimand)^2, na.rm = TRUE)),
+    frequency = mean(!is.na(estimate)),
+    false_pos = mean(p.value[estimand == 0] < 0.05, na.rm = TRUE),
+    false_neg = 1 - mean(p.value[estimand != 0] < 0.05, na.rm = TRUE))
 
 
 
@@ -87,4 +85,10 @@ diagnosis %>%
   reshape_diagnosis() %>% select(-Term, - 'N Sims') %>%
   kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
 
-kable(reshape_diagnosis(diagnosis)[c("Estimator Label","Term","Bias","RMSE","Frequency","False Pos","False Neg")])
+kable(reshape_diagnosis(diagnosis)[c("Estimator Label",
+                                     "Term",
+                                     "Bias",
+                                     "RMSE",
+                                     "Frequency",
+                                     "False Pos",
+                                     "False Neg")])

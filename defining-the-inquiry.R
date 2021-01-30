@@ -43,38 +43,23 @@ ggplot(gg_df, aes(X, pred)) +
   theme_void()
 
 model <-
-  declare_population(N = 100,
-                     U = rnorm(N),
-                     D = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * D + U, 
-                             assignment_variable = "D") +
-  declare_reveal(Y, D)
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    potential_outcomes(Y ~ 0.5 * D + U, 
+                       conditions = list(D = c(0, 1))),
+    D = rbinom(N, 1, .5)
+  ) +
+  declare_measurement(Y = reveal_outcomes(Y ~ D))
 
 inquiry <-
-  declare_estimand(
+  declare_inquiry(
     treatment_group_mean = mean(Y[D == 1]),
     ATE = mean(Y_D_1 - Y_D_0),
     probability_of_causation = mean((Y_D_0 < 0)[D == 1 & Y_D_1 > 0])
   )
 
-draw_estimands(model + inquiry)
+draw_inquiries(model + inquiry)
 
-
-model <-
-  declare_population(N = 100,
-                     U = rnorm(N),
-                     D = rbinom(N, 1, .5)) +
-  declare_potential_outcomes(Y ~ 0.5 * D + U, 
-                             assignment_variable = "D") +
-  declare_reveal(Y, D)
-
-inquiry <-
-  declare_estimand(
-    treatment_group_mean = mean(Y[D == 1]),
-    ATE = mean(Y_D_1 - Y_D_0),
-    probability_of_causation = mean((Y_D_0 < 0)[D == 1 & Y_D_1 > 0])
-  )
-
-draw_estimands(model + inquiry) %>% 
+draw_inquiries(model + inquiry) %>% 
   kable(caption = "One model three estimands.", digits = 3, booktabs = TRUE)
-

@@ -119,35 +119,37 @@ gg_adjustment <- base_dag_plot %+% ggdd_df
 
 (gg_assignment + gg_sampling) / (gg_measurement + gg_adjustment)
 
-M <-
-  declare_population(N = 100, 
-                     U = rnorm(N), 
-                     tau = rnorm(N, mean = 1, sd = 0.1), 
-                     Z = rbinom(N, 1, prob = 0.5)) +
-  declare_potential_outcomes(Y ~ tau * Z + U)
+model <-
+  declare_model(N = 100, 
+                U = rnorm(N), 
+                tau = rnorm(N, mean = 1, sd = 0.1), 
+                Z = rbinom(N, 1, prob = 0.5),
+                potential_outcomes(Y ~ tau * Z + U))
 
-draw_data(M) %>% 
+draw_data(model + NULL) %>% 
   head(5) %>% kable(caption = "Data from a simple model", digits = 3, booktabs = TRUE)
 
 
 M <-
-  declare_population(
+  declare_model(
     N = 100,
     U = rbinom(N, size = 1, prob = 0.25),
     X1 = rbinom(N, size = 1, prob = 0.25),
-    X2 = rbinom(N, size = 1, prob = 0.25)
+    X2 = rbinom(N, size = 1, prob = 0.25),
+    potential_outcomes(D ~ Z * X1),
+    potential_outcomes(M ~ D, conditions = list(D = c(0, 1))),
+    potential_outcomes(K ~ D * U, conditions = list(D = c(0, 1))),
+    potential_outcomes(Y ~ X2 + X1 + M + U, 
+                       conditions = list(M = c(0, 1)))
   ) +
-  declare_potential_outcomes(D ~ Z * X1) +
-  declare_potential_outcomes(M ~ D, assignment_variables = D) +
-  declare_potential_outcomes(K ~ D * U, assignment_variables = D) +
-  declare_potential_outcomes(Y ~ X2 + X1 + M + U, 
-                             assignment_variables = c(M)) +
-  declare_assignment(prob = 0.5) +
-  declare_reveal(D, Z) +
-  declare_reveal(M, D) +
-  declare_reveal(K, D) +
-  declare_reveal(Y, M)
-# draw_data(design)
+  declare_assignment(Z = complete_ra(N, prob = 0.5), legacy = FALSE) +
+  declare_measurement(
+    D = reveal_outcomes(D ~ Z),
+    M = reveal_outcomes(M ~ D),
+    K = reveal_outcomes(K ~ D),
+    Y = reveal_outcomes(Y ~ M)
+  )
+# draw_data(M)
 
 
 dag <- dagify(
@@ -188,14 +190,14 @@ base_dag_plot %+% ggdd_df
 tau_X0 <- 0.5
 tau_X1 <- 1
 
-M <-
-  declare_population(
+model <-
+  declare_model(
     N = 100, 
     U = rnorm(N), 
-    X = rbinom(N, 1, .5)
-  ) +
-  declare_potential_outcomes(
-    Y ~ (X == 0) * Z * tau_X0 + (X == 1) * Z * tau_X1 + U
+    X = rbinom(N, 1, .5),
+    potential_outcomes(
+      Y ~ (X == 0) * Z * tau_X0 + (X == 1) * Z * tau_X1 + U
+    )
   )
 
 dag1 <- dagitty("dag{
@@ -397,9 +399,9 @@ subplot_function <- function(data) {
     data %>%
     group_by(var, DX_fac, YX_fac, tile_fac) %>%
     summarize(x = 1.5, y = 1.5, n = n(), .groups = "drop")
-
+  
   g <-
-  ggplot(data, aes(x, y)) +
+    ggplot(data, aes(x, y)) +
     geom_tile(data = dag_df, aes(fill = tile_fac), height = 1.75, width = 1.75, alpha = 0.5) +
     geom_text(data = points_df, aes(label = name), size = 5) +
     geom_dag_edges(aes(xend = xend, yend = yend),
@@ -439,7 +441,7 @@ wgg <- wrap_plots(gg, ncol = 2, byrow = FALSE) + plot_layout(guides = "collect")
     legend.key.size = unit(35, "mm"),
     legend.margin = margin(t = 40, r = 0, b = 0, l = 0, unit = "mm"),
     strip.text = element_text(size = 30)
-    )
+  )
 
 wgg
 
@@ -452,13 +454,15 @@ possible_models %>%
   head() %>% 
   kable(caption = "DAGs coded by consistency with two theories.")
 
-## M <-
-##   declare_population(N = 100,
-##                      U = rnorm(N),
-##                      D = rbinom(N, 1, prob = 0.5),
-##                      X = runif(N)) +
-##   declare_potential_outcomes(Y ~ DY * Z + YU * U + YX * X)
+## model <-
+##   declare_model(
+##     N = 100,
+##     U = rnorm(N),
+##     D = rbinom(N, 1, prob = 0.5),
+##     X = runif(N),
+##     potential_outcomes(Y ~ DY * Z + YU * U + YX * X)
+##   )
 ## 
-## designs <- redesign(M, DY = c(0, 1), YU = c(0, 1), YX = c(0, 1))
+## designs <- redesign(model, DY = c(0, 1), YU = c(0, 1), YX = c(0, 1))
 ## 
 ## diagnose_design(designs, sims = 5)

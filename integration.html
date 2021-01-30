@@ -39,7 +39,7 @@
 <li><a class="" href="primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
+<li><a class="" href="declaration-1.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -49,7 +49,7 @@
 <li><a class="" href="part-ii-exercises.html"><span class="header-section-number">12</span> Part II Exercises</a></li>
 <li class="book-part">Research Design Library</li>
 <li><a class="" href="research-design-library.html"><span class="header-section-number">13</span> Research Design Library</a></li>
-<li><a class="" href="observational-designs-for-descriptive-inference.html"><span class="header-section-number">14</span> Observational designs for descriptive inference</a></li>
+<li><a class="" href="observational-descriptive.html"><span class="header-section-number">14</span> Observational | descriptive</a></li>
 <li><a class="" href="observational-designs-for-causal-inference.html"><span class="header-section-number">15</span> Observational designs for causal inference</a></li>
 <li><a class="" href="experimental-designs-for-causal-inference.html"><span class="header-section-number">16</span> Experimental designs for causal inference</a></li>
 <li><a class="" href="experimental-designs-for-descriptive-inference.html"><span class="header-section-number">17</span> Experimental designs for descriptive inference</a></li>
@@ -135,7 +135,7 @@
 <!-- This basic design allows all five paths. -->
 <!-- ```{r} -->
 <!-- design_1 <- -->
-<!--   declare_population(N = 1000, -->
+<!--   declare_model(N = 1000, -->
 <!--                      D = rbinom(N, size = 1, prob = 0.5), -->
 <!--                      U = rnorm(N)) + -->
 <!--   declare_potential_outcomes(M ~ rbinom(N, size = 1, prob = pnorm(D_M * -->
@@ -146,8 +146,8 @@
 <!--                              conditions = list(D = c(0, 1), M = c(0, 1))) + -->
 <!--   declare_reveal(outcome_variables = "Y", -->
 <!--                  assignment_variables = c("D", "M")) + -->
-<!--   declare_estimand(CDE = mean(Y_D_1_M_1 - Y_D_0_M_1)) + -->
-<!--   declare_estimator(Y ~ D, subset = M == 1, estimand = "CDE") -->
+<!--   declare_inquiry(CDE = mean(Y_D_1_M_1 - Y_D_0_M_1)) + -->
+<!--   declare_estimator(Y ~ D, subset = M == 1, inquiry = "CDE") -->
 <!-- ``` -->
 <!-- We redesign the design 3 times, removing one path at a time, then simulate all four designs. -->
 <!-- ```{r, message=FALSE} -->

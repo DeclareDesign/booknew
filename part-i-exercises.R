@@ -8,10 +8,11 @@ lapply(packages, require, character.only = TRUE)
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 design <- 
-  declare_population(N = 100, X = rnorm(N), U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ 0.25 * Z + X + U) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_assignment(prob = 0.5) + 
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) 
+  declare_model(N = 100, X = rnorm(N), U = rnorm(N),
+                potential_outcomes(Y ~ 0.25 * Z + X + U)) + 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_assignment(Z = complete_ra(N, prob = 0.5), 
+                     legacy = FALSE) + 
+  declare_measurement(Y = reveal_outcome(Y ~ Z)) 
 
-declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")
+declare_estimator(Y ~ Z + X, model = lm_robust, inquiry = "ATE")

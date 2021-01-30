@@ -62,7 +62,7 @@ queries %>% select(-Using) %>% #, - Case.estimand) %>%
 
 
 design <- 
-  declare_population(
+  declare_model(
     N = 2, 
     time = 0:1,
     U_time = rnorm(N),
@@ -71,11 +71,11 @@ design <-
     ),
     Z = 1
   ) + 
-  declare_estimand(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
+  declare_inquiry(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
   declare_measurement(Y = ifelse(time == 0, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
     estimate = Y[time == 1] - Y[time == 0], 
-    estimand_label = "TET", handler = summarize)
+    inquiry_label = "TET", handler = summarize)
 
 designs <- redesign(
   design, time_trend = c(0, 0.5), time_specific_effect = c(0, 1))
@@ -87,18 +87,18 @@ designs <- redesign(
 kable(get_diagnosands(diagnosis) %>% select(time_trend, time_specific_effect, bias, `se(bias)`), booktabs = TRUE, digits = 3)
 
 design <- 
-  declare_population(
+  declare_model(
     N = 2, 
     time = 1,
     U_unit = rnorm(N),
     potential_outcomes(Y ~ 0.5 * Z + unit_specific_effect * U_unit),
     Z = if_else(U_unit == max(U_unit), 1, 0)
   ) + 
-  declare_estimand(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
+  declare_inquiry(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
   declare_measurement(Y = ifelse(Z == 0, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
     estimate = Y[Z == 1] - Y[Z == 0], 
-    estimand_label = "TET", handler = summarize)
+    inquiry_label = "TET", handler = summarize)
 
 designs <- redesign(design, unit_specific_effect = c(0, 1))
 
@@ -109,7 +109,7 @@ designs <- redesign(design, unit_specific_effect = c(0, 1))
 kable(get_diagnosands(diagnosis) %>% select(unit_specific_effect, bias, `se(bias)`), booktabs = TRUE, digits = 3)
 
 design <- 
-  declare_population(
+  declare_model(
     unit = add_level(N = 2, U_unit = rnorm(N, sd = 0.5), Z = if_else(U_unit == max(U_unit), 1, 0)),
     period = add_level(N = 2, time = 0:1, U_time = rnorm(N), nest = FALSE),
     unit_period = cross_levels(
@@ -122,13 +122,13 @@ design <-
           1.25 * Z + U)
     )
   ) + 
-  declare_estimand(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
+  declare_inquiry(TET = Y_Z_1 - Y_Z_0, subset = time == 1) + 
   declare_measurement(Y = if_else(Z == 0 | period == 1, Y_Z_0, Y_Z_1)) + 
   declare_estimator(
     estimate = 
       (mean(Y[Z == 1 & time == 2]) - mean(Y[Z == 1 & time == 1])) - 
       (mean(Y[Z == 0 & time == 2]) - mean(Y[Z == 0 & time == 1])), 
-    estimand_label = "ATT", handler = summarize)
+    inquiry_label = "ATT", handler = summarize)
 
 designs <- redesign(design, 
                     time_trend = c(0, 0.5), 
@@ -167,7 +167,7 @@ synth_weights_tidy <- function(data, predictors, time.predictors.prior, dependen
 
 
 design <- 
-  declare_population(
+  declare_model(
     units = add_level(N = 10, unit_ID = 1:10, U_unit = rnorm(N), X = rnorm(N), Z = if_else(unit_ID == 1, 1, 0)), # if_else(U_unit == max(U_unit), 1, 0)),
     periods = add_level(N = 3, time = -1:1, U_time = rnorm(N), nest = FALSE),
     unit_periods = cross_levels(
@@ -179,7 +179,7 @@ design <-
       Y = if_else(Z == 0 | time <= 0, Y_Z_0, Y_Z_1)
     )
   ) + 
-  declare_estimand(ATT = mean(Y_Z_1 - Y_Z_0), subset = time == 1) + 
+  declare_inquiry(ATT = mean(Y_Z_1 - Y_Z_0), subset = time == 1) + 
   declare_measurement(predictors = "X",
                     time.predictors.prior = -1:0,
                     dependent = "Y",

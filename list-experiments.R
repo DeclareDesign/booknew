@@ -8,29 +8,29 @@ lapply(packages, require, character.only = TRUE)
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 model <- 
-  declare_population(
+  declare_model(
     N = 100,
     U = rnorm(N),
     X = rbinom(N, size = 3, prob = 0.5),
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2))
-  ) + 
-  declare_potential_outcomes(Y_list ~ Y_star * Z + X) 
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2)),
+    potential_outcomes(Y_list ~ Y_star * Z + X) 
+  ) 
 
-inquiry <- declare_estimand(proportion = mean(Y_star))
+inquiry <- declare_inquiry(proportion = mean(Y_star))
 
 data_strategy <- 
   declare_measurement(Y_direct = Y_star - S) +
-  declare_assignment(prob = 0.5) + 
-  declare_reveal(Y_list, Z)
+  declare_assignment(Z = complete_ra(N, prob = 0.5), legacy = FALSE) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z))
 
 answer_strategy <-
   declare_estimator(Y_direct ~ 1,
                     model = lm_robust,
-                    estimand = "proportion",
+                    inquiry = "proportion",
                     label = "direct") +
-  declare_estimator(Y_list ~ Z, estimand = "proportion", label = "list")
+  declare_estimator(Y_list ~ Z, inquiry = "proportion", label = "list")
 
 design <- model + inquiry + data_strategy + answer_strategy
 
@@ -78,10 +78,10 @@ base_dag_plot %+% ggdd_df
 
 summary_df <- 
   simulations_list %>%
-  filter(estimand_label == "proportion_truthful_trump_vote") %>% 
+  filter(inquiry_label == "proportion_truthful_trump_vote") %>% 
   gather(key, value, estimand, estimate) %>%
   group_by(estimator_label, key) %>%
-  summarize(average_value = mean(value))
+  summarize(average_value = mean(value), .groups = "drop")
 
 simulations_list %>%
   ggplot(aes(estimate)) +
@@ -90,17 +90,15 @@ simulations_list %>%
   facet_wrap(~estimator_label)
 
 model_design_effects <- 
-  declare_population(
+  declare_model(
     N = 100,
     U = rnorm(N),
     X_control = rbinom(N, size = 3, prob = 0.5),
     X_treat = rbinom(N, size = 3, prob = 0.25),
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2))
-  ) + 
-  declare_potential_outcomes(
-    Y_list ~ (Y_star + X_treat) * Z + X_control * (1 - Z)
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2)),
+    potential_outcomes(Y_list ~ (Y_star + X_treat) * Z + X_control * (1 - Z))
   )
 
 design_design_effects <- 
@@ -112,20 +110,20 @@ design_design_effects <-
 
 diagnose_design_effects %>%
   get_diagnosands %>%
-  select(estimator_label, estimand_label, bias, rmse) %>%
+  select(estimator_label, inquiry_label, bias, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 
 model_liars <- 
-  declare_population(
+  declare_model(
     N = 100,
     U = rnorm(N),
     X = rbinom(N, size = 3, prob = 0.5),
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2))
-  ) + 
-  declare_potential_outcomes(
-    Y_list ~ if_else(X == 3 & Y_star == 1 & Z == 1, 3, Y_star * Z + X)
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2)),
+    potential_outcomes(
+      Y_list ~ 
+        if_else(X == 3 & Y_star == 1 & Z == 1, 3, Y_star * Z + X))
   )
 
 design_liars <- model_liars + inquiry + data_strategy + answer_strategy
@@ -136,19 +134,19 @@ design_liars <- model_liars + inquiry + data_strategy + answer_strategy
 
 diagnose_liars %>%
   get_diagnosands %>%
-  select(estimator_label, estimand_label, bias, rmse) %>%
+  select(estimator_label, inquiry_label, bias, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 
 model_sample_size <- 
-  declare_population(
+  declare_model(
     N = N,
     U = rnorm(N),
     X = rbinom(N, size = 3, prob = 0.5),
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = proportion_shy))
-  ) +
-  declare_potential_outcomes(Y_list ~ Y_star * Z + X) 
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = proportion_shy)),
+    potential_outcomes(Y_list ~ Y_star * Z + X)
+  )
 
 design <- model_sample_size + inquiry + data_strategy + answer_strategy
 
@@ -173,15 +171,15 @@ diagnosis_tradeoff %>%
   theme(legend.position = "bottom")
 
 model_control_item_count <-
-  declare_population(
+  declare_model(
     N = 100,
     U = rnorm(N),
     X = rbinom(N, size = J, prob = 0.5),
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2))
-  ) + 
-  declare_potential_outcomes(Y_list ~ Y_star * Z + X) 
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2)),
+    potential_outcomes(Y_list ~ Y_star * Z + X) 
+  )
 
 design <- model_control_item_count + inquiry + data_strategy + answer_strategy
 
@@ -198,7 +196,7 @@ diagnosis_control_item_count %>%
   kable(digits = 3, booktabs = TRUE)
 
 model_control_item_correlation <-
-  declare_population(
+  declare_model(
     N = 100,
     U = rnorm(N),
     X_1 = draw_binary(0.5, N), 
@@ -207,9 +205,9 @@ model_control_item_correlation <-
     X = X_1 + X_2 + X_3,
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2))
-  ) + 
-  declare_potential_outcomes(Y_list ~ Y_star * Z + X) 
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2)),
+    potential_outcomes(Y_list ~ Y_star * Z + X)
+  )
 
 design <- model_control_item_correlation + inquiry + data_strategy + answer_strategy
 
@@ -222,13 +220,14 @@ designs <- redesign(design, rho = seq(from = 0, to = 1, by = 0.25))
 diagnose_control_item_correlation %>%
   get_diagnosands %>%
   filter(estimator_label == "list") %>% 
-  select(rho, estimator_label, estimand_label, bias, rmse) %>%
+  select(rho, estimator_label, inquiry_label, bias, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 
 data_strategy_prop_treated <- 
   declare_measurement(Y_direct = Y_star - S) +
-  declare_assignment(prob = prop_treated) + 
-  declare_reveal(Y_list, Z)
+  declare_assignment(Z = complete_ra(N, prob = prop_treated), 
+                     legacy = FALSE) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z))
 
 design <- model + inquiry + data_strategy_prop_treated + answer_strategy
 
@@ -241,7 +240,7 @@ designs <- redesign(design, prop_treated = seq(from = 0.2, to = 0.8, by = 0.1))
 diagnose_prop_treated %>%
   get_diagnosands %>%
   filter(estimator_label == "list") %>% 
-  select(prop_treated, estimator_label, estimand_label, rmse) %>%
+  select(prop_treated, estimator_label, inquiry_label, rmse) %>%
   kable(digits = 3, booktabs = TRUE)
 
 rr_forced_known <- function(formula, data) {
@@ -261,36 +260,38 @@ rr_forced_known <- label_estimator(rr_forced_known)
 library(rr)
 
 model_rr <- 
-  declare_population(
+  declare_model(
     N = 100,
     U = rnorm(N),
     X = rbinom(N, size = 3, prob = 0.5),
     Y_star = rbinom(N, size = 1, prob = 0.3),
     S = case_when(Y_star == 0 ~ 0L,
-                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2))
-  ) + 
-  declare_potential_outcomes(
-    Y_rr ~ 
-      case_when(
-        dice == 1 ~ 0L,
-        dice %in% 2:5 ~ Y_star,
-        dice == 6 ~ 1L
-      ),
-    conditions = 1:6, assignment_variable = "dice")
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = 0.2)),
+    potential_outcomes(
+      Y_rr ~ 
+        case_when(
+          dice == 1 ~ 0L,
+          dice %in% 2:5 ~ Y_star,
+          dice == 6 ~ 1L
+        ),
+      conditions = list(dice = 1:6))
+  )
 
 data_strategy_rr <- 
   declare_measurement(Y_direct = Y_star - S) +
-  declare_assignment(prob_each = rep(1/6, 6), conditions = 1:6,
-                     assignment_variable = "dice") + 
-  declare_reveal(Y_rr, dice)
+  declare_assignment(
+    dice = complete_ra(N, prob_each = rep(1/6, 6), 
+                       conditions = 1:6), 
+    legacy = FALSE) + 
+  declare_measurement(Y_rr = reveal_outcomes(Y_rr ~ dice))
 
 answer_strategy_rr <-
   declare_estimator(Y_direct ~ 1,
                     model = lm_robust,
-                    estimand = "proportion",
+                    inquiry = "proportion",
                     label = "direct") +
   declare_estimator(Y_rr ~ 1, handler = rr_forced_known, 
-                    label = "forced_known", estimand = "proportion")
+                    label = "forced_known", inquiry = "proportion")
 
 
 design <- model_rr + inquiry + data_strategy_rr + answer_strategy_rr

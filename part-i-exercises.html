@@ -39,7 +39,7 @@
 <li><a class="" href="primer.html"><span class="header-section-number">3</span> Software primer</a></li>
 <li><a class="active" href="part-i-exercises.html"><span class="header-section-number">4</span> Part I Exercises</a></li>
 <li class="book-part">Declaration, Diagnosis, Redesign</li>
-<li><a class="" href="declaration.html"><span class="header-section-number">5</span> Declaration</a></li>
+<li><a class="" href="declaration-1.html"><span class="header-section-number">5</span> Declaration</a></li>
 <li><a class="" href="specifying-the-model.html"><span class="header-section-number">6</span> Specifying the model</a></li>
 <li><a class="" href="defining-the-inquiry.html"><span class="header-section-number">7</span> Defining the inquiry</a></li>
 <li><a class="" href="crafting-a-data-strategy.html"><span class="header-section-number">8</span> Crafting a data strategy</a></li>
@@ -49,7 +49,7 @@
 <li><a class="" href="part-ii-exercises.html"><span class="header-section-number">12</span> Part II Exercises</a></li>
 <li class="book-part">Research Design Library</li>
 <li><a class="" href="research-design-library.html"><span class="header-section-number">13</span> Research Design Library</a></li>
-<li><a class="" href="observational-designs-for-descriptive-inference.html"><span class="header-section-number">14</span> Observational designs for descriptive inference</a></li>
+<li><a class="" href="observational-descriptive.html"><span class="header-section-number">14</span> Observational | descriptive</a></li>
 <li><a class="" href="observational-designs-for-causal-inference.html"><span class="header-section-number">15</span> Observational designs for causal inference</a></li>
 <li><a class="" href="experimental-designs-for-causal-inference.html"><span class="header-section-number">16</span> Experimental designs for causal inference</a></li>
 <li><a class="" href="experimental-designs-for-descriptive-inference.html"><span class="header-section-number">17</span> Experimental designs for descriptive inference</a></li>
@@ -99,19 +99,20 @@
 <p>After reading Chapter <a href="primer.html#primer">3</a>, initialize the following design:</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
-  <span class="fu">declare_population</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_estimand</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_assignment</span><span class="op">(</span>prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">declare_reveal</span><span class="op">(</span>outcome_variables <span class="op">=</span> <span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> </code></pre></div>
+  <span class="fu">declare_model</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+                <span class="fu">potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_inquiry</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fu">complete_ra</span><span class="op">(</span><span class="va">N</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, 
+                     legacy <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">declare_measurement</span><span class="op">(</span>Y <span class="op">=</span> <span class="fu">reveal_outcome</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
 <ol style="list-style-type: lower-alpha">
 <li><p>What is the value of the estimand, the ATE, for one run of the design? Use <code>draw_estimands(design)</code> to calculate.</p></li>
 <li><p>Draw data from the design using <code>draw_data(design)</code> and run a regression with <code>Y</code> as the outcome and <code>Z</code> and <code>X</code> as predictors. What is the estimated average treatment effect of <code>Z</code> on <code>Y</code> based on this regression?</p></li>
 <li><p>Add an estimator using that regression to the design, and link it to the ATE estimand using this code:</p></li>
 </ol>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
-<pre><code>## declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")</code></pre>
+<code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, inquiry <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
+<pre><code>## declare_estimator(Y ~ Z + X, model = lm_robust, inquiry = "ATE")</code></pre>
 <p>Diagnose the design by running <code>diagnose_design(design, sims = 500)</code>. What is the bias of the design? What is its statistical power?</p>
 
 </div>
@@ -123,7 +124,7 @@
 <!-- start post here, do not edit above -->
 <div class="chapter-nav">
 <div class="prev"><a href="primer.html"><span class="header-section-number">3</span> Software primer</a></div>
-<div class="next"><a href="declaration.html"><span class="header-section-number">5</span> Declaration</a></div>
+<div class="next"><a href="declaration-1.html"><span class="header-section-number">5</span> Declaration</a></div>
 </div></main><div id="on-this-page-nav" class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">

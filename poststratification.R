@@ -5,17 +5,17 @@
 packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
-fixed_population <- declare_population(N = 500, 
+fixed_population <- declare_model(N = 500, 
                                        X = sample(c("A", "B", "C"), N, replace = TRUE),
                                        Y = sample(1:7, N, replace = TRUE))()
 
 design <- 
-  declare_population(data = fixed_population) + 
-  declare_estimand(Ybar = mean(Y)) + 
+  declare_model(data = fixed_population) + 
+  declare_inquiry(Ybar = mean(Y)) + 
   declare_sampling(strata_prob = c(0.2, 0.1, 0.3), strata = X) + 
   declare_step(B_demeaned = (X == "B") - mean(X == "B"),
                C_demeaned = (X == "C") - mean(X == "C"), mutate) + 
-  declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, estimand = "Ybar")
+  declare_estimator(Y ~ B_demeaned + C_demeaned, term = "(Intercept)", model = lm_robust, inquiry = "Ybar")
 
 fixed_population <-
   fabricate(
@@ -29,8 +29,8 @@ fixed_population <-
   )
 
 design <-
-  declare_population(data = fixed_population) +
-  declare_estimand(Ybar = mean(Y)) +
+  declare_model(data = fixed_population) +
+  declare_inquiry(Ybar = mean(Y)) +
   declare_sampling(strata_n = c(10, 10), strata = X) +
   declare_step(handler = group_by, groups = X) +
   declare_step(handler = mutate,
@@ -41,7 +41,7 @@ design <-
     term = "(Intercept)",
     model = lm_robust,
     weights = weight,
-    estimand = "Ybar"
+    inquiry = "Ybar"
   )
 
 dag <- dagify(Y ~ S + X,

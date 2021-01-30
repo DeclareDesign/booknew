@@ -15,7 +15,7 @@ treatment <- function(X) {
   as.vector(poly(X, 4, raw = TRUE) %*% c(0, -1.5, .5, .8)) + .15}
 
 design <-
-  declare_population(
+  declare_model(
     N = 1000,
     U = rnorm(N, 0, 0.1),
     X = runif(N, 0, 1) + U - cutoff,
@@ -25,10 +25,10 @@ design <-
     Y ~ D * treatment(X) + (1 - D) * control(X) + U,
     assignment_variable = D
   ) +
-  declare_estimand(LATE = treatment(0) - control(0)) +
+  declare_inquiry(LATE = treatment(0) - control(0)) +
   declare_reveal(Y, D) +
   declare_estimator(
-    Y ~ poly(X, 4) * D, model = lm_robust, estimand = "LATE"
+    Y ~ poly(X, 4) * D, model = lm_robust, inquiry = "LATE"
   )
 
 mock_data <- draw_data(design)
@@ -72,7 +72,7 @@ treatment <- function(X) {
   as.vector(poly(X, 4, raw = TRUE) %*% c(0, -1.5, .5, .8)) + .15}
 
 design <-
-  declare_population(
+  declare_model(
     N = 1000,
     U = rnorm(N, 0, 0.1),
     X = runif(N, 0, 1) + U - cutoff,
@@ -82,12 +82,12 @@ design <-
     Y ~ D * treatment(X) + (1 - D) * control(X) + U, 
     assignment_variable = D
   ) +
-  declare_estimand(LATE = treatment(0) - control(0)) +
+  declare_inquiry(LATE = treatment(0) - control(0)) +
   declare_reveal(Y, D) +
   declare_estimator(
     Y ~ poly(X, 4) * D, 
     model = lm_robust, 
-    estimand = "LATE"
+    inquiry = "LATE"
   )
 
 dag <- dagify(Y ~ D + X + U,

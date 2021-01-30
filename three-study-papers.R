@@ -21,7 +21,7 @@ generate_study_sample <- function(n, rho, tau, gamma, data){
 
 three_study_design <-
   # Study 1 -- Bivariate correlation between X and Y
-  declare_population(
+  declare_model(
     n = n1,
     tau = tau,
     gamma = gamma,
@@ -33,7 +33,7 @@ three_study_design <-
                     model = lm_robust,
                     label = "Study 1") +
   # Study 2 -- Bivariate correlation between M and X
-  declare_population(
+  declare_model(
     n = n2,
     tau = tau,
     gamma = gamma,
@@ -45,7 +45,7 @@ three_study_design <-
                     model = lm_robust,
                     label = "Study 2") +
   # Study 3 -- Interaction in X and M
-  declare_population(
+  declare_model(
     n = n3,
     tau = tau,
     gamma = gamma,
@@ -132,7 +132,7 @@ N_studies <- 30
 
 
 replication_design <-
-  declare_population(
+  declare_model(
     n = 100,
     tau = tau,
     gamma = gamma,
@@ -147,7 +147,7 @@ replication_design <-
 for(i in 2:N_studies) {
   replication_design <-
     replication_design +
-    declare_population(
+    declare_model(
       n = 100,
       tau = tau,
       gamma = gamma,
@@ -163,7 +163,7 @@ for(i in 2:N_studies) {
 
 tau <- 0
 null_replication_design <-
-  declare_population(
+  declare_model(
     n = 100,
     tau = tau,
     gamma = gamma,
@@ -178,7 +178,7 @@ null_replication_design <-
 for (i in 2:N_studies) {
   null_replication_design <-
     null_replication_design +
-    declare_population(
+    declare_model(
       n = 100,
       tau = tau,
       gamma = gamma,

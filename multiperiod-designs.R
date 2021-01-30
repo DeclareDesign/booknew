@@ -6,7 +6,7 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 design <-
-  declare_population(
+  declare_model(
     unit = add_level(N = 8,
                      X = rnorm(N)),
     period = add_level(
@@ -28,11 +28,11 @@ design <-
                      ipw = 1 / (Z * p + (1 - Z) * (1 - p)),
                      handler = fabricate) +
   declare_reveal(Y, Z) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_estimator(
     Y ~ Z,
     model = lm_robust,
-    estimand = "ATE",
+    inquiry = "ATE",
     label = "1: Stepped Wedge",
     weights = ipw,
     clusters = unit
@@ -40,7 +40,7 @@ design <-
   declare_estimator(
     Y ~ Z,
     model = lm_robust,
-    estimand = "ATE",
+    inquiry = "ATE",
     label = "2: Wave 2 Only",
     subset = period == 2
   )

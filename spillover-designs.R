@@ -6,11 +6,11 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 design <-
-  declare_population(
+  declare_model(
     group = add_level(N = 50, X = rnorm(N)),
     unit = add_level(N = 50, U = rnorm(N))
   ) +
-  declare_assignment(clusters = group, conditions = c("low", "high"), assignment_variable = S) +
+  declare_assignment(S = cluster_ra(N, clusters = group, conditions = c("low", "high")), legacy = FALSE) +
   declare_step(S_prob = case_when(S == "low" ~ 0.25, S == "high" ~ 0.75), mutate) +
   declare_assignment(blocks = group, prob_unit = S_prob) +
   declare_step(spillover = ave(Z, group, FUN = mean),
@@ -18,14 +18,14 @@ design <-
   declare_potential_outcomes(
     Y ~ Z + spillover * (S == "low") + Z * spillover * (S == "high") + X + U,
     conditions = list(Z = c(0, 1), S = c("low", "high"))) +
-  declare_estimand(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
+  declare_inquiry(ATE_saturation = mean(Y_Z_0_S_high - Y_Z_0_S_low),
                    ate_no_spill = mean(Y_Z_1_S_low - Y_Z_0_S_low)) +
   declare_reveal(Y, c(Z, S)) +
   declare_estimator(Y ~ Z + S,
                     weights = 1 / (S_cond_prob * Z_cond_prob),
                     model = lm_robust,
                     term = c("Z", "Shigh"),
-                    estimand = c("ATE_saturation", "ate_no_spill"),
+                    inquiry = c("ATE_saturation", "ate_no_spill"),
                     label = "main effect")
 
 

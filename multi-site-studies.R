@@ -49,46 +49,54 @@ post_stratification <- function(data, pr_types_population) {
   }
 }
 
-single_site_design <- 
-  declare_population(
-    site = add_level(
-      N = 10, 
-      feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE),
-      study_effect = seq(from = -0.1, to = 0.1, length.out = N) 
-    ),
-    subjects = add_level(N = n_subjects_per_site, noise = rnorm(N))
-  ) + 
-  declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + noise) +
-  declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == TRUE) + 
-  declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, 1)) + 
-  declare_sampling(strata = site, n = n_subjects_per_site) + 
-  declare_assignment(blocks = site, prob = 0.5) + 
-  declare_estimator(Y ~ Z, model = lm_robust)
+## single_site_design <-
+##   declare_model(
+##     site = add_level(
+##       N = 10,
+##       feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE),
+##       study_effect = seq(from = -0.1, to = 0.1, length.out = N)
+##     ),
+##     subjects = add_level(
+##       N = n_subjects_per_site,
+##       U = rnorm(N),
+##       potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + U)
+##     )
+##   ) +
+##   declare_inquiry(PATE = mean(Y_Z_1 - Y_Z_0)) +
+##   declare_inquiry(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == TRUE) +
+##   declare_sampling(S = strata_and_cluster_rs(clusters = site, strata = feasible_site, strata_n = c(0, 1)), legacy = FALSE) +
+##   declare_sampling(S = strata_rs(strata = site, n = n_subjects_per_site), legacy = FALSE) +
+##   declare_assignment(Z = block_ra(blocks = site, prob = 0.5), legacy = FALSE) +
+##   declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+##   declare_estimator(Y ~ Z, model = lm_robust)
+## 
+## multi_site_design <-
+##   declare_model(
+##     site = add_level(
+##       N = 10,
+##       feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE),
+##       study_effect = seq(from = -0.1, to = 0.1, length.out = N)
+##     ),
+##     subjects = add_level(
+##       N = n_subjects_per_site,
+##       U = rnorm(N),
+##       potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + U)
+##     )
+##   ) +
+##   declare_inquiry(PATE = mean(Y_Z_1 - Y_Z_0)) +
+##   declare_inquiry(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == TRUE) +
+##   declare_sampling(S = strata_and_cluster_rs(clusters = site, strata = feasible_site, strata_n = c(0, 1)), legacy = FALSE) +
+##   declare_sampling(S = strata_rs(strata = site, n = n_subjects_per_site), legacy = FALSE) +
+##   declare_assignment(Z = block_ra(blocks = site, prob = 0.5), legacy = FALSE) +
+##   declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+##   declare_estimator(handler = label_estimator(random_effects_meta_analysis), label = "random-effects")
+## 
+## single_site_large_design <- redesign(single_site_design, n_subjects_per_site = 2500)
+## 
+## small_study_five_sites <- redesign(multi_site_design, n_study_sites = 5, n_subjects_per_site = 500)
 
-multi_site_design <- 
-  declare_population(
-    site = add_level(
-      N = 10, 
-      feasible_site = sample(c(rep(1, 8), rep(0, 2)), N, replace = FALSE),
-      study_effect = seq(from = -0.1, to = 0.1, length.out = N) 
-    ),
-    subjects = add_level(N = n_subjects_per_site, noise = rnorm(N))
-  ) + 
-  declare_potential_outcomes(Y ~ Z * (0.1 + study_effect + 0.025 * feasible_site) + noise) +
-  declare_estimand(PATE = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimand(PATE_feasible = mean(Y_Z_1 - Y_Z_0), subset = feasible_site == TRUE) + 
-  declare_sampling(clusters = site, strata = feasible_site, strata_n = c(0, n_study_sites)) + 
-  declare_sampling(strata = site, n = n_subjects_per_site) + 
-  declare_assignment(blocks = site, prob = 0.5) + 
-  declare_estimator(handler = label_estimator(random_effects_meta_analysis), label = "random-effects")
-
-single_site_large_design <- redesign(single_site_design, n_subjects_per_site = 2500)
-
-small_study_five_sites <- redesign(multi_site_design, n_study_sites = 5, n_subjects_per_site = 500)
 
 
 
 
-
-kable(diagnosis_small_large %>% reshape_diagnosis %>% select(`Design Label`, `Estimand Label`, Bias, RMSE), booktabs = TRUE)
+kable(diagnosis_small_large %>% reshape_diagnosis %>% select(`Design Label`, `Inquiry Label`, Bias, RMSE), booktabs = TRUE)

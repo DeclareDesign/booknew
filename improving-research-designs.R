@@ -1,5 +1,5 @@
 # ---
-# Better Design
+# Improving research designs
 # --- 
 
 packages <- c("tidyverse", "DeclareDesign")
@@ -8,32 +8,33 @@ lapply(packages, require, character.only = TRUE)
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
 model <-
-  declare_population(
+  declare_model(
     villages = add_level(N = 192),
-    citizens = add_level(N = 48, U = runif(N))
-  ) +
-  declare_potential_outcomes(Y_Z_neutral = U,
-                             Y_Z_personal = Y_Z_neutral + 0.02,
-                             Y_Z_social = Y_Z_neutral + 0.03)
+    citizens = add_level(N = 100, 
+                         U = runif(N),
+                         Y_Z_neutral = U,
+                         Y_Z_personal = Y_Z_neutral + 0.02,
+                         Y_Z_social = Y_Z_neutral + 0.03))
 
-inquiry <- declare_estimand(
+inquiry <- declare_inquiry(
   ATE_personal = mean(Y_Z_personal - Y_Z_neutral),
   ATE_social = mean(Y_Z_social - Y_Z_neutral)
 )
 
 data_strategy <-
+  declare_sampling(S = strata_rs(strata = villages, n = 48), legacy = FALSE) +
   declare_assignment(
-    clusters = villages, 
-    conditions = c("neutral", "personal", "social")
-  ) + 
-  declare_reveal(outcome_variables = Y, assignment_variables = Z) +
-  declare_measurement(Yobs = if_else(Y > 0.97, 1, 0))
+  	Z = cluster_ra(clusters = villages, 
+  	               conditions = c("neutral", "personal", "social")),
+  	legacy = FALSE) + 
+  declare_measurement(Y_latent = reveal_outcomes(Y ~ Z),
+                      Y_observed = if_else(Y_latent > 0.97, 1, 0))
 
 answer_strategy <- 
-  declare_estimator(Y ~ Z, term = c("Zpersonal", "Zsocial"), 
+  declare_estimator(Y_observed ~ Z, term = c("Zpersonal", "Zsocial"), 
                     clusters = villages, 
                     model = lm_robust,
-                    estimand = c("ATE_personal", "ATE_social"))
+                    inquiry = c("ATE_personal", "ATE_social"))
 
 design <- model + inquiry + data_strategy + answer_strategy
 
@@ -71,6 +72,6 @@ diagnosands <- declare_diagnosands(
 
 
 
-get_diagnosands(simple_design_diagnosis) %>% 
-  select(estimand_label, estimator_label, bias, rmse, power) %>%
+get_diagnosands(diagnosis) %>% 
+  select(inquiry_label, estimator_label, bias, rmse, power) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)

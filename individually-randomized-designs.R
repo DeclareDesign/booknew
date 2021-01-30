@@ -41,11 +41,11 @@ eq_3.4_designer <-
       ) %>%
       magrittr::set_colnames(c("Y_Z_0", "Y_Z_1"))
     
-    declare_population(data = fixed_sample) +
-      declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+    declare_model(data = fixed_sample) +
+      declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
       declare_assignment(m = m) +
       declare_reveal(Y, Z) +
-      declare_estimator(Y ~ Z, estimand = "ATE")
+      declare_estimator(Y ~ Z, inquiry = "ATE")
     
   }
 
@@ -167,9 +167,9 @@ fixed_pop <-
   )
 
 design <-
-  declare_population(data = fixed_pop) +
+  declare_model(data = fixed_pop) +
   declare_potential_outcomes(Y ~ 0.2*Z + X + U) +
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0))
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0))
 
 # Data strategies
 complete_assignment <- 
@@ -180,8 +180,8 @@ blocked_assignment <-
   declare_reveal()
 
 # Answer strategies
-unadjusted_estimator <- declare_estimator(Y ~ Z, estimand = "ATE")
-adjusted_estimator <- declare_estimator(Y ~ Z + X, model = lm_robust, estimand = "ATE")
+unadjusted_estimator <- declare_estimator(Y ~ Z, inquiry = "ATE")
+adjusted_estimator <- declare_estimator(Y ~ Z + X, model = lm_robust, inquiry = "ATE")
 
 design_1 <- design + complete_assignment + unadjusted_estimator
 design_2 <- design + blocked_assignment + unadjusted_estimator

@@ -11,7 +11,7 @@ rescale <- function(x) (x - min(x)) / (max(x) - min(x))
 likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
 
 model <- 
-  declare_population(
+  declare_model(
     N = 800,
     female = rbinom(N, 1, prob = 0.51),
     lgbtq = rbinom(N, 1, prob = 0.05),
@@ -52,7 +52,7 @@ model <-
 slope <- function(y, x) cov(y, x) / var(x)
 
 inquiry <-  
-  declare_estimands(
+  declare_inquiries(
     # Average effects
     ATE_nationalism = 
       mean(blm_support_Z_nationalism - blm_support_Z_general),
@@ -97,14 +97,14 @@ answer_strategy <-
     blm_support ~ Z,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
     model = lm_robust,
-    estimand = 
+    inquiry = 
       c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     label = "OLS"
   ) +
   declare_estimator(
     blm_support ~ Z + age + female + as.factor(linked_fate) + lgbtq,
     term = c("Znationalism", "Zfeminism", "Zintersectional"),
-    estimand = 
+    inquiry = 
       c("ATE_nationalism", "ATE_feminism", "ATE_intersectional"),
     model = lm_robust,
     label = "OLS with controls"
@@ -115,7 +115,7 @@ answer_strategy <-
              "Zfeminism:blm_familiarity", 
              "Zintersectional:blm_familiarity"),
     model = lm_robust,
-    estimand = c("DID_nationalism_familiarity", 
+    inquiry = c("DID_nationalism_familiarity", 
                  "DID_feminism_familiarity", 
                  "DID_intersectional_familiarity"),
     label = "DID_familiarity"
@@ -124,21 +124,21 @@ answer_strategy <-
     blm_support ~ Z * linked_fate,
     term = "Zfeminism:linked_fate",
     model = lm_robust,
-    estimand = "DID_nationalism_linked_fate",
+    inquiry = "DID_nationalism_linked_fate",
     label = "DID_nationalism_linked_fate"
   ) +
   declare_estimator(
     blm_support ~ Z * female,
     term = "Zfeminism:female",
     model = lm_robust,
-    estimand = "DID_feminism_gender",
+    inquiry = "DID_feminism_gender",
     label = "DID_feminism_gender"
   ) +
   declare_estimator(
     blm_support ~ Z * lgbtq,
     term = "Zintersectional:lgbtq",
     model = lm_robust,
-    estimand = "DID_intersectional_lgbtq",
+    inquiry = "DID_intersectional_lgbtq",
     label = "DID_intersectional_lgbtq"
   )
 
@@ -211,12 +211,12 @@ ggplot(data = NULL, aes(estimate, term)) +
 
 diagnosis %>% 
   get_simulations %>% 
-  group_by(estimand_label, estimator_label) %>% 
+  group_by(inquiry_label, estimator_label) %>% 
   summarize(
     bias = mean(estimate - estimand, na.rm = TRUE),
     power = mean(p.value <= 0.05, na.rm = TRUE)
   ) %>% 
-  mutate(estimand_label = str_replace_all(estimand_label, "_", " "),
+  mutate(inquiry_label = str_replace_all(inquiry_label, "_", " "),
          estimator_label = str_replace_all(estimator_label, "_", " ")) %>% 
   kable(digits = 3, col.names = c("Estimand", "Estimator", "Bias", "Power"), 
         caption = "Design diagnosis for Bonilla and Tillery design.", booktabs = TRUE)

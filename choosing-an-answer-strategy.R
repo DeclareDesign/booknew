@@ -200,16 +200,16 @@ ggplot(gg_df_small, aes(x, y)) +
   theme_void()
 
 design <-
-  declare_population(
+  declare_model(
     N = 100,
     X = rnorm(N),
-    U = rnorm(N)
+    U = rnorm(N),
+    potential_outcomes(
+      Y ~ 0.1 * D + X + U, conditions = list(D = c(0, 1))
+    )
   ) +
-  declare_potential_outcomes(
-    Y ~ 0.1 * D + X + U, assignment_variables = D
-  ) +
-  declare_assignment(D = if_else(U > 0.5, 1, 0), handler = mutate) +
-  declare_reveal(outcome_variables = Y, assignment_variables = D)
+  declare_assignment(D = if_else(U > 0.5, 1, 0), legacy = FALSE) +
+  declare_measurement(Y = reveal_outcomes(Y ~ D))
 
 simulated_df <- draw_data(design)
 

@@ -16,11 +16,11 @@ portola <-
     )
 
 design <- 
-  declare_population(data = portola) + 
+  declare_model(data = portola) + 
   declare_measurement(Y = as.numeric(cut(Ystar, 7))) + 
-  declare_estimand(Y_bar = mean(Y)) + 
+  declare_inquiry(Y_bar = mean(Y)) + 
   declare_sampling(n = 100) + 
-  declare_estimator(Y ~ 1, model = lm_robust, estimand = "Y_bar")
+  declare_estimator(Y ~ 1, model = lm_robust, inquiry = "Y_bar")
 
 dag <- dagify(Y ~ Q + Ystar + S)
 
@@ -59,18 +59,18 @@ diagnosis %>%
   kable(digits = 3, booktabs = TRUE, caption = "Complete random sampling design diagnosis")
 
 design <-
-  declare_population(data = portola) +
+  declare_model(data = portola) +
   declare_measurement(Y = as.numeric(cut(Ystar, 7))) +
-  declare_estimand(Y_bar = mean(Y)) +
+  declare_inquiry(Y_bar = mean(Y)) +
   declare_sampling(clusters = households, n = 50) +
   declare_estimator(Y ~ 1,
                     model = lm_robust,
-                    estimand = "Y_bar",
+                    inquiry = "Y_bar",
                     label = "Standard errors not clustered") +
   declare_estimator(Y ~ 1,
                     clusters = households,
                     model = lm_robust,
-                    estimand = "Y_bar",
+                    inquiry = "Y_bar",
                     label = "Standard errors clustered")
 
 diagnosands <- declare_diagnosands(

@@ -6,7 +6,7 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 design <-
-  declare_population(
+  declare_model(
     N = 100,
     type = 
       rep(c("Always-Taker", "Never-Taker", "Complier", "Defier"),
@@ -31,7 +31,7 @@ design <-
       conditions = list(Z = c(0, 1))
     )
   ) +
-  declare_estimand(
+  declare_inquiry(
     ATE = mean(Y_D_1 - Y_D_0),
     CACE = mean(Y_D_1[type == "Complier"] - Y_D_0[type == "Complier"])) +
   declare_assignment(Z = conduct_ra(N = N, prob = 0.5), handler = fabricate) +
@@ -40,19 +40,19 @@ design <-
   declare_estimator(
     Y ~ D | Z,
     model = iv_robust,
-    estimand = c("ATE", "CACE"),
+    inquiry = c("ATE", "CACE"),
     label = "2SLS"
   ) +
   declare_estimator(
     Y ~ D,
     model = lm_robust,
-    estimand = c("ATE", "CACE"),
+    inquiry = c("ATE", "CACE"),
     label = "As treated"
   ) +
   declare_estimator(
     Y ~ D,
     model = lm_robust,
-    estimand = c("ATE", "CACE"),
+    inquiry = c("ATE", "CACE"),
     subset = D == Z,
     label = "Per protocol"
   )
@@ -68,12 +68,12 @@ label_df <- inquiries_df %>% mutate(estimator_label = "2SLS",
                                     x = c(-0.1, 0.8),
                                     y = 75)
 
-dx$simulations_df %>% filter(estimand_label == "ATE") %>%
+dx$simulations_df %>% filter(inquiry_label == "ATE") %>%
   ggplot(aes(estimate)) +
   geom_histogram(bins = 30) +
   facet_wrap(~estimator_label, ncol = 1) +
-  geom_vline(data = inquiries_df, aes(xintercept = estimand, color = estimand_label), linetype = "dashed") +
-  geom_text(data = label_df, aes(x = x, y = y, label = estimand_label)) +
+  geom_vline(data = inquiries_df, aes(xintercept = estimand, color = inquiry_label), linetype = "dashed") +
+  geom_text(data = label_df, aes(x = x, y = y, label = inquiry_label)) +
   dd_theme() +
   theme(legend.position = "none")
   
@@ -109,7 +109,7 @@ direct_effect_of_encouragement <- 0.0
 proportion_defiers <- 0.0
 
 design <-
-  declare_population(
+  declare_model(
     N = 500,
     type = sample(
       types,
@@ -134,13 +134,13 @@ design <-
       direct_effect_of_encouragement * Z + noise,
     assignment_variables = c("D", "Z")
   ) +
-  declare_estimand(CACE = mean((Y_D_1_Z_1 + Y_D_1_Z_0) / 2 -
+  declare_inquiry(CACE = mean((Y_D_1_Z_1 + Y_D_1_Z_0) / 2 -
                                  (Y_D_0_Z_1 + Y_D_0_Z_0) / 2),
                    subset = type == "Complier") +
   declare_assignment(prob = 0.5) +
   declare_reveal(D, assignment_variable = Z) +
   declare_reveal(Y, assignment_variables = c(D, Z)) +
-  declare_estimator(Y ~ D | Z, model = iv_robust, estimand = "CACE")
+  declare_estimator(Y ~ D | Z, model = iv_robust, inquiry = "CACE")
 
 
 

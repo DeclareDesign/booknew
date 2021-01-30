@@ -181,23 +181,24 @@ g2 <-
 g1 / g2
 
 ## design <-
-##   declare_population(N = 100,
+##   declare_model(N = 100,
 ##                      tau = rnorm(N, mean = 0.1, sd = 0.1),
 ##                      U = rnorm(N, 0, 0.2)) +
 ##   declare_potential_outcomes(Y ~  tau * Z + U) +
-##   declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+##   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
 ##   declare_assignment(prob = 0.5) +
-##   declare_estimator(Y ~ Z, estimand = "ATE")
+##   declare_estimator(Y ~ Z, inquiry = "ATE")
 
 set.seed(343)
 design <-
-  declare_population(N = 500, 
+  declare_model(N = 500, 
                      tau = rnorm(N, mean = 0.1, sd = 0.1),
                      U = rnorm(N)) +
   declare_potential_outcomes(Y ~ tau * Z + U) + 
-  declare_estimand(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(prob = 0.5) +
-  declare_estimator(Y ~ Z, estimand = "ATE")
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
+  declare_estimator(Y ~ Z, inquiry = "ATE")
 
 simulations <- 
   simulate_design(design, sims = 10) %>%
@@ -644,11 +645,11 @@ dual_estimands <- ggplot() +
   )
 dual_estimands
 
-## model <- declare_population(
+## model <- declare_model(
 ##   case_level = add_level(N = 1, b = rnorm(N, 1, 1)),
 ##   unit_level = add_level(N = 20, Z = rep(0:1, N/2), Y = b*Z + rnorm(N))) +
-##   declare_estimand(super_b = 1, case_b = b[1]) +
-##   declare_estimator(Y~Z, estimand = c("super_b", "case_b"))
+##   declare_inquiry(super_b = 1, case_b = b[1]) +
+##   declare_estimator(Y~Z, inquiry = c("super_b", "case_b"))
 ## 
 ## diagnose_design(model, sims = 100)
 
@@ -660,7 +661,7 @@ dual_estimands
 ##   robustness_checks_design,
 ##   step = 1,
 ##   new_step =
-##     declare_population(
+##     declare_model(
 ##       N = 100,
 ##       x = rnorm(N),
 ##       y1 = rnorm(N),
@@ -672,7 +673,7 @@ dual_estimands
 ##   robustness_checks_design,
 ##   step = 1,
 ##   new_step =
-##     declare_population(
+##     declare_model(
 ##       N = 100,
 ##       x = rnorm(N),
 ##       y1 = 0.15 * x + rnorm(N),
@@ -683,7 +684,7 @@ dual_estimands
 ## robustness_checks_design_dgp3 <- replace_step(
 ##   robustness_checks_design_dgp3,
 ##   step = 2,
-##   new_step = declare_estimand(y1_y2_are_related = FALSE)
+##   new_step = declare_inquiry(y1_y2_are_related = FALSE)
 ## )
 ## 
 ## decision_diagnosis <- declare_diagnosands(correct = mean(decision == estimand))
