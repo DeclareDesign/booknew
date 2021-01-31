@@ -11,7 +11,7 @@
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><link rel="stylesheet" href="headers/style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -102,7 +102,7 @@
 \end{align}\]</span></p>
 <p>The estimated standard error can be used as an input for two other statistical procedures: null hypothesis significance testing via a <span class="math inline">\(t\)</span>-test and the construction of a 95% confidence interval.</p>
 <p>The DAG corresponding to a two-arm randomized trial is very simple. An outcome <span class="math inline">\(Y\)</span> is affected by unknown factors <span class="math inline">\(U\)</span> and a treatment <span class="math inline">\(Z\)</span>. The measurement procedure <span class="math inline">\(Q\)</span> affects <span class="math inline">\(Y\)</span> in the sense that it measures a latent <span class="math inline">\(Y\)</span> and records it in a dataset. No arrows lead into <span class="math inline">\(Z\)</span> because it is randomly assigned. No arrow leads from <span class="math inline">\(Z\)</span> to <span class="math inline">\(Q\)</span>, because we assume no excludability violations wherein the treatment changes how units are measured. This simple DAG confirms that the average causal effect of Z on Y is nonparametrically identified because no back-door paths lead from Z to Y.</p>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-226-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-227-1.svg" width="100%"></div>
 <div id="analytic-design-diagnosis" class="section level3">
 <h3>
 <span class="header-section-number">16.1.1</span> Analytic design diagnosis<a class="anchor" aria-label="anchor" href="#analytic-design-diagnosis"><i class="fas fa-link"></i></a>
@@ -128,7 +128,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 <span class="header-section-number">16.1.2</span> Design diagnosis through simulation<a class="anchor" aria-label="anchor" href="#design-diagnosis-through-simulation"><i class="fas fa-link"></i></a>
 </h3>
 <p>But of course we can declare this design and conduct design diagnosis using simulation. This process will confirm the analytic results, as well as provide estimates of diagnosands for which statisticians have not yet derived analytic expressions. This code produces a “designer” that allows us to easily vary the important components of the design (which of course we only learned about by studying the statistical theory!).</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eq_3.4_designer</span> <span class="op">&lt;-</span>
   <span class="kw">function</span><span class="op">(</span><span class="va">N</span>, <span class="va">m</span>, <span class="va">var_Y0</span>, <span class="va">var_Y1</span>, <span class="va">cov_Y0_Y1</span>, <span class="va">mean_Y0</span>, <span class="va">mean_Y1</span><span class="op">)</span> <span class="op">{</span>
     
@@ -149,7 +149,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
     
   <span class="op">}</span></code></pre></div>
 <p>This simulation investigates how much of the sample we should allocate to the treatment group if the treatment group variance is twice as large as the control group variance. The diagnosis confirms the bias is zero, the true standard errors are what Equation 3.4 predicts, coverage is above nominal, and that we are above the 80% power target for a middle range of <span class="math inline">\(m\)</span>. We learn that power is maximized (and the true standard error is minimized) when we allocate 60 or 70 units (of 100 total) to treatment. We also learn from this that the gains from choosing the unbalanced design (relative to a 50/50 allocation) are very small. Even when the variance in the treatment group is twice as large as the variance in the control group, we don’t lose much when sticking with the balanced design. Since we can never be sure of the relative variances of the treatment and control groups ex ante, this exercise provides further support for choosing balanced designs in many design settings.</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> 
   <span class="fu">expand_design</span><span class="op">(</span>designer <span class="op">=</span> <span class="va">eq_3.4_designer</span>,
                 N <span class="op">=</span> <span class="fl">100</span>,
@@ -161,7 +161,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
                 mean_Y1 <span class="op">=</span> <span class="fl">1.75</span><span class="op">)</span>
 
 <span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu">diagnose_designs</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">100</span>, bootstrap_sims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> 
   <span class="fu">expand_design</span><span class="op">(</span>designer <span class="op">=</span> <span class="va">eq_3.4_designer</span>,
                 N <span class="op">=</span> <span class="fl">100</span>,
@@ -179,7 +179,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 ## 1       estimator    Z 0.01387209 0.2093836 0.915    0.965     0.7638721
 ##   sd_estimate   mean_se type_s_rate mean_estimand n_sims
 ## 1   0.2094478 0.2406971           0          0.75    200</code></pre>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-231-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-232-1.svg" width="100%"></div>
 </div>
 <div id="increasing-precision-through-blocking" class="section level3">
 <h3>
@@ -187,7 +187,7 @@ SE(DIM)= \sqrt{\frac{1}{n-1}\left\{\frac{m\mathbb{V}(Y_i(0))}{n-m} + \frac{(N-m)
 </h3>
 <p>Block random assignment almost always represents a precision improvement over complete random assignment. With block random assignment, we conduct “mini-experiments” within separate subsets of the sample (called blocks), defined by pre-treatment covariates. Within each block, we conduct complete random assignment.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;One mistake sometimes made by new experimenters is to conduct &lt;em&gt;simple&lt;/em&gt; random assignment within each block – none of the gains from blocking described here apply if simple random assignment is conducted in each block, because that procedure produces the identical randomization distribution as a simple random assignment procedure without any blocking, provided that the probability of assignment is the same in each block.&lt;/p&gt;"><sup>24</sup></a></p>
 <p>One way of thinking about why blocking reduces sampling variability is that it rules out (by design) random assignments in which too many or too few units is a particular subgroup are assigned to treatment: exactly <span class="math inline">\(m_B\)</span> units will be treated in each block <span class="math inline">\(B\)</span>. When potential outcomes are correlated the blocking variable, those “extreme” assignments produce estimates that are in the tails of the sampling distribution associated with complete random assignment.</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_pop</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">12</span>,
@@ -232,7 +232,7 @@ Figure 16.2: Impact of covariate adjustment on the sampling distribution
 </h3>
 <p>Adjusting for pre-treatment covariates that are predictive of the outcome almost always increases precision; blocking on covariates that are predictive of the outcome almost always increases precision too. Another way of putting this is that covariate information can be incorporated in answer strategy (covariate adjustment) or in the data strategy (blocking) and that in this way, the two procedures are approximately equivalent.</p>
 <p>We’ll now declare and diagnose four closely-related experimental designs. To begin, we describe a fixed population of 100 units with a binary covariate <span class="math inline">\(X\)</span> and unobserved heterogeneity <span class="math inline">\(U\)</span>. Potential outcomes are a function of the treatment <span class="math inline">\(Z\)</span> and are correlated with <span class="math inline">\(X\)</span>. Throughout this exercise, our inquiry is the ATE.</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fixed_pop</span> <span class="op">&lt;-</span>
   <span class="fu">fabricate</span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -245,7 +245,7 @@ Figure 16.2: Impact of covariate adjustment on the sampling distribution
   <span class="fu">declare_potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.2</span><span class="op">*</span><span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_inquiry</span><span class="op">(</span>ATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Y_Z_1</span> <span class="op">-</span> <span class="va">Y_Z_0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>We have two answer strategies and two data strategies that we’ll mix-and-match.</p>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Data strategies</span>
 <span class="va">complete_assignment</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_assignment</span><span class="op">(</span>Z <span class="op">=</span> <span class="fu">complete_ra</span><span class="op">(</span>N <span class="op">=</span> <span class="va">N</span><span class="op">)</span>, handler <span class="op">=</span> <span class="va">fabricate</span><span class="op">)</span> <span class="op">+</span> 
@@ -258,14 +258,14 @@ Figure 16.2: Impact of covariate adjustment on the sampling distribution
 <span class="va">unadjusted_estimator</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, inquiry <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span>
 <span class="va">adjusted_estimator</span> <span class="op">&lt;-</span> <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, inquiry <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
 <p>These combine to create four designs, which we then diagnose.</p>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design_1</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">complete_assignment</span> <span class="op">+</span> <span class="va">unadjusted_estimator</span>
 <span class="va">design_2</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">blocked_assignment</span> <span class="op">+</span> <span class="va">unadjusted_estimator</span>
 <span class="va">design_3</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">complete_assignment</span> <span class="op">+</span> <span class="va">adjusted_estimator</span>
 <span class="va">design_4</span> <span class="op">&lt;-</span> <span class="va">design</span> <span class="op">+</span> <span class="va">blocked_assignment</span> <span class="op">+</span> <span class="va">adjusted_estimator</span></code></pre></div>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">diagnose_designs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">design_1</span>, <span class="va">design_2</span>, <span class="va">design_3</span>, <span class="va">design_4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">diagnose_designs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">design_1</span>, <span class="va">design_2</span>, <span class="va">design_3</span>, <span class="va">design_4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">simulations</span> <span class="op">&lt;-</span> <span class="fu">simulate_designs</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">design_1</span>, <span class="va">design_2</span>, <span class="va">design_3</span>, <span class="va">design_4</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
@@ -385,7 +385,7 @@ Covariate Adjustment
 <h3>
 <span class="header-section-number">16.2.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu">declare_model</span><span class="op">(</span>
     V <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>
@@ -425,7 +425,7 @@ Covariate Adjustment
 <h3>
 <span class="header-section-number">16.2.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-5"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-246-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-247-1.svg" width="100%"></div>
 </div>
 <div id="example-6" class="section level3">
 <h3>
@@ -445,7 +445,7 @@ Covariate Adjustment
 <li>treatment by subgroup interactions</li>
 <li>multi-arm trials varying aspects of the intervention</li>
 </ul>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org">DeclareDesign</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/reshape">reshape2</a></span><span class="op">)</span>
@@ -632,7 +632,7 @@ CACE = \frac{ITT}{ITT_D}
 <span class="header-section-number">16.4.1</span> Declaration<a class="anchor" aria-label="anchor" href="#declaration-10"><i class="fas fa-link"></i></a>
 </h3>
 <p>This design declaration will show how two-stage least squares provides good estimates of the CACE not the ATE, which we can’t learn about, since always-takers and never-takers don’t respond to treatment assignment. Alternative estimators (per-protocol and as treated) are biased for both the CACE and the ATE.</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_model.html">declare_model</a></span><span class="op">(</span>
     N <span class="op">=</span> <span class="fl">100</span>,
@@ -685,7 +685,7 @@ CACE = \frac{ITT}{ITT_D}
     label <span class="op">=</span> <span class="st">"Per protocol"</span>
   <span class="op">)</span></code></pre></div>
 <p>This chunk is set to <code>echo = TRUE</code> and <code>eval = do_diagnosis</code></p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/diagnose_design.html">diagnose_design</a></span><span class="op">(</span><span class="va">design</span><span class="op">)</span></code></pre></div>
 <p>Right after you do simulations, you want to save the simulations rds.</p>
 <div class="figure">
@@ -699,14 +699,14 @@ Figure 16.3: sampling distribution of three estimators
 <h3>
 <span class="header-section-number">16.4.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-7"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-260-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-261-1.svg" width="100%"></div>
 </div>
 <div id="example-8" class="section level3">
 <h3>
 <span class="header-section-number">16.4.3</span> Example<a class="anchor" aria-label="anchor" href="#example-8"><i class="fas fa-link"></i></a>
 </h3>
 <p>To do: demonstrate how violations of no defiers and excludability leads to bias.</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Always-Taker"</span>, <span class="st">"Never-Taker"</span>, <span class="st">"Complier"</span>, <span class="st">"Defier"</span><span class="op">)</span>
 <span class="va">direct_effect_of_encouragement</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
 <span class="va">proportion_defiers</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>
@@ -744,7 +744,7 @@ Figure 16.3: sampling distribution of three estimators
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_reveal.html">declare_reveal</a></span><span class="op">(</span><span class="va">D</span>, assignment_variable <span class="op">=</span> <span class="va">Z</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_reveal.html">declare_reveal</a></span><span class="op">(</span><span class="va">Y</span>, assignment_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">D</span>, <span class="va">Z</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">D</span> <span class="op">|</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">iv_robust</span>, inquiry <span class="op">=</span> <span class="st">"CACE"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/redesign.html">redesign</a></span><span class="op">(</span>
   <span class="va">design</span>,
   proportion_defiers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
@@ -752,7 +752,7 @@ Figure 16.3: sampling distribution of three estimators
 <span class="op">)</span>
 
 <span class="va">simulations_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/simulate_design.html">simulate_design</a></span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-264-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-265-1.svg" width="100%"></div>
 
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
 <!-- start post here, do not edit above -->
@@ -790,7 +790,7 @@ Figure 16.3: sampling distribution of three estimators
 <li><p><strong>D</strong>ata strategy: Our assignment strategy adds two units (one-quarter of the total sample) to the treatment at random in each wave, leaving two units who are not treated in any wave at all—see the remaining two orange squares at the top-right corner of Figure <a href="experimental-causal.html#fig:steppedwedge">16.4</a>. Notice that, while every <em>unit</em> is assigned to a treatment wave with equal probability, each wave reveals treated and untreated potential outcomes of <em>unit-periods</em> with different probabilities. In the first wave, one-quarter of the units reveal their treated potential outcomes; in the second wave, one-half of the units reveal their treated potential outcomes, and in the final wave, three-quarters of the units reveal treated potential outcomes. In essence, our experiment is like a block-randomized trial, with unit-periods grouped into period-specific blocks that have differential probabilities of assignment.</p></li>
 <li><p><strong>A</strong>nswer strategy: Just as in a block-randomized trial with differential probabilities, we need to take account of the fact that our assignment strategy “under-represents” treated potential outcomes in the first wave and “over-represents” them in the last wave. Inverse-propensity weights (IPWs) are one way to correct for such disparities. Each unit’s IPW is represented in Figure <a href="experimental-causal.html#fig:steppedwedge">16.4</a>. Using these weights, we get a “representative” estimate of the average control and treatment potential outcomes in each wave. If we didn’t apply the weights, we wouldn’t get a representative view of the unobserved potential outcomes we’re sampling, and our estimates would be biased. So what does all this buy us? We also declare a “two-arm” estimator that focuses on wave 2 only, where half of the units are in control and half in treatment. Diagnosis shows that all the remeasuring and randomizing gets us (.52 - .41) / .41 = 27% higher power.</p></li>
 </ul>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_model.html">declare_model</a></span><span class="op">(</span>
     unit <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">8</span>,
@@ -841,7 +841,7 @@ Figure 16.4: Illustration of random assignment in a stepped-wedge design.
 <h3>
 <span class="header-section-number">16.5.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-8"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-270-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-271-1.svg" width="100%"></div>
 </div>
 <div id="example-9" class="section level3">
 <h3>
@@ -886,7 +886,7 @@ Figure 16.4: Illustration of random assignment in a stepped-wedge design.
 <li><p><strong>D</strong>ata strategy: We assign entire networks to low (0%) or and high (75%) saturation. We then randomize individuals within groups to treatment or control in the proportions dictated by the saturation. Thus, the saturation is cluster-randomized, whereas treatment is block-randomized.</p></li>
 <li><p><strong>A</strong>nswer strategy: We weight each individual by the inverse of the probability that they find themselves in the condition they’re in. The estimator conditions on both the saturation effect and the direct treatment effect. Note that the standard errors are clustered at the network level to account for the clustering of the saturation assignment.</p></li>
 </ul>
-<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_model.html">declare_model</a></span><span class="op">(</span>
     group <span class="op">=</span> <span class="fu">add_level</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">50</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>,
@@ -914,7 +914,7 @@ Figure 16.4: Illustration of random assignment in a stepped-wedge design.
 <h3>
 <span class="header-section-number">16.6.2</span> DAG<a class="anchor" aria-label="anchor" href="#dag-9"><i class="fas fa-link"></i></a>
 </h3>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-276-1.svg" width="100%"></div>
+<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-277-1.svg" width="100%"></div>
 </div>
 <div id="exercises-6" class="section level3">
 <h3>

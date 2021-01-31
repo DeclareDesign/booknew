@@ -11,7 +11,7 @@
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><link rel="stylesheet" href="headers/style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -97,7 +97,7 @@
 <span class="header-section-number">4.2</span> Question 2<a class="anchor" aria-label="anchor" href="#question-2"><i class="fas fa-link"></i></a>
 </h2>
 <p>After reading Chapter <a href="primer.html#primer">3</a>, initialize the following design:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> 
   <span class="fu">declare_model</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">100</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
                 <span class="fu">potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
@@ -110,7 +110,7 @@
 <li><p>Draw data from the design using <code>draw_data(design)</code> and run a regression with <code>Y</code> as the outcome and <code>Z</code> and <code>X</code> as predictors. What is the estimated average treatment effect of <code>Z</code> on <code>Y</code> based on this regression?</p></li>
 <li><p>Add an estimator using that regression to the design, and link it to the ATE estimand using this code:</p></li>
 </ol>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, inquiry <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></code></pre></div>
 <pre><code>## declare_estimator(Y ~ Z + X, model = lm_robust, inquiry = "ATE")</code></pre>
 <p>Diagnose the design by running <code>diagnose_design(design, sims = 500)</code>. What is the bias of the design? What is its statistical power?</p>

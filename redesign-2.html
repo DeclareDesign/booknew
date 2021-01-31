@@ -11,7 +11,7 @@
 <script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9000/tabs.js"></script><script src="libs/bs3compat-0.2.4.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <link href="libs/bs4_book-1.0.0/dd_imgpopup.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/bs4_book-1.0.0/dd_imgpopup.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+<script src="https://hypothes.is/embed.js" async></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><link rel="stylesheet" href="headers/style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -111,7 +111,7 @@
 </ul>
 <p>Consider for example a design in which we place a prior distribution over a treatment effect, <span class="math inline">\(b\)</span>. We consider designs that vary (a) the number of units studied and (b) the investment in careful measurement. Each comes with a cost. We imagine that results will be used as follows: if a <em>significant</em> treatment effect of <span class="math inline">\(b&gt;c\)</span> is estimated then an intervention is implemented which has value <span class="math inline">\(b\)</span> and cost <span class="math inline">\(c\)</span>. Our diagnosand is the expected utility from whatever policy is implemented after the study: <span class="math inline">\(b-c\)</span> if the policy is adopted, 0 otherwise. Thus it is responsive to different types of errors: implementing a weak intervention with <span class="math inline">\(b&lt;c\)</span> and failing to implement a strong intervention with <span class="math inline">\(b&gt;c\)</span>. Note of course that this policy decision rule is not <em>itself</em> optimal insofar as it is based on significance not on posteriors, yet it may still be the rule used and we may still need to know how to undertake optimal design given this rule.</p>
 <p>We illustrate with a simple design in which we explicitly provide a prior distribution over the estimand and build in decision relevant parameters as arguments.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Decision parameters</span>
 
 <span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>  <span class="co"># Number of cases</span>
@@ -127,7 +127,7 @@
   <span class="fu">declare_inquiry</span><span class="op">(</span>b <span class="op">=</span> <span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">declare_estimator</span><span class="op">(</span><span class="va">Y_seen</span> <span class="op">~</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span><span class="op">)</span> </code></pre></div>
 <p>The key step then is to define a diagnosand that reflects choices, benefits, and costs and then assess performance over a range of designs.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Utility as a diagnosand</span>
 
 <span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
@@ -143,7 +143,7 @@
 <!--   power = mean(statistic > 1.96), -->
 <!--   benefit_given_significant = mean(estimand[statistic > 1.96]) -->
 <!-- ) -->
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, sims <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span id="fig:optimaldesign"></span>
