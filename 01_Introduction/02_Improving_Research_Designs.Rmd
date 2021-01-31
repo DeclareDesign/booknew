@@ -308,7 +308,7 @@ diagnosands <- declare_diagnosands(
 We then diagnose the design, which involves simulating the design and again and again, and then calculate the diagnosands based on the simulations data. 
 
 ```{r, eval = do_diagnosis & !exists("do_bookdown")}
-diagnosis <- diagnose_design(design, diagnosands = diagnosands)
+diagnosis <- diagnose_design(design, diagnosands = diagnosands, sims = sims, bootstrap_sims = b_sims)
 ```
 
 ```{r, echo = FALSE, purl = FALSE}
@@ -326,10 +326,48 @@ get_diagnosands(diagnosis) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 ```
 
-```{r}
-designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
+We redesign across possible combinations of numbers of villages and citizens per village:
 
-dx <- diagnose_design(designs, diagnosands = diagnosands, sims = 500)
+```{r, eval = FALSE}
+designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
+diagnosis <- diagnose_design(designs, diagnosands = diagnosands)
+```
+
+```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
+designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
+diagnosis <- diagnose_design(designs, diagnosands = diagnosands, sims = sims, bootstrap_sims = b_sims)
+```
+
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("02_Improving_Research_Designs"), "/redesign_diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+
+```{r, echo = FALSE}
+gg_df <- diagnosis$diagnosands_df %>%
+  filter(inquiry_label == "ATE_social") %>%
+  pivot_longer(cols = c(bias, rmse, power, cost), names_to =  "diagnosand")
+
+g_base <-
+ggplot(data = NULL, aes(citizens_per_village, value, group = n_villages, color = n_villages)) +
+  geom_line() +
+  scale_color_gradient(low = dd_light_blue, high = dd_dark_blue, breaks =c(192, 295, 397, 500)) +
+  coord_cartesian(xlim = c(0, 100)) + 
+  dd_theme() + 
+  theme(legend.key.height = unit(1.75, units = "cm"))
+
+g1 <- g_base %+% filter(gg_df, diagnosand == "bias") + labs(x = "Citizens per village", y = "Bias", color = "Number of\nvillages") + scale_y_continuous(limits = c(-0.025, 0.025)) 
+g2 <- g_base %+% filter(gg_df, diagnosand == "power") + labs(x = "Citizens per village", y = "Statistical power", color = "Number of\nvillages")  + scale_y_continuous(limits = c(0, 1)) + geom_hline(yintercept = 0.80, color = dd_pink, linetype = "dashed") + annotate("text", x = 82, y = 0.825, label = "Power threshold = 0.8", size = 3, color = dd_pink)
+g3 <- g_base %+% filter(gg_df, diagnosand == "rmse") + labs(x = "Citizens per village", y = "Root mean-squared error", color = "Number of\nvillages") + scale_y_continuous(limits = c(0, 0.05))
+g4 <- g_base %+% filter(gg_df, diagnosand == "cost") + labs(x = "Citizens per village", y = "Cost", color = "Number of\nvillages") 
+
+wrap_plots(g1, g2, g3, g4, guides = "collect")
 ```
 
 [GLOSS DIAGNOSIS; DO A REDESIGN]
