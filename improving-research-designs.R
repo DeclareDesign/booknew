@@ -97,6 +97,28 @@ get_diagnosands(diagnosis) %>%
   select(inquiry_label, estimator_label, bias, rmse, power) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 
-designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
+## designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
+## diagnosis <- diagnose_design(designs, diagnosands = diagnosands)
 
-dx <- diagnose_design(designs, diagnosands = diagnosands, sims = 500)
+
+
+
+
+gg_df <- diagnosis$diagnosands_df %>%
+  filter(inquiry_label == "ATE_social") %>%
+  pivot_longer(cols = c(bias, rmse, power, cost), names_to =  "diagnosand")
+
+g_base <-
+ggplot(data = NULL, aes(citizens_per_village, value, group = n_villages, color = n_villages)) +
+  geom_line() +
+  scale_color_gradient(low = dd_light_blue, high = dd_dark_blue, breaks =c(192, 295, 397, 500)) +
+  coord_cartesian(xlim = c(0, 100)) + 
+  dd_theme() + 
+  theme(legend.key.height = unit(1.75, units = "cm"))
+
+g1 <- g_base %+% filter(gg_df, diagnosand == "bias") + labs(x = "Citizens per village", y = "Bias", color = "Number of\nvillages") + scale_y_continuous(limits = c(-0.025, 0.025)) 
+g2 <- g_base %+% filter(gg_df, diagnosand == "power") + labs(x = "Citizens per village", y = "Statistical power", color = "Number of\nvillages")  + scale_y_continuous(limits = c(0, 1)) + geom_hline(yintercept = 0.80, color = dd_pink, linetype = "dashed") + annotate("text", x = 82, y = 0.825, label = "Power threshold = 0.8", size = 3, color = dd_pink)
+g3 <- g_base %+% filter(gg_df, diagnosand == "rmse") + labs(x = "Citizens per village", y = "Root mean-squared error", color = "Number of\nvillages") + scale_y_continuous(limits = c(0, 0.05))
+g4 <- g_base %+% filter(gg_df, diagnosand == "cost") + labs(x = "Citizens per village", y = "Cost", color = "Number of\nvillages") 
+
+wrap_plots(g1, g2, g3, g4, guides = "collect")
