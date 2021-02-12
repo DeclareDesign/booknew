@@ -32,19 +32,106 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-A reanalysis of an existing study is a follow-up study in which $d$, the original realized data, is fixed and changes to $A$ and sometimes $M$ or $I$ are proposed. Given $d$ is fixed, so too is the data strategy $D$. The results given the new MIDA, which may differ from the original study's results, are reported. 
+A reanalysis of an existing study is a follow-up study in which $d$, the original realized data, is fixed and changes to the answer strategy $A$ and sometimes the model $M$ or inquiry $I$ are proposed. Given $d$ is fixed, so too is the data strategy $D$. The results given the new MIDA, which may differ from the original study's results, are reported. We can learn from reanalyses in several ways. 
 
-We can learn from reanalyses in at least five ways'r flagit()'(WHICH FIVE?). We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections. 
+We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections. 
 
-We can reassess what is known about the same $I$, using new information about the world that was learned after the original study was published. Here, we may learn about new confounders or alternative causal channels that undermine the credibility of the original answer strategy. When reanalyzed, demonstrating the results do (or do not) change improves our understanding of $a^W$. 
+We can reassess what is known about the same inquiry, using new information about the world that was learned after the original study was published. Here, we may learn about new confounders or alternative causal channels that undermine the credibility of the original answer strategy. When reanalyzed, demonstrating the results do (or do not) change improves our understanding of the true inquiry. 
 
 Many reanalyses show that original findings are not "robust" to alternative answer strategies. These are better conceptualized as claims about robustness to alternative models: one model may imply one answer strategy and a different model, with another confounder, implies another. If both models are plausible, a good answer strategy should be robust to both and even help to distinguish between them and a reanalysis could uncover robustness to these alternative models or lack thereof. 
 
 Reanalyses may also aim to answer new questions that were not considered by the original study, but for which the realized data can provide useful answers. For example, authors may analyze outcomes not originally analyzed.
 
-Reanalyses are themselves research designs. Whether a reanalysis is a good design, and how much it can contribute to our knowledge about the original inquiry, depend on possible realizations of the data. Because $d$ is fixed in a reanalysis, analysts are often instead tempted to judge the reanalysis based on whether it overturns or confirms the results of the original study. A successful reanalysis in this way of thinking demonstrates, by showing that the original results are changed under an alternative $A$, that the results are not robust to other plausible models. This way of thinking can lead to incorrect assessments of reanalyses. We need to consider what answers would obtain under the original answer strategy $A$ and the reanalysis strategy $A^{\prime}$ under many *possible* realizations of the data. A good reanalysis strategy reveals with high probability the set of models of the world under which we can make credible claims about $I$. Whether or not the results from the fixed $d$ that was realized change under $A$ and $A^{\prime}$ tells us little about this probability. It is only one draw. 
+Reanalyses are themselves research designs. Whether a reanalysis is a good design, and how much it can contribute to our knowledge about the original inquiry, depend on *possible* realizations of the data not just the realized data. Because $d$ is fixed in a reanalysis, analysts are often instead tempted to judge the reanalysis based on whether it overturns or confirms the results of the original study. A successful reanalysis in this way of thinking demonstrates, by showing that the original results are changed under an alternative answer strategy, that the results are not robust to other plausible models. This way of thinking can lead to incorrect assessments of reanalyses. We need to consider what answers would obtain under the original answer strategy $A$ and the reanalysis strategy $A^{\prime}$ under many *possible* realizations of the data. A good reanalysis strategy reveals with high probability the set of models of the world under which we can make credible claims about the inquiry. Whether or not the results from the fixed $d$ that was realized change under the answer strategies $A$ and $A^{\prime}$ tells us little about this probability. It is only one draw. 
 
 To diagnose a reanalysis, we need to define two answer strategies --- $A$ and $A^{\prime}$ --- but also a new diagnostic-statistic. We need to decide how we summarize the answers from the two answer strategies. If one returns TRUE and one FALSE, what do we conclude about the inquiry? The function we define to summarize the two results depends on the inquiry and the goals of the reanalysis. But our diagnosis of the reanalysis should assess the properties of this summary of the two studies under possible realizations of the data. If the goal of the reanalysis is instead to learn about a new question, then we should simply construct a new MIDA altogether, but holding constant $D$ from the original study, which we cannot change because we already collected $d$ using it.
+
+We illustrate the flaw in assessing reanalyses on the basis of changing significance of results from realized data below. We demonstrate how to assess the properties of reanalysis plans, comparing the properties of original answer strategies to proposed reanalysis answer strategies. 
+
+The design we consider is an observational study with a binary treatment $Z$ that may or may not be confounded by a covariate $X$. The original answer strategy is a difference-in-means in the outcome $Y$ between the treatment and control group defined by $Z$, call it `A`. The reanalyst collects the covariate $X$ and proposes to control for it in a linear regression; call that strategy `A_prime`. 
+
+```{r}
+A <- declare_estimator(Y ~ Z, model = lm_robust, label = "A")
+A_prime <- declare_estimator(Y ~ Z + X, model = lm_robust, label = "A_prime")
+```
+
+We set up the model in the shoes of the renalyst, who believes $Z$ and $Y$ are confounded by $X$:
+
+```{r}
+# X is a confounder and is measured pretreatment
+model_1 <- 
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    X = rnorm(N), # X is pretreatment
+    Z = rbinom(N, 1, prob = plogis(0.5 + X)),
+    potential_outcomes(Y ~ 0.1 * Z + 0.25 * X + U),
+    Y = reveal_outcomes(Y ~ Z)
+  ) 
+```
+
+Drawing data from this strategy and applying the two answer strategies, we get differing results:
+
+```{r, eval = FALSE}
+draw_estimates(model_1 + A + A_prime)
+```
+
+```{r, echo = FALSE}
+set.seed(3)
+est <- draw_estimates(model_1 + A + A_prime)
+est %>% select(estimator_label, estimate, std.error, p.value) %>% kable(digits = 3)
+```
+
+Commonly, renalysts would infer from this two things: that there is not an average treatment effect, and that the answer strategy `A_prime` is preferred. It is preferred because it is unbiased under confounding and also unbiased (and lower variance than `A`) even when there is no confounding. As we show below, these claims depend on the validity of other parts of the model $M$. In particular, we define two other possible models, both where $X$ is not a confounder. In model 2, $X$ is measured before treatment, as in the first model. In model 3, however, $X$ is measured *post*treatment, and is affected by $Y$. In many observational settings, it is now always clear when $X$ is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the diagnosands of the design as we do below.
+
+```{r}
+# X is not a confounder and is measured pretreatment
+model_2 <- 
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    X = rnorm(N),
+    Z = rbinom(N, 1, prob = plogis(0.5)),
+    potential_outcomes(Y ~ 0.1 * Z + 0.25 * X + U),
+    Y = reveal_outcomes(Y ~ Z)
+  ) 
+
+# X is not a confounder and is measured posttreatment
+model_3 <- 
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    Z = rbinom(N, 1, prob = plogis(0.5)),
+    potential_outcomes(Y ~ 0.1 * Z + U),
+    Y = reveal_outcomes(Y ~ Z),
+    X = 0.1 * Z + 5 * Y + rnorm(N)
+  ) 
+
+design_1 <- model_1 + I + A + A_prime
+design_2 <- model_2 + I + A + A_prime
+design_3 <- model_3 + I + A + A_prime
+```
+
+```{r, echo = FALSE, eval = do_diagnosis}
+diagnosis <- diagnose_design(design_1, design_2, design_3, sims = sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("17_Reanalysis"), "/diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+What we see in the diagnosis below is that `A_prime` is only preferred if we know that $X$ is measured pretreatment. In design 2, where $X$ is measured posttreatment, `A` is preferred, because controlling for $X$ leads to posttreatment bias. Including the $X$ variable in the regression misattributes some of the effect of $Z$ on $Y$ to $X$. The reanalyst, this diagnosis indicates, needs to justify their beliefs about when $X$ is measured in order to claim that `A_prime` is preferred to `A`. It is not always preferred, as they might have concluded just by looking at the realized estimates from the two answer strategies.
+
+```{r, echo = FALSE}
+get_diagnosands(diagnosis) %>% 
+  select(design_label, estimator_label, bias)
+```
+
 
 <!-- how do we update from the reanalysis research design (the original design plus the reanalysis of d)? -->
 <!-- -- the design is the research design from before with two sets of estimates from two different A's -->
