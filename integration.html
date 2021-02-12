@@ -101,13 +101,114 @@
 <span class="header-section-number">24.2</span> Reanalysis<a class="anchor" aria-label="anchor" href="#reanalysis"><i class="fas fa-link"></i></a>
 </h2>
 <!-- make sure to rename the section title below -->
-<p>A reanalysis of an existing study is a follow-up study in which <span class="math inline">\(d\)</span>, the original realized data, is fixed and changes to <span class="math inline">\(A\)</span> and sometimes <span class="math inline">\(M\)</span> or <span class="math inline">\(I\)</span> are proposed. Given <span class="math inline">\(d\)</span> is fixed, so too is the data strategy <span class="math inline">\(D\)</span>. The results given the new MIDA, which may differ from the original study’s results, are reported.</p>
-<p>We can learn from reanalyses in at least five ways’r flagit()’(WHICH FIVE?). We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections.</p>
-<p>We can reassess what is known about the same <span class="math inline">\(I\)</span>, using new information about the world that was learned after the original study was published. Here, we may learn about new confounders or alternative causal channels that undermine the credibility of the original answer strategy. When reanalyzed, demonstrating the results do (or do not) change improves our understanding of <span class="math inline">\(a^W\)</span>.</p>
+<p>A reanalysis of an existing study is a follow-up study in which <span class="math inline">\(d\)</span>, the original realized data, is fixed and changes to the answer strategy <span class="math inline">\(A\)</span> and sometimes the model <span class="math inline">\(M\)</span> or inquiry <span class="math inline">\(I\)</span> are proposed. Given <span class="math inline">\(d\)</span> is fixed, so too is the data strategy <span class="math inline">\(D\)</span>. The results given the new MIDA, which may differ from the original study’s results, are reported. We can learn from reanalyses in several ways.</p>
+<p>We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections.</p>
+<p>We can reassess what is known about the same inquiry, using new information about the world that was learned after the original study was published. Here, we may learn about new confounders or alternative causal channels that undermine the credibility of the original answer strategy. When reanalyzed, demonstrating the results do (or do not) change improves our understanding of the true inquiry.</p>
 <p>Many reanalyses show that original findings are not “robust” to alternative answer strategies. These are better conceptualized as claims about robustness to alternative models: one model may imply one answer strategy and a different model, with another confounder, implies another. If both models are plausible, a good answer strategy should be robust to both and even help to distinguish between them and a reanalysis could uncover robustness to these alternative models or lack thereof.</p>
 <p>Reanalyses may also aim to answer new questions that were not considered by the original study, but for which the realized data can provide useful answers. For example, authors may analyze outcomes not originally analyzed.</p>
-<p>Reanalyses are themselves research designs. Whether a reanalysis is a good design, and how much it can contribute to our knowledge about the original inquiry, depend on possible realizations of the data. Because <span class="math inline">\(d\)</span> is fixed in a reanalysis, analysts are often instead tempted to judge the reanalysis based on whether it overturns or confirms the results of the original study. A successful reanalysis in this way of thinking demonstrates, by showing that the original results are changed under an alternative <span class="math inline">\(A\)</span>, that the results are not robust to other plausible models. This way of thinking can lead to incorrect assessments of reanalyses. We need to consider what answers would obtain under the original answer strategy <span class="math inline">\(A\)</span> and the reanalysis strategy <span class="math inline">\(A^{\prime}\)</span> under many <em>possible</em> realizations of the data. A good reanalysis strategy reveals with high probability the set of models of the world under which we can make credible claims about <span class="math inline">\(I\)</span>. Whether or not the results from the fixed <span class="math inline">\(d\)</span> that was realized change under <span class="math inline">\(A\)</span> and <span class="math inline">\(A^{\prime}\)</span> tells us little about this probability. It is only one draw.</p>
+<p>Reanalyses are themselves research designs. Whether a reanalysis is a good design, and how much it can contribute to our knowledge about the original inquiry, depend on <em>possible</em> realizations of the data not just the realized data. Because <span class="math inline">\(d\)</span> is fixed in a reanalysis, analysts are often instead tempted to judge the reanalysis based on whether it overturns or confirms the results of the original study. A successful reanalysis in this way of thinking demonstrates, by showing that the original results are changed under an alternative answer strategy, that the results are not robust to other plausible models. This way of thinking can lead to incorrect assessments of reanalyses. We need to consider what answers would obtain under the original answer strategy <span class="math inline">\(A\)</span> and the reanalysis strategy <span class="math inline">\(A^{\prime}\)</span> under many <em>possible</em> realizations of the data. A good reanalysis strategy reveals with high probability the set of models of the world under which we can make credible claims about the inquiry. Whether or not the results from the fixed <span class="math inline">\(d\)</span> that was realized change under the answer strategies <span class="math inline">\(A\)</span> and <span class="math inline">\(A^{\prime}\)</span> tells us little about this probability. It is only one draw.</p>
 <p>To diagnose a reanalysis, we need to define two answer strategies — <span class="math inline">\(A\)</span> and <span class="math inline">\(A^{\prime}\)</span> — but also a new diagnostic-statistic. We need to decide how we summarize the answers from the two answer strategies. If one returns TRUE and one FALSE, what do we conclude about the inquiry? The function we define to summarize the two results depends on the inquiry and the goals of the reanalysis. But our diagnosis of the reanalysis should assess the properties of this summary of the two studies under possible realizations of the data. If the goal of the reanalysis is instead to learn about a new question, then we should simply construct a new MIDA altogether, but holding constant <span class="math inline">\(D\)</span> from the original study, which we cannot change because we already collected <span class="math inline">\(d\)</span> using it.</p>
+<p>We illustrate the flaw in assessing reanalyses on the basis of changing significance of results from realized data below. We demonstrate how to assess the properties of reanalysis plans, comparing the properties of original answer strategies to proposed reanalysis answer strategies.</p>
+<p>The design we consider is an observational study with a binary treatment <span class="math inline">\(Z\)</span> that may or may not be confounded by a covariate <span class="math inline">\(X\)</span>. The original answer strategy is a difference-in-means in the outcome <span class="math inline">\(Y\)</span> between the treatment and control group defined by <span class="math inline">\(Z\)</span>, call it <code>A</code>. The reanalyst collects the covariate <span class="math inline">\(X\)</span> and proposes to control for it in a linear regression; call that strategy <code>A_prime</code>.</p>
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span>
+<span class="va">A_prime</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_estimator.html">declare_estimator</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">X</span>, model <span class="op">=</span> <span class="va">lm_robust</span>, label <span class="op">=</span> <span class="st">"A_prime"</span><span class="op">)</span></code></pre></div>
+<p>We set up the model in the shoes of the renalyst, who believes <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are confounded by <span class="math inline">\(X\)</span>:</p>
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># X is a confounder and is measured pretreatment</span>
+<span class="va">model_1</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_model.html">declare_model</a></span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">100</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, <span class="co"># X is pretreatment</span>
+    Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">+</span> <span class="va">X</span><span class="op">)</span><span class="op">)</span>,
+    <span class="fu">potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span>,
+    Y <span class="op">=</span> <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span><span class="op">)</span>
+  <span class="op">)</span> </code></pre></div>
+<p>Drawing data from this strategy and applying the two answer strategies, we get differing results:</p>
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/draw_functions.html">draw_estimates</a></span><span class="op">(</span><span class="va">model_1</span> <span class="op">+</span> <span class="va">A</span> <span class="op">+</span> <span class="va">A_prime</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+estimator_label
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+0.385
+</td>
+<td style="text-align:right;">
+0.176
+</td>
+<td style="text-align:right;">
+0.031
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+A_prime
+</td>
+<td style="text-align:right;">
+0.219
+</td>
+<td style="text-align:right;">
+0.188
+</td>
+<td style="text-align:right;">
+0.246
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>Commonly, renalysts would infer from this two things: that there is not an average treatment effect, and that the answer strategy <code>A_prime</code> is preferred. It is preferred because it is unbiased under confounding and also unbiased (and lower variance than <code>A</code>) even when there is no confounding. As we show below, these claims depend on the validity of other parts of the model <span class="math inline">\(M\)</span>. In particular, we define two other possible models, both where <span class="math inline">\(X\)</span> is not a confounder. In model 2, <span class="math inline">\(X\)</span> is measured before treatment, as in the first model. In model 3, however, <span class="math inline">\(X\)</span> is measured <em>post</em>treatment, and is affected by <span class="math inline">\(Y\)</span>. In many observational settings, it is now always clear when <span class="math inline">\(X\)</span> is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the diagnosands of the design as we do below.</p>
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># X is not a confounder and is measured pretreatment</span>
+<span class="va">model_2</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_model.html">declare_model</a></span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">100</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
+    <span class="fu">potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">X</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span>,
+    Y <span class="op">=</span> <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span><span class="op">)</span>
+  <span class="op">)</span> 
+
+<span class="co"># X is not a confounder and is measured posttreatment</span>
+<span class="va">model_3</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/DeclareDesign/man/declare_model.html">declare_model</a></span><span class="op">(</span>
+    N <span class="op">=</span> <span class="fl">100</span>,
+    U <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>,
+    Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>,
+    <span class="fu">potential_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="va">U</span><span class="op">)</span>,
+    Y <span class="op">=</span> <span class="fu">reveal_outcomes</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span><span class="op">)</span>,
+    X <span class="op">=</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="va">Z</span> <span class="op">+</span> <span class="fl">5</span> <span class="op">*</span> <span class="va">Y</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>
+  <span class="op">)</span> 
+
+<span class="va">design_1</span> <span class="op">&lt;-</span> <span class="va">model_1</span> <span class="op">+</span> <span class="va">I</span> <span class="op">+</span> <span class="va">A</span> <span class="op">+</span> <span class="va">A_prime</span>
+<span class="va">design_2</span> <span class="op">&lt;-</span> <span class="va">model_2</span> <span class="op">+</span> <span class="va">I</span> <span class="op">+</span> <span class="va">A</span> <span class="op">+</span> <span class="va">A_prime</span>
+<span class="va">design_3</span> <span class="op">&lt;-</span> <span class="va">model_3</span> <span class="op">+</span> <span class="va">I</span> <span class="op">+</span> <span class="va">A</span> <span class="op">+</span> <span class="va">A_prime</span></code></pre></div>
+<p>What we see in the diagnosis below is that <code>A_prime</code> is only preferred if we know that <span class="math inline">\(X\)</span> is measured pretreatment. In design 2, where <span class="math inline">\(X\)</span> is measured posttreatment, <code>A</code> is preferred, because controlling for <span class="math inline">\(X\)</span> leads to posttreatment bias. Including the <span class="math inline">\(X\)</span> variable in the regression misattributes some of the effect of <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span> to <span class="math inline">\(X\)</span>. The reanalyst, this diagnosis indicates, needs to justify their beliefs about when <span class="math inline">\(X\)</span> is measured in order to claim that <code>A_prime</code> is preferred to <code>A</code>. It is not always preferred, as they might have concluded just by looking at the realized estimates from the two answer strategies.</p>
+<pre><code>##   design_label estimator_label         bias
+## 1     design_1               A  0.212638604
+## 2     design_1         A_prime -0.002445082
+## 3     design_2               A  0.003141391
+## 4     design_2         A_prime  0.002320855
+## 5     design_3               A  0.013222389
+## 6     design_3         A_prime  0.015588253</code></pre>
 <!-- how do we update from the reanalysis research design (the original design plus the reanalysis of d)? -->
 <!-- -- the design is the research design from before with two sets of estimates from two different A's -->
 <!-- -- need an aggregation function (decisionmaking function) that converts the two sets of results into a decision or posterior -->
