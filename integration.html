@@ -101,6 +101,7 @@
 <span class="header-section-number">24.2</span> Reanalysis<a class="anchor" aria-label="anchor" href="#reanalysis"><i class="fas fa-link"></i></a>
 </h2>
 <!-- make sure to rename the section title below -->
+<p>Researchers may build on the results of a past study in three ways: reanalyze the original data, holding <span class="math inline">\(d\)</span> constant but changing <span class="math inline">\(A\)</span> (reanalysis); providing a new answer to the same <span class="math inline">\(I\)</span> with new data, possibly changing <span class="math inline">\(D\)</span> and <span class="math inline">\(A\)</span> (replication); or synthesizing the study’s answer <span class="math inline">\(a^d\)</span> to the inquiry along with other past studies (meta-analysis). In the next three sections, we discuss each in turn.</p>
 <p>A reanalysis of an existing study is a follow-up study in which <span class="math inline">\(d\)</span>, the original realized data, is fixed and changes to the answer strategy <span class="math inline">\(A\)</span> and sometimes the model <span class="math inline">\(M\)</span> or inquiry <span class="math inline">\(I\)</span> are proposed. Given <span class="math inline">\(d\)</span> is fixed, so too is the data strategy <span class="math inline">\(D\)</span>. The results given the new MIDA, which may differ from the original study’s results, are reported. We can learn from reanalyses in several ways.</p>
 <p>We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections.</p>
 <p>We can reassess what is known about the same inquiry, using new information about the world that was learned after the original study was published. Here, we may learn about new confounders or alternative causal channels that undermine the credibility of the original answer strategy. When reanalyzed, demonstrating the results do (or do not) change improves our understanding of the true inquiry.</p>
@@ -174,7 +175,7 @@ A_prime
 </tr>
 </tbody>
 </table></div>
-<p>Commonly, renalysts would infer from this two things: that there is not an average treatment effect, and that the answer strategy <code>A_prime</code> is preferred. It is preferred because it is unbiased under confounding and also unbiased (and lower variance than <code>A</code>) even when there is no confounding. As we show below, these claims depend on the validity of other parts of the model <span class="math inline">\(M\)</span>. In particular, we define two other possible models, both where <span class="math inline">\(X\)</span> is not a confounder. In model 2, <span class="math inline">\(X\)</span> is measured before treatment, as in the first model. In model 3, however, <span class="math inline">\(X\)</span> is measured <em>post</em>treatment, and is affected by <span class="math inline">\(Y\)</span>. In many observational settings, it is now always clear when <span class="math inline">\(X\)</span> is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the diagnosands of the design as we do below.</p>
+<p>Commonly, reanalysts would infer from this two things: that there is not an average treatment effect, and that the answer strategy <code>A_prime</code> is preferred. It is preferred because it is unbiased under confounding and also unbiased (and lower variance than <code>A</code>) even when there is no confounding. As we show below, these claims depend on the validity of other parts of the model <span class="math inline">\(M\)</span>. In particular, we define two other possible models, both where <span class="math inline">\(X\)</span> is not a confounder. In model 2, <span class="math inline">\(X\)</span> is measured before treatment, as in the first model. In model 3, however, <span class="math inline">\(X\)</span> is measured <em>post</em>treatment, and is affected by <span class="math inline">\(Y\)</span>. In many observational settings, it is now always clear when <span class="math inline">\(X\)</span> is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the diagnosands of the design as we do below.</p>
 <div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># X is not a confounder and is measured pretreatment</span>
 <span class="va">model_2</span> <span class="op">&lt;-</span> 
@@ -209,113 +210,19 @@ A_prime
 ## 4     design_2         A_prime  0.002320855
 ## 5     design_3               A  0.013222389
 ## 6     design_3         A_prime  0.015588253</code></pre>
-<!-- how do we update from the reanalysis research design (the original design plus the reanalysis of d)? -->
-<!-- -- the design is the research design from before with two sets of estimates from two different A's -->
-<!-- -- need an aggregation function (decisionmaking function) that converts the two sets of results into a decision or posterior -->
-<!-- what can be learned from reanalysis? -->
-<!-- (1) confirm there were not errors (consider changing A only) -->
-<!-- (2) reassess what is known about the same inquiry, using new information about the world (change M, change A to suit new M) -->
-<!-- (3) learn something new from the data about another node or edge or a different summary about the same ones (change I and possibly A to match it; possibly M if a node was missing; possibly add data) -->
-<!-- (4) assess "robustness" of findings - point to discussion of this in answer strategy (or move it here) (change A) -->
-<!-- (5) update M based on new research and assess what d can tell us from this study (change M and possibly I, possibly A to fit changed M and I) -->
-<!-- how can we assess the properties of a *reanalysis*? diagnose changed MIDA. important to not condition on d, the design includes the actual D, and we need to consider what results d' we would get from the reanalysis under different realizations of D. -->
-<!-- there are now two A's, so need to specify a decision function about how to integrate the two findings. this could be throw away the old a, or combine them in some way. if it's a "robustness" to alternative A, then you may want to combine not throw out for example. it's crucial to specify how you do that, that's part of the answer strategy. -->
-<!-- ## Example -->
-<!-- Knox, Lowe, and Mummolo (2020) (https://www.cambridge.org/core/journals/american-political-science-review/article/administrative-records-mask-racially-biased-policing/66BC0F9998543868BB20F241796B79B8) study the statistical biases that accompany estimates of racial bias in police use of force when presence in the dataset (being stopped by police) is conditioned on an outcome that is a downstream consequence of race. They show the estimate is not identified unless additional modelling assumptions are brought to bear. -->
-<!-- Gaebler et al. (2020) (https://5harad.com/papers/post-treatment-bias.pdf) study the same question and make such modeling assumptions (subset ignorability, definition 2). -->
-<!-- In a twitter thread (https://twitter.com/jonmummolo/status/1275790509647241222?s=20), Mummolo shows the three DAGs that are compatible with subset ignorability. We agree with Mummolo that these DAGs assume away causal paths that are very plausible. -->
-<!-- ![DAG](figures/mummolo_dag.png) -->
-<!-- This document provides a design declaration for this setting and shows how estimates of the controlled direct effect (effect of race on force among the stopped) are biased unless those paths are set to zero by assumption. -->
-<!-- Design Declaration -->
-<!-- There are four variables: (D: minority, M: stop, U: suspicion (unobserved), Y: force) and five paths: -->
-<!-- ```{r} -->
-<!-- D_M = 1 # effect of minority on stop -->
-<!-- U_M = 1 # effect of suspicion on stop -->
-<!-- D_Y = 1 # effect of minority on force -->
-<!-- U_Y = 1 # effect of suspicion on force -->
-<!-- M_Y = 1 # effect of stop on force -->
-<!-- ``` -->
-<!-- This basic design allows all five paths. -->
-<!-- ```{r} -->
-<!-- design_1 <- -->
-<!--   declare_model(N = 1000, -->
-<!--                      D = rbinom(N, size = 1, prob = 0.5), -->
-<!--                      U = rnorm(N)) + -->
-<!--   declare_potential_outcomes(M ~ rbinom(N, size = 1, prob = pnorm(D_M * -->
-<!--                                                                     D + U_M * U)), -->
-<!--                              assignment_variable = "D") + -->
-<!--   declare_reveal(M, D) + -->
-<!--   declare_potential_outcomes(Y ~ rnorm(N, D_Y * D + M_Y * M + U_Y * U), -->
-<!--                              conditions = list(D = c(0, 1), M = c(0, 1))) + -->
-<!--   declare_reveal(outcome_variables = "Y", -->
-<!--                  assignment_variables = c("D", "M")) + -->
-<!--   declare_inquiry(CDE = mean(Y_D_1_M_1 - Y_D_0_M_1)) + -->
-<!--   declare_estimator(Y ~ D, subset = M == 1, inquiry = "CDE") -->
-<!-- ``` -->
-<!-- We redesign the design 3 times, removing one path at a time, then simulate all four designs. -->
-<!-- ```{r, message=FALSE} -->
-<!-- # no effect of D on M -->
-<!-- design_2 <- redesign(design_1, D_M = 0) -->
-<!-- # no effect of U on M -->
-<!-- design_3 <- redesign(design_1, U_M = 0) -->
-<!-- # no effect of U on Y -->
-<!-- design_4 <- redesign(design_1, U_Y = 0) -->
-<!-- ``` -->
-<!-- This chunk is set to `echo = TRUE` and `eval = do_diagnosis` -->
-<!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} -->
-<!-- simulations <- simulate_designs(design_1, design_2, design_3, design_4, sims = sims) -->
-<!-- ``` -->
-<!-- Right after you do simulations, you want to save the simulations rds. -->
-<!-- ```{r, echo = FALSE, purl = FALSE} -->
-<!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file -->
-<!-- rds_file_path <- paste0(get_dropbox_path("policing"), "/simulations_policing.RDS") -->
-<!-- if (do_diagnosis & !exists("do_bookdown")) { -->
-<!--   write_rds(simulations, path = rds_file_path) -->
-<!-- } -->
-<!-- simulations <- read_rds(rds_file_path) -->
-<!-- ``` -->
-<!-- ```{r, echo=FALSE, message = FALSE} -->
-<!-- simulations <- -->
-<!--   simulations %>% -->
-<!--   mutate(`Assumed DAG` = factor( -->
-<!--     design_label, -->
-<!--     levels = c("design_1", "design_2", "design_3", "design_4"), -->
-<!--     labels = c( -->
-<!--       "All paths possible", -->
-<!--       "no effect of D on M", -->
-<!--       "no effect of U on M", -->
-<!--       "no effect of U on Y" -->
-<!--     ) -->
-<!--   )) -->
-<!-- summary_df <- -->
-<!--   simulations %>% -->
-<!--   group_by(`Assumed DAG`) %>% -->
-<!--   summarise( -->
-<!--     mean_estimand = mean(estimand), -->
-<!--     mean_estimate = mean(estimate), -->
-<!--     bias = mean(estimate - estimand) -->
-<!--   ) %>% -->
-<!--   pivot_longer(cols = c("mean_estimand", "mean_estimate")) -->
-<!-- ``` -->
-<!-- This plot confirms that unless one of those implausible assumptions hold, estimates of the CDE are biased. -->
-<!-- ```{r, echo=FALSE} -->
-<!-- ggplot(simulations, aes(estimate)) + -->
-<!--   geom_histogram(bins = 50) + -->
-<!--   geom_vline(data = summary_df, aes(xintercept = value, color = name)) + -->
-<!--   facet_wrap(~`Assumed DAG`) + -->
-<!--   xlab("Simulated CDE estimates") + -->
-<!--   theme_bw() + -->
-<!--   theme(legend.position = "bottom", -->
-<!--         strip.background = element_blank(), -->
-<!--         axis.title.y = element_blank(), -->
-<!--         legend.title = element_blank()) -->
-<!-- ``` -->
-<!-- ### Grab bag -->
-<!-- - @Clemens2017 on taxonomy of these kinds of efforts -->
-<!-- - if you're going to use d to learn about a different M for a different I, you need to understand their D -->
-
-<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
-<!-- start post here, do not edit above -->
+<p>Three principles emerge from the idea that changes from answer strategy <span class="math inline">\(A\)</span> to <span class="math inline">\(A^{\prime}\)</span> should be justified by diagnosis, not comparison of the results <span class="math inline">\(a^d\)</span> to <span class="math inline">\(a^{\prime d}\)</span>:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Home ground dominance.</strong> Holding the original <span class="math inline">\(M\)</span> constant (i.e., the home ground of the original study) as well as <span class="math inline">\(I\)</span>, if you can show that a new answer strategy <span class="math inline">\(A^{\prime}\)</span> yields better diagnosands than the original <span class="math inline">\(A\)</span>, then the new <span class="math inline">\(A^{\prime}\)</span> can be justified by a reanalyst on the basis of home ground dominance. In this situation, we would prefer <span class="math inline">\(A^{\prime}\)</span> and the estimates produced by it to <span class="math inline">\(A\)</span> and the original estimates produced by it, regardless of what those realized estimates are. <!-- parallel idea about finding a replication with a new D that rules out confounders -->
+</li>
+<li>
+<strong>Robustness to alternative models.</strong> A second justification for a change in answer strategy is that you can show that a new answer strategy is robust to both the original model <span class="math inline">\(M\)</span> and a new, also plausible, <span class="math inline">\(M^{\prime}\)</span>. In observational studies, commonly we are uncertain about many features of the model such as the existence of unobserved confounders. In the example above, the reanalyst identified a confounder and found an answer strategy — controlling for <span class="math inline">\(X\)</span> — that they convinced themself through diagnosis was robust to the original model (no confounding) and the alternative model (confounding). An answer strategy that is robust to these two alternative models is preferred to one that is only unbiased under the no confounding model.</li>
+<li>
+<strong>Model plausibility.</strong> If the diagnosands for a design with <span class="math inline">\(A^{\prime}\)</span> are worse than those with <span class="math inline">\(A\)</span> under <span class="math inline">\(M\)</span> but better under <span class="math inline">\(M^{\prime}\)</span>, then the switch to <span class="math inline">\(A^{\prime}\)</span> can only be justified by a claim or demonstration that <span class="math inline">\(M^{\prime}\)</span> is more plausible than <span class="math inline">\(M\)</span>. As we saw in the example, there was a third possible model in which <span class="math inline">\(X\)</span> was realized posttreatment and so controlling for <span class="math inline">\(X\)</span> led to posttreatment bias. In that case, neither controlling for <span class="math inline">\(X\)</span> or not controlling for <span class="math inline">\(X\)</span> is robust to all three alternative models. The justification of model plausibility would have to be used this case in order to justify controlling for <span class="math inline">\(X\)</span>: substantive knowledge or additional data would have to be brought to bear to rule out the third model with posttreatment measurement of <span class="math inline">\(X\)</span>. The reanalyst could demonstrate that data collection of <span class="math inline">\(X\)</span> took place before the treatment was realized, for example.</li>
+<li>
+<strong>Undefined or unidentifiable inquiries</strong>. When inquiries are undefined or not identifiable, then it is fair game in a reanalysis to change the inquiry <span class="math inline">\(I\)</span> to a new <span class="math inline">\(I^{\prime}\)</span> that is defined and at least partially identifiable. Disputes may of course arise as to whether the new <span class="math inline">\(I^{\prime}\)</span> is sufficiently faithful to the original aims of the research.</li>
+</ol>
+<!-- 1. M always changes! (you have more information on $\tau$ or $\sd(\tau)$) --><!-- 2. Home ground dominance: Change A or D-and-A if A$^\prime$ > A under M --><!-- 3. Robustness to alternative models: Change A or D-and-A if A$^\prime$ $\geq$ A under M AND A$^\prime$ > A under M$^\prime$ E.g. change from simple to complete RA --><!-- 4. Model plausibility: If A$^\prime$ < A under M AND A$^\prime$ > A under M$^\prime$, then change to A$^\prime$ or D-and-A IFF M$^\prime$ is more plausible than M E.g. switching to balanced design if you believe variances equal across treatment groups --><!-- 5. Undefined inquiries. Change I to I$^\prime$ if I is undefined under M If I is defined under M: You can't change to I$^\prime$, You can’t change D to D$^\prime$ if that means I unidentifiable. --><!-- how do we update from the reanalysis research design (the original design plus the reanalysis of d)? --><!-- -- the design is the research design from before with two sets of estimates from two different A's --><!-- -- need an aggregation function (decisionmaking function) that converts the two sets of results into a decision or posterior --><!-- what can be learned from reanalysis? --><!-- (1) confirm there were not errors (consider changing A only) --><!-- (2) reassess what is known about the same inquiry, using new information about the world (change M, change A to suit new M) --><!-- (3) learn something new from the data about another node or edge or a different summary about the same ones (change I and possibly A to match it; possibly M if a node was missing; possibly add data) --><!-- (4) assess "robustness" of findings - point to discussion of this in answer strategy (or move it here) (change A) --><!-- (5) update M based on new research and assess what d can tell us from this study (change M and possibly I, possibly A to fit changed M and I) --><!-- how can we assess the properties of a *reanalysis*? diagnose changed MIDA. important to not condition on d, the design includes the actual D, and we need to consider what results d' we would get from the reanalysis under different realizations of D. --><!-- there are now two A's, so need to specify a decision function about how to integrate the two findings. this could be throw away the old a, or combine them in some way. if it's a "robustness" to alternative A, then you may want to combine not throw out for example. it's crucial to specify how you do that, that's part of the answer strategy. --><!-- ## Example --><!-- Knox, Lowe, and Mummolo (2020) (https://www.cambridge.org/core/journals/american-political-science-review/article/administrative-records-mask-racially-biased-policing/66BC0F9998543868BB20F241796B79B8) study the statistical biases that accompany estimates of racial bias in police use of force when presence in the dataset (being stopped by police) is conditioned on an outcome that is a downstream consequence of race. They show the estimate is not identified unless additional modelling assumptions are brought to bear. --><!-- Gaebler et al. (2020) (https://5harad.com/papers/post-treatment-bias.pdf) study the same question and make such modeling assumptions (subset ignorability, definition 2). --><!-- In a twitter thread (https://twitter.com/jonmummolo/status/1275790509647241222?s=20), Mummolo shows the three DAGs that are compatible with subset ignorability. We agree with Mummolo that these DAGs assume away causal paths that are very plausible. --><!-- ![DAG](figures/mummolo_dag.png) --><!-- This document provides a design declaration for this setting and shows how estimates of the controlled direct effect (effect of race on force among the stopped) are biased unless those paths are set to zero by assumption. --><!-- Design Declaration --><!-- There are four variables: (D: minority, M: stop, U: suspicion (unobserved), Y: force) and five paths: --><!-- ```{r} --><!-- D_M = 1 # effect of minority on stop --><!-- U_M = 1 # effect of suspicion on stop --><!-- D_Y = 1 # effect of minority on force --><!-- U_Y = 1 # effect of suspicion on force --><!-- M_Y = 1 # effect of stop on force --><!-- ``` --><!-- This basic design allows all five paths. --><!-- ```{r} --><!-- design_1 <- --><!--   declare_model(N = 1000, --><!--                      D = rbinom(N, size = 1, prob = 0.5), --><!--                      U = rnorm(N)) + --><!--   declare_potential_outcomes(M ~ rbinom(N, size = 1, prob = pnorm(D_M * --><!--                                                                     D + U_M * U)), --><!--                              assignment_variable = "D") + --><!--   declare_reveal(M, D) + --><!--   declare_potential_outcomes(Y ~ rnorm(N, D_Y * D + M_Y * M + U_Y * U), --><!--                              conditions = list(D = c(0, 1), M = c(0, 1))) + --><!--   declare_reveal(outcome_variables = "Y", --><!--                  assignment_variables = c("D", "M")) + --><!--   declare_inquiry(CDE = mean(Y_D_1_M_1 - Y_D_0_M_1)) + --><!--   declare_estimator(Y ~ D, subset = M == 1, inquiry = "CDE") --><!-- ``` --><!-- We redesign the design 3 times, removing one path at a time, then simulate all four designs. --><!-- ```{r, message=FALSE} --><!-- # no effect of D on M --><!-- design_2 <- redesign(design_1, D_M = 0) --><!-- # no effect of U on M --><!-- design_3 <- redesign(design_1, U_M = 0) --><!-- # no effect of U on Y --><!-- design_4 <- redesign(design_1, U_Y = 0) --><!-- ``` --><!-- This chunk is set to `echo = TRUE` and `eval = do_diagnosis` --><!-- ```{r, eval = do_diagnosis & !exists("do_bookdown")} --><!-- simulations <- simulate_designs(design_1, design_2, design_3, design_4, sims = sims) --><!-- ``` --><!-- Right after you do simulations, you want to save the simulations rds. --><!-- ```{r, echo = FALSE, purl = FALSE} --><!-- # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file --><!-- rds_file_path <- paste0(get_dropbox_path("policing"), "/simulations_policing.RDS") --><!-- if (do_diagnosis & !exists("do_bookdown")) { --><!--   write_rds(simulations, path = rds_file_path) --><!-- } --><!-- simulations <- read_rds(rds_file_path) --><!-- ``` --><!-- ```{r, echo=FALSE, message = FALSE} --><!-- simulations <- --><!--   simulations %>% --><!--   mutate(`Assumed DAG` = factor( --><!--     design_label, --><!--     levels = c("design_1", "design_2", "design_3", "design_4"), --><!--     labels = c( --><!--       "All paths possible", --><!--       "no effect of D on M", --><!--       "no effect of U on M", --><!--       "no effect of U on Y" --><!--     ) --><!--   )) --><!-- summary_df <- --><!--   simulations %>% --><!--   group_by(`Assumed DAG`) %>% --><!--   summarise( --><!--     mean_estimand = mean(estimand), --><!--     mean_estimate = mean(estimate), --><!--     bias = mean(estimate - estimand) --><!--   ) %>% --><!--   pivot_longer(cols = c("mean_estimand", "mean_estimate")) --><!-- ``` --><!-- This plot confirms that unless one of those implausible assumptions hold, estimates of the CDE are biased. --><!-- ```{r, echo=FALSE} --><!-- ggplot(simulations, aes(estimate)) + --><!--   geom_histogram(bins = 50) + --><!--   geom_vline(data = summary_df, aes(xintercept = value, color = name)) + --><!--   facet_wrap(~`Assumed DAG`) + --><!--   xlab("Simulated CDE estimates") + --><!--   theme_bw() + --><!--   theme(legend.position = "bottom", --><!--         strip.background = element_blank(), --><!--         axis.title.y = element_blank(), --><!--         legend.title = element_blank()) --><!-- ``` --><!-- ### Grab bag --><!-- - @Clemens2017 on taxonomy of these kinds of efforts --><!-- - if you're going to use d to learn about a different M for a different I, you need to understand their D --><!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
 <div id="replication" class="section level2">
 <h2>
@@ -338,34 +245,9 @@ A_prime
 </ul>
 <!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
 </div>
-<div id="resolving-disputes" class="section level2">
-<h2>
-<span class="header-section-number">24.4</span> Resolving Disputes<a class="anchor" aria-label="anchor" href="#resolving-disputes"><i class="fas fa-link"></i></a>
-</h2>
-<!-- make sure to rename the section title below -->
-<!-- The problem: Acrimonious debates arise; Hard to interpret contribution of replication and reanalysis; First main task (accumulation of knowledge) damaged. -->
-<!-- The solution: Some of this comes down to basic disagreements we can't resolve. But some of it comes down to a lack of principles guiding how design decisions are made and how the results they produce should be interpreted. And a lack of procedures for understanding the consequences of decisions. -->
-<!-- - Principles for making design choices, tailored to the distinct challenges posed to reanalysis and to replication -->
-<!-- - Some changes are justifiable / encouraged, some things are not justifiable / discouraged, conditions for justification are clarified -->
-<!-- - Procedures for putting principles into practice  -->
-<!-- - Declaration and diagnosis through DD -->
-<!-- Current practice for replication is to exactly replicate data strategy and analysis strategy in new or same context. This is not needed! Standard should be: best answer to same inquiry in new or same context! But how can we justify changes to D and A that give a "better" answer to same inquiry? -->
-<p>Disputes arise when reanalyses and replication studies are conducted and claims are made about the past studies or what we learn from the pair. The realized data from the two studies, <span class="math inline">\(d\)</span> and <span class="math inline">\(d^{\prime}\)</span>, as well as the two designs <span class="math inline">\(MIDA\)</span> and <span class="math inline">\(MIDA^{\prime}\)</span>, together inform what we learn from the two studies. Disputes arise over whether changes to <span class="math inline">\(M^{\prime}\)</span>, <span class="math inline">\(I^{\prime}\)</span>, <span class="math inline">\(D^{\prime}\)</span>, or <span class="math inline">\(A^{\prime}\)</span> in the new study mean <span class="math inline">\(d^{\prime}\)</span> can be informative about the original <span class="math inline">\(I\)</span>.</p>
-<p><span class="math inline">\(M\)</span> always changes. When a reanalysis or replication is conducted after the original study, we have by definition learned at least about <span class="math inline">\(a^w\)</span> from <span class="math inline">\(a^d\)</span> in the first study. We often have learned much more, about the distribution of variables, the existence of new nodes and edges, and sometimes much more when other related studies have been published in between. However, the original author may not agree with <em>how</em> the new author updated <span class="math inline">\(M\)</span>. These disputes are substantive.</p>
-<p>We offer five rules for resolving disputes about changes to <span class="math inline">\(I\)</span>, <span class="math inline">\(D\)</span>, and <span class="math inline">\(A\)</span>.</p>
-<p>Replacing them with alternative practices justified by design simulation</p>
-<ol style="list-style-type: decimal">
-<li>M always changes! (you have more information on <span class="math inline">\(\tau\)</span> or <span class="math inline">\(\sd(\tau)\)</span>)</li>
-<li>Home ground dominance: Change A or D-and-A if A<span class="math inline">\(^\prime\)</span> &gt; A under M</li>
-<li>Robustness to alternative models: Change A or D-and-A if A<span class="math inline">\(^\prime\)</span> <span class="math inline">\(\geq\)</span> A under M AND A<span class="math inline">\(^\prime\)</span> &gt; A under M<span class="math inline">\(^\prime\)</span> E.g. change from simple to complete RA</li>
-<li>Model plausibility: If A<span class="math inline">\(^\prime\)</span> &lt; A under M AND A<span class="math inline">\(^\prime\)</span> &gt; A under M<span class="math inline">\(^\prime\)</span>, then change to A<span class="math inline">\(^\prime\)</span> or D-and-A IFF M<span class="math inline">\(^\prime\)</span> is more plausible than M E.g. switching to balanced design if you believe variances equal across treatment groups</li>
-<li>Undefined inquiries. Change I to I<span class="math inline">\(^\prime\)</span> if I is undefined under M If I is defined under M: You can’t change to I<span class="math inline">\(^\prime\)</span>, You can’t change D to D<span class="math inline">\(^\prime\)</span> if that means I unidentifiable.</li>
-</ol>
-<!-- Disorganized thoughts: --><!-- - Changes to D include both interventions (sampling and randomization), as well as the inclusion of different / new datasets on the same model (this is common in econ reanalyses at state-level). The collection of "different" data through a change in question wording also fits into this. Need to think about a good typology of data strategies. --><!-- - There’s often a broader research question that’s being answered, and when I changes sometimes both are answering the same broader question. But focuses debate on whether that claim is true that I and I’ answer the same broader I.  --><!-- - In replication can you use data from study 1 to assess the plausibility of M? --><!-- - When does changing outcomes change the inquiry? --><!-- Example: you used z-scores in your original analysis in order to measure an effect on five different measures of some latent construct. I show that taking a simple average has better properties (e.g., statistical power), and use this instead of z-score. Have I changed estimand? If so, are there any instances of "recoding" or even "rewording" of outcome measures that we would be OK with, insofar as they get better answers to the inquiry without changing the inquiry? --><!-- One way of looking at this: inquiry is in reference to summary of a latent variable, which stays constant, but D changes which is different measurement of the latent variable --><!-- Point to keep in mind from this: D change might be in sampling/treat assignment or measurement --><!-- Key thing we are saying here: there are two dimensions of change with measurement. (1) are you changing estimands because the latent construct is changing implicitly; (2) are you changing to a better/worse measurement of the same latent construct. --><!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book--><!-- start post here, do not edit above -->
-</div>
 <div id="synthesis" class="section level2">
 <h2>
-<span class="header-section-number">24.5</span> Synthesis<a class="anchor" aria-label="anchor" href="#synthesis"><i class="fas fa-link"></i></a>
+<span class="header-section-number">24.4</span> Synthesis<a class="anchor" aria-label="anchor" href="#synthesis"><i class="fas fa-link"></i></a>
 </h2>
 <!-- make sure to rename the section title below -->
 <p>One of the last, if not the last, stage of the lifecycle of a research design is its eventual incorporation in to our common scientific understanding of the world. Research findings about specific Is – specific <span class="math inline">\(a^D\)</span>s need to be synthesized into our broader scientific understanding. A research synthesis comprises a new research design that summarizes past research.</p>
@@ -404,8 +286,7 @@ A_prime
 <li><a class="nav-link" href="#archiving"><span class="header-section-number">24.1</span> Archiving</a></li>
 <li><a class="nav-link" href="#reanalysis"><span class="header-section-number">24.2</span> Reanalysis</a></li>
 <li><a class="nav-link" href="#replication"><span class="header-section-number">24.3</span> Replication</a></li>
-<li><a class="nav-link" href="#resolving-disputes"><span class="header-section-number">24.4</span> Resolving Disputes</a></li>
-<li><a class="nav-link" href="#synthesis"><span class="header-section-number">24.5</span> Synthesis</a></li>
+<li><a class="nav-link" href="#synthesis"><span class="header-section-number">24.4</span> Synthesis</a></li>
 </ul>
 
       <div class="book-extra">
