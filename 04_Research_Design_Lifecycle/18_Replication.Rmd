@@ -32,7 +32,6 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-
 After your study is completed, it may one day be replicated. Replication differs from reanalysis in that a replication study involves the collection of new data to study the same inquiry. A new model, data strategy, or answer strategy may also be proposed. By contrast, a reanalysis may re-specify parts of the research design, but always re-uses the original data $d$ in some way.
 
 So-called "exact" replications hold key features of I, D, and A fixed, but draw a new dataset $d_{\rm new}$ from data strategy $D()$ and apply the same answer strategy $A$ to the new $d$ in order to produce a fresh answer $a_{\rm new}^D$. Replications are said to "succeed" when $a_{\rm old}^D$ and $a_{\rm new}^D$ are similar and to "fail" when they are not. Dichotomizing replication attempts into successes and failures is usually not that helpful, and it would be better to simply characterize how similar $a_{\rm old}^D$ and $a_{\rm new}^D$ are.
@@ -50,6 +49,140 @@ When changes to the data strategy $D$ or answer strategy $A$ can be made to prod
 So-called "conceptual" replications alter both $M$ and $D$, but keep $I$ and $A$ as similar as possible. That is, a conceptual replication tries to ascertain whether a relationship in one context ($I(M_{\rm old})$) also holds in a new context ($I(M_{\rm new}$). The trouble and promise of conceptual replications lies in the success of the designer at holding $I$ constant. Too often, a conceptual replication fails because in changing $M$, too much changes about $I$ such that too much changes about the "concept" under replication. The key is holding $I$ fixed.
 
 A summary function is neededto interpret the difference between $a_{\rm old}^D$ and $a_{\rm new}^D$. This may take the new one and throw out the old if MIDA was poor in the first. It may be taking the average. It may be a precision-weighted average. Specifying this function ex ante may be useful, to avoid the choice of summary depending on the results of the replication. This summary function will be reflected in $A$ and in the discussion section of the replication paper. 
+
+### Example: 
+
+Here we have an original study design with size 1000. The true SATE for the original study design is 0.2 because the original authors happened to study a reasonably treatment responsive population.
+
+We seek to replicate the original results, whatever they may be. We want to characterize the probability of concluding that we "failed" to replicate the original results. We have some alternative metrics for assessing this.
+
+1. Are the original and replication estimates statistically significantly different from each other? If yes, we conclude that we failed to replicate the original results, and if no, we conclude that the study replicated.
+
+2. Is the original estimate within the replication 95% CI? (as advocated by gilbert)
+
+3. Is the replication estimate within the original 95% CI? (as cacluated by nosek)
+
+4. Do we fail to affirm equivalence between the replication and original estimate, using a tolerance of 0.2?
+
+The figure shows that no matter how big we make the study, we find that the rate of concluding the difference-in-SATEs is nonzero only occurs about 10% of the time. The relatively high variance of the original study estimate means that it is so uncertain, it's tough to distinguish it from any number in particular.
+
+For a similar reason, the replication estimate is almost never outside of the original ci, because it's rare to be more extreme than a wide CI.
+
+As the size of the replication study grows, we become more and more likely to conclude that the study fails to replicate. At very large sample sizes, the repliccation CI because extremely small, so in the limit, it will never include the original study.
+
+Equivalence testing has the nice property that as the sample size grows, we get closer to the correct answer -- the true SATEs are indeed within 0.2 standard units together. However, again because the original study is so noisy, it's difficult to affirm its equivalence with anything.
+
+The upshot of this exercise is that, curiously, when original studies are weak (in that they generate imprecise estimates), it becomes **harder** to conclusively affirm that they did not replicate. 
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
+N = 1000
+ate = 0.20
+
+design_1 <-
+  declare_model(
+    N = N,
+    U = rnorm(N),
+    potential_outcomes(Y ~ ate*Z + U)
+  ) +
+  declare_assignment(Z = complete_ra(N), legacy = FALSE) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z)
+
+studies_1 <- simulate_design(design_1)
+
+studies_1_for_merge <- 
+  studies_1 %>%
+  transmute(sim_ID, 
+            original_estimate = estimate,
+            original_std.error = std.error,
+            original_conf.low = conf.low,
+            original_conf.high = conf.high)
+
+designs_2 <- redesign(design_1, N = seq(2000, 10000, 1000), ate = 0.15)
+
+studies_2 <- simulate_designs(designs_2)
+
+
+is_equivalent <-
+  function(estimate, std.error, tolerance) {
+    p_upper_eq <-
+      pnorm(q = (estimate + tolerance) / std.error,
+            lower.tail = FALSE)
+    p_lower_eq <-
+      pnorm(q = (estimate - tolerance) / std.error,
+            lower.tail = TRUE)
+    (p_upper_eq <= 0.05) & (p_lower_eq <= 0.05)
+  }
+
+simulations <- 
+  studies_2 %>%
+  left_join(studies_1_for_merge, by = "sim_ID") %>% 
+  mutate(
+    replication_outside = !(original_conf.low < estimate & estimate < original_conf.high),
+    original_outide = !(conf.low < original_estimate & original_estimate < conf.high),
+    abs_diff = abs(original_estimate - estimate),
+    se_diff =  sqrt(original_std.error^2 + std.error^2),
+    t_stat = abs_diff / se_diff,
+    dis_sig = pnorm(t_stat, lower.tail = FALSE) * 2 < 0.05,
+    dis_nonequiv = !is_equivalent(estimate = abs_diff, std.error = se_diff, tolerance = 0.2)
+  )
+```
+
+
+
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("replication"), "/simulations")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(simulations, file = rds_file_path)
+}
+simulations <- read_rds(rds_file_path)
+```
+
+
+
+```{r, echo=FALSE, fig.cap="Rates of 'Failure to Replicate' according to four diagnosands}
+gg_df <- 
+  simulations %>%
+  group_by(N) %>%
+  summarise(`Original not replicated because:\n Replication outside of original ci` = mean(replication_outside),
+            `Original not replicated because:\n Original outside of replication ci` = mean(original_outide),
+            `Original not replicated because:\n Difference-in-SATEs is significant` = mean(dis_sig),
+            `Original not replicated because:\n Difference-in-SATEs not affirmed equivalent within a difference of 0.2` = mean(dis_nonequiv)) %>%
+  pivot_longer(cols = -N)
+
+ggplot(gg_df, aes(N, value)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap( ~ name) +
+  theme_minimal() +
+  ylim(0, 1.0) +
+  labs(x = "Replication Study Sample Size",
+       y = "Fraction of 'failures to replicate'",
+       caption = "Original study N = 1000; True original SATE: 0.2; True replication SATE: 0.15")
+
+```
+
+
+
+
+
+
+
+
+
 
 **Further reading**.
 
