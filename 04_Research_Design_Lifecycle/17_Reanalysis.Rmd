@@ -32,8 +32,6 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-Researchers may build on the results of a past study in three ways: reanalyze the original data, holding $d$ constant but changing $A$ (reanalysis); providing a new answer to the same $I$ with new data, possibly changing $D$ and $A$ (replication); or synthesizing the study's answer $a^d$ to the inquiry along with other past studies (meta-analysis). In the next three sections, we discuss each in turn. 
-
 A reanalysis of an existing study is a follow-up study in which $d$, the original realized data, is fixed and changes to the answer strategy $A$ and sometimes the model $M$ or inquiry $I$ are proposed. Given $d$ is fixed, so too is the data strategy $D$. The results given the new MIDA, which may differ from the original study's results, are reported. We can learn from reanalyses in several ways. 
 
 We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections. 
@@ -131,7 +129,8 @@ What we see in the diagnosis below is that `A_prime` is only preferred if we kno
 
 ```{r, echo = FALSE}
 get_diagnosands(diagnosis) %>% 
-  select(design_label, estimator_label, bias)
+  select(design_label, estimator_label, bias) %>% 
+  kable(digits = 3)
 ```
 
 Three principles emerge from the idea that changes from answer strategy $A$ to $A^{\prime}$ should be justified by diagnosis, not comparison of the results $a^d$ to $a^{\prime d}$:

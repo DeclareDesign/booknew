@@ -46,6 +46,41 @@ For the second kind of synthesis -- literature-wide progress on a full causal mo
 
 Declaring and diagnosing the properties of the meta design can be as informative as doing so in planning for an individual study. The first step of every research synthesis is the process of collecting past studies. Search strategies are sampling strategies, and they can be biased in the same ways as convenience samples of individuals. Conducting a Census of past literature on a topic is impossible: much research conducted is not published or not yet published. Selecting studies from major journals alone may induce additional publication bias in your sample. Collecting working papers and soliciting unpublished abandoned research on a topic are strategies to mitigate these risks. The choice of answer strategy for research synthesis is typically driven by assumptions about a model of how studies are related and how the contexts and units within them were selected. The model for declaring a research synthesis thus must include assumptions not only about how studies reach you as the synthesizer, but how the contexts and units were selected in those original studies. Diagnosis can help assess the conditions under which your analysis strategies will provide unbiased, efficient estimates of true effects either in a subset of contexts which were studies'r flagit()'(CONFUSED ABOUT "which were studies") or about a broader population.
 
+```{r}
+study_design_fixed <- 
+  declare_model(N = 100, U = rnorm(N), potential_outcomes(Y ~ 0.1 * Z + U)) + 
+  declare_assignment(Z = complete_ra(N, m = 50), legacy = FALSE) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
+  declare_estimator(Y ~ Z, model = difference_in_means)
+
+study_design_random <- 
+  declare_model(N = 100, U = rnorm(N), potential_outcomes(Y ~ rnorm(1, mean = 0.1, sd = 0.1) * Z + U)) + 
+  declare_assignment(Z = complete_ra(N, m = 50), legacy = FALSE) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
+  declare_estimator(Y ~ Z, model = difference_in_means)
+
+model <-
+  declare_model(data = simulate_design(study_design_fixed, study_design_random, sims = 10))
+
+answer_strategy <- 
+  declare_estimator(handler = label_estimator(function(data){
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_fixed", method = "REML")))
+  }), label = "FE-RE") +
+  declare_estimator(handler = label_estimator(function(data){
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_random", method = "REML")))
+  }), label = "RE-RE") + 
+  declare_estimator(handler = label_estimator(function(data){
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_fixed", method = "FE")))
+  }), label = "FE-FE") + 
+  declare_estimator(handler = label_estimator(function(data){
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_random", method = "FE")))
+  }), label = "RE-FE")
+
+design <- model + answer_strategy
+
+diagnose_design(design)
+```
+
 <!-- A research synthesis is a "meta MIDA" -->
 
 <!-- M: A model that subsumes portions of the sub Ms -->
