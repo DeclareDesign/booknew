@@ -32,6 +32,8 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
+Researchers may build on the results of a past study in three ways: reanalyze the original data, holding $d$ constant but changing $A$ (reanalysis); providing a new answer to the same $I$ with new data, possibly changing $D$ and $A$ (replication); or synthesizing the study's answer $a^d$ to the inquiry along with other past studies (meta-analysis). In the next three sections, we discuss each in turn. 
+
 A reanalysis of an existing study is a follow-up study in which $d$, the original realized data, is fixed and changes to the answer strategy $A$ and sometimes the model $M$ or inquiry $I$ are proposed. Given $d$ is fixed, so too is the data strategy $D$. The results given the new MIDA, which may differ from the original study's results, are reported. We can learn from reanalyses in several ways. 
 
 We can confirm that there were no errors in the analysis strategy. Many reanalyses correct simple mathematical errors, typos in data transcription, or failures to analyze following the data strategy faithfully. These reanalyses show whether results do or do not depend on these corrections. 
@@ -82,7 +84,7 @@ est <- draw_estimates(model_1 + A + A_prime)
 est %>% select(estimator_label, estimate, std.error, p.value) %>% kable(digits = 3)
 ```
 
-Commonly, renalysts would infer from this two things: that there is not an average treatment effect, and that the answer strategy `A_prime` is preferred. It is preferred because it is unbiased under confounding and also unbiased (and lower variance than `A`) even when there is no confounding. As we show below, these claims depend on the validity of other parts of the model $M$. In particular, we define two other possible models, both where $X$ is not a confounder. In model 2, $X$ is measured before treatment, as in the first model. In model 3, however, $X$ is measured *post*treatment, and is affected by $Y$. In many observational settings, it is now always clear when $X$ is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the diagnosands of the design as we do below.
+Commonly, reanalysts would infer from this two things: that there is not an average treatment effect, and that the answer strategy `A_prime` is preferred. It is preferred because it is unbiased under confounding and also unbiased (and lower variance than `A`) even when there is no confounding. As we show below, these claims depend on the validity of other parts of the model $M$. In particular, we define two other possible models, both where $X$ is not a confounder. In model 2, $X$ is measured before treatment, as in the first model. In model 3, however, $X$ is measured *post*treatment, and is affected by $Y$. In many observational settings, it is now always clear when $X$ is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the diagnosands of the design as we do below.
 
 ```{r}
 # X is not a confounder and is measured pretreatment
@@ -131,6 +133,20 @@ What we see in the diagnosis below is that `A_prime` is only preferred if we kno
 get_diagnosands(diagnosis) %>% 
   select(design_label, estimator_label, bias)
 ```
+
+Three principles emerge from the idea that changes from answer strategy $A$ to $A^{\prime}$ should be justified by diagnosis, not comparison of the results $a^d$ to $a^{\prime d}$:
+
+1. **Home ground dominance.** Holding the original $M$ constant (i.e., the home ground of the original study) as well as $I$, if you can show that a new answer strategy $A^{\prime}$ yields better diagnosands than the original $A$, then the new $A^{\prime}$ can be justified by a reanalyst on the basis of home ground dominance. In this situation, we would prefer $A^{\prime}$ and the estimates produced by it to $A$ and the original estimates produced by it, regardless of what those realized estimates are. <!-- parallel idea about finding a replication with a new D that rules out confounders --> 
+2. **Robustness to alternative models.** A second justification for a change in answer strategy is that you can show that a new answer strategy is robust to both the original model $M$ and a new, also plausible, $M^{\prime}$. In observational studies, commonly we are uncertain about many features of the model such as the existence of unobserved confounders. In the example above, the reanalyst identified a confounder and found an answer strategy --- controlling for $X$ --- that they convinced themself through diagnosis was robust to the original model (no confounding) and the alternative model (confounding). An answer strategy that is robust to these two alternative models is preferred to one that is only unbiased under the no confounding model. 
+3. **Model plausibility.** If the diagnosands for a design with $A^{\prime}$ are worse than those with $A$ under $M$ but better under $M^{\prime}$, then the switch to $A^{\prime}$ can only be justified by a claim or demonstration that $M^{\prime}$ is more plausible than $M$. As we saw in the example, there was a third possible model in which $X$ was realized posttreatment and so controlling for $X$ led to posttreatment bias. In that case, neither controlling for $X$ or not controlling for $X$ is robust to all three alternative models. The justification of model plausibility would have to be used this case in order to justify controlling for $X$: substantive knowledge or additional data would have to be brought to bear to rule out the third model with posttreatment measurement of $X$. The reanalyst could demonstrate that data collection of $X$ took place before the treatment was realized, for example. 
+4. **Undefined or unidentifiable inquiries**. When inquiries are undefined or not identifiable, then it is fair game in a reanalysis to change the inquiry $I$ to a new $I^{\prime}$ that is defined and at least partially identifiable. Disputes may of course arise as to whether the new $I^{\prime}$ is sufficiently faithful to the original aims of the research. 
+
+
+<!-- 1. M always changes! (you have more information on $\tau$ or $\sd(\tau)$) -->
+<!-- 2. Home ground dominance: Change A or D-and-A if A$^\prime$ > A under M -->
+<!-- 3. Robustness to alternative models: Change A or D-and-A if A$^\prime$ $\geq$ A under M AND A$^\prime$ > A under M$^\prime$ E.g. change from simple to complete RA -->
+<!-- 4. Model plausibility: If A$^\prime$ < A under M AND A$^\prime$ > A under M$^\prime$, then change to A$^\prime$ or D-and-A IFF M$^\prime$ is more plausible than M E.g. switching to balanced design if you believe variances equal across treatment groups -->
+<!-- 5. Undefined inquiries. Change I to I$^\prime$ if I is undefined under M If I is defined under M: You can't change to I$^\prime$, You can’t change D to D$^\prime$ if that means I unidentifiable. -->
 
 
 <!-- how do we update from the reanalysis research design (the original design plus the reanalysis of d)? -->
