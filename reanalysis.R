@@ -58,4 +58,5 @@ design_3 <- model_3 + I + A + A_prime
 
 
 get_diagnosands(diagnosis) %>% 
-  select(design_label, estimator_label, bias)
+  select(design_label, estimator_label, bias) %>% 
+  kable(digits = 3)
