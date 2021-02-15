@@ -273,13 +273,13 @@ answer_strategy <-
                     inquiry = c("ATE_personal", "ATE_social"))
 ```
 
-When we concatenate all four aspects we get a design:
+When we concatenate all four elements with the `+` we get a design:
 
 ```{r}
 design <- model + inquiry + data_strategy + answer_strategy
 ```
 
-For most designs that we declare in the book, we will also present a graphical representation of the design. In Figure \@ref(fig:gulzarkhandag), we visualize the simplified form of the Gulzar-Khan design.
+For most designs that we declare in the book, we will also present a graphical representation of the design. In Figure \@ref(fig:gulzarkhandag), we visualize the Gulzar-Khan design.
 
 ```{r gulzarkhandag, fig.cap = "Simplified DAG for Gulzar Khan study", fig.height = 3, fig.width = 7, echo = FALSE}
 dag <- dagify(
@@ -307,7 +307,7 @@ ggdd_df <- make_dag_df(dag, nodes)
 base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon))
 ```
 
-To diagnose the design, we first define a set of diagnosands (see Section \@ref(p2diagnosis)), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.
+To diagnose the design, we first define a set of diagnosands (see Section \@ref(p2diagnosis)), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the statistical power of the design; the root mean-squared error, which is a weighted average of the bias and efficiency of the design; and its total cost. 
 
 ```{r}
 diagnosands <- declare_diagnosands(
@@ -335,11 +335,13 @@ diagnosis <- read_rds(rds_file_path)
 
 ```{r simpledesigndiagnosis, echo = FALSE}
 get_diagnosands(diagnosis) %>% 
-  select(inquiry_label, estimator_label, bias, rmse, power) %>%
+  select(inquiry_label, term, bias, rmse, power) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 ```
 
-We redesign across possible combinations of numbers of villages and citizens per village:
+The diagnosis reveals that the design is unbiased for both parameters, and that for the social treatment inquiry powered above the standard 80% threshold. However, it is not powered for the personal inquiry. This gives us a sense of what effect sizes the design is powered for, since the only difference in the design between these two inquiries is the assumed true effect size in the model. We could redesign this design to increase the sample size for the personal treatment, or use this diagnosis to better interpret the results of the study.
+
+We redesign across possible combinations of numbers of villages and citizens per village, important design parameters in the control of the researchers: 
 
 ```{r, eval = FALSE}
 designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
@@ -361,8 +363,11 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
+In Figure \@ref(fig:gulzarkhanredesign), we illustrate the results of our redesign exercise across all four diagnosands. On the x-axis of each plot is the number of citizens per village and the y-axis the value of the diagnosand. The plot is faceted by diagnosand, and each line represents a different possible number of villages. The diagnoses are for the social treatment (we could create the same plot, one for each treatment).
 
-```{r, echo = FALSE}
+What we see is that bias is invariant to these choices; our study will be unbiased, regardless of the number of villages and number of citizens we interview per village. However, our other three diagnosands do change. Power is increasing in the number of citizens per village, and always higher with more villages. We might reject designs with 192 villages with only 25 citizens per village, because they fall below the 80% power threshold (in fact, the number chosen by the researchers, 48, is just over the threshold, suggesting they chose the most cost-effective design in terms of power). Root mean-squared error, a measure capturing both bias and efficiency of the design, is improving (decreasing) in the number of citizens per village and number of villages. Cost is, of course, increasing in both sample size parameters. We can use the cost parameters to make decisions about what sample sizes to choose accounting both for scientific diagnosands of the design (i.e., power) and cost at the same time.
+
+```{r gulzarkhanredesign, echo = FALSE}
 gg_df <- diagnosis$diagnosands_df %>%
   filter(inquiry_label == "ATE_social") %>%
   pivot_longer(cols = c(bias, rmse, power, cost), names_to =  "diagnosand")
@@ -382,9 +387,6 @@ g4 <- g_base %+% filter(gg_df, diagnosand == "cost") + labs(x = "Citizens per vi
 
 wrap_plots(g1, g2, g3, g4, guides = "collect")
 ```
-
-[GLOSS DIAGNOSIS; DO A REDESIGN]
-
 
 ## Putting designs to use
 
