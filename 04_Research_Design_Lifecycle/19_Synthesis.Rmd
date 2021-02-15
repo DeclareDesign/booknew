@@ -30,6 +30,8 @@ b_sims <- 20
 
 ```{r, echo = FALSE}
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+library(metafor)
+library(broom)
 ```
 
 
@@ -77,8 +79,19 @@ answer_strategy <-
   }), label = "RE-FE")
 
 design <- model + answer_strategy
+```
 
-diagnose_design(design)
+```{r, echo = FALSE, eval = do_diagnosis}
+diagnosis <- diagnose_design(design, sims = sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("19_Synthesis"), "/diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
 ```
 
 <!-- A research synthesis is a "meta MIDA" -->
