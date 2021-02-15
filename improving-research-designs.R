@@ -94,7 +94,7 @@ diagnosands <- declare_diagnosands(
 
 
 get_diagnosands(diagnosis) %>% 
-  select(inquiry_label, estimator_label, bias, rmse, power) %>%
+  select(inquiry_label, term, bias, rmse, power) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 
 ## designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))

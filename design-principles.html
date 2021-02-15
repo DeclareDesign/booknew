@@ -256,17 +256,17 @@ This third principle should help with the last two. If an inquiry is defined in 
                     clusters <span class="op">=</span> <span class="va">villages</span>, 
                     model <span class="op">=</span> <span class="va">lm_robust</span>,
                     inquiry <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ATE_personal"</span>, <span class="st">"ATE_social"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>When we concatenate all four aspects we get a design:</p>
+<p>When we concatenate all four elements with the <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code> we get a design:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">design</span> <span class="op">&lt;-</span> <span class="va">model</span> <span class="op">+</span> <span class="va">inquiry</span> <span class="op">+</span> <span class="va">data_strategy</span> <span class="op">+</span> <span class="va">answer_strategy</span></code></pre></div>
-<p>For most designs that we declare in the book, we will also present a graphical representation of the design. In Figure <a href="design-principles.html#fig:gulzarkhandag">2.1</a>, we visualize the simplified form of the Gulzar-Khan design.</p>
+<p>For most designs that we declare in the book, we will also present a graphical representation of the design. In Figure <a href="design-principles.html#fig:gulzarkhandag">2.1</a>, we visualize the Gulzar-Khan design.</p>
 <div class="figure">
 <span id="fig:gulzarkhandag"></span>
 <img src="book_files/figure-html/gulzarkhandag-1.svg" alt="Simplified DAG for Gulzar Khan study" width="100%"><p class="caption">
 Figure 2.1: Simplified DAG for Gulzar Khan study
 </p>
 </div>
-<p>To diagnose the design, we first define a set of diagnosands (see Section <a href="p2diagnosis.html#p2diagnosis">10</a>), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the root mean-squared error; and the statistical power of the design.</p>
+<p>To diagnose the design, we first define a set of diagnosands (see Section <a href="p2diagnosis.html#p2diagnosis">10</a>), which are statistical properties of the design. In this case, we select the bias (difference between the estimate and the estimand, which is the PATE); the statistical power of the design; the root mean-squared error, which is a weighted average of the bias and efficiency of the design; and its total cost.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">diagnosands</span> <span class="op">&lt;-</span> <span class="fu">declare_diagnosands</span><span class="op">(</span>
   bias <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">estimate</span> <span class="op">-</span> <span class="va">estimand</span><span class="op">)</span>,
@@ -286,7 +286,7 @@ Figure 2.1: Simplified DAG for Gulzar Khan study
 inquiry_label
 </th>
 <th style="text-align:left;">
-estimator_label
+term
 </th>
 <th style="text-align:right;">
 bias
@@ -304,7 +304,7 @@ power
 ATE_personal
 </td>
 <td style="text-align:left;">
-estimator
+Zpersonal
 </td>
 <td style="text-align:right;">
 0
@@ -321,7 +321,7 @@ estimator
 ATE_social
 </td>
 <td style="text-align:left;">
-estimator
+Zsocial
 </td>
 <td style="text-align:right;">
 0
@@ -335,12 +335,14 @@ estimator
 </tr>
 </tbody>
 </table></div>
-<p>We redesign across possible combinations of numbers of villages and citizens per village:</p>
+<p>The diagnosis reveals that the design is unbiased for both parameters, and that for the social treatment inquiry powered above the standard 80% threshold. However, it is not powered for the personal inquiry. This gives us a sense of what effect sizes the design is powered for, since the only difference in the design between these two inquiries is the assumed true effect size in the model. We could redesign this design to increase the sample size for the personal treatment, or use this diagnosis to better interpret the results of the study.</p>
+<p>We redesign across possible combinations of numbers of villages and citizens per village, important design parameters in the control of the researchers:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">designs</span> <span class="op">&lt;-</span> <span class="fu">redesign</span><span class="op">(</span><span class="va">design</span>, n_villages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">192</span>, <span class="fl">295</span>, <span class="fl">397</span>, <span class="fl">500</span><span class="op">)</span>, citizens_per_village <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">75</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>
 <span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">designs</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="book_files/figure-html/unnamed-chunk-26-1.svg" width="100%"></div>
-<p>[GLOSS DIAGNOSIS; DO A REDESIGN]</p>
+<p>In Figure <a href="#fig:gulzarkhanredesign"><strong>??</strong></a>, we illustrate the results of our redesign exercise across all four diagnosands. On the x-axis of each plot is the number of citizens per village and the y-axis the value of the diagnosand. The plot is faceted by diagnosand, and each line represents a different possible number of villages. The diagnoses are for the social treatment (we could create the same plot, one for each treatment).</p>
+<p>What we see is that bias is invariant to these choices; our study will be unbiased, regardless of the number of villages and number of citizens we interview per village. However, our other three diagnosands do change. Power is increasing in the number of citizens per village, and always higher with more villages. We might reject designs with 192 villages with only 25 citizens per village, because they fall below the 80% power threshold (in fact, the number chosen by the researchers, 48, is just over the threshold, suggesting they chose the most cost-effective design in terms of power). Root mean-squared error, a measure capturing both bias and efficiency of the design, is improving (decreasing) in the number of citizens per village and number of villages. Cost is, of course, increasing in both sample size parameters. We can use the cost parameters to make decisions about what sample sizes to choose accounting both for scientific diagnosands of the design (i.e., power) and cost at the same time.</p>
+<div class="inline-figure"><img src="book_files/figure-html/gulzarkhanredesign-1.svg" width="100%"></div>
 </div>
 </div>
 <div id="putting-designs-to-use" class="section level2">
