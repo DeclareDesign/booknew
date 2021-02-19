@@ -38,74 +38,130 @@ b_sims <- 20
 
 <!-- mini MIDA in each piloting exercise -->
 
-The designs and results of past studies are important guides for selecting M, I, D, and A. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. However, researchers face a problem in being guided by past research: the research context and our inquiries often differ in subtle ways from previous work. Even when we are replicating an existing study as closely as possible, difficult-to-intuit features of the research setting may have serious consequences for the design. 
+Designing a research study always entails relying on a set of mostly informal beliefs. How many subjects to sample, which covariates to measure, which treatments to allocate and how -- these decisions decisions depend on beliefs about treatment effects, the correlations of the covariates with the outcome, the variance of the outcome. 
 
-To deal with this, we often run pilot studies. Pilots take many forms: focus groups to learn how to ask survey questions, small-scale tests of measurement tools, even miniature versions of the planned design on a smaller scale. Pilot studies are a response to fundamental constraints on time, money, and opportunity. If we were not constrained, we would run the full study and learn what is wrong with our design and then run a corrected design for the main study. Since running multiple full studies is too expensive, we run either smaller mini studies or test out only a subset of the elements of our planned design. This places us in a bind: we are running a design smaller or less complete than the study we imagine conducting, and so the properties of the pilot design will not measure up. 
+We may have reasonably educated guesses about these parameters from past studies. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. 
 
-Almost by definition, pilot studies are inferentially weaker than main studies. Accordingly, the goal of pilot studies should *not* be to obtain a preliminary answer to the main inquiry, but instead to learn the information that will make the main study a success. We want to learn things like the approximate distribution of outcomes, how covariates and outcomes might be correlated, or how feasible the assignment, sampling, and measurement strategies are. 
+Even so, we remain uncertain about these values. One reason for the uncertainty is that our research context and inquiries often differ in subtle ways from previous work. Even when we are replicating an existing study as closely as possible, difficult-to-intuit features of the research setting may have serious consequences for the design. Moreover, our uncertainty about a design parameter is often the very reason for conducting a study. We run experiments *because* we are uncertain about the average treatment effect -- if we knew it with certainty, there would be no need to run the study. Frustratingly, we always have to design with respect to parameters whose values we are unsure of.^[See section XXX] 
+
+The main goal of pilot studies is to reduce this uncertainty -- so that the main study can be designed taking into account design parameters that are closer to the true values. Pilots take many forms: focus groups to learn how to ask survey questions, small-scale tests of measurement tools, even miniature versions of the planned design on a smaller scale. We want to learn things like the approximate distribution of outcomes, how covariates and outcomes might be correlated, or how feasible the assignment, sampling, and measurement strategies are. 
+
+Almost by definition, pilot studies are inferentially weaker than main studies. We turn to them in response to fundamental constraints on our time, money, and opportunity. If we were not constrained, we would run a first full-size study, learn what is wrong with our design, then run a corrected full-size study. Since running multiple full studies is too expensive or otherwise infeasible, we run either smaller mini studies or test out only a subset of the elements of our planned design. Accordingly, the diagnosands of a pilot design will not measure up to thhose of the maind esign. Pilots have much lower statistical power, much higher measurement error, and far less generalizability. Accordingly, the goal of pilot studies should *not* be to obtain a preliminary answer to the main inquiry, but instead to learn the information that will make the main study a success. 
 
 Just like main studies, pilot studies can be declared and diagnosed -- but importantly, the diagnosands for main and pilot studies need not be the same. Statistical power for an average treatment effect may be an important diagnosand for a main study, but owing to their small size, power for pilot studies will typically be abysmal. Pilot studies should be diagnosed with respect to the decisions they imply for the main study. 
 
-To illustrate this idea, we display in Figure \@ref(fig:pilotingfig) the results of a diagnosis of a 50-unit pilot study for a larger main study; our goal is to learn from the pilot study how large to make the main study. We consider two strategies: (1) using the 
+### Learning from pilot studies
+
+Figure \@ref(fig:nrequired) shows the relationship between effect size and the sample size required to detect it with 80\% power for a two arm trial using simple random assignment. Uncertainty about the true effect size has *enormous* design consequences. If the effect size is 0.2, we need about 800 subjects to achieve 80% power. If it's 0.1, we need 3200. 
+
+```{r nrequired , fig.width=6.5, echo=FALSE}
+full_dist <- 
+  tibble(
+    effect_size = seq(0.1, 0.51, by = 0.01),
+    N_required = sapply(effect_size, FUN = function(x) power.t.test(delta = x, sd = 1, power = 0.8)$n *2)
+  )
+ggplot(full_dist, aes(effect_size, N_required)) +
+  geom_line() +
+  coord_cartesian(xlim = c(0, 0.5)) +
+  dd_theme()
+```
 
 
-choosing $N$ such that the main study has 80% power to detect the pilot study's effect size); (2) 
+Suppose we have prior beliefs about the effect size that can be summarized as a normal distribution centered at an effect size 0.3 with a standard deviation of 0.1. We could choose a design that corresponds to this best guess. If the true effect size is 0.3, then a study with 350 subjects will have 80% power to detect it. Powering for the "best guess" is risky becuase the true effect could be much smaller than 0.3. As a rule of thumb, suppose we adopt the heuristic of powering the study for an effect size that is at the 10th percentile of our prior distribution, which works out to be an effect size of 0.17. If the true effect size is 0.17, then a study with 1100 subjects will have 80% power to detect it. 
 
+Further imagine that the true effect size is, in actuality, only 0.1, which again means that a study needs to have 3200 subjects to achieve 80% power. Our design with only 1100 subjects will be underpowered, with a power of 38%. Here we see the consequences of having incorrect prior beliefs -- our ex ante guess of the effect size was too optimistic, so the design ended up too small. 
 
-setting a fixed $N$ determined by our budget constraint, in this case to 500, and using the standard deviation of units in the treated and control group from the pilot to determine the minimum detectable effect size of our 500-unit main study. 
+A pilot study can help researchers update their priors about important design parameters. Suppose we do a small scale pilot with 100 subjects; we'll get an unbiased -- but noisy -- estimate of the true effect size. We can update prior beliefs by taking a precision weighted average of our priors and the estimate from the pilot, where the weights are the inverse of the variancce of each guess.^[Equivalent to the normal normal model in the illusion of learning.] Our posterior beliefs will be closer to the truth and our posterior uncertainty will be smaller. If we *then* follow the heuristic of powering the 10th percentile of our (now posterior) beliefs about effect effect size, we will have come closer to correctly powering our study. Figure \@ref(fig:pilotupdate) shows how large the studies would be, depending on how the pilot study came out, if we were to follow the 10th percentile decision rule. On average, the pilot leads us to design the main study with 2500 subjects, sometimes more and sometimes less.
 
-In the left panel is the sampling distribution of effect size estimates, i.e., a histogram of the effect estimates from the pilot. In the design, the standard deviation of the outcome is set to one, so effect estimates are in standard deviation units. The true effect size is set to 0.2. We can see that the sampling distribution has a huge range, from nearly -0.5 to nearly 0.75. The first problem with the sampling distribution is that many estimates, in fact nearly a quarter of them, are negative (the wrong sign!). This might lead us not only to choose the wrong sample size but to choose one-sided tests in the wrong direction. The second is that we have a high likelihood of guessing the effect size is *much* higher than it really is. If we obtain one of the estimates over 0.75 or even over 0.5, we would choose an $N$ too small to detect the true effect size of 0.2. In short, our estimates of the effect size from our 50-person pilot study are simply too variable to be useful in designing our main study.
+This exercise reveals that a pilot study can be quite valuable. Without a pilot study, we would have chosen to sample 1100 subjects, but since the true effect size is only 0.1, not the 0.3 we thought going in, it will turn out that the experiment was underpowered for the truth. The pilot study helps us correct our diffuse and incorrect prior belief -- at least a little. Since the pilot is small, we don't update our priors all the way to the truth. We still end up have a study that is on average too small (1800), with a corresponding power of 56%. That said, a 56% chance of finding a statistically significant result is better than a 38% chance, which is what we would have had if we skipped the pilot and went with our gut.
 
-However, there is good news: we can learn a lot about the power of our main study from the pilot study, just not from the effect estimates. In the right panel of Figure \@ref(fig:pilotingfig), we estimate the minimum detectable effect size of a 500-unit main study, relying on the estimated standard deviation in the control group and the estimated standard deviation in the treatment group to calculate the estimated standard error of the effect estimate in the main study. We then calculate the minimum detectable effect size using the approximation from @gelman2006data: 2.8 times the estimated standard error (pg. 441). We find that our estimates of the MDE for the full study are much more precise, tightly centered around 0.25. Since we don't know if that is larger or smaller than the true effect size, we then must make an argument based on past studies' effect sizes to justify whether that minimum size is sufficiently large or whether we should increase the sample size in order to detect even smaller effects. The reason the MDE is more precisely estimated is that the standard deviation of the control group is a much less variable estimate of the true standard deviation of the control potential outcome than the effect size estimate is of the true effect size. 
 
 ```{r, echo = FALSE}
-sd_estimator <- function(data){
-  data.frame(sd_y_0_hat = sd(data$Y[data$Z == 0]), sd_y_1_hat = sd(data$Y[data$Z == 1]))
+prior <- 0.3
+prior_sd <- 0.1
+
+calculate_n_required <- function(delta, sd = 1, power = 0.8) {
+  sapply(
+    delta,
+    FUN = function(x)
+      power.t.test(
+        delta = x,
+        sd = sd,
+        power = power
+      )$n * 2
+  )
+  
 }
 
-design <- 
-  declare_model(N = 50, U = rnorm(N, mean = 0, sd = 1)) + 
-  declare_potential_outcomes(Y ~ 0.2 * Z + U) + 
-  declare_assignment() + 
-  declare_estimator(Y ~ Z) + 
-  declare_estimator(handler = label_estimator(sd_estimator), label = "sd_estimator")
+pilot <-
+  declare_model(N = 100,
+                U = rnorm(N),
+                potential_outcomes(Y ~ 0.1 * Z + U)) +
+  declare_inquiry(SATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N), legacy = FALSE) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, inquiry = "SATE")
 ```
 
 ```{r, echo = FALSE, eval = do_diagnosis}
-simulation_df <- simulate_design(design, sims = sims)
+pilot_sims <- 
+  pilot %>%
+  simulate_design(sims = 1000)
+
+pilot_sims <-
+  pilot_sims %>%
+  mutate(
+    prior_w = 1/(prior_sd^2),
+    pilot_w = 1/(std.error^2),
+    sum_w = prior_w + pilot_w,
+    posterior = prior * prior_w/sum_w + estimate * pilot_w/sum_w,
+    posterior_sd = sqrt(1/sum_w),
+    conservative_guess = qnorm(0.1, posterior, posterior_sd),
+    N_required = calculate_n_required(conservative_guess)
+)
 ```
+
 
 ```{r, echo = FALSE, purl = FALSE}
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("06_Piloting.Rmd"), "/simulation_df.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulation_df, path = rds_file_path)
+  write_rds(pilot_sims, file = rds_file_path)
 }
-simulation_df <- read_rds(rds_file_path)
+pilot_sims <- read_rds(rds_file_path)
 ```
 
-```{r pilotingfig, echo = FALSE, fig.cap = "Learning from pilot studies.", fig.width = 6.5, fig.height = 3}
-gg_df <- simulation_df %>% 
-  mutate(
-    se_hat_full_study = sqrt( sd_y_0_hat^2 / 250  + sd_y_1_hat^2 / 250),
-    mde_hat_full_study = 2.8 * se_hat_full_study
-  ) %>% 
-  select(sim_ID, estimate, mde_hat_full_study) %>% 
-  pivot_longer(cols = c(estimate, mde_hat_full_study), names_to = "statistic", values_to = "value") %>% 
-  na.omit %>% 
-  mutate(statistic = factor(statistic, levels = c("estimate", "mde_hat_full_study"), labels = c("Estimated effect size", "Estimated MDE of full study")))
+```{r pilotupdate, echo=FALSE, fig.width=6.5}
+pilot_sims <-
+  pilot_sims %>%
+  filter(N_required <= 7500, !is.na(N_required))
+choices_df <-
+  tibble(
+    xintercept = c(calculate_n_required(qnorm(0.1, prior, prior_sd)),
+                   calculate_n_required(0.1),
+                   mean(pilot_sims$N_required)),
+    label = c("Choice of N without pilot",
+              "Best choice of N",
+              "Average choice of N with pilot"),
+    x = xintercept + 100,
+    y = c(130, 110, 95)
+  )
 
-ggplot(gg_df, aes(value)) + 
-  geom_histogram() + 
-  facet_wrap(~statistic) + 
-  xlab("") + ylab("Number of simulations")
+ggplot(pilot_sims, aes(N_required)) + 
+  geom_histogram(bins = 40) +
+  geom_segment(data = choices_df, aes(x = xintercept, xend = xintercept, y = 0, yend = y - 5, color = label)) +
+  geom_text(data = choices_df, aes(x = x, y = y, label = label, color = label), hjust = 0.2) +
+  dd_theme() +
+  theme(legend.position = "none") +
+  labs(x = "Distribution of choice of N, depending on results of pilot")
 ```
 
-By diagnosing our pilot studies in this way, we can learn what decisions can be made with confidence from pilot data and what should be shaped instead by expectations from past studies and qualitative knowledge. Diagnosis can also help us to decide how large a pilot study we need in order to estimate quantities like the MDE of the full study with precision. 
 
-Beyond estimating the MDE of studies, other facts that can often be usefully learned from pilot studies take the form of existence proofs. We often wish to study how variation in $D$ (a treatment) affects variation in $Y$ (an outcome), but in the absence of past data from these two variables, we may not know even if there is variation in $Y$ to explain. In experimental studies, we can learn whether a treatment *can* be implemented, and in an observational study, we can learn whether there is variation in the treatment variable.
+### Takeaways
 
-Baseline measurement may often be used instead of a pilot study to learn about some empirical features. If our sample size is fixed and we are interested in learning whether some outcome measures vary across units or how they covary, we can measure them in the baseline and then make adjustments before a posttreatment survey. We will still control for our imperfect measures at baseline to improve efficiency.
+Pilots are most useful when we are especially uncertain about important design parameters. This uncertainty can often be shrunk by quite a bit *without* running pilot studies, often by meta-analyzing past empirical studies. Some things are hard to learn by reading the work of others -- pilot studies are especially useful tools for learning about those things. We often wish to study how variation in $D$ (a treatment) affects variation in $Y$ (an outcome), but in the absence of past data from these two variables, we may not know even if there is variation in $Y$ to explain. In experimental studies, we can learn whether a treatment *can* be implemented, and in an observational study, we can learn whether there is variation in the treatment variable.
+
+<!-- Pilot studies share a lot in common with baseline measurement. A baseline measurement phase can sometimes be used instead of a pilot to learn about some empirical features. If our sample size is fixed and we are interested in learning whether some outcome measures vary across units or how they covary, we can measure them in the baseline and then make adjustments before a posttreatment survey. We will still control for our imperfect measures at baseline to improve efficiency. -->
 
 <!-- Diagnosing the pilot study on its own provides stark insights, which amount to: we cannot provide answers to the inquiry in the main study, and should not try to do so. There are also aspects of the logistics of research that within time and financial constraints we simply cannot learn until we run the main study. Science is imperfect, and also iterative, but these mistakes or suboptimal design choices also often lead to discoveries. -->
 
