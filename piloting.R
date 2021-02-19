@@ -7,32 +7,64 @@ lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
-sd_estimator <- function(data){
-  data.frame(sd_y_0_hat = sd(data$Y[data$Z == 0]), sd_y_1_hat = sd(data$Y[data$Z == 1]))
+full_dist <- 
+  tibble(
+    effect_size = seq(0.1, 0.51, by = 0.01),
+    N_required = sapply(effect_size, FUN = function(x) power.t.test(delta = x, sd = 1, power = 0.8)$n *2)
+  )
+ggplot(full_dist, aes(effect_size, N_required)) +
+  geom_line() +
+  coord_cartesian(xlim = c(0, 0.5)) +
+  dd_theme()
+
+prior <- 0.3
+prior_sd <- 0.1
+
+calculate_n_required <- function(delta, sd = 1, power = 0.8) {
+  sapply(
+    delta,
+    FUN = function(x)
+      power.t.test(
+        delta = x,
+        sd = sd,
+        power = power
+      )$n * 2
+  )
+  
 }
 
-design <- 
-  declare_model(N = 50, U = rnorm(N, mean = 0, sd = 1)) + 
-  declare_potential_outcomes(Y ~ 0.2 * Z + U) + 
-  declare_assignment() + 
-  declare_estimator(Y ~ Z) + 
-  declare_estimator(handler = label_estimator(sd_estimator), label = "sd_estimator")
+pilot <-
+  declare_model(N = 100,
+                U = rnorm(N),
+                potential_outcomes(Y ~ 0.1 * Z + U)) +
+  declare_inquiry(SATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N), legacy = FALSE) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, inquiry = "SATE")
 
 
 
 
 
-gg_df <- simulation_df %>% 
-  mutate(
-    se_hat_full_study = sqrt( sd_y_0_hat^2 / 250  + sd_y_1_hat^2 / 250),
-    mde_hat_full_study = 2.8 * se_hat_full_study
-  ) %>% 
-  select(sim_ID, estimate, mde_hat_full_study) %>% 
-  pivot_longer(cols = c(estimate, mde_hat_full_study), names_to = "statistic", values_to = "value") %>% 
-  na.omit %>% 
-  mutate(statistic = factor(statistic, levels = c("estimate", "mde_hat_full_study"), labels = c("Estimated effect size", "Estimated MDE of full study")))
+pilot_sims <-
+  pilot_sims %>%
+  filter(N_required <= 7500, !is.na(N_required))
+choices_df <-
+  tibble(
+    xintercept = c(calculate_n_required(qnorm(0.1, prior, prior_sd)),
+                   calculate_n_required(0.1),
+                   mean(pilot_sims$N_required)),
+    label = c("Choice of N without pilot",
+              "Best choice of N",
+              "Average choice of N with pilot"),
+    x = xintercept + 100,
+    y = c(130, 110, 95)
+  )
 
-ggplot(gg_df, aes(value)) + 
-  geom_histogram() + 
-  facet_wrap(~statistic) + 
-  xlab("") + ylab("Number of simulations")
+ggplot(pilot_sims, aes(N_required)) + 
+  geom_histogram(bins = 40) +
+  geom_segment(data = choices_df, aes(x = xintercept, xend = xintercept, y = 0, yend = y - 5, color = label)) +
+  geom_text(data = choices_df, aes(x = x, y = y, label = label, color = label), hjust = 0.2) +
+  dd_theme() +
+  theme(legend.position = "none") +
+  labs(x = "Distribution of choice of N, depending on results of pilot")
