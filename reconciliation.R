@@ -6,26 +6,3 @@ packages <- c("tidyverse", "DeclareDesign")
 lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
-
-## design1 <- declare_model(N = 100, U = rnorm(N)) +
-##   declare_potential_outcomes(Y ~ Z + U) +
-##   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
-##   declare_sampling(n = 75) +
-##   declare_assignment(m = 50) +
-##   declare_reveal(Y, Z) +
-##   declare_estimator(Y ~ Z, inquiry = "ATE")
-## 
-## design2 <- declare_model(N = 200, U = rnorm(N)) +
-##   declare_potential_outcomes(Y ~ 0.5*Z + U) +
-##   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
-##   declare_sampling(n = 100) +
-##   declare_assignment(m = 25) +
-##   declare_reveal(Y, Z) +
-##   declare_estimator(Y ~ Z, model = lm_robust, inquiry = "ATE")
-## 
-## compare_designs(design1, design2)
-## compare_design_code(design1, design2)
-## compare_design_summaries(design1, design2)
-## compare_design_data(design1, design2)
-## compare_design_estimates(design1, design2)
-## compare_design_estimands(design1, design2)
