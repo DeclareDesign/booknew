@@ -40,40 +40,88 @@ b_sims <- 20
 
 Designing a research study always entails relying on a set of mostly informal beliefs. How many subjects to sample, which covariates to measure, which treatments to allocate and how -- these decisions decisions depend on beliefs about treatment effects, the correlations of the covariates with the outcome, the variance of the outcome. 
 
-We may have reasonably educated guesses about these parameters from past studies. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. 
+We may have reasonably educated guesses about these parameters from past studies or theory. Our understanding of the nodes and edges in the causal graph of M, expected effect sizes, the distribution of outcomes, feasible randomization schemes, and many other features are directly selected from past research or chosen based on a literature review of the distribution over past studies. 
 
-Even so, we remain uncertain about these values. One reason for the uncertainty is that our research context and inquiries often differ in subtle ways from previous work. Even when we are replicating an existing study as closely as possible, difficult-to-intuit features of the research setting may have serious consequences for the design. Moreover, our uncertainty about a design parameter is often the very reason for conducting a study. We run experiments *because* we are uncertain about the average treatment effect -- if we knew it with certainty, there would be no need to run the study. Frustratingly, we always have to design with respect to parameters whose values we are unsure of.^[See section XXX] 
+Even so, we remain uncertain about these values. One reason for the uncertainty is that our research context and inquiries often differ in subtle ways from previous work. Even when we are replicating an existing study as closely as possible, difficult-to-intuit features of the research setting may have serious consequences for the design. Moreover, our uncertainty about a design parameter is often the very reason for conducting a study. We run experiments *because* we are uncertain about the average treatment effect -- if we knew the ATE for sure, there would be no need to run the study. Frustratingly, we always have to design with respect to parameters whose values we are unsure of.^[See section XXX] 
 
-The main goal of pilot studies is to reduce this uncertainty -- so that the main study can be designed taking into account design parameters that are closer to the true values. Pilots take many forms: focus groups to learn how to ask survey questions, small-scale tests of measurement tools, even miniature versions of the planned design on a smaller scale. We want to learn things like the approximate distribution of outcomes, how covariates and outcomes might be correlated, or how feasible the assignment, sampling, and measurement strategies are. 
+The main goal of pilot studies is to reduce this uncertainty, so that the main study can be designed taking into account design parameters that are closer to the true values. Pilots take many forms: focus groups to learn how to ask survey questions, small-scale tests of measurement tools, even miniature versions of the planned design on a smaller scale. We want to learn things like the approximate distribution of outcomes, how covariates and outcomes might be correlated, or how feasible the assignment, sampling, and measurement strategies are. 
 
-Almost by definition, pilot studies are inferentially weaker than main studies. We turn to them in response to fundamental constraints on our time, money, and opportunity. If we were not constrained, we would run a first full-size study, learn what is wrong with our design, then run a corrected full-size study. Since running multiple full studies is too expensive or otherwise infeasible, we run either smaller mini studies or test out only a subset of the elements of our planned design. Accordingly, the diagnosands of a pilot design will not measure up to thhose of the maind esign. Pilots have much lower statistical power, much higher measurement error, and far less generalizability. Accordingly, the goal of pilot studies should *not* be to obtain a preliminary answer to the main inquiry, but instead to learn the information that will make the main study a success. 
+Almost by definition, pilot studies are inferentially weaker than main studies. We turn to them in response to fundamental constraints on our time, money, and opportunity. If we were not constrained, we would run a first full-size study, learn what is wrong with our design, then run a corrected full-size study. Since running multiple full studies is too expensive or otherwise infeasible, we run either smaller mini studies or test out only a subset of the elements of our planned design. Accordingly, the diagnosands of a pilot design will not measure up to those of the main design. Pilots have much lower statistical power, much higher measurement error, and far less generalizability. Accordingly, the goal of pilot studies should *not* be to obtain a preliminary answer to the main inquiry, but instead to learn the information that will make the main study a success. 
 
 Just like main studies, pilot studies can be declared and diagnosed -- but importantly, the diagnosands for main and pilot studies need not be the same. Statistical power for an average treatment effect may be an important diagnosand for a main study, but owing to their small size, power for pilot studies will typically be abysmal. Pilot studies should be diagnosed with respect to the decisions they imply for the main study. 
 
 ### Learning from pilot studies
 
-Figure \@ref(fig:nrequired) shows the relationship between effect size and the sample size required to detect it with 80\% power for a two arm trial using simple random assignment. Uncertainty about the true effect size has *enormous* design consequences. If the effect size is 0.2, we need about 800 subjects to achieve 80% power. If it's 0.1, we need 3200. 
+Figure \@ref(fig:nrequired) shows the relationship between effect size and the sample size required to achieve 80\% statistical power for a tw-arm trial using simple random assignment. Uncertainty about the true effect size has enormous design consequences. If the effect size is 0.2, we need about 800 subjects to achieve 80% power. If it's 0.1, we need 3200. 
 
-```{r nrequired , fig.width=6.5, echo=FALSE}
-full_dist <- 
+```{r nrequired, fig.width=6.5, fig.height=6.5, echo=FALSE}
+full_dist <-
   tibble(
-    effect_size = seq(0.1, 0.51, by = 0.01),
-    N_required = sapply(effect_size, FUN = function(x) power.t.test(delta = x, sd = 1, power = 0.8)$n *2)
+    effect_size = c(seq(-0.25,-0.01, by = 0.01),
+                    seq(0.01, 0.75, by = 0.01)),
+    N_required = sapply(
+      effect_size,
+      FUN = function(x)
+        power.t.test(
+          delta = abs(x),
+          sd = 1,
+          power = 0.8
+        )$n * 2
+    ),
+    density = dnorm(effect_size, 0.3, 0.1)
   )
-ggplot(full_dist, aes(effect_size, N_required)) +
-  geom_line() +
-  coord_cartesian(xlim = c(0, 0.5)) +
-  dd_theme()
+
+label_df <-
+  full_dist %>%
+  filter(round(effect_size, 2) %in% c(0.10, 0.17, 0.3)) %>%
+  mutate(label = c("3200 subjects required at 0.10",
+                   "1100 subjects required at 0.17",
+                   "350 subjects required at 0.30"),
+         label2 = c("True effect size",
+                   "10th percentile guess",
+                   "Average (best) guess"))
+
+g1 <- 
+ggplot(label_df, aes(effect_size, N_required)) +
+  geom_line(data = full_dist) +
+  geom_point(aes(color = label2, shape = label2)) +
+  geom_segment(aes(xend = effect_size, yend = 0, color = label2)) +
+  geom_text(aes(label = label, color = label2), hjust = 0, nudge_x = 0.02) +
+  coord_cartesian(xlim = c(-0.25, 0.75),
+                  ylim = c(0, 5000)) +
+  dd_theme() +
+  theme(legend.position = "none") +
+  labs(x = "Effect size in standard units",
+       y = "Sample size needed for 80% power",
+       title = "Minimum sample sizes for 80% power, by effect size")
+
+
+g2 <-
+ggplot(label_df, aes(effect_size, density)) +
+    geom_point(aes(color = label2, shape = label2)) +
+  geom_segment(aes(xend = effect_size, yend = 0, color = label2)) +
+  geom_text(aes(label = label2, color = label2), hjust = 1, nudge_x = -0.02) +
+  geom_line(data = full_dist) +
+  coord_cartesian(xlim = c(-0.25, 0.75)) +
+  dd_theme() +
+    theme(legend.position = "none") +
+  labs(x = "Effect size in standard units",
+       y = "Density of prior belief distribution",
+       title = "Researcher's prior beliefs about effect size")
+
+
+g1 / g2
+
 ```
 
 
-Suppose we have prior beliefs about the effect size that can be summarized as a normal distribution centered at an effect size 0.3 with a standard deviation of 0.1. We could choose a design that corresponds to this best guess. If the true effect size is 0.3, then a study with 350 subjects will have 80% power to detect it. Powering for the "best guess" is risky becuase the true effect could be much smaller than 0.3. As a rule of thumb, suppose we adopt the heuristic of powering the study for an effect size that is at the 10th percentile of our prior distribution, which works out to be an effect size of 0.17. If the true effect size is 0.17, then a study with 1100 subjects will have 80% power to detect it. 
+Suppose we have prior beliefs about the effect size that can be summarized as a normal distribution centered at an effect size 0.3 with a standard deviation of 0.1, as in the bottom panel of Figure \@ref(fig:nrequired). We could choose a design that corresponds to this best guess -- the average of our prior belief distribution. If the true effect size is 0.3, then a study with 350 subjects will have 80% power. However, redesigning the study to optimize for the "best guess" is risky because the true effect could be much smaller than 0.3. As a rule of thumb, suppose we adopt the redesign heuristic of powering the study for an effect size that is at the 10th percentile of our prior distribution, which in this case works out to be an effect size of 0.17. Following this rule, we would select a design with 1100 subjects.
 
-Further imagine that the true effect size is, in actuality, only 0.1, which again means that a study needs to have 3200 subjects to achieve 80% power. Our design with only 1100 subjects will be underpowered, with a power of 38%. Here we see the consequences of having incorrect prior beliefs -- our ex ante guess of the effect size was too optimistic, so the design ended up too small. 
+Now suppose true effect size is, in actuality, only 0.1, so we would need to sample 3200 subjects for 80% power. The power of our chosen 1100 subject-design is a mere 38%. Here we see the consequences of having incorrect prior beliefs -- our ex ante guess of the effect size was too optimistic, so the design ended up too small. Even taking what we thought of as a conservative choice -- the 10th percentile redesign heuristic -- we ended up with too small a study.
 
-A pilot study can help researchers update their priors about important design parameters. Suppose we do a small scale pilot with 100 subjects; we'll get an unbiased -- but noisy -- estimate of the true effect size. We can update prior beliefs by taking a precision weighted average of our priors and the estimate from the pilot, where the weights are the inverse of the variancce of each guess.^[Equivalent to the normal normal model in the illusion of learning.] Our posterior beliefs will be closer to the truth and our posterior uncertainty will be smaller. If we *then* follow the heuristic of powering the 10th percentile of our (now posterior) beliefs about effect effect size, we will have come closer to correctly powering our study. Figure \@ref(fig:pilotupdate) shows how large the studies would be, depending on how the pilot study came out, if we were to follow the 10th percentile decision rule. On average, the pilot leads us to design the main study with 2500 subjects, sometimes more and sometimes less.
+A pilot study can help researchers update their priors about important design parameters. Suppose we do a small scale pilot with 100 subjects; we'll get an unbiased -- but noisy -- estimate of the true effect size. We can update prior beliefs by taking a precision weighted average of our priors and the estimate from the pilot, where the weights are the inverse of the variance of each guess. Our posterior beliefs will be closer to the truth and our posterior uncertainty will be smaller. If we *then* follow the heuristic of powering the 10th percentile of our (now posterior) beliefs about effect effect size, we will have come closer to correctly powering our study. Figure \@ref(fig:pilotupdate) shows how large the studies would be, depending on how the pilot study came out, if we were to follow the 10th percentile decision rule. On average, the pilot leads us to design the main study with 1800 subjects, sometimes more and sometimes less.
 
-This exercise reveals that a pilot study can be quite valuable. Without a pilot study, we would have chosen to sample 1100 subjects, but since the true effect size is only 0.1, not the 0.3 we thought going in, it will turn out that the experiment was underpowered for the truth. The pilot study helps us correct our diffuse and incorrect prior belief -- at least a little. Since the pilot is small, we don't update our priors all the way to the truth. We still end up have a study that is on average too small (1800), with a corresponding power of 56%. That said, a 56% chance of finding a statistically significant result is better than a 38% chance, which is what we would have had if we skipped the pilot and went with our gut.
+This exercise reveals that a pilot study can be quite valuable. Without a pilot study, we would have chosen to sample 1100 subjects, but since the true effect size is only 0.1, not the 0.3 we thought going in, it will turn out that the experiment was underpowered for the truth. The pilot study helps us correct our diffuse and incorrect prior belief. However, since the pilot is small, we don't update our priors all the way to the truth. We still end up with a main study that is on average too small (1800), with a corresponding power of 56%. That said, a 56% chance of finding a statistically significant result is better than a 38% chance, which is what we would have had if we skipped the pilot and went with our gut.
 
 
 ```{r, echo = FALSE}
@@ -149,8 +197,8 @@ choices_df <-
 
 ggplot(pilot_sims, aes(N_required)) + 
   geom_histogram(bins = 40) +
-  geom_segment(data = choices_df, aes(x = xintercept, xend = xintercept, y = 0, yend = y - 5, color = label)) +
-  geom_text(data = choices_df, aes(x = x, y = y, label = label, color = label), hjust = 0.2) +
+  geom_segment(data = choices_df, aes(x = xintercept, xend = xintercept, y = 0, yend = y - 5), color = dd_dark_blue) +
+  geom_text(data = choices_df, aes(x = x, y = y, label = label), color = dd_dark_blue, hjust = 0.2) +
   dd_theme() +
   theme(legend.position = "none") +
   labs(x = "Distribution of choice of N, depending on results of pilot")
@@ -159,7 +207,21 @@ ggplot(pilot_sims, aes(N_required)) +
 
 ### Takeaways
 
-Pilots are most useful when we are especially uncertain about important design parameters. This uncertainty can often be shrunk by quite a bit *without* running pilot studies, often by meta-analyzing past empirical studies. Some things are hard to learn by reading the work of others -- pilot studies are especially useful tools for learning about those things. We often wish to study how variation in $D$ (a treatment) affects variation in $Y$ (an outcome), but in the absence of past data from these two variables, we may not know even if there is variation in $Y$ to explain. In experimental studies, we can learn whether a treatment *can* be implemented, and in an observational study, we can learn whether there is variation in the treatment variable.
+Pilots are most useful when we are uncertain -- or ourtright wrong -- about important design parameters. This uncertainty can often be shrunk by quite a bit *without* running pilot studies, often by meta-analyzing past empirical studies. Some things are hard to learn by reading the work of others -- pilot studies are especially useful tools for learning about those things. We often wish to study how variation in $D$ (a treatment) affects variation in $Y$ (an outcome), but in the absence of past data from these two variables, we may not know even if there is variation in $Y$ to explain. In experimental studies, we can learn whether a treatment *can* be implemented, and in an observational study, we can learn whether there is variation in the treatment variable.
+
+**Further reading**.
+
+- @van2001importance
+- @lancaster2004design
+- @turner2005role
+- @hertzog2008considerations
+- @viechtbauer2015simple (how many subjects do you need to discover if a rare problem exisits)
+- @avery2017informing
+- @eldridge2016defining - distinguishes between "feasibility" studies and "pilot" studies. these differ in what is unknown about the main study. "Is it even possible"
+- @bell2018guidance
+
+
+
 
 <!-- Pilot studies share a lot in common with baseline measurement. A baseline measurement phase can sometimes be used instead of a pilot to learn about some empirical features. If our sample size is fixed and we are interested in learning whether some outcome measures vary across units or how they covary, we can measure them in the baseline and then make adjustments before a posttreatment survey. We will still control for our imperfect measures at baseline to improve efficiency. -->
 
