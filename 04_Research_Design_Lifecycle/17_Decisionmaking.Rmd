@@ -1,0 +1,83 @@
+---
+title: "Decisionmaking"
+output: html_document
+bibliography: ../bib/book.bib 
+---
+
+<!-- note do_bookdown is set in index.rmd, so we know if you're running just this .Rmd or compiling the book-->
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) # files are all relative to RStudio project home
+```
+
+```{r, eval = !exists("do_bookdown"), echo = FALSE, include = FALSE, purl = FALSE}
+# load common packages, set ggplot ddtheme, etc.
+source("scripts/before_chapter_script.R")
+```
+
+<!-- start post here, do not edit above -->
+
+<!-- make sure to rename the section title below -->
+
+```{r decisionmaking, echo = FALSE, output = FALSE, purl = FALSE}
+# run the diagnosis (set to TRUE) on your computer for this section only before pushing to Github. no diagnosis will ever take place on github.
+do_diagnosis <- FALSE
+sims <- 100
+b_sims <- 20
+```
+
+```{r, echo = FALSE}
+# load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
+library(metafor)
+library(broom)
+```
+
+## Decisionmaking
+
+Policymakers, businesses, humanitarian organizations, and regular people make decisions based on social science research. 
+
+- different set of inquiries -- we should directly consider these in designs
+- different set of diagnosands
+- requires conversation with decisionmakers *ex ante* to understand what decisions they make on the basis of this evidence *and* how they will interpret evidence (diagnostic statistic)
+
+```{r}
+design <-
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    potential_outcomes(Y ~ 0.1 * Z + U)
+  ) + 
+  declare_inquiry(
+    ATE = mean(Y_Z_1 - Y_Z_0),
+    treatment_better = ATE > 0
+  ) + 
+  declare_assignment(Z = complete_ra(N), legacy = FALSE) + 
+  declare_estimator(Y ~ Z, model = difference_in_means)
+```
+
+```{r, echo = FALSE, eval = do_diagnosis}
+diagnosands <- declare_diagnosands(
+  power = mean(p.value <= 0.05),
+  proportion_right_decision = mean((estimate > 0 & p.value <= 0.05 & treatment_better == TRUE) | 
+                                    (estimate < 0 & p.value <= 0.05 & treatment_better == FALSE)) 
+)
+diagnosis <- diagnose_design(design, sims = sims)
+```
+
+```{r, echo = FALSE, purl = FALSE}
+# figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
+rds_file_path <- paste0(get_dropbox_path("20_Decisions"), "/diagnosis.RDS")
+if (do_diagnosis & !exists("do_bookdown")) {
+  write_rds(diagnosis, file = rds_file_path)
+}
+diagnosis <- read_rds(rds_file_path)
+```
+
+```{r}
+diagnosis %>% 
+  get_diagnosands %>% 
+  kable(digits = 3)
+```
+
+
+

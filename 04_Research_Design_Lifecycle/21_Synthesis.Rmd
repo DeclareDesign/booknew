@@ -35,7 +35,7 @@ library(broom)
 ```
 
 
-One of the last, if not the last, stage of the lifecycle of a research design is its eventual incorporation in to our common scientific understanding of the world. Research findings about specific Is -- specific $a^D$s need to be synthesized into our broader scientific understanding. A research synthesis comprises a new research design that summarizes past research.
+One of the last stages of the lifecycle of a research design is its eventual incorporation in to our common scientific understanding of the world. Research findings about specific inquiries -- specific $a^D$'s -- need to be synthesized into our broader scientific understanding. A research synthesis comprises a new research design that summarizes past research.
 
 Research synthesis takes two basic forms. The first is meta-analysis, in which a series of $a^D$s are analyzed together in order to better understand features of the distribution of answers obtained in the literature. Traditional meta-analysis typically focuses on the average of k answers: $a_1^D$,$a_2^D$,...$a_k^D$. Studies can be averaged together in many ways that are better and worse. Sometimes the answers are averaged together according to their precision -- a precision weighted average of estimates from many studies is equivalent to fixed-effects meta-analysis. Sometimes studies are "averaged" by counting up how many of the estimates are positive and significant, how many are negative and significant, and how many are null. This is the typical averaging approach taken in a literature review. Regardless of the averaging approach, the goal of this kind of synthesis is to learn as much as possible about a particular $I$ by drawing on evidence from many studies.
 
@@ -46,39 +46,71 @@ How can you best anticipate how your research findings will be synthesized? For 
 For the second kind of synthesis -- literature-wide progress on a full causal model -- even greater care is required. Specific studies cannot make up bespoke models $M$ but instead must understand how the specific $M$ adopted in the study is a special case of some master $M$ that is in principle agreed to by a wider research community. The nonstop, neverending proliferation of study-specific theories is a threat to this kind of knowledge accumulation. 
 <!-- (Cite cyrus on causal empiricism, that psych paper on crazy proliferation of theories). -->
 
-Declaring and diagnosing the properties of the meta design can be as informative as doing so in planning for an individual study. The first step of every research synthesis is the process of collecting past studies. Search strategies are sampling strategies, and they can be biased in the same ways as convenience samples of individuals. Conducting a Census of past literature on a topic is impossible: much research conducted is not published or not yet published. Selecting studies from major journals alone may induce additional publication bias in your sample. Collecting working papers and soliciting unpublished abandoned research on a topic are strategies to mitigate these risks. The choice of answer strategy for research synthesis is typically driven by assumptions about a model of how studies are related and how the contexts and units within them were selected. The model for declaring a research synthesis thus must include assumptions not only about how studies reach you as the synthesizer, but how the contexts and units were selected in those original studies. Diagnosis can help assess the conditions under which your analysis strategies will provide unbiased, efficient estimates of true effects either in a subset of contexts which were studies'r flagit()'(CONFUSED ABOUT "which were studies") or about a broader population.
+Declaring and diagnosing the properties of the meta design can be as informative as doing so in planning for an individual study. The first step of every research synthesis is the process of collecting past studies. Search strategies are sampling strategies, and they can be biased in the same ways as convenience samples of individuals. Conducting a Census of past literature on a topic is impossible: much research conducted is not published or not yet published. Selecting studies from major journals alone may induce additional publication bias in your sample. Collecting working papers and soliciting unpublished abandoned research on a topic are strategies to mitigate these risks. The choice of answer strategy for research synthesis is typically driven by assumptions about a model of how studies are related and how the contexts and units within them were selected. The model for declaring a research synthesis thus must include assumptions not only about how studies reach you as the synthesizer, but how the contexts and units were selected in those original studies. Diagnosis can help assess the conditions under which your analysis strategies will provide unbiased, efficient estimates of true effects either in a subset of contexts which were studied or about a broader population.
 
 ```{r}
 study_design_fixed <- 
-  declare_model(N = 100, U = rnorm(N), potential_outcomes(Y ~ 0.1 * Z + U)) + 
+  declare_model(N = 100, U = rnorm(N), potential_outcomes(Y ~ 0.2 * Z + U)) + 
+  declare_inquiry(study_ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_assignment(Z = complete_ra(N, m = 50), legacy = FALSE) + 
   declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
   declare_estimator(Y ~ Z, model = difference_in_means)
+
+draw_inquiries(study_design_fixed)
+
+diagnose_design(study_design_fixed, sims = 500)
 
 study_design_random <- 
-  declare_model(N = 100, U = rnorm(N), potential_outcomes(Y ~ rnorm(1, mean = 0.1, sd = 0.1) * Z + U)) + 
+  declare_model(N = 100, U = rnorm(N), potential_outcomes(Y ~ rnorm(1, mean = 0.2, sd = 0.3) * Z + U)) + 
+  declare_inquiry(study_ATE = mean(Y_Z_1 - Y_Z_0)) + 
   declare_assignment(Z = complete_ra(N, m = 50), legacy = FALSE) + 
   declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
   declare_estimator(Y ~ Z, model = difference_in_means)
 
+draw_inquiries(study_design_random)
+
+diagnose_design(study_design_random, sims = 500)
+
+
 model <-
-  declare_model(data = simulate_design(study_design_fixed, study_design_random, sims = 10))
+  declare_model(data = simulate_design(study_design_fixed, study_design_random, sims = 100))
+
+inquiry <- 
+  declare_inquiry(PATE = 0.2)
 
 answer_strategy <- 
   declare_estimator(handler = label_estimator(function(data){
-    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_fixed", method = "REML")))
-  }), label = "FE-RE") +
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_fixed", method = "REML"), conf.int = TRUE))
+  }), label = "dFE-eRE", inquiry = "PATE") +
   declare_estimator(handler = label_estimator(function(data){
-    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_random", method = "REML")))
-  }), label = "RE-RE") + 
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_random", method = "REML"), conf.int = TRUE))
+  }), label = "dRE-eRE", inquiry = "PATE") + 
   declare_estimator(handler = label_estimator(function(data){
-    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_fixed", method = "FE")))
-  }), label = "FE-FE") + 
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_fixed", method = "FE"), conf.int = TRUE))
+  }), label = "dFE-eFE", inquiry = "PATE") + 
   declare_estimator(handler = label_estimator(function(data){
-    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_random", method = "FE")))
-  }), label = "RE-FE")
+    with(data, tidy(rma.uni(yi = estimate, sei = std.error, subset = design_label == "study_design_random", method = "FE"), conf.int = TRUE))
+  }), label = "dRE-eFE", inquiry = "PATE")
 
-design <- model + answer_strategy
+design <- model + inquiry + answer_strategy
+```
+
+```{r}
+dat <- draw_data(design)
+
+est <- get_estimates(design, data = dat) %>% 
+  mutate(y = if_else(str_detect(estimator_label, "eRE"), 0.07, -0.07),
+         plot_label = if_else(str_detect(estimator_label, "eRE"), "RE", "FE"),
+         design_label = if_else(str_detect(estimator_label, "dRE"), "study_design_random", "study_design_fixed"))
+
+dat %>% 
+  ggplot(aes(x = estimate, y = 0, size = 1/std.error)) + 
+  geom_jitter(height = 0.02, width = 0, alpha = 0.5) + 
+  geom_errorbarh(data = est, aes(y = y, xmin = conf.low, xmax = conf.high), size = 0.5, height = 0.005) + 
+  geom_point(data = est, aes(y = y), size = 2.5) + 
+  geom_text(data = est, aes(y = y, label = plot_label), nudge_y = 0.015, size = 4) + 
+  coord_cartesian(ylim = c(-0.1, 0.1)) + 
+  facet_grid(design_label~ .)
 ```
 
 ```{r, echo = FALSE, eval = do_diagnosis}
@@ -93,6 +125,19 @@ if (do_diagnosis & !exists("do_bookdown")) {
 }
 diagnosis <- read_rds(rds_file_path)
 ```
+
+```{r}
+diagnosis %>% 
+  get_diagnosands %>% 
+  transmute(
+    model = if_else(str_detect(estimator_label, "dRE"), "RE", "FE"),
+    estimator = if_else(str_detect(estimator_label, "eRE"), "RE", "FE"),
+    bias, coverage
+  ) %>% 
+  kable(digits = 2)
+```
+
+
 
 <!-- A research synthesis is a "meta MIDA" -->
 
