@@ -1,5 +1,5 @@
 ---
-title: "Improving research designs"
+title: "Defining research designs"
 output: html_document
 bibliography: ../bib/book.bib 
 ---
@@ -29,15 +29,15 @@ b_sims <- 200
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-# Design principles
+# Defining research designs
 
-At its heart, research design is about finding good ways to answer important questions. Assessing whether a design is good or not requires having a clear sense of what the question is and knowing whether, or when, the answers a study is likely to deliver are reliable.  
+Every day, empirical researchers make a dozen small decisions. How many people should I interview? How can I ensure that they are balanced across genders? Should I assign them to two or three treatment arms? Is it important in this case to use block randomization? What questions should I ask them? How many items should I include in my index, and which ones? How long can the interview last before I should worry the quality of responses will deteriorate? Should I use robust or cluster-robust standard errors? Can I control for emotions in my regression, or will that lead to bias? Is it okay to drop people who didn't respond? To where can I generalize these results? Do I need to weight the estimates to make those generalizations? What is the best method to do so?
 
-<!-- [MH: worried about putting theory as the lead since theory does not have an explicit place in DD; plus everyone has pet definitions of theory. Prefer to lead with Q&A and then introduce the connection between MIDA and theory explictly: -->
+Together, these decisions form a research design. At its heart, research design is about finding good ways to answer important questions. Assessing whether a design is good or not requires having a clear sense of what the question is and knowing whether, or when, the answers a study is likely to deliver are reliable.  
 
-<!-- Social science is awash in theoretical speculation. Our main scientific problem is that we don't know which (if any) of our theories are correct. The purpose of conducting an empirical research study is to learn the answers to inquiries that, if known, would adjudicate in favor of better theories. If a theory predicts that the average causal effect of $D$ on $Y$ is positive, but through good research design we learn that it is negative, we've made scientific progress. This is true whether we see our goal as one of  ruling out bad theories or of putting more faith in good ones.] -->
+This book offers a language for describing research designs and an algorithm for selecting among them. In other words, it is a set of tools for weighing and describing the set of small choices we make in our research that together determine whether we can provide useful answers to our questions.
 
-This book offers a language for describing research designs and an algorithm for selecting among them. Remarkably, the same basic structure can be used whether researchers are interested in causal questions or descriptive questions, whether they are focused on theory testing and inductive learning, and whether they use quantitative, qualitative, or mixed methods. Once a design is **declared** in simple enough language that a computer can understand it, then we can implement our **diagnosis** algorithm for assessing the properties of a design at the click of a button. We can then engage in **redesign**, or the process of comparing among alternative designs to select a strong one. The same language we use to talk to the computer can be used to talk to others. Reviewers, advisors, students, funders, journalists, and the public -- and yes the computer too -- need to know four basic things to understand your design.
+Remarkably, we can use same basic structure to describe research designs whether they focus on causal questions or descriptive questions, whether they are focused on theory testing and inductive learning, and whether they use quantitative, qualitative, or mixed methods. Once a design is **declared** in simple enough language that a computer can understand it, then we can implement our **diagnosis** algorithm for assessing the properties of a design at the click of a button. We can then engage in **redesign**, or the process of comparing among alternative designs to select a strong one. The same language we use to talk to the computer can be used to talk to others. Reviewers, advisors, students, funders, journalists, and the public -- and yes the computer too -- need to know four basic things to understand your design.
 
 ## The four components of research design
 
@@ -45,76 +45,26 @@ Empirical research designs share in common that they all have a model, an inquir
 
 **Model.** The model comprises speculations about what causes what and how. It includes (possibly quite well-informed) guesses about how important variables are distributed, how things are correlated, the sequences of events. Of course, we don't know the true model---if we did we wouldn't have to do any empirical research. We are uncertain about which of many alternative model possibilities is the true one. 
 
+What's in a model? The model defines a set of units that we wish to study. Often, this set of units is a large population of units we cannot afford to take measurements of, but we can nevertheless define and seek to make inferences about. The units might be all of the citizens in Lagos, Nigeria; police beats in Medell{\'i}n Colombia; video hall catchment areas in rural Uganda; 
+
+The model includes theoretical beliefs about baseline characteristics that describe each unit and the probability distributions of each characteristic. Finally, the model includes a set of outcome variables that may be functions of baseline characteristics and the effects of interventions. The values that an outcome variable take on depending on the level of an intervention are called *potential* outcomes. A unit's treated potential outcome arises when that unit receives the treatment; the untreated potential outcome arises when it does not. The model includes therefore includes beliefs about causal effects, which are defined with respect to these potential outcomes. The treatment effect of a particular intervention is usually defined as the difference between the treated and untreated potential outcomes, though other definitions such as the ratio of the treated to untreated potential outcome are possible too. 
+
 The role of the model in the design declaration is to provide a setting---or rather, a set of settings---within which a design can be evaluated. We hope that the true, unknown causal model is in the set of models we entertain so that we can correctly imagine what will happen when our design is applied in the real world. 
 
-What's in a model? The model defines a set of units that we wish to study. Often, this set of units is a large population of units we cannot afford to take measurements of, but we can nevertheless define and seek to make inferences about. The model includes theoretical beliefs about baseline characteristics that describe each unit and the probability distributions of each characteristic. Finally, the model includes a set of outcome variables that may be functions of baseline characteristics and the effects of interventions. The values that an outcome variable take on depending on the level of an intervention are called *potential* outcomes. A unit's treated potential outcome arises when that unit receives the treatment; the untreated potential outcome arises when it does not. The model includes therefore includes beliefs about causal effects, which are defined with respect to these potential outcomes. The treatment effect of a particular intervention is usually defined as the difference between the treated and untreated potential outcomes, though other definitions such as the ratio of the treated to untreated potential outcome are possible too. 
 
 Defining the model can feel like an odd exercise. Since researchers presumably want to learn about the model, declaring it in advance may seem to beg the question. The confusion can be allayed by thinking of the model as a kind of "reference model", against which you can assess performance. Declaring a reference model is often unavoidable when declaring research designs. In practice, doing so is already familiar to any researcher who has calculated the power of a design, which requires the specification of effect sizes. The seeming arbitrariness of the declared model can be mitigated by assessing the sensitivity of diagnosis to alternative models and strategies (see Section \@ref(p2diagnosis)). Further, researchers can inform their reference models with existing data, such as baseline surveys. Just as power calculators focus attention on minimum detectable effects, design declaration offers a tool to demonstrate design properties and how they change depending on researcher assumptions.
-
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Model principles
-:::
-
-**Models should include how you might be right about the world and how you might be wrong.** Ideally, the quality of a research design depends as little as possible on whether our assumptions about how the world works are correct beforehand --- because we are often wrong. Indeed, that is why we are conducting research. There are two senses in which it is useful to describe the world if you are correct and the world if you are wrong: alternative theories, and threats to inference. In order to make theoretical progress, we want to be able to provide evidence about whether our preferred theory is correct or an alternative is. The model must include the model under our theory and the alternative theory in order to assess whether the inquiry, data strategy, and answer strategy are good at distinguishing the two. We also should include threats to inference, which could undermine our ability to falsify our theory or distinguish between competing theories. In order to assess whether our design is strong whether these threats to inference occur or not, they should be defined in the model.
-
-**Models should admit arbitrary inquiries over causal quantities.**
-Define on profiles / SUTVA example [to be written]
-
-<!-- **Models should be mapped to theories.** Our goal in research is to build better theories, and thus to use data to distinguish between competing theories or build new ones. Models are theoretical, and so distinguishing with a research design between two models would yield theoretical progress. But theories in social science are typically simplifications of models, referring often to only one edge or the mechanism linking two nodes. As a result, when we define multiple models that include possible threats to inference, multiple models may be mapped to a single theory. Thus, a last step in setting up a model is providing a mapping between the model parameters and theory. When we then set up an inquiry and a design to measure the value of a parameter, we can update our theory after seeing the data using this mapping. The data tell us which models are ruled out and the mapping which theories are ruled out. -->
-::::
 
 **Inquiry**. The research question -- what we call the inquiry -- is a feature of the model we want to measure. Our theories are rich, so in a single model, there may be many possible inquiries that a researcher could seek to learn about. A model may be a complex dance of ten or more interrelated variables, but an inquiry is something like the average causal effect of a single variable on another, the descriptive distribution of a third variable, or a prediction about the value a single variable will take on some time in the future. Important inquiries distinguish between the alternative models under consideration. If theory A predicts the an inquiry will be positive but theory B predicts it will be negative, and a credible research design leads us to conclude it is positive, then we have ruled out all models that are consistent with theory B.
 
 Inquiries are defined with respect to units, conditions, and features; they are summaries of features of units in or across conditions. Inquiries may be causal, as in the average treatment effect (ATE). The ATE is the average difference in the outcome variable across two conditions: the treatment condition and the control condition. Inquiries can be descriptive, as in a population average of some characteristic. While it may seem that descriptive inquiries do not involve conditions, they do -- the population average is defined with respect to conditions under which we measure characteristics of our study units. So-called Hawthorne effects occur when the very act of observation changes that which is observed, underlining the general point that researchers inevitably learn about specific potential outcomes and we should be cognizant of what those are. Inquiries are functions of variables in the model. We refer to value the inquiry function takes on -- the "true answer to the question" -- as an "estimand." 
 
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Inquiry principles
-:::
-
-**Inquiries must be defined across all models under consideration.** Because inquiries should help distinguish among alternative models (and thus theories), a good inquiry is *defined* under all of those competing models. If it is undefined, then it cannot help distinguish between the two. Common, simple inquiries such as the average treatment effect are not defined in the presence of spillovers. If our model includes cases with and without spillovers, the average treatment effect cannot be used to distinguish among those models and we cannot assess its performance under the threat to inference from spillovers. We can redefine the average treatment effect, however, as the average difference between a unit being treated and all other units being assigned to control. Diagnosing a design will reveal whether inquiries are defined under alternative models, allowing us to redefine inquiries when needed.
-
-**Inquiries should be at least partially identifiable.** There is a little point in asking unanswerable questions. We think of a question as being at least partly answerable if there are at least two different sets of data you might observe that would lead you to make two different inferences. In the best case one might imagine that with infinite data you can pinpoint the value of an inquiry. In this case we say that the model, or estimand, is identified. But short of that it might be possible to close in on values. There are, perhaps suprisingly, many circumstances under which inquiries are not even partially identifiable. If we have a model that says an outcome $Y$ is defined by the structural equation $Y=(a+b)X$, for scalars $a$ and $b$, no amount of data can tell us the exact values of $a$ and $b$. Indeed without boundary constraints no amount of data can even narrow down the ranges of $a$ and $b$. The basic problem is that for any value of $a$ we can choose a $b$ that keeps the sum of $a+b$ constant. In this setting, we may want to switch our inquiry to the sum $a+b$. Many other types of inquiries, such as mediation inquiries, are not identifiable. There are some circumstances where we can provide a partial answer to the inquiry, such as learning a range of values within which the parameter lives. These can be useful. At a minimum, our inquiries should be at least partially identifiable.
-
-**Define inquiries as summaries of (potential) outcomes.**
-This third principle should help with the last two. If an inquiry is defined in terms of potential outcomes then its definition depends only on what's called the "signature" of the model---the set of nodes and their ranges and not specific assumptions about how nodes relate to each other---the structural equations. 
-
-**Inquiries should be informative about theories.** Although the MIDA frameworks is centered around questions and answers, very often our questions are themselves only stepping stones towards making greater theoretical progress: to learn how the world works. For research designs to help us in this goal, inquiries must distinguish among theories. If we learned the answer to the inquiry, we would be more sure that theory $A$ is correct than theory $B$, or vice versa. Even when we do not have two alternative theories and instead want to falsify our preferred theory, we typically have in mind a null model. The inquiry should distinguish between our preferred theory and the null model. The theories under consideration need not be scientific theories. Bankers, politicians, social workers, and others have mental models of how the world works that scientific research can inform. In these cases, inquiries even when providing practical knowledge rather than scientific should be able to distinguish between two or more competing mental models.
-
-::::
-
 Together, the model and data form the theoretical half of a research design. The second half is empirical, and its two components mirror those in the theoretical half.
 
 **Data strategy.** The data strategy is the full set of procedures we use to gather information from the world. This set includes three basic groups of procedures: sampling, assignment, and measurement. All data strategies involve sampling in the sense that no empirical strategy is comprehensive -- some units are sampled into the study and some units aren't. Even research designs (like the census, for example) have a sampling strategy in that they don't sample respondents in different years or different countries. Assignment procedures describe how researchers generate variation in the world. If you ask some subjects one question, but other subjects a different question, you've generated variation on the basis of an assignment procedure. We think of assignment procedures most often when they are randomized, as in a randomized experiment, but many kinds of research designs engage in assignment procedures that are not randomized. Measurement procedures are the ways in which researchers reduce the complex and multidimensional social world into a relatively parsimonious set of data. These data need not be "quantitative data" in the sense of being numbers or values on a pre-defined scale -- qualitative data are data too. Measurement is the vexing but necessary reduction of reality to a few choice representations. Measurement always carries the possibility of measurement error, because this reduction is hard. Sampling, assignment, and measurement are parallel to the three features of inquiries: units, conditions, features.
 
-<!-- **Data strategies should sample the units, reveal the treatment conditions, and measure the outcomes that define the inquiry and are required by the answer strategy.** The object of the data strategy is to produce data that can be used to produce an answer to the inquiry. The inquiry is defined by four components: a set of units, which we are interested in; a set of outcomes we wish to learn about; a set of treatment conditions we wish to study those outcomes of those units in; and a summary function that summarizes the outcomes in the conditions for the units. In order to yield unbiased answers to the inquiry, the data strategy should mirror the inquiry in each of the first three aspects (the summary function will be mirrored in the answer strategy). The data strategy should sample from the same set of units in the inquiry (or include all of them); measure the outcomes defined in the inquiry; and do so within one or more treatment conditions defined in the inquiry.  -->
-
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Data strategy principles
-:::
-
-**Data strategies should rule out threats to validity with sampling, assignment, and measurement procedures.** The model of a research designs should contemplate the possibility of threats to validity such as confounders and measurement biases. When these biases are present and unaddressed, they must be ruled out by assumptions, which could be false. The data strategy can be used to rule out threats by design instead of assumption, by setting when data is collected and randomizing which units are sampled and assigned to treatment conditions. The more assumptions that can be ruled out by the data strategy in this way, the more credible the design (i.e., the more unbiased the results). 
-::::
-
 **Answer strategy.** The answer strategy is how we summarize the data that the data strategy produces. Just like the inquiry summarizes a part of the model, the answer strategy summarizes a part of the data. Complex, multidimensional datasets don't just speak for themselves -- they need to be summarized and explained. Answer strategies are functions that take in data and return answers. For some research designs, this is a literal function like `lm_robust` that estimates an ordinary least squares regression with robust standard errors. For some research designs, the function is embodied by the researchers themselves when they read documents and summarize their meanings in a case study. 
 
 Importantly, the answer strategy is more than the choice of an estimator. It includes the full set of procedures that begin with cleaning the dataset and end with answers in words, tables, and graphs. This includes data cleaning, data transformation, estimation, plotting, and interpretation. Not only do we define our choice of OLS as the estimator, we also specify that we will focus attention on the coefficient estimate from the `Z` variable, assess uncertainty using a confidence interval, construct a coefficient plot in a certain way to visualize the inference. The answer strategy also includes all of the if-then procedures that researchers implicitly or explicitly take depending on initial results and features of the data. In a stepwise regression procedure, the answer strategy is not the final regression that results from iterative model selection, but that procedure itself -- because the answer will reflect features of that change depending on sampling variability. Just like the values of the inquiry, the values of the estimates that result from the answer strategy have a probability distribution, because they are the result of the variables defined in the model (which have probability distributions) and the data strategy (sampling and treatment assignment are defined by probability distributions). 
-
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Answer strategy principles
-:::
-
-**Answer strategies should explicitly target inquiries.** To learn whether an analysis provides useful answers, we have to know what it is providing answers *to*. Answer strategies for social science studies are often multifaceted: we want to learn about theory, and each new data collection is expensive so we want to answer multiple questions. To declare a design, we need to know what each question (inquiry) is being asked and then what our strategy or strategies for answering each one are. 
-
-**When data strategies introduce no distortions, answer strategies can be directly analogous to inquiries. When data strategies do introduce distortions, they must be compensated for in the answer strategy.** Our answer strategies are inextricably tied to our data strategies: the answer strategies are only as good as the data provided to them. A principle for developing good data strategies was to sample units, reveal treatment conditions, and measure outcomes defined in our inquiries. If they do so with no distortions, then our answer strategies can be simple: simply applying the same summary function to the realized data as the inquiry applies to the model. When there are distortions, however, the answer strategy plays a more important role: reversing the distortions. 
-
-The theoretical and empirical halves of research design go hand-in-hand and a complete description of a research design generally needs both halves. If we ask, "What's your research design?" and you respond "It's a regression discontinuity design," we've maybe learned what your answer strategy might be, but we don't yet have enough information to decide whether it's a strong design until we learn more about the model, the inquiry, and whether the data and answer strategies are indeed well suited for them. Design declaration is our term for describing a design in terms of its theoretical and empirical halves.
-
-**Answer strategies should anticipate implementation problems in data strategies.** Missing data, archival documents that cannot be traced, noncompliance with treatment assignments, spillovers, and difficulties recontacting subjects in followup surveys are just some of the common problems empirical researchers face. Answer strategies should be developed that anticipate these problems, and account for them. Ideally, answer strategies include if-then plans for handling each likely implementation problem. Mitigation plans may include partial identification or sensitivity analyses.
-::::
 
 ## Declare-Diagnose-Redesign
 
@@ -123,16 +73,6 @@ The theoretical and empirical halves of research design go hand-in-hand and a co
 Declaring a design entails separating out which parts of your design belong in $M$, $I$, $D$, and $A$. The declaration process can be a challenge because mapping your ideas and excitement about your project into MIDA is not always straightforward. We promise it is a rewarding task. When you can express your research design in terms of these four components you are newly able to think about its properties. 
 
 You can implement the MIDA framework in any software package -- Stata, R, Python, Julia, SPSS, SAS, Mathematica, or many others. We wrote the companion software to the book, `DeclareDesign`, in the R statistical environment because of the availability of other useful tools in R and because it is free, open-source, and high-quality. We have designed the rest of the book so that it can be read even if you do not use R, but you will have to translate the code into your own language of choice. On our Web site, we have  [pointers](https://declaredesign.org/pap) to how you might declare steps in Stata, Python, and Excel. In addition, we link to a ["Design wizard"](https://eos.wzb.eu/ipi/DDWizard/) that lets you declare and diagnose variations of standard designs via a web interface.
-
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Declaration principles
-:::
-
-**Designs should be declared before they are implemented.** Research designs can be declared and diagnosed profitably at many stages of the research process, including after they are implemented by the researcher and by others after the research is published if they were not before. However, research designs that are declared before they are implemented can be modified before it is too late. Once data strategies are implemented --- units sampled, treatments assigned, and outcomes measured --- there is no going backwards. The data is already collected. *The process of declaring the design may change the design*. By revealing how the model, inquiry, data strategy, and answer strategy are interconnected, better data strategies and inquiries may be surfaced. Better inquiries, that provide more theoretical leverage in providing information about the model may be identified. Inquiries that cannot be answered may be replaced. Models may be augmented to include threats to inference that may then reveal tweaks to data and answer strategies that improve the design. 
-
-**Designs should be implemented as they are declared.** Once declared, the design should be implemented following the declared data strategy and answer strategy. The properties of the design, learned through diagnosis, may change even with seemingly slight changes to how cases are selected, treatments assigned, and outcome measurement strategies implemented. Similarly, the properties may change with modifications to the answer strategy, so it should be implemented as declared. However, as we detail in Chapter 7, answer strategies can and often should be procedures that involve exploration of the data and data-dependent choices. Such a procedure --- explore the data and select the optimal analysis based on a model selection criteria --- can be declared and assessed compared to other procedures. Often such procedures will be preferred to single preregistered specifications. The principle here is to declare the full procedure, including data-dependent choices, and assess the properties of the procedure as a whole. Then implement the procedure.
-::::
 
 ### Diagnosis
 
@@ -160,18 +100,6 @@ Second, we see a risk that research may get evaluated on the basis of a narrow, 
 
 Third, emphasis on the statistical properties of a design can obscure the substantive importance of a question being answered or other qualitative features of a design. A similar concern has been raised, for example by @huber2013, regarding the ``identification revolution'' where a focus on identification risks crowding out attention to the importance of questions being addressed. Our framework can help researchers determine whether a particular design answers a question well (or at all), and it also nudges them to make sure that their inquiries are defined clearly and independently of their answer strategies. 
 
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Diagnosis principles
-:::
-
-**Ethical, logistical, and scientific goals should be encoded in diagnosands.** We have multiple goals in producing research: we wish to contribute the most we can to scientific knowledge; working within our own financial, time, and logistical constraints; and doing so in an ethical manner. Each of these goals should be specified as a function of an implementation of the design. The cost is straightforward, a function translating the number of units and the amount of time it took to collect and analyze data about them into a financial value. Scientific goals may be represented in a number of ways, such as the root mean-squared error or statistical power or most directly the amount of learning between before and after the study was conducted. Ethical goals may also be translated into functions, though they need to not be quantitative. A quantitative ethical diagnosand might be the number of minutes of time taken from participants of the study. Whether any participants were harmed in the study would be a qualitative diagnosand. 
-
-**Design declarations should be diagnosand complete.** With diagnosands defined, a design should be declared such that each diagnosand can be calculated. We must be able to assess a design in terms of each of our goals, and the process of declaring and attempting to diagnose the design may reveal that we have not declared the design in sufficient detail to do so. When we discover this, we simply need add further details to the design until the diagnosands can all be calculated.
-
-**Designs should be diagnosed over the declared model possibilities.** Research design diagnosis is useful only if the design is assessed not only under conditions favorable to the researcher, but those unfavorable to the researcher. Designs should provide useful answers to inquiries in both sets of circumstances. Diagnosis under both sets can reveal if that is the case, or if changes to the data and answer strategy are needed. Even when there are circumstances under which the design performs poorly, understanding when that is the case aids interpretation of the results and focuses reanalysis debates substantively on which models are plausible.
-::::
-
 ### Redesign
 
 The subtitle of this book is "Declaration, Diagnosis, Redesign" to emphasize three important steps in the formulation of a research design. So far, we've outlined the first two points: declaration and diagnosis. Once your design has been declared, and you have learned to diagnose it with respect to the most important diagnosands, the last step is redesign.
@@ -181,18 +109,6 @@ Redesign entails tweaking parameters of the data and answer strategies to unders
 The redesign process is mainly about optimizing your research design given ethical, logistical, and financial constraints. If related diagnosands such as total harm to subjects, total researcher hours, or total project cost exceed acceptable levels, the design is not feasible. We want to choose the best design we can among the feasible set. If the designs remaining in the feasible set are underpowered, biased, or are otherwise scientifically inadequate, the project may need to be abandoned -- something that's best learned as soon as possible. 
 
 In our experience, it's during the redesign process that designs become **simpler**. We learn that our experiment has too many arms or that the expected level of heterogeneity is too small to be detected by our design. We learn that in our theoretical excitement, we've built a design with too many bells and too many whistles. Some of the complexity needs to be cut, or the whole design will be a muddle. The upshot of many redesign sessions is that our designs pose fewer inquiries, but obtain better answers.
-
-:::: {.principles data-latex=""}
-::: {.principles-title data-latex=""}
-Redesign principles
-:::
-
-**Designs should be redesigned with respect to all feasible data and answer strategies.** The redesign stage is centered on identifying all of the feasible data and answer strategies and then diagnosing each feasible design. The feasible set may include many minor variations in sampling and assignment probabilities and sample sizes or it may include several very different designs that could be accomplished within ethical and logistical constraints. The diagnosis should be conducted across all feasible combinations of the different dimensions of the designs, because it is difficult to predict how features in different parts of the data and answer strategies will interact.
-
-**Optimization over diagnosand tradeoffs should guide the selection of a particular design among the set of feasible designs.** The reason to define the diagnosands for each of our research goals is that we can then compare a set of designs in terms of how they meet our goals. A diagnosis of five designs across ethical, logistical, and scientific diagnosands provides us with our own multidimensional value statement of each design. We then should select the optimal design, subject to feasibility. Putting this into practice forces us to provide a weighting scheme between ethical, logistical, and scientific values. Those weighting schemes may be that either the study is ethical and we do it or it is not ethical and we do not do it. Or there may be tradeoffs we navigate betwen the amount of time taken up of subjects and the scientific value of a larger sample that imply choosing a middle ground.
-
-**Unforeseen implementation complications should be addressed through redesign.** The flip side of the principle that you should implement the design you declared is that if, for unforeseen reasons, the design must be changed, we should redesign our declaration and assess the properties of the new design. There are three reasons for doing this, with both immediate and longterm consequences. Most immediately, when unforeseen changes to budgets, time availability, or  other logistical constraints appear or when something goes wrong in implementation, we should ask ourselves two questions: given the stage we are at, what is the best design, even if different than originally envisaged? And is it worth implementing this new, modified design? Declaring the new design, diagnosing it, and finding the new optimal design subject to constraints will answer the first question. Then deciding whether the value of the new design, assessed through the diagnosands, is worth its cost. The new design may have a different ethical status, cost, and scientific value and thus sometimes it may not be worth continuing given the new reality. Redesign and diagnosis help navigate these two decisions.
-::::
 
 ### Example in words: Encouraging Political Candidacy in Pakistan
 
@@ -401,47 +317,6 @@ After an idea has been fleshed out sufficiently, its time to start planning. Pla
 Realization is the phase of research in which all those plans are executed. You implement your data strategy in order to gather information from the world. Once that's done, you follow your answer strategy in order to finally generate answers to the inquiry. Of course, that's only if things go exactly according to plan -- which has never once happened once in our own careers. Survey questions don't work as we imagined, partner organizations over-promise and under-deliver, subjects move or become otherwise unreachable. A critic or a reviewer may insist you change your answer strategy -- or may think a different inquiry altogether is the theoretically appropriate one. You may yourself change how you think of the design as you embark on writing up the research project. It is inevitable that some features of M, I, D, and A will change during the realization phase. Some design changes have very bad properties, like sifting through the data ex-post, finding a statistically significant result, then back-fitting an new M and a new I to match the new A. This bad practice goes by the name HARKing -- Hypothesizing After Results are Known (@Kerr1998). Indeed, if we declare and diagnose this actual answer strategy (sifting through data ex-post), we can show through design diagnosis that it is badly biased (away from zero) for any of the inquiries it could end up choosing. Other changes made along the way may help the design quite a bit -- if the planned design did not include covariate adjustment but a friendly critic suggests adjusting for the pre-treatment measure of the outcome, the RMSE diagnosand might drop nicely. The point here is that design changes during the implementation process -- whether necessitated by unforeseen logistical constraints or required by the review process -- can be understood using in terms of M, I, D, and A by reconciling the planned design with the design as implemented.
 
 When that acceptance email finally hits your inbox, you can celebrate a job well done and a design well realized. But the research design lifecycle is not finished -- the design must be integrated into the scientific community. Studies must be archived, along with design information, to prepare for reanalysis. Future scholars may well want to reanalyze your design in order to learn more than is represented in the published article or book. Good reanalysis requires a full understanding of the design as implemented, so archiving design information along with code and data is critical. Not only may your design be reanalyzed, it may also be replicated with fresh data. Ensuring that replication studies answer the same theoretical questions as original studies requires explicit design information without which replicators and original study authors may simply talk past one another.^[For a discussion of the distinctions between different modes of replication, see @Clemens2017.] Indeed, as your study is integrated into the scientific literature and beyond, you should anticipate disagreement over your claims. Resolving disputes is very difficult if parties do not share a common understanding of the research design.^[For example, much of the debate over instrumental variables designs in economics centers on which of two inquiries is the "correct" theoretical target, the average treatment effect or the local average treatment effect (@deaton2009instruments, @imbens2010better).] Finally, you should anticipate that your results will be formally synthesized with others' work via meta-analysis. Meta-analysts need design information in order to be sure they aren't inappropriately mixing together studies that ask importantly different questions or answer them too poorly to be of use.
-
-## Research design principles
-
-We collect our principles of research design together here:
-
-P1. Models should include how you might be right about the world and how you might be wrong.   
-  
-P2. Models should admit arbitrary inquiries over causal quantities.  
-  
-P3. Inquiries must be defined across all models under consideration.  
-  
-P4. Inquiries should be at least partially identifiable.  
-  
-P5. Define inquiries as summaries of (potential) outcomes.  
-  
-P6. Inquiries should be informative about theories.   
-  
-P9. Data strategies should rule out threats to validity with sampling, assignment, and measurement procedures.  
-  
-P8. Answer strategies should explicitly target inquiries.   
-  
-P9. When data strategies introduce no distortions, answer strategies can be directly analogous to inquiries. When data strategies do introduce distortions, they must be compensated for in the answer strategy.   
-  
-P10. Answer strategies should anticipate errors in data strategies.  
-  
-P11. Designs should be declared before they are implemented.   
-
-P12. Designs should be implemented as they are declared.   
-
-P13. Ethical, logistical, and scientific goals should be encoded in diagnosands.   
-
-P14. Design declarations should be diagnosand complete.   
-
-P15. Designs should be diagnosed over the declared model possibilities.   
-
-P16. Designs should be redesigned with respect to all feasible data and answer strategies.   
-
-P17. Optimization over diagnosand tradeoffs should guide the selection of a particular design among the set of feasible designs.   
-
-P18. Unforeseen implementation complications should be addressed through redesign.   
-
 
 ## Further Reading
 
