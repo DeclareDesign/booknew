@@ -32,9 +32,9 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-Partnering with third-party organizations in research --- cooperating to intervene in the world or to measure outcomes --- is increasingly common in the social sciences. Researchers seek to produce (and publish) scientific knowledge; they work with political parties, government agencies, non-profit organizations, and businesses to learn more than they could if they worked independently. These groups consent to working with researchers in order to learn about how to achieve their own organizational goals. For example, a government may want to learn how to expand access to healthcare or a corporation may want to learn how to improve its ad targeting. 
+Partnering with third-party organizations in research entails cooperating to intervene in the world or to measure outcomes. Researchers seek to produce (and publish) scientific knowledge; they work with political parties, government agencies, non-profit organizations, and businesses to learn more than they could if they worked independently. These groups consent to working with researchers in order to learn about how to achieve their own organizational goals. Governments may want to learn how to expand access to healthcare, corporations may want to learn how to improve their ad targeting, or nonprofits may want to demonstrate program impact to funding organizations.
 
-In the best case scenario, the goals of the researchers and partner organizations are aligned. When the scientific question to be answered (the inquiry) is the same as the practical question the organization cares about, the gains from cooperation are clear. The research team gains access to the financial and logistical capacity of the organization to act in the world and the partner organization gains access to the scientific expertise of the researchers. Finding a good research partner almost always amounts to finding an organization with a common -- or at least not conflicting -- goal. Understanding the private goals of the partner and of the researcher is essential to selecting a research design amenable to both parties. Research design declaration and diagnosis can help with this problem by formalizing tradeoffs between the two sets of goals.
+In the best case scenario, the goals of the researchers and partner organizations are aligned. When the scientific question to be answered is the same as the practical question the organization cares about, the gains from cooperation are clear. The research team gains access to the financial and logistical capacity of the organization to act in the world and the partner organization gains access to the scientific expertise of the researchers. Finding a good research partner almost always amounts to finding an organization with a common -- or at least not conflicting -- goal. Understanding the private goals of the partner and of the researcher is essential to selecting a research design amenable to both parties. Research design declaration and diagnosis can help with this problem by formalizing tradeoffs between the two sets of goals.
 
 One common divergence between partner and researcher goals is that partner organizations often do want to learn, but they care most about their primary mission. In business settings, this dynamic is sometimes referred to as the "learn versus earn" or "exploration-exploitation" tradeoff. An aid organization (and their donors) cares about delivering their program to as many people as possible; learning whether the program has the intended effects on the outcomes of interest is obviously also important, but resources spent on evaluation are resources *not* spent on program delivery.
 
@@ -43,13 +43,15 @@ Research design diagnosis can help navigate the learning-doing tradeoff. One ins
 In the absence of partners, researchers might simply ignore the proportion treated axis and select the design with the highest power. With a partner organization, the researcher might use this graph in conversation with the partner to jointly select the design that has the highest power that has a sufficiently high proportion treated to meet the partner's needs. This is represented in the "zone of agreement" in gray: in this region, the design has at least 80% power and at least 2/3 of the sample are treated. Deciding within this region involves a trade-off between power (which is decreasing in the proportion treated here) and the utility of the partner (which is increasing in proportion treated). The diagnosis surfaces the zone of the agreement and clarifies the choice between designs in the zone.
 
 ```{r, echo = FALSE, eval = do_diagnosis & !exists("do_bookdown")}
-design <- 
-  declare_model(N = 100, U = rnorm(N, sd = 0.2)) +
-  declare_potential_outcomes(Y ~ 0.15*Z + U) +
-  declare_assignment(prob = prob) +
+design <-
+  declare_model(N = 100,
+                U = rnorm(N, sd = 0.2),
+                potential_outcomes(Y ~ 0.15 * Z + U)) +
+  declare_assignment(Z = complete_ra(N = N, prob = prob), legacy = FALSE) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
   declare_estimator(Y ~ Z)
 
-designs <- redesign(design, prob = seq(0.1, 0.9, 0.1))
+designs <- redesign(design, prob = seq(1/12, 11/12, length.out = 11))
   
 simulations <- simulate_designs(designs, sims = 1000)
 
@@ -67,7 +69,7 @@ gg_df <-
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("04_Partners.Rmd"), "/gg_df.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(gg_df, path = rds_file_path)
+  write_rds(gg_df, file = rds_file_path)
 }
 gg_df <- read_rds(rds_file_path)
 ```
@@ -85,35 +87,56 @@ lines_df <-
     threshold = c(0.8, 2/3)
   )
 
-
 annotations_df <-
   tibble(
     diagnosand = c("Power", "Utility"),
     label = c("Researcher constraint: Power must be above 0.80.",
-              "Partner constraint: Two-thirds of subjects must be treated."),
+              "Partner constraint: At least two-thirds of subjects must be treated."),
     prob = c(0.2, 0.1),
     value = c(0.725, 0.725)
   )
 
-ggplot(gg_df) +
-  geom_rect(data = rect_df, aes(xmin = min_prob, xmax = max_prob, ymin = 0, ymax = 1), alpha = 0.1) +
-  geom_line(aes(prob, value)) +
-  geom_text(data = annotations_df, aes(prob, value, label = label), hjust = 0) + 
+ggplot(gg_df, aes(prob, value)) +
+  geom_point() +
+  geom_line(alpha = 0.6) +
+  geom_text(data = annotations_df,
+            aes(label = label),
+            hjust = 0) +
+  geom_rect(
+    data = rect_df,
+    aes(
+      xmin = min_prob,
+      xmax = max_prob,
+      ymin = 0,
+      ymax = 1
+    ),
+    alpha = 0.1,
+    inherit.aes = FALSE
+  ) +
   geom_hline(data = lines_df, aes(yintercept = threshold)) +
-  annotate("text", x = 0.75, y = 0.50, label = "Zone of agreement", angle = 270, hjust = 0) + 
-  facet_grid(diagnosand~., scales = "free") +
+  annotate(
+    "text",
+    x = 17/24,
+    y = 0.60,
+    label = "Zone of agreement",
+    angle = 270,
+    hjust = 0
+  ) +
+  scale_y_continuous(breaks = seq(0, 1, length.out = 6)) +
+  scale_x_continuous(breaks = seq(0, 1, length.out = 7),
+                     labels = c("0/6", "1/6", "2/6", "3/6", "4/6", "5/6", "6/6")) +
+  facet_grid(diagnosand ~ ., scales = "free") +
   labs(x = "Proportion treated") +
-  dd_theme() + 
-  theme(axis.title.y = element_blank())
+  dd_theme() +
+  theme(axis.title.y = element_blank(),
+        panel.grid.minor.y = element_blank())
 ```
 
-Choosing the proportion treated is one example of integrating partner constraints into research designs to generate feasible designs. A second common problem is that there are a set of units that *must* be treated, for ethical or political reasons (e.g., the home district of a government partner must receive the treatment), or that must not be treated. If these constraints are discovered after treatment assignment, they lead to noncompliance, which may substantially complicate analysis of the experiment and even prevent providing an answer to the original inquiry. Considerable thought has been given to avoiding this type of noncompliance. @Gerber2012 recommend, before randomizing treatment, exploring possible treatment assignments with the partner organization and using this exercise to elicit the set of units that must or cannot be treated. @king2007politically describe a "politically-robust" design, which uses pair-matched block randomization and when any unit is dropped due to political constraints the pair is dropped from the study.^[Note the inquiry that can be answered from such a design is complex, reflecting effects for units in pairs that would not be dropped in either possible random assignment within the pair.] 
-
-Design diagnosis can help in these circumstances by providing a mechanism to specify possible patterns of noncompliance and diagnosing alternative designs to mitigate the negative consequences. In addition, they can be used to communicate with partners about the consequences of noncompliance for the research to help make better decisions together about how to avoid noncompliance once treatment is randomized and the research is in progress.
+Choosing the proportion treated is one example of integrating partner constraints into research designs to generate feasible designs. A second common problem is that there are a set of units that *must* be treated, for ethical or political reasons (e.g., the home district of a government partner must receive the treatment), or that must not be treated. If these constraints are discovered after treatment assignment, they lead to noncompliance, which may substantially complicate analysis of the experiment and even prevent providing an answer to the original inquiry. @Gerber2012 recommend, before randomizing treatment, exploring possible treatment assignments with the partner organization and using this exercise to elicit the set of units that must or cannot be treated. @king2007politically describe a "politically-robust" design, which uses pair-matched block randomization and when any unit is dropped due to political constraints the pair is dropped from the study.^[This procedure is prone to biased for the average treatment effect among the "political feasible" units if within some pairs, one unit is treatable but the other is not.]
 
 Our best advice for working with partners is to involve them in the design declaration and diagnosis process. How can we develop intuitions about the means, variances, and covariances of the important variables to be measured? Ask your partner for their best guesses, which may be far more educated than your own. For experimental studies, solicit your partner's beliefs about the magnitude of the treatment effect on each outcome variable, subgroup by subgroup if possible. Be specific -- ask what they think the average will be in the control group and what the average will be in the treatment group. Sorting out these beliefs very quickly sharpens the discussion of key design details. Share your design diagnoses and mock analyses *before* the study is launched in order to build a consensus around the goals of the study.
 
-Sometimes a partnership simply will not work out. Indeed most partnerships are never even initiated because researcher and organizational goals are too far apart. If you find yourself in a setting where partnership is doing too much violence to the research design, find a way to walk away from the project. 
+Unfortunately, some partnerships simply will not work out. Indeed most partnerships are never even initiated because researcher and organizational goals are too far apart. If you find yourself in a setting where partnership is doing too much violence to the research design, find a way to walk away from the project. 
 
 <!-- ### Scattered thoughts -->
 
