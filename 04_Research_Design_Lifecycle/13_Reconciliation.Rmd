@@ -36,39 +36,9 @@ Inevitably, the research design as implemented will differ in some way from the 
 
 Suppose the original design described a three-arm trial: one control and two treatments, but the design as implemented drops all subjects assigned to the second treatment. Sometimes this is an entirely appropriate and reasonable design modification: perhaps it turns out that due to an implementation failure, the second treatment was simply not delivered. Other times, these modification is less benign -- perhaps the estimate of the effect of the second treatment does not achieve statistical significance, so the author simply omits it from the analysis. 
 
-For this reason, explicitly **reconciling** the design as planned with the design as implemented should be the first step to writing up a paper. Having a publicly-posted preanalysis plan can make the reconciliation process especially credible -- we know for sure what the planned design was because the preanalysis plan describes it pre-implementation. However, a preanalysis plan is not a prerequisite for engaging in reconciliation. The scientific enterprise is built in large measure on trust: we are ready to believe researchers who say, here is the design I thought I would implement but due to unanticipated developments, here is the design I ended up implementing. 
+For this reason, we recommend that authors **reconcile** the design as planned with the design as implemented. A reconciliation can be a simple as a description of the deviations from the pap, with justifications where appropriate. A more involved reconciliation would include a declaration of the planned design, a declaration of the implemented design, and a list of the differences. This "diff" of the designs can be automated through the declaration of both designs in computer code, then comparing the two design objects line-by-line (see the function `compare_designs()` in DeclareDesign). 
 
 In some cases, reconciliation will lead to additional learning beyond what can be inferred from the final design itself. When some units could refuse to be included in the study sample or some units refused measurement, we learn that important features about those units. Understanding sample exclusions, noncompliance, and attrition not only may inform future research design planning choices, but contribute substantively to our understanding of the social setting. A policy implemented in the same way the study would likely also not be able to work in the units who refused to participate, and future research could examine why or how to convince them of the policy's benefits.
-
-What belongs in a reconciliation? At a minimum, we need a full description of the planned design, a full description of the implemented design, and a list of the differences. This can be made explicit through the declaration of both designs in computer code, then comparing the two design objects line-by-line.
-
-In `DeclareDesign` we take the first steps of comparing designs for you:
-
-```{r, eval = FALSE}
-design1 <- declare_model(N = 100, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ Z + U) +
-  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_sampling(n = 75) +
-  declare_assignment(m = 50) +
-  declare_reveal(Y, Z) +
-  declare_estimator(Y ~ Z, inquiry = "ATE")
-
-design2 <- declare_model(N = 200, U = rnorm(N)) +
-  declare_potential_outcomes(Y ~ 0.5*Z + U) +
-  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
-  declare_sampling(n = 100) +
-  declare_assignment(m = 25) +
-  declare_reveal(Y, Z) +
-  declare_estimator(Y ~ Z, model = lm_robust, inquiry = "ATE")
-
-compare_designs(design1, design2)
-compare_design_code(design1, design2)
-compare_design_summaries(design1, design2)
-compare_design_data(design1, design2)
-compare_design_estimates(design1, design2)
-compare_design_estimands(design1, design2)
-```
-
 
 ### Example
 
@@ -77,6 +47,8 @@ In Section \@ref(p4planning), we described the preanalysis plan registered by @b
 In their appendix, the authors report on a set of analyses requested by reviewers. We see this as a perfect example of transparently presenting the set of planned analyses and highlighting the analyses that were added afterward and why they were added. They write:
 
 > We have been asked to consider other pertinent moderations beyond gender and LGBTQ+ status. They are contained in the four following sections.
+
+This small table describes the heterogeneous effects analysis that were planned by the researchers, those that were reported in the paper, and those that were reported in the appendix at the request of reviewers.
 
 
 | Covariate            | In the preanalysis plan | In the paper            | In the appendix (at the request of reviewers) |
@@ -99,3 +71,4 @@ Table: (\#tab:reconciliation) Reconciliation of Bonilla and Tillery preanalysis 
 
 
 
+<!-- Having a publicly-posted preanalysis plan can make the reconciliation process especially credible -- we know for sure what the planned design was because the preanalysis plan describes it pre-implementation. However, a preanalysis plan is not a prerequisite for engaging in reconciliation. The scientific enterprise is built in large measure on trust: we are ready to believe researchers who say, here is the design I thought I would implement but due to unanticipated developments, here is the design I ended up implementing.  -->
