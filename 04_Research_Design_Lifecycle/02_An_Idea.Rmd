@@ -43,48 +43,52 @@ Whatever the mysterious process is that ignites the process, we can characterize
 
 The goal of brainstorming is to build out M, I, D, A into a complete design, regardless of where in the four elements the idea starts out. 
 
-### Starting with a model
+### Starting with a kernel node or edge
 
-A model can start with just one node (outcome variable) or one edge (causal relationship between another node and that outcome node) of primary interest. With this kernel in hand, we can expand the model in several steps.
+We often come to a research project either with an outcome variable we want to explain, or we want to study the effects of an independent variable. Sometimes we have both in mind at once. In the terms of causal graphs, we either come with a node (a variable), or an edge (the relationship between two variables). 
 
-1. If there are intermediate nodes reflecting mechanisms, add an alternative mechanism. 
+Our first task is to translate this kernel of an idea into an inquiry. Do we want to know the average value of the node, an approximation of its distribution, its mode? If the kernel is an edge, do we want to understand whether X causes Y, Y causes X, whether X causes Y more or less among group 1 than group 2, or whether there is an interaction effect between X1 and X2 on Y? Defining the inquiry may expand our kernel of an idea also: if we started with Y but decide our inquiry is the effect of X on Y, then now we have an edge for our kernel. 
 
-2. Add common causes of all nodes. Add unknown causes as a node to reflect all of the unknown common causes.
+The second step is to build out a more complete model around our kernel. The model should include both the node or edge we believe to exist (or want to disprove), but also alternative theories and data structures that could explain the kernel. A general algorithm provides guidance for how to build out a *set* of graphical causal models from the kernel, though building out each kernel will be different:
 
+:::: {.principles data-latex=""}
+::: {.principles-title data-latex=""}
+Algorithm for building a causal model from an inquiry
+:::
+
+To build a set of possible graphical causal models that you can use to judge your research design against, start with a node or edge that defines the inquiry and then build from there in six steps:
+
+1. Add common causes of all nodes. Add unknown causes as a node to reflect all of the unknown common causes.
+2. If there are intermediate nodes reflecting mechanisms, add an alternative mechanism. 
 3. Construct graphs representing all combinations of edges, including lack of edges, between the nodes.
-
 4. Rule out graphs that are cyclic and that are impossible based on substantive knowledge.
-
 5. Add a node for each outcome representing the observed outcome, to reflect possible measurement error.
+6. Add nodes for sampling procedure (if any), treatment assignment procedure or instruments (if any), and measurement tools, separate from the actual included units, treatments units receive, and measured outcomes to account for the possibility of imperfect sampling, assignment, and measurement.
 
-6. Add nodes you control: sampling (if in the data strategy), treatment assignment (if in the data strategy), 
+With this set of possible graphical causal models, we also must define the parametric models that describe how exactly variables relate to each other, encode heterogeneous effects, and how variables interact. The graphical causal model, with these parametric structural models, define the model $M$ of $MIDA$.
+::::
 
--- common causes
-
-### Starting with an inquiry
-
-<!-- - build your model from the kernel defined by the inquiry, then choose a data and answer strategy that target the inquiry "well" -->
+With a model and inquiry in hand, we need a data strategy and an answer strategy that together can provide an answer to the inquiry. Of course, we want to find a data and answer strategy that yield favorable diagnosands. To do so, we typically need to redesign across many feasible designs to find the optimal one. In other words, with the model and inquiry in hand we need to take up the declare-diagnose-redesign algorithm to find a good data and answer strategy. Our design library in Part III provides a starting point for many designs, based on the type of inquiry you start with.
 
 ## Starting with a data strategy
 
-So you have a treatment you can implement
-
-So you have a new measurement strategy
+Many times, we start with a general topic, but not a specific node or edge of interest. Instead, we find a treatment that we can feasibly implement in this topic area, an instrument we believe we can use in an instrumental variables analysis, a sampling strategy that can sample participants from a difficult-to-study population, or a new  measurement strategy. The first step, then, is to focus in on a specific inquiry. With a treatment, instrument, or measurement strategy, we need to identify a specific question we can answer. We need to go in reverse of the strategy when we start with a node or edge: here, we need to find the node or edge that we can study with our treatment, instrument, sampling procedure, or measurement strategy. If we can measure Y, we want to think about what X's might explain variation in Y, or we might just describe its variation. If we can implement treatment Z, we want to think of all the outcomes it might affect. With an instrument, we want to know what endogenous treatments it affects and which outcomes those affect. With a new sampling strategy, we want to know what variables we could measure and causal relationships we could study among the population we can now sample from. Now, we use the algorithm for building a model from the inquiry to construct our model. The last step is to identify an answer strategy that can provide a useful answer to the inquiry, given the data that is produced by the data strategy you started with. Often the answer strategy follows easily from the data strategy. If we started with an instrument, we will use instrumental variables if the inquiry is the local effect, if the inquiry is the first stage effect or the reduced form effect, then we will instead use a linear regression or difference-in-means. If we started with a treatment and a way to randomize it, then our answer strategy will follow our randomization procedure, analyzing the data at the level of treatment assignment, among units that were randomized, and accounting for varying probabilities of assignment. More generally, the design library in Part III can provide general ideas for answer strategies linked to many common data strategies, and the answer strategy chapter of Part III can provide specific guidance on ensuring the analysis matches the data strategy.
 
 ## Starting with an answer strategy 
 
-So you have an instrument and you want to use IV
+We can also start the research process with a new answer answer that can answer research questions. Our idea might be a new statistical model or a new way of cleaning and analyzing data from video or audio. The process for building a research design from the answer strategy is similar to what we proposed for the data strategy. We first need to identify an inquiry that might be answered with the new answer strategy. There might be many, but the first step is picking one or a feasible small number of them. We can then build a model from that inquiry using the algorithm described above. Finally, we need to pick a data strategy that provides data that can be analyzed with this new answer strategy. 
 
-So you have a new modeling strategy
+We think there should be no shame in starting with a data strategy or answer strategy. The ordering is criticized by some for not focusing on answer big questions. We think progress in social science can come from many places, and we should seek to provide credible answers to important questions and often progress in providing credible answers will start with new data and answer strategies. We should then judge MIDA in terms of the importance of the question --- in practical or theoretical terms --- as well as the strength of the design to provide answers. 
 
-- much standard research advice cautions against selecting a data strategy or answer strategy, because it is thought to lead to work that does not meet the goa
+<!-- So you have a new modeling strategy -->
 
+<!-- - much standard research advice cautions against selecting a data strategy or answer strategy, because it is thought to lead to work that does not meet the goa -->
 
-Brainstorming sessions can be useful to take a kernel of idea and identify a set of possible research designs building on it. These candidate designs can then be diagnosed and assessed for feasibility. But what do participants in the brainstorming session need to know about your idea so they can effectively help identify possible designs? We suggest using the following "problem statement", where the core task is to place your kernel of an idea into MIDA.^[The problem statement idea was developed by Graeme Blair, Darin Christensen, Erin Hartman, and Chad Hazlett for a research design seminar at UCLA. ] You need not have all the parts of MIDA --- that's why you are having a brainstorming session! But systematizing what you do know is helpful. 
+## Brainstorming 
 
-- it's not usually helpful to have just an answer strategy
-- if cannot specify any of M, I, or D, it will usually be hard to help. a common situation is having a context or a topic of interest. this is fine! but this may not be enough to yield a productive brainstorming session about designs, because the other participants will not know what part *you* are interested in. we can all imagine many theoretical ideas, research questions, and research strategies that would be of interest to ourselves, but until you specify a theoretical kernel, an inquiry, or a data strategy we can't fill in the rest of the blanks for you.
+Brainstorming sessions can be useful to take a kernel of idea and identify a set of possible research designs building on it. These candidate designs can then be diagnosed and assessed for feasibility. But what do participants in the brainstorming session need to know about your idea so they can effectively help identify possible designs? We suggest using the following "problem statement", where the core task is to place your kernel of an idea into MIDA.^[The problem statement idea was developed by Graeme Blair, Darin Christensen, Erin Hartman, and Chad Hazlett for a research design seminar at UCLA. ] You need not have all the parts of MIDA --- that's why you are having a brainstorming session! But systematizing what you do know is helpful. The more information you can provide, even if it is the range of possibilities rather than an exact specification of the context or the model, the more informative the session can be.
 
+<!-- - if cannot specify any of M, I, or D, it will usually be hard to help. a common situation is having a context or a topic of interest. this is fine! but this may not be enough to yield a productive brainstorming session about designs, because the other participants will not know what part *you* are interested in. we can all imagine many theoretical ideas, research questions, and research strategies that would be of interest to ourselves, but until you specify a theoretical kernel, an inquiry, or a data strategy we can't fill in the rest of the blanks for you. -->
 
 :::: {.principles data-latex=""}
 ::: {.principles-title data-latex=""}
