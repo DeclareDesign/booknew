@@ -15,7 +15,7 @@ model_1 <-
   declare_model(
     N = 100,
     U = rnorm(N),
-    X = rnorm(N), # X is pretreatment
+    X = rnorm(N),
     Z = rbinom(N, 1, prob = plogis(0.5 + X)),
     potential_outcomes(Y ~ 0.1 * Z + 0.25 * X + U),
     Y = reveal_outcomes(Y ~ Z)
