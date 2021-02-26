@@ -30,9 +30,8 @@ model <-
         0.25 * lgbtq + 
         0.01 * income + 
         0.1 * college + 
-        -0.1 * religiosity)
-  ) + 
-  declare_potential_outcomes(
+        -0.1 * religiosity),
+    # potential_outcomes
     blm_support_Z_general = 
       likert_cut(blm_support_latent),
     blm_support_Z_nationalism = 
@@ -90,7 +89,7 @@ data_strategy <-
       c("general", "nationalism", "feminism", "intersectional"), 
     simple = TRUE
   ) + 
-  declare_reveal(blm_support, Z) 
+  declare_measurement(blm_support = reveal_outcomes(blm_support ~ Z)) 
 
 answer_strategy <-
   declare_estimator(
