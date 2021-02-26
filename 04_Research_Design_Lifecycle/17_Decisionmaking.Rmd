@@ -34,17 +34,26 @@ library(broom)
 
 ## Decisionmaking
 
-Policymakers, businesses, humanitarian organizations, and regular people make decisions based on social science research. Research designs, however, are often constructed without considering *who* will be informed by the evidence and *how* they will use evidence in decisions. We can optimize our designs for both scientific publication and decisionmaking. The first step is eliciting the inquiries decisionmakers have, which often differ from those of scientists. The second is diagnosing our studies in terms of how often the decisionmaker would make the right decision. A design that not only exhibits high statistical power but a high rate of making the right decision will influence not only the scientific literature but decisions made by the public. 
+Policymakers, businesses, humanitarian organizations, and regular people make decisions based on social science research. Research designs, however, are often constructed without considering who will be informed by the evidence and how they will use evidence in decisions. We can optimize our designs for both scientific publication and decisionmaking. The first step is eliciting the inquiries decisionmakers have and the second is diagnosing our studies in terms of how decision change depending on the results. How often would the decisionmaker make the right decision, with and without the study? A design that not only exhibits high statistical power but a high rate of making the right decision will influence not only the scientific literature but decisions made by the public. 
 
-We illustrate this process by declaring a simple experimental design in which there is a status quo policy represented in the control condition and an alternative policy under consideration represented in the treatment condition. As the researcher, you want to know what the average treatment effect is. However, you recognize that policymakers will be making a specific decision based on the experiment. You meet with the policymaker and ask about how they would use the evidence you plan to produce. The policymaker says that they would like to switch to the treatment if it is better than the control and retain the status quo policy if not. However, they face a switching cost to adopt to the new policy, so for now they would only like to adopt the treatment if it is at least 0.1 standard deviations better than the status quo. 
+We illustrate this process by declaring an experimental design that compares a status quo policy with an alternative. As the researcher, your inquiry is the average treatment effect, but the policymaker has a subtlely different inquiry: they would like to which policy to implement, the status quo or the altenative. Imagine you meet with the policymaker and ask about how they would use the evidence you plan to produce. The policymaker says that they would like to switch to the alternative if it is better than the status quo. However, they face a switching cost to adopt to the new policy, so for now they would like to adopt the treatment only if it is at least 0.1 standard deviations better than the status quo. 
 
-In your design declaration, you add two new components so that you can assess not only the statistical power of your design for estimating the average treatment effect, but also the probability of the decisionmaker making the right decision. The first is you add a new inquiry, which is, is the treatment at least 0.1 standard deviations better than the control condition. In addition, you add a statistical test to target this inquiry, which tests whether the treatment effect is larger than 0.1. It does so by calculating a linear combination of the treatment effect estimate: the null hypothesis is $\widehat\tau - 0.1 = 0$.
+In your design declaration, you add two new components so that you can assess not only the statistical power of your design for estimating the average treatment effect, but also the probability of the policymaker making the right decision. The first is you add a new inquiry, which is, is the treatment at least 0.1 standard deviations better than the control condition?. In addition, you add a statistical test to target this inquiry, which tests whether the treatment effect is larger than 0.1. It does so by calculating a linear combination of the treatment effect estimate: the null hypothesis is $\widehat\tau - 0.1 = 0$.
 
 ```{r}
 # compare status quo to a new proposed policy, 
 #   given cost of switching 
 N <- 100
 effect_size <- 0.1
+
+decision_function <-
+  function(data) {
+    data %>%
+      lh_robust(Y ~ Z, linear_hypothesis = "Z - 0.1 = 0", data = .) %>%
+      tidy %>%
+      filter(term == "Z - 0.1 = 0")
+  }
+
 design <-
   declare_model(
     N = N,
@@ -53,12 +62,13 @@ design <-
   ) + 
   declare_inquiry(
     ATE = mean(Y_Z_1 - Y_Z_0),
-    treatment_better_than_control = if_else(ATE > 0.1, TRUE, FALSE)
+    alternative_better_than_sq = if_else(ATE > 0.1, TRUE, FALSE)
   ) + 
   declare_assignment(Z = complete_ra(N), legacy = FALSE) +
   declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
   declare_estimator(Y ~ Z, model = difference_in_means, inquiry = "ATE", label = "dim") + 
-  declare_test(handler = label_estimator(function(data) subset(tidy(lh_robust(Y ~ Z, linear_hypothesis = "Z - 0.1 = 0", data = data)), term == "Z - 0.1 = 0")), label = "decision", inquiry = "treatment_better_than_control")
+  declare_test(handler = label_estimator(decision_function), label = "decision", 
+               inquiry = "alternative_better_than_sq")
 ```
 
 <!-- switch to this later, there is a bug in lh_robust that needs to be fixed -->
@@ -73,7 +83,12 @@ diagnosands <- declare_diagnosands(
   proportion_choose_treatment = mean(estimate > 0 & p.value <= 0.05)
 )
 
-designs <- redesign(design, N = seq(from = 100, to = 3000, by = 500), effect_size = seq(from = 0, to = 0.25, by = 0.05))
+designs <-
+  redesign(
+    design,
+    N = seq(from = 100, to = 3000, by = 500),
+    effect_size = seq(from = 0, to = 0.25, by = 0.05)
+  )
 
 diagnosis <- diagnose_design(designs, diagnosands = diagnosands, sims = 250)
 ```
@@ -87,9 +102,9 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
-In Figure \@ref(fig:decisionplot), we show the probability of retaining the status quo policy (left facet) and the probability of switching to the treatment (right) by different true effect sizes. On the left, we see that there is a very high probability of selecting the right policy when the true effect size is very low. This is because when the effect size is low, we are likely to fail to reject the null. With small sample sizes, we are likely to also select control even when we should not for large effect sizes, because of the 0.1 cut-off that incorporates the cost of switching. Here, our estimates are noisy and so we often get an estimate that fails to reject the null of a difference larger than 0.1 due to small sample size not the true effect size. Looking at the right graph, even when the true effect size is large (i.e. 0.25), we need to have a large sample size, about 1500, to achieve 80% probability of correctly choosing the treatment.
+In Figure \@ref(fig:decisionplot), we show the probability of retaining the status quo policy (left facet) and the probability of switching to the treatment (right) by different true effect sizes. On the left, we see that there is a very high probability of selecting the right policy when the true effect size is very low. This pattern occurs because when the effect size is low, we are likely to fail to reject the null. With small sample sizes, we are likely to also select the status quo even when we should not, because of the imprecision of the estimates. Looking at the right graph, even when the true effect size is large (i.e., 0.25), we need to have a large sample size, about 1500, to achieve 80% probability of correctly choosing the treatment.
 
-The sample size we might choose based on this analysis of the decisionmaker's choice is different than if we only considered statistical power. This is because the decision curve only reaches 80% power at 1500, while power reaches 80% at just over 500. The reason for the divergence is to make a correct decision, we need evidence that the policy is more than 0.1 effective, as compared to power which considers whether the effect is over zero.
+The sample size we might choose based on this analysis of the policymaker's choice is different than if we only considered statistical power. This is because the decision curve only reaches 80% power at 1500, while power reaches 80% at just over 500. The reason for the divergence is to make a correct decision, we need evidence that the treatment effect is greater than 0.1, as compared to statistical power which considers whether the effect is greater than 0.0.
 
 ```{r decisionplot, echo = FALSE, fig.cap = "WIP: Research design diagnosis for study of effectiveness of a policy change compared to the status quo, where a policymaker wishes to switch to the treatment policy only if it is at least 0.05 standard deviations better than the status quo. On the left, we display the statistical power of the study to detect an effect in either direction. On the right, we display the rate of making the right decision to switch policies or not."}
 # the colors here are messed up
@@ -114,7 +129,7 @@ gg2 <- diagnosis %>%
   geom_line(size = 1) + 
   coord_cartesian(ylim = c(0, 1)) + 
   scale_color_discrete("True effect size", type = rev(c('#b2182b','#ef8a62','#f7f7f7','#d1e5f0','#67a9cf','#2166ac'))) + 
-  labs(y = "Probability of Choosing the Status Quo") + 
+  labs(y = "Probability of Choosing the Status Quo Policy") + 
   theme(legend.position = "bottom") + 
   guides(colour = guide_legend(nrow = 1))
 
@@ -127,7 +142,7 @@ gg3 <- diagnosis %>%
   coord_cartesian(ylim = c(0, 1)) + 
   scale_color_discrete("True effect size", type = c('#b2182b','#ef8a62','#f7f7f7','#d1e5f0','#67a9cf','#2166ac'),
                        labels = c("0 (should retain status quo)", "0.05", "0.1 (indifferent)", "0.15", "0.2", "0.25 (should switch to treatment)")) + 
-  labs(y = "Probability of Choosing the Treatment") + 
+  labs(y = "Probability of Choosing the Alternative Policy") + 
   theme(legend.position = "bottom") + 
   guides(colour = guide_legend(nrow = 1))
 
