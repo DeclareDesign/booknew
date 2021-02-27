@@ -7,8 +7,13 @@ lapply(packages, require, character.only = TRUE)
 
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 
-rescale <- function(x) (x - min(x)) / (max(x) - min(x))
-likert_cut <- function(x)  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
+rescale <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+
+likert_cut <- function(x) {
+  as.numeric(cut(x, breaks = c(-100, 0.1, 0.3, 0.6, 0.8, 100), labels = 1:5))
+}
 
 model <- 
   declare_model(
@@ -48,7 +53,7 @@ model <-
                    0.01 * blm_familiarity)
   )
 
-slope <- function(y, x) cov(y, x) / var(x)
+slope <- function(y, x) { cov(y, x) / var(x) }
 
 inquiry <-  
   declare_inquiries(
@@ -155,7 +160,9 @@ fit_2 <- lm_robust(blm_support ~ Z + female + lgbtq + age +
 fit_3 <- lm_robust(blm_support ~ Z * linked_fate, data = mock_data)
 fit_4 <- lm_robust(blm_support ~ Z * blm_familiarity, data = mock_data)
 
-bookreg(l = list(fit_1, fit_2, fit_3, fit_4), include.ci = FALSE, digits = 3, caption = "Mock regression table from Bonilla and Tillery design.")
+bookreg(l = list(fit_1, fit_2, fit_3, fit_4), 
+        include.ci = FALSE, digits = 3, 
+        caption = "Mock regression table from Bonilla and Tillery design.")
 
 female_df <-
   mock_data %>%
