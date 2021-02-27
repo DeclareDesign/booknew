@@ -1,5 +1,5 @@
 # ---
-# Synthesis
+# Meta-analysis
 # --- 
 
 packages <- c("tidyverse", "DeclareDesign")
