@@ -34,11 +34,11 @@ library(broom)
 
 ## Decisionmaking
 
-Policymakers, businesses, humanitarian organizations, and regular people make decisions based on social science research. Research designs, however, are often constructed without considering who will be informed by the evidence and how they will use evidence in decisions. We can optimize our designs for both scientific publication and decisionmaking. The first step is eliciting the inquiries decisionmakers have and the second is diagnosing our studies in terms of how decision change depending on the results. How often would the decisionmaker make the right decision, with and without the study? A design that not only exhibits high statistical power but a high rate of making the right decision will influence not only the scientific literature but decisions made by the public. 
+Policymakers, businesses, humanitarian organizations, and regular people make decisions based on social science research. Research designs, however, are often constructed without considering who will be informed by the evidence and how they will use evidence in decisions. We can optimize our designs for both scientific publication and decisionmaking. The first step is eliciting the inquiries decisionmakers have, and the second is diagnosing how decisions change depending on the results. How often would the decisionmaker make the right decision, with and without the study? A design that exhibits high statistical power and a high rate of making the right decision will influence not only the scientific literature but also decisions made by the public. 
 
-We illustrate this process by declaring an experimental design that compares a status quo policy with an alternative. As the researcher, your inquiry is the average treatment effect, but the policymaker has a subtlely different inquiry: they would like to which policy to implement, the status quo or the altenative. Imagine you meet with the policymaker and ask about how they would use the evidence you plan to produce. The policymaker says that they would like to switch to the alternative if it is better than the status quo. However, they face a switching cost to adopt to the new policy, so for now they would like to adopt the treatment only if it is at least 0.1 standard deviations better than the status quo. 
+We illustrate this process by declaring an experimental design that compares a status quo policy with an alternative. As the researcher, your inquiry is the average treatment effect, but the policymaker has a subtlely different inquiry. The policymaker would like to know which policy to implement: the status quo or the alternative. Imagine you meet with the policymaker and ask how they would use the evidence you plan to produce. The policymaker says that they would like to switch to the alternative if it is better than the status quo. However, they face a switching cost to adopt the new policy, so for now, they would like to adopt the treatment only if it is at least 0.1 standard deviations better than the status quo. 
 
-In your design declaration, you add two new components so that you can assess not only the statistical power of your design for estimating the average treatment effect, but also the probability of the policymaker making the right decision. The first is you add a new inquiry, which is, is the treatment at least 0.1 standard deviations better than the control condition?. In addition, you add a statistical test to target this inquiry, which tests whether the treatment effect is larger than 0.1. It does so by calculating a linear combination of the treatment effect estimate: the null hypothesis is $\widehat\tau - 0.1 = 0$.
+In your design declaration, you add two new components to assess your design's statistical power for estimating the average treatment effect as well as the probability of the policymaker making the right decision. The first is you add a new inquiry, which is, is the treatment at least 0.1 standard deviations better than the control condition? In addition, you add a statistical test to target this inquiry, which tests whether the treatment effect is larger than 0.1. It does so by calculating a linear combination of the treatment effect estimate: the null hypothesis is $\widehat\tau - 0.1 = 0$.
 
 ```{r}
 # compare status quo to a new proposed policy, 
@@ -148,6 +148,10 @@ gg3 <- diagnosis %>%
 
 gg1 + gg3 + plot_layout(guides = "collect")  & theme(legend.position = "bottom")
 ```
+
+**Further readings**. 
+
+
 
 <!-- - different set of inquiries -- we should directly consider these in designs -->
 <!-- - different set of diagnosands -->
