@@ -54,7 +54,7 @@ The estimate is, under these assumptions, free from sensitivity bias and an unbi
 
 ### Declaration
 
-- **M**odel: Our model includes subjects' true support for Donald Trump ($Y_star$) and whether or not they are "shy" ($S$). These two variables combine to determine how subjects will respond when asked directly about Trump support.
+- *M*odel: Our model includes subjects' true support for Donald Trump ($Y_star$) and whether or not they are "shy" ($S$). These two variables combine to determine how subjects will respond when asked directly about Trump support.
 
     The potential outcomes model combines three types of information to determine how subjects will respond to the list experiment: their responses to the three nonsensitive control items ($X$), their true support for Trump ($Y_star$), and whether they are assigned to see the treatment or the control list ($Z$). Notice that our definition of the potential outcomes embeds the no liars and no design effects assumptions required for the list experiment design.
 
@@ -73,13 +73,13 @@ model <-
   ) 
 ```
 
-- **I**nquiry: Our estimand is the proportion of voters who actually plan to vote for Trump. 
+- *I*nquiry: Our estimand is the proportion of voters who actually plan to vote for Trump. 
 
 ```{r}
 inquiry <- declare_inquiry(proportion = mean(Y_star))
 ```
 
-- **D**ata strategy: We randomly assign 50\% of our 100 subjects to treatment and the remainder to control. In the survey, we ask subjects both the direct question ($Y_{\rm direct}$) and the list experiment question ($Y_{\rm list}$).
+- *D*ata strategy: We randomly assign 50\% of our 100 subjects to treatment and the remainder to control. In the survey, we ask subjects both the direct question ($Y_{\rm direct}$) and the list experiment question ($Y_{\rm list}$).
 
 ```{r}
 data_strategy <- 
@@ -88,7 +88,7 @@ data_strategy <-
   declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z))
 ```
 
-- **A**nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.
+- *A*nswer strategy: We estimate the proportion of truthful Trump voters in two ways. First, we take the mean of answers to the direct question. Second, we take the difference in means in the responses to the list experiment question.
 
 ```{r}
 answer_strategy <-

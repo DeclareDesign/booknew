@@ -42,9 +42,9 @@ We'll consider an application of the regression discontinuity design that examin
 
 #### Declaration
 
-  - **M**odel: Regression discontinuity designs have four components: A running variable, a cutoff, a treatment variable, and an outcome. The cutoff determines which units are treated depending on the value of the running variable.
+  - *M*odel: Regression discontinuity designs have four components: A running variable, a cutoff, a treatment variable, and an outcome. The cutoff determines which units are treated depending on the value of the running variable.
   
-    In our example, the running variable $X$ is the Democratic party's margin of victory at time $t-1$; and the treatment, $D$, is whether the Democratic party won the election in time $t-1$. The outcome, $Y$, is the Democratic vote margin at time $t$. We'll consider a population of 1,000 of these pairs of elections.
+    In our example, the running variable $X$ is the Democratic party's margin of victory at time $t-1$; and the treatment, *D*, is whether the Democratic party won the election in time $t-1$. The outcome, $Y$, is the Democratic vote margin at time $t$. We'll consider a population of 1,000 of these pairs of elections.
     
     A major assumption required for regression discontinuity is that the conditional expectation functions for both treatment and control potential outcomes are continuous at the cutoff.^[An alternative motivation for some designs that do not rely on continuity at the cutoff is "local randomization".] To satisfy this assumption, we specify two smooth conditional expectation functions, one for each potential outcome. The figure plots $Y$ (the Democratic vote margin at time $t$) against $X$ (the margin at time $t-1$). We've also plotted the true conditional expectation functions for the treated and control potential outcomes. The solid lines correspond to the observed data and the dashed lines correspond to the unobserved data.
     
@@ -110,11 +110,11 @@ ggplot(plot_frame, aes(x = X, y = Y, color = as.factor(D))) +
  dd_theme()
 ```
 
-- **I**nquiry: Our estimand is the effect of a Democratic win in an election on the Democratic vote margin of the next election, when the Democratic vote margin of the first election is zero. Formally, it is the difference in the conditional expectation functions of the control and treatment potential outcomes when the running variable is exactly zero. The black vertical line in the plot shows this difference.
+- *I*nquiry: Our estimand is the effect of a Democratic win in an election on the Democratic vote margin of the next election, when the Democratic vote margin of the first election is zero. Formally, it is the difference in the conditional expectation functions of the control and treatment potential outcomes when the running variable is exactly zero. The black vertical line in the plot shows this difference.
 
-- **D**ata strategy: We collect data on the Democratic vote share at time $t-1$ and time $t$ for all 1,000 pairs of elections. There is no sampling or random assignment.
+- *D*ata strategy: We collect data on the Democratic vote share at time $t-1$ and time $t$ for all 1,000 pairs of elections. There is no sampling or random assignment.
 
-- **A**nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises. 
+- *A*nswer strategy: We will approximate the treated and untreated conditional expectation functions to the left and right of the cutoff using a flexible regression specification estimated via OLS. In particular, we fit each regression using a fourth-order polynomial. Much of the literature on regression discontinuity designs focuses on the tradeoffs among answer strategies, with many analysts recommending against higher-order polynomial regression specifications. We use one here to highlight how well such an answer strategy does when it matches the functional form in the model. We discuss alternative estimators in the exercises. 
 
 ```{r}
 cutoff <- 0.5
