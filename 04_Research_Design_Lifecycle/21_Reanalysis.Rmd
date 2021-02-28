@@ -32,32 +32,38 @@ b_sims <- 20
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-A reanalysis of an existing study is a follow-up study that reuses $d$ the original realized data for some new purpose. The reanalysis is a study with a research design that can be described in terms of *M*, *I*, *D*, and *A*. Reanalyses are fundamentally constrained by the data strategy of the original study. The data strategy *D* and the resulting data $d$ are set in stone -- but reanalysts can make changes to the answer strategy *A* -- sometimes also to the model *M* or inquiry *I*.
+A reanalysis of an existing study is a follow-up study that reuses the original realized data for some new purpose. The reanalysis is a study with a research design that can be described in terms of *M*, *I*, *D*, and *A*. Reanalyses are fundamentally constrained by the data strategy of the original study. The data strategy *D* and the resulting data are set in stone -- but reanalysts can make changes to the answer strategy *A* and sometimes also to the model *M* or inquiry *I*.
 
-We can learn from reanalyses in several ways. First, we can fix errors in the original answer strategy. Reanalyses fixed simple mathematical errors, typos in data transcription, or failures to account for features of the data strategy when analyzing the data. These reanalyses show whether the original results do or do not depend on these corrections. Second, we can reassess the study in light of new information about the world learned after the original study was published. That is, sometimes *M* changes in ways that color our interpretation of past results. Perhaps we learned about new confounders or alternative causal channels that undermine the original answer strategy's credibility. When reanalyzed, demonstrating the results do (or do not) change when new model features are incorporated improves our understanding of the inquiry. 
+We can learn from reanalyses in several ways. First, we can fix errors in the original answer strategy. Reanalyses fixed simple mathematical errors, typos in data transcription, or failures to account for features of the data strategy when analyzing the data. These reanalyses show whether the original results do or do not depend on these corrections. Second, we can reassess the study in light of new information about the world learned after the original study was published. That is, sometimes *M* changes in ways that color our interpretation of past results. Perhaps we learned about new confounders or alternative causal channels that undermine the original design's credibility. When reanalyzed, demonstrating the results do (or do not) change when new model features are incorporated improves our understanding of the inquiry. Third, reanalyses may also aim to answer new questions that were not considered by the original study but for which the realized data can provide useful answers. 
 
-Third, many reanalyses show that original findings are not "robust" to alternative answer strategies. These are better conceptualized as claims about robustness to alternative models: one model may imply one answer strategy, and a different model, with another confounder, suggests another. If both models are plausible, a good answer strategy should be robust to both and even help distinguish between them. A reanalysis could uncover robustness to these alternative models or lack thereof. 
+Lastly, many reanalyses show that original findings are not "robust" to alternative answer strategies. These are better conceptualized as claims about robustness to alternative models: one model may imply one answer strategy, and a different model, with another confounder, suggests another. If both models are plausible, a good answer strategy should be robust to both and even help distinguish between them. A reanalysis could uncover robustness to these alternative models or lack thereof. 
 
-Lastly, reanalyses may also aim to answer new questions that were not considered by the original study but for which the realized data can provide useful answers. For example, authors may analyze outcomes not originally analyzed, or data collected during an experimental design to answer a causal question might help answer a descriptive question.
+Reanalyses are themselves research designs. Just like any design, whether a reanalysis is a strong research design depends on *possible* realizations of the data (as determined by the data strategy), not just the realized data. Because the realized data is fixed in a reanalysis, analysts are often instead tempted to judge the reanalysis based on whether it overturns or confirms the original study's results. A successful reanalysis in this way of thinking demonstrates, by showing that the original results are changed under an alternative answer strategy, that the results are not robust to other plausible models. This way of thinking can lead to incorrect assessments of reanalyses. We need to consider what answers we would obtain under the original answer strategy *A* and the reanalysis strategy *A'* under many *possible* realizations of the data. A good reanalysis strategy reveals with high probability the set of models of the world under which we can make credible claims about the inquiry. Whether or not the results change under the answer strategies *A* and *A'* tells us little about this probability because the realized data is only one draw. 
 
-Reanalyses are themselves research designs. Just like any design, whether a reanalysis is a strong research design depends on *possible* realizations of the data (as determined by the data strategy), not just the realized data. Because $d$ is fixed in a reanalysis, analysts are often instead tempted to judge the reanalysis based on whether it overturns or confirms the original study's results. A successful reanalysis in this way of thinking demonstrates, by showing that the original results are changed under an alternative answer strategy, that the results are not robust to other plausible models. This way of thinking can lead to incorrect assessments of reanalyses. We need to consider what answers would obtain under the original answer strategy *A* and the reanalysis strategy $A^{\prime}$ under many *possible* realizations of the data. A good reanalysis strategy reveals with high probability the set of models of the world under which we can make credible claims about the inquiry. Whether or not the results from the fixed $d$ that was realized change under the answer strategies *A* and $A^{\prime}$ tells us little about this probability because $d$ is only one draw. 
+### Example
 
-To diagnose a reanalysis, we need to define two answer strategies --- *A* and $A^{\prime}$--and a new diagnostic-statistic. We need to decide how we summarize the answers from the two answer strategies. If one returns TRUE and one FALSE, what do we conclude about the inquiry? The function we define to summarize the two results depends on the inquiry and the goals of the reanalysis. But our diagnosis of the reanalysis should assess the properties of this summary of the two studies under possible realizations of the data. If the goal of the reanalysis is instead to learn about a new question, then we should simply construct a new MIDA altogether, but holding constant *D* from the original study, which we cannot change because we already collected $d$ using it.
+In this section, we illustrate the flaw in assessing reanalyses based on changing significance of results alone. We demonstrate how to assess the properties of reanalysis plans, comparing the properties of original answer strategies to proposed reanalysis answer strategies. 
 
-We illustrate the flaw in assessing reanalyses based on changing significance of results from realized data below. We demonstrate how to assess the properties of reanalysis plans, comparing the properties of original answer strategies to proposed reanalysis answer strategies. 
-
-The design we consider is an observational study with a binary treatment $Z$ that may or may not be confounded by a covariate $X$. The original answer strategy `A` is regression of the outcome $Y$ on the the treatment $Z$. The reanalyst collects the covariate $X$ and proposes to control for it in a linear regression; call that strategy `A_prime`. 
+The design we consider is an observational study with a binary treatment $Z$ that may or may not be confounded by a covariate $X$. Suppose that the original researcher had in mind a model in which $Z$ is not confounded by $X$:
 
 ```{r}
-A <- declare_estimator(Y ~ Z, model = lm_robust, label = "A")
-A_prime <- declare_estimator(Y ~ Z + X, model = lm_robust, label = "A_prime")
+# X is not a confounder and is measured pretreatment
+model_1 <- 
+  declare_model(
+    N = 100,
+    U = rnorm(N),
+    X = rnorm(N),
+    Z = rbinom(N, 1, prob = plogis(0.5)),
+    potential_outcomes(Y ~ 0.1 * Z + 0.25 * X + U),
+    Y = reveal_outcomes(Y ~ Z)
+  ) 
 ```
 
-We set up the model taking the perspective of the reanalyst, who believes $Z$ and $Y$ are confounded by $X$:
+The reanalyst has in mind a different model. In this second model, $X$ confounds the relationship between $Z$ and $Y$:
 
 ```{r}
 # X is a confounder and is measured pretreatment
-model_1 <- 
+model_2 <- 
   declare_model(
     N = 100,
     U = rnorm(N),
@@ -68,32 +74,28 @@ model_1 <-
   ) 
 ```
 
-Drawing data from this strategy and applying the two answer strategies, we get differing results:
+The original answer strategy `A` is a regression of the outcome $Y$ on the treatment $Z$. The reanalyst collects the covariate $X$ and proposes to control for it in a linear regression; call that strategy `A_prime`. 
 
-```{r, eval = FALSE}
-draw_estimates(model_1 + A + A_prime)
+```{r}
+A <- declare_estimator(Y ~ Z, model = lm_robust, label = "A")
+A_prime <- declare_estimator(Y ~ Z + X, model = lm_robust, label = "A_prime")
 ```
 
-```{r, echo = FALSE}
+Applying the two answer strategies, we get differing results. The treatment effect estimate is significant under `A` but not under `A_prime`. Commonly, reanalysts would infer from this that the answer strategy `A_prime` is preferred and that the original result was incorrect.
+
+```{r, eval = FALSE}
+draw_estimates(model_2 + A + A_prime)
+```
+
+```{r reanalysisresults, fig.cap = "Results under A and A'", echo = FALSE}
 set.seed(3)
-est <- draw_estimates(model_1 + A + A_prime)
+est <- draw_estimates(model_2 + A + A_prime)
 est %>% select(estimator_label, estimate, std.error, p.value) %>% kable(digits = 3)
 ```
 
-Commonly, reanalysts would infer from this two things: the ATE is nonsignificant, and that the answer strategy `A_prime` is preferred. It is preferred because it is unbiased under confounding and unbiased (and lower variance than `A`) when there is no confounding. As we show below, these claims depend on the validity of other parts of the model *M*. In particular, we define two other possible models. In model 2, $X$ is measured before treatment, as in the first model, but is not a confounder. In model 3, however, $X$ is affected by $Y$ and is measured *post*treatment. In many observational settings, it is now always clear when $X$ is realized or measured relative to treatment, so it is useful to explore the implications of the timing of measurement on the design's diagnosands as we do below.
+As we show now, these claims depend on the validity of the model and should be assessed with design diagnosis. Consider a third model in which $X$ is affected by $Z$ and $Y$. (In many observational settings, which variables are causally prior or posterior to others can be difficult to know with certainty). We now diagnose both answer strategies under all three models.
 
 ```{r}
-# X is not a confounder and is measured pretreatment
-model_2 <- 
-  declare_model(
-    N = 100,
-    U = rnorm(N),
-    X = rnorm(N),
-    Z = rbinom(N, 1, prob = plogis(0.5)),
-    potential_outcomes(Y ~ 0.1 * Z + 0.25 * X + U),
-    Y = reveal_outcomes(Y ~ Z)
-  ) 
-
 # X is not a confounder and is measured posttreatment
 model_3 <- 
   declare_model(
@@ -123,22 +125,22 @@ if (do_diagnosis & !exists("do_bookdown")) {
 diagnosis <- read_rds(rds_file_path)
 ```
 
-What we see in the diagnosis below is that `A_prime` is only preferred if we know for sure that $X$ is measured pretreatment. In design 2, where $X$ is measured posttreatment, `A` is preferred, because controlling for $X$ leads to posttreatment bias. Including the $X$ variable in the regression misattributes some of the effect of $Z$ on $Y$ to $X$. The reanalyst, this diagnosis indicates, needs to justify their beliefs about when $X$ is measured in order to claim that `A_prime` is preferred to `A`. It is not always preferred, as they might have concluded just by looking at the realized estimates from the two answer strategies.
+What we see in the diagnosis below is that `A_prime` is only preferred if we know for sure that $X$ is measured pretreatment. In design 3, where $X$ is measured posttreatment, `A` is preferred, because controlling for $X$ leads to posttreatment bias. This diagnosis indicates that the reanalyst needs to justify their beliefs about the causal ordering of $X$ and $Z$ to claim that `A_prime` is preferred to `A`. The reanalyst should not conclude on the basis of the realized estimates only that their answer strategy is preferred.
 
-```{r, echo = FALSE}
+```{r renalysisdiagnosis, fig.cap = "Diagnosis of the reanalysis design under alternative models", echo = FALSE}
 get_diagnosands(diagnosis) %>% 
   select(design_label, estimator_label, bias) %>% 
   kable(digits = 3)
 ```
 
-Three principles emerge from the idea that changes from answer strategy *A* to $A^{\prime}$ should be justified by diagnosis, not the comparison of the results $a^d$ to $a^{\prime d}$:
+Three principles emerge from the idea that changing *A* to *A'* should be justified by diagnosis, not the comparison of the realized results of the two answer strategies.
 
-1. **Home ground dominance.** Holding the original *M* constant (i.e., the home ground of the original study) as well as *I*, if you can show that a new answer strategy $A^{\prime}$ yields better diagnosands than the original *A*, then the new $A^{\prime}$ can be justified by a reanalyst based on home ground dominance. In this situation, we would prefer $A^{\prime}$ and the estimates produced by it to *A* and the original estimates produced by it, regardless of what those realized estimates are. In the example above, model 2 is the "home ground," and $A^{\prime}$ is preferred to *A* on this home ground.
+1. **Home ground dominance.** Holding the original *M* constant (i.e., the home ground of the original study), if you can show that a new answer strategy *A'* yields better diagnosands than the original *A*, then *A'* can be justified by home ground dominance. In the example above, model 1 is the "home ground," and the reanalyst's *A'* is preferred to *A* on this home ground.
 
 <!-- parallel idea about finding a replication with a new D that rules out confounders --> 
-2. **Robustness to alternative models.** A second justification for a change in answer strategy is that you can show that a new answer strategy is robust to both the original model *M* and a new, also plausible, $M^{\prime}$. In observational studies, commonly we are uncertain about many features of the model, such as the existence of unobserved confounders. In the example above, $A^{\prime}$ is robust to models 1 and 2 but is not robust to model 3. By contrast, *A* is robust to models 2 and 3 but not to model 1. 
+2. **Robustness to alternative models.** A second justification for a change in answer strategy is that you can show that a new answer strategy is robust to both the original model *M* and a new, also plausible, *M'*. In observational studies, we are uncertain about many features of the model, such as the existence of unobserved confounders. In the example above, *A'* is robust to models 1 and 2 but is not robust to model 3. By contrast, *A* is robust to models 1 and 3 but not to model 2. 
 
-3. **Model plausibility.** If the diagnosands for a design with $A^{\prime}$ are worse than those with *A* under *M* but better under $M^{\prime}$, then the switch to $A^{\prime}$ can only be justified by a claim or demonstration that $M^{\prime}$ is more plausible than *M*. As we saw in the example, there was a third possible model in which $X$ was realized posttreatment and so controlling for $X$ led to posttreatment bias. In that case, neither controlling for $X$ or not controlling for $X$ is robust to all three alternative models. The justification of model plausibility would have to be used in this case to justify controlling for $X$: substantive knowledge or additional data would have to be brought to bear to rule out the third model with posttreatment measurement of $X$. The reanalyst could demonstrate that data collection of $X$ took place before the treatment was realized, for example. 
+3. **Model plausibility.** If the diagnosands for a design with *A'* are worse than those with *A* under *M* but better under *M'*, then the switch to *A'* can only be justified by a claim or demonstration that *M'* is more plausible than *M*. As we saw in the example, neither *A* nor *A'* was robust to all three alternative models. A claim about model plausibility would have to be invoked  to justify controlling for $X$. Such a claim could be made on the basis of substantive knowledge or additional data. For example, the reanalyst could demonstrate that data collection of $X$ took place before the treatment was realized in order to rule out model 3. 
 
 
 <!-- 1. M always changes! (you have more information on $\tau$ or $\sd(\tau)$) -->
@@ -281,3 +283,7 @@ Three principles emerge from the idea that changes from answer strategy *A* to $
 
 <!-- - @Clemens2017 on taxonomy of these kinds of efforts -->
 <!-- - if you're going to use d to learn about a different M for a different I, you need to understand their D -->
+
+
+<!-- To diagnose a reanalysis, we need to define two answer strategies -- *A* and *A'* -- and a new diagnostic-statistic. We need to decide how we summarize the answers from the two answer strategies. If one returns TRUE and one FALSE, what do we conclude about the inquiry? The function we define to summarize the two results depends on the inquiry and the goals of the reanalysis. But our diagnosis of the reanalysis should assess the properties of this summary of the two studies under possible realizations of the data. If the goal of the reanalysis is instead to learn about a new question, then we should simply construct a new MIDA altogether, but holding constant *D* from the original study, which we cannot change because we already collected $d$ using it. -->
+
