@@ -1750,7 +1750,7 @@ Y
 </td>
 </tr></tbody>
 </table></div>
-<p>Now, in order to <em>declare</em> our estimator, we can send the name of a modeling function to <code>declare_estimator</code>. R has many modeling functions that work with <code>declare_estimator</code>, including <code>lm</code>, <code>glm</code>, or the <code>ictreg</code> function from the <code>list</code> package, among hundreds of others. Throughout the book, we will be using many estimators from <code>estimatr</code> because they are fast and calculate robust standard errors easily. Estimators are (almost always) associated with estimands.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Sometimes, you may be interested in properties of an estimator that do not depend on an estimand, such as calculating its power&lt;/p&gt;"><sup>5</sup></a> Here, we are targeting the population average treatment effect with the difference-in-means estimator.</p>
+<p>Now, in order to <em>declare</em> our estimator, we can send the name of a modeling function to <code>declare_estimator</code>. R has many modeling functions that work with <code>declare_estimator</code>, including <code>lm</code>, <code>glm</code>, or the <code>ictreg</code> function from the <code>list</code> package, among hundreds of others. Throughout the book, we will be using many estimators from <code>estimatr</code> because they are fast and calculate robust standard errors easily. Estimators are (almost always) associated with estimands.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Sometimes, you may be interested in properties of an estimator that do not depend on an estimand, such as calculating its power&lt;/p&gt;"><sup>7</sup></a> Here, we are targeting the population average treatment effect with the difference-in-means estimator.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">declare_estimator</span><span class="op">(</span>
   <span class="va">Y</span> <span class="op">~</span> <span class="va">Z</span>, model <span class="op">=</span> <span class="va">difference_in_means</span>, inquiry <span class="op">=</span> <span class="st">"PATE"</span>
@@ -2426,9 +2426,9 @@ Power
 </h3>
 <p>In our <code>DesignLibrary</code> package, we have created a set of common designs as designers (functions that create designs from just a few parameters), so you can get started quickly.</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/library/">DesignLibrary</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/r/designlibrary/">DesignLibrary</a></span><span class="op">)</span>
 
-<span class="va">b_c_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DesignLibrary/man/block_cluster_two_arm_designer.html">block_cluster_two_arm_designer</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">1000</span>, N_blocks <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<span class="va">b_c_design</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/designlibrary/reference/block_cluster_two_arm_designer.html">block_cluster_two_arm_designer</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">1000</span>, N_blocks <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div id="further-reading-1" class="section level2">
