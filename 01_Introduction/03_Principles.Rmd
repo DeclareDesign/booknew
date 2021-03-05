@@ -31,7 +31,7 @@ b_sims <- 200
 
 # Research design principles
 
-The Declare-Diagnose-Redesign framework suggests a set of ten principles that can guide the design process. Not all principles will be equally important in all cases but we think all are worth giving consideration when developing and assessing a design. 
+The Declare-Diagnose-Redesign framework suggests a set of twelve principles that can guide the design process. Not all principles will be equally important in all cases but we think all are worth giving consideration when developing and assessing a design. 
 
 We state the principles and then describe each in detail.
 
@@ -48,19 +48,21 @@ Design principles
 
 4. Seek M:I, D:A parallelism
 
-5. Bake in implementation fails
+5. Make M large
 
-6. Specify your criteria for a good design
+6. Find your limits
 
-7. Evaluate in wholes
+7. Bake in implementation fails
 
-8. Optimize (over D and A)
+8. Specify your criteria for a good design
 
-9. Know where it breaks
+9. Evaluate holistically
 
-10. Keep your design alive
+10. Redesign over D and A
 
-11. Design to share
+11. Redesign often
+
+12. Design to share
 
 ::::
 
@@ -77,33 +79,62 @@ $\rightarrow$ In section `X` we give examples of how to design in advance when y
 
 This principle has two components.
 
-First, *you should have an inquiry*. Oddly, it is possible to do carry out data analysis --- for instance, running a regression of $Y$ on $X$ --- and getting something that looks like an answer without specifying any question in particular.^[Loonquawl and Phouchg's problem.] 
+First, *you should have an inquiry*. Oddly, it is possible to carry out data analysis --- for instance, running a regression of $Y$ on $X$ --- and getting something that looks like an answer without specifying any question in particular. The diagnosis process is generally geared to seeing whether you have a good answer. Assessing that usually requires a well defined inquiry, so make sure you have one.
 
-Second, the question you have should be in principle answerable.  We can think of "model-answerable" inquiries and "data-answerable" inquiries. 
+Second, the question you have should be in principle answerable.  That's trickier than it sounds. We can think of being answerable under a model and being answerable given some data. 
 
-The idea of model-answerability is that you can write down a model such that, if that model were the true model, and you knew the model, you could answer the question. You can describe the question in terms of the model. Simple sounding questions: "Did Germany cause the Second World War?" "or "did New Zealand do well against Covid-19 because Prime Minister Jacinda Ardern was a woman?" can turn out to be difficult to ask and answer within a model which, we think, can give a hint to when a question is poorly posed. Make sure that you can describe some world in which if you fully understood the world you would have a precise answer to your question.
+We can think of a question as being answerable "in theory" if you can write down a model such that, if that model were the true model, and you knew the model, you could answer the question. You can describe the question in terms of the model. Simple sounding questions: "Did Germany cause the Second World War?" "or "did New Zealand do well against Covid-19 because Prime Minister Jacinda Ardern was a woman?" can turn out to be difficult to ask and answer even if you have a well defined model. This, we think, can give a hint to when a question is poorly posed. Make sure that you can describe *some* world such that if you fully understood the world you would have a precise answer to your question. In the MIDA framework we might think of a model as being answerable in theory if you get an answer when you apply $I$ to $M$. 
 
-Data-answerability relates to the idea of "identification." In statistics, a question is at least partly answerable if there are at least two different sets of data you might observe that would lead you to make two different inferences. In the best case, one might imagine that there is a possible dataset that would give you an imprecise answer. In this case we can think of a model that is identified, or at least partially identified. Perhaps surprisingly, in many circumstances inquiries are not even partially identifiable. If we have a model that says an outcome $Y$ is defined by the structural equation $Y=(a+b)X$, for scalars $a$ and $b$, no amount of data can tell us the exact values of $a$ and $b$. Indeed without boundary constraints no amount of data can even narrow down the ranges of $a$ and $b$. The basic problem is that for any value of $a$ we can choose a $b$ that keeps the sum of $a+b$ constant. In this setting, even though there is an answer to our inquiry ($a$) it is not one we can ever answer with data. We may want to switch our inquiry to the sum $a+b$, which is data-answerable. Many other types of inquiries, such as mediation inquiries, are not identifiable. There are some circumstances in which we can provide a partial answer to the inquiry, such as learning a range of values within which the parameter lives. These can be useful. At a minimum, our inquiries should be at least partially answerable with possible data.
+We can think of a question as being answerable *in practice* if there is possible data lets you hone in a good answers. This relates to the idea of "identification" in statistics. A question is at least partly answerable if there are at least two different sets of data you might observe that would lead you to make two different inferences.  In the best case, one might imagine that you have lots of data and each possible data pattern you see is consistent with only one possible answer. Failing that you might imagine that different data patterns at least let you rule out some answers. In this case we might we have partial identification. 
+<!-- In the MIDA framework we might think of a question as being answerable in practice if there  is a $D$ and $A$ that produce answers that vary as $M$ varies.  --> Perhaps surprisingly, some inquiries might not even be partially identifiable. For instance if we have a model that says an outcome $Y$ is defined by the structural equation $Y=(a+b)X$, for scalars $a$ and $b$, no amount of data can tell us the exact values of $a$ and $b$. Indeed without boundary constraints no amount of data can even narrow down the ranges of $a$ and $b$. The basic problem is that for any value of $a$ we can choose a $b$ that keeps the sum of $a+b$ constant. In this setting, even though there is an answer to our inquiry ($a$) in theory it is not one we can ever answer in practice. Many other types of inquiries, such as mediation inquiries, are not identifiable. There are some circumstances in which we can provide a partial answer to the inquiry, such as learning a range of values within which the parameter lives. These can be useful. At a minimum, we urge you to pose inquiries that are at least partially answerable with possible data.
 
 $\rightarrow$ In section `X` we give an example of a design that sought to answer a question that turned out to be unanswerable.  
 
 ## Render inquiries insensitive to models
 
-Sometimes researchers write down a model and then point to some  model-specific quantity that they want to lean about. For example you assume that $Y= \alpha+\beta X$ and you want to learn about $\beta$. The problem with this approach however is that it is not very clear what the *question* is (and similarly, what the estimand is) if you have the wrong model. For instance what is the researcher asking if in fact the "true" model is $Y= X - X^2$? For a second example it is unclear what the average treatment effect inquiry $E(Y(1)-Y(0))$ is if our model allows for spillovers. One approach is to require that readers assume our model is true and so the question is well defined. But this has the distinct disadvantage of preventing us from even *asking* how the design  woudl perform if the model is wrong. A better approach is to define the inquiry in a way that requires as few assumptions as possible about the world.  For instance instance instead of $\beta$ we could say that we are interested in the average effect on $Y$ of a unit change in $X$. Similarly we can redefine the average treatment effect, however, as the average difference between a unit being the only unit treated  and a situation where all other units being assigned to control. 
+Sometimes researchers write down a model and then point to some  model-specific quantity that they want to lean about. The problem with this approach however is that if you, or someone else, worry that  the model might be wrong and want to assess how the design performs under a different model you might find that you don't  have a well defined inquiry anymore. 
 
-In practice we encourage you to define inquiries as summaries terms of the values (or potential values) of  nodes of a model. If you do that then the definition depends only on what's called the "signature" of the model---the set of nodes and their ranges---and not specific assumptions about how nodes relate to each other---the structural equations.
+Here are two quite common examples where a problem like this arises. First, imagine a researcher assumes that $Y= \beta_0+\beta_1 X$ and says they want to learn about $\beta_1$.  A second researcher thinks the true model is $Y= \gamma_0 + \gamma_1 X +\gamma_2 X^2$. What then is researcher 1's question under researcher 2's model? For a second example researcher 1 is interested in the average treatment effect, which they describe as  $E(Y(1)-Y(0))$. Researcher 2 wonders how well researcher 1's strategy works if there are spillovers, but then realizes that the estimand,   $E(Y(1)-Y(0))$, presupposed no spillovers. Howe then to assess whether the strategy works well?
+
+One approach is to require that readers just accept that our model is correct and so the question is well defined. But this has the distinct disadvantage of preventing us from even *asking* how the design  would  perform if the model is wrong. A better approach is to define the inquiry in a way that requires as few assumptions as possible about the world.  For instance, for example 1, instead of $\beta$ we could say that we are interested in the average effect on $Y$ of a unit change in $X$. Similarly, for example 2,  we might redefine the average treatment effect as the average difference between a unit being the only unit treated  and a situation where all other units being assigned to control. 
+
+In practice we encourage you to define inquiries as summaries of the values (or potential values) of  nodes of a model. If you do that then the definition depends only on what's called the "signature" of the model---the set of nodes and their ranges---and not specific assumptions about how nodes relate to each other---the structural equations.
 
 $\rightarrow$ In section `X` we show an example of a design that seeks to estimate deep parameters from a structural model but using an approach where the question does  not depend on the model being correct. 
 
 
-## Seek parallelism between the theoretical elements and empirical elements
+## Seek M:I, D:A parallelism
 
-A useful feature that you can see from the MIDA formalism is that when data strategies introduce no distortions, answer strategies can be directly analogous to inquiries. If the data $d$ is like the distributions generated by $M$ then if $A=I$, $A(d)$ will be like $I(m)$. We call this the plug-in principle: the estimator can be like the inquiry. The principle does not always hold but there is an interesting generalization. When data strategies do introduce distortions, the answer strategy should compensate for them to restore parallelism. If we define inquiries in terms of potential outcomes, then our estimand can be written $I(X(m))$, where $X(m)$ denotes values of nodes produced under model $m$. We get to observe $d=D(m)$  and our answer is $A(D(m))$. Ideally we  want $A(D(m)) = I(X(m))$. We preserve parallelism then by seeking an $A$ such that $A$ after $D$ approximates $I$ after $X$.
+
+A useful feature that you can see from the MIDA formalism is that when data strategies introduce no distortions, answer strategies can be directly analogous to inquiries. If the data is "like" the distributions generated by a model then if $A$ is like $I$ the estimate will be like the estimand. 
+
+We call this the plug-in principle: the estimator can be like the inquiry. For example if you are interested in estimating the mean or the variance of a population you use the mean and variance of a sample [@van2000asymptotic].  
+
+The principle does not always hold but there is an interesting generalization. When data strategies do introduce distortions, the answer strategy should compensate for them to restore parallelism.  We restore parallelism then by seeking an $A$ such that $A$ after $D$ approximates $I$. This idea underpins the maxim "analyze as you randomize" [@fisher1937design]: if your data is not a simple draw from the population you care about you need to account for that fact and the data strategy itself gives guidance for how to do that. 
 
 $\rightarrow$ We show plug-in principles in action in section `X`.
 
 
-## Anticipate implementation failures
+
+## Make M large
+
+Broadly there are two ways to be sure that a data and answer strategy return the right answer under some class of models. One is a form of shooting fish in a barrel: you narrow down the set of models so much that your Data and Answer strategy are sure to work within the set. In the extreme case you entertain models in which the answer is "4" and your answer strategy is "4". For a less trivial example you assume that there are no confounders and interpret correlation as causation, refusing to contemplate alternatives. People do that. 
+
+The second approach is to design D and A specifically to ensure that D and A perform well even under a wide class of models---including models that you might have never considered.  This is the principle behind  "design based inference" approaches or behind use of "doubly robust" estimators. The core idea is that your design gets stronger if it continues to perform as well as your assumptions on $M$ get weaker. 
+
+
+## Find your limits
+
+A kind of corrollary of principle 5 is that while you should try to make M large you have to know where the edges are. It's good to learn from design declaration and diagnosis that given some model and some strategy faithfully implemented, we get a reliable answer with high probability. But designs can also be used to get clarity over when a design will *not* produce a good answer, even when you have built in failures of implementation. Your design might assume for instance that  one variable is not affected by another variable and the validity of your answer might depend on the extent to which this is true. A design that contains a set of models that include violations of this assumption can be used to assess the extent to which the assumption matters, how bad a violation has to be to produce misleading results of consequence, and what types of assumptions are critical for inference and which ones are not. In short, seek to construct a model set do you can understand the worlds for which your design works and the worlds in which you run into problems.
+
+Research design diagnosis is useful only if the design is assessed not only under conditions favorable to the researcher, but those unfavorable to the researcher. Designs should provide useful answers to inquiries in both sets of circumstances. Diagnosis under both sets can reveal if that is the case, or if changes to the data and answer strategy are needed. Even when there are circumstances under which the design performs poorly, understanding when that is the case aids interpretation of the results and focuses reanalysis debates substantively on which models are plausible.
+
+
+$\rightarrow$ Section `X` describes a design defined over a *set* of models; diagnosis reveals that the design performs excellently in subsets of the set but fails in other subsets.  
+
+
+
+## Bake in implementation failures
 
 A common approach to research planning is to write down the ideal design, then go implement it, encounter problems, and seek fixes. Missing data, archival documents that cannot be traced, noncompliance with treatment assignments, evidence of spillovers, and difficulties recontacting subjects in followup surveys are just some of the common problems empirical researchers face. Insofar as these are predictable problems it can be useful to think of them as *parts* of your design not *deviations* from your design. Answer strategies can be developed that anticipate these problems, and account for them, including if-then plans for handling each likely implementation problem. More fundamentally, the deviations themselves can be included in your model so that you can diagnose the properties of different strategies, in advance, given risks of different kinds.  
 
@@ -117,27 +148,22 @@ A diagnosis of five designs across ethical, logistical, and scientific diagnosan
 
 $\rightarrow$ Section `X` walks through the selection and combination of "diagnosands." 
 
-## Evaluate designs wholistically
+## Evaluate holistically
 
-Too often, researchers evaluate *parts* of their design in isolation: is this a good question? Is this a good estimator? What's the best way to sample? However, evaluation of a design requires knowing how the parts fit together. If we ask, "What's your research design?" and you respond "It's a regression discontinuity design," we've learned what your answer strategy might be, but we don't have enough information to decide whether it's a strong design until we learn about the model, inquiry, data strategy, and answer strategy. In practice we do this by declaring the entire design, and asking how it performs, from start to finish, with respect to specified diagnosands.^[This presupposes of course that we *can* run through a design from start to finish, that the design is whole enough to let us do that.  See section X on  "diagnosand-complete" designs.]   
+Too often, researchers evaluate *parts* of their design in isolation: is this a good question? Is this a good estimator? What's the best way to sample? However, evaluation of a design requires knowing how the parts fit together. If we ask, "What's your research design?" and you respond "It's a regression discontinuity design," we've learned what your answer strategy might be, but we don't have enough information to decide whether it's a strong design until we learn about the model, inquiry, data strategy, and other parts of the answer strategy. 
+
+In practice we do this by declaring the entire design, and asking how it performs, from start to finish, with respect to specified diagnosands. To be able to do this we require a sufficiently complete design declaration. Indeed the ability to run through a design to the point where a diagnosis can be undertaken is, we think, a good indicator of an adequately declared design. In section X we discuss the idea of  "diagnosand-complete" designs in more detail.   
 
 $\rightarrow$ Section `X` revisits a common debate "should I use OLS or ordered probit?" and show how the question is poorly posed without clarity on other aspects of a design
 
 ## Redesign over D and A
 
-You may well feel that you are done once you fully declare a design that promises to answer the questions you care about. That is the point however when you can most easily think through the performance of your design relative to alternatives. The redesign stage is centered on identifying all of the feasible data and answer strategies and then diagnosing each feasible design. The feasible set may include many minor variations in sampling and assignment probabilities and sample sizes or it may include several very different designs that could be accomplished within ethical and logistical constraints. The diagnosis can be conducted across multiple feasible combinations of the different dimensions of the designs which address the problem that it is difficult to predict how features in different parts of the data and answer strategies will interact.
+You may well feel that you are done once you fully declare a design that promises to answer the questions you care about. That is the point however when you can most easily think through the performance of your design relative to alternatives. The redesign stage is centered on identifying alternative feasible data and answer strategies and then diagnosing each feasible design. The feasible set may include variations in A --- variations in sampling,  assignment probabilities and sample sizes. This is where researchers often fine tune designs. But it can also include variations in A, by varying estimation or inferential procedures.  
+
+Optimization can then be conduced by diagnosing across multiple feasible combinations of the different dimensions of the designs and selecting best performing combinations. Again, design evaluation depends on how the parts of a design related to each other so optimization is best done varying multiple criteria jointly rather than one at a time.
 
 $\rightarrow$ Section `X` describes formal optimization procedures
 
-
-## Know where it breaks
-
-Design declaration and diagnosis can usefully be used to show a set of conditions under which a design works. Given some model and some strategy faithfully implemented, we get a reliable answer with high probability. But designs can also be used to get clarity over when a design will *not* produce a good answer, even when you have built in failures of implementation. Your design might assume for instance that  one variable is not affected by another variable and the validity of your answer might depend on the extent to which this is true. A design that contains a set of models that include violations of this assumption can be used to asses the extent to which the assumption matters, how bad a violation has to be to produce misleading results of consequence, and what types of assumptions are critical for inference and which ones are not. In short, seek to construct a model set do you can understand the worlds for which your design works and the worlds in which you run into problems.
-
-Research design diagnosis is useful only if the design is assessed not only under conditions favorable to the researcher, but those unfavorable to the researcher. Designs should provide useful answers to inquiries in both sets of circumstances. Diagnosis under both sets can reveal if that is the case, or if changes to the data and answer strategy are needed. Even when there are circumstances under which the design performs poorly, understanding when that is the case aids interpretation of the results and focuses reanalysis debates substantively on which models are plausible.
-
-
-$\rightarrow$ Section `X` describes a design defined over a *set* of models; diagnosis reveals that the design performs excellently in subsets of the set but fails in other subsets.  
 
 
 ## Redesign often
@@ -151,6 +177,6 @@ $\rightarrow$ Section `X` describes "design reconciliation" and useful ways to c
 
 ## Design to share
 
-We emphasize design as a process to improve your work. But it is also a process for communicating your research, justifying your decisions, and contributing to the work of others. 
+We emphasize design as a process to improve your work. But it is also a process for communicating your research, justifying your decisions, and contributing to the work of others. Formalizing design declaration makes this sharing easier. By coding up a design as interrogable object that can be run, diagnosed, varied, you let other researchers see, understand, and question the logic of your research. We urge you to keep this sharing function in mind as you write code, explore alternatives, and optimize over designs. A design that is hard coded to capture your final decisions might break when researchers try to modify parts. Alternative strategies lets you and others easily explore neighboring designs, lets others see why you chose the design you chose, and gives them a leg up in their own work. In our ideal world when you create a design you contribute it to a design library so others can check it out and build on your good work.      
 
 $\rightarrow$ Section `X` describes how to prepare your design for the "integration" stage of a research life cycle.
