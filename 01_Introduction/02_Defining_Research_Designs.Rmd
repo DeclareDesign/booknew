@@ -106,7 +106,9 @@ The redesign process is mainly about optimizing your research design given ethic
 
 In our experience, it's during the redesign process that designs become **simpler**. We learn that our experiment has too many arms or that the expected level of heterogeneity is too small to be detected by our design. We learn that in our theoretical excitement, we've built a design with too many bells and too many whistles. Some of the complexity needs to be cut, or the whole design will be a muddle. The upshot of many redesign sessions is that our designs pose fewer inquiries, but obtain better answers.
 
-### Example in words: Encouraging Political Candidacy in Pakistan
+## Example: Encouraging political candidacy in Pakistan
+
+### Declaration in words
 
 We illustrate the *MIDA* framework with a study of the political motivations among office-seekers in Pakistan. @Gulzar2020 conducted an experiment that estimated the effects of two alternative motivations for becoming a politician: helping the community or generating personal benefits. The researchers randomly assigned villages to receive different encouragements to run and measured the rates of running for office, the types of people who chose to run, and the congruence of elected politicians' policy positions with those of the general population. 
 
@@ -118,7 +120,7 @@ The *data strategy* includes three elements. First, we randomly sample 50 citize
 
 The *answer strategy* is the difference-in-means estimator with standard errors clustered at the village level. The clustering of the errors at the village level is an example of how choices in the answer strategy must respect choices made in the data strategy.
 
-### Example in code: Encouraging Political Candidacy in Pakistan
+### Declaration in code
 
 We are now ready to declare the @Gulzar2020 study in code. In the model, we describe a hierarchical structure with 500 villages each of which is home to 100 citizens who are eligible to run for elected office. Each citizen harbors three potential outcomes, `Y_Z_neutral`, `Y_Z_personal`, and `Y_Z_social`. `Y_Z_neutral` is the citizen's latent probability of standing for election if treated with a neutral appeal; `Y_Z_personal` is the probability if treated with an appeal that emphasizes the personal returns to office, and `Y_Z_social` is the probability if treated with an appeal that underlines the benefits to the community. Our simplified model includes a constant treatment effect of 2 percentage points for the personal appeal and 3 percentage points for the social appeal.^[We use the `pnorm` function to define a latent variable representing the potential to run for office. We then in the measurement section measure our binary outcome, which springs from this latent outcome $Y$.]
 
