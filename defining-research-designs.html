@@ -132,9 +132,14 @@
 <p>The redesign process is mainly about optimizing your research design given ethical, logistical, and financial constraints. If related diagnosands such as total harm to subjects, total researcher hours, or total project cost exceed acceptable levels, the design is not feasible. We want to choose the best design we can among the feasible set. If the designs remaining in the feasible set are underpowered, biased, or are otherwise scientifically inadequate, the project may need to be abandoned – something that’s best learned as soon as possible.</p>
 <p>In our experience, it’s during the redesign process that designs become <strong>simpler</strong>. We learn that our experiment has too many arms or that the expected level of heterogeneity is too small to be detected by our design. We learn that in our theoretical excitement, we’ve built a design with too many bells and too many whistles. Some of the complexity needs to be cut, or the whole design will be a muddle. The upshot of many redesign sessions is that our designs pose fewer inquiries, but obtain better answers.</p>
 </div>
-<div id="example-in-words-encouraging-political-candidacy-in-pakistan" class="section level3">
+</div>
+<div id="example-encouraging-political-candidacy-in-pakistan" class="section level2">
+<h2>
+<span class="header-section-number">2.3</span> Example: Encouraging political candidacy in Pakistan<a class="anchor" aria-label="anchor" href="#example-encouraging-political-candidacy-in-pakistan"><i class="fas fa-link"></i></a>
+</h2>
+<div id="declaration-in-words" class="section level3">
 <h3>
-<span class="header-section-number">2.2.4</span> Example in words: Encouraging Political Candidacy in Pakistan<a class="anchor" aria-label="anchor" href="#example-in-words-encouraging-political-candidacy-in-pakistan"><i class="fas fa-link"></i></a>
+<span class="header-section-number">2.3.1</span> Declaration in words<a class="anchor" aria-label="anchor" href="#declaration-in-words"><i class="fas fa-link"></i></a>
 </h3>
 <p>We illustrate the <em>MIDA</em> framework with a study of the political motivations among office-seekers in Pakistan. <span class="citation">Gulzar and Khan (<a href="references.html#ref-Gulzar2020" role="doc-biblioref">2020</a>)</span> conducted an experiment that estimated the effects of two alternative motivations for becoming a politician: helping the community or generating personal benefits. The researchers randomly assigned villages to receive different encouragements to run and measured the rates of running for office, the types of people who chose to run, and the congruence of elected politicians’ policy positions with those of the general population.</p>
 <p>The model for this study applies to citizens who are eligible to run for office in study villages. The model describes subjects’ individual characteristics and their potential outcomes depending on which motivation treatment they receive. The alternative theories that the model encompasses are that politicians run for office only to help themselves, only to help others, neither, or both. Among theories that include room for both motivations, some claim that intrinsic motivations are more powerful than extrinsic, while other claim the reverse. We define these potential outcomes in terms of subjects’ latent probability of running for office which is tightly related to the binary choice to run or not to run.</p>
@@ -142,9 +147,9 @@
 <p>The <em>data strategy</em> includes three elements. First, we randomly sample 50 citizens who are eligible to stand for election from each village. Next, we assign subjects to a personal benefits encouragement, a prosocial encouragement, or no encouragement (control). All subjects in a village are assigned to the same treatment condition, which is to say that this experiment used cluster random assignment. Lastly, the data strategy measures the decision to run for office by checking whether a subject’s name appears on the official candidate lists of released by the Election Commission of Pakistan. In contrast to the continuous latent outcome variable in the model, the outcome variable as measured in the data strategy is binary.</p>
 <p>The <em>answer strategy</em> is the difference-in-means estimator with standard errors clustered at the village level. The clustering of the errors at the village level is an example of how choices in the answer strategy must respect choices made in the data strategy.</p>
 </div>
-<div id="example-in-code-encouraging-political-candidacy-in-pakistan" class="section level3">
+<div id="declaration-in-code" class="section level3">
 <h3>
-<span class="header-section-number">2.2.5</span> Example in code: Encouraging Political Candidacy in Pakistan<a class="anchor" aria-label="anchor" href="#example-in-code-encouraging-political-candidacy-in-pakistan"><i class="fas fa-link"></i></a>
+<span class="header-section-number">2.3.2</span> Declaration in code<a class="anchor" aria-label="anchor" href="#declaration-in-code"><i class="fas fa-link"></i></a>
 </h3>
 <p>We are now ready to declare the <span class="citation">Gulzar and Khan (<a href="references.html#ref-Gulzar2020" role="doc-biblioref">2020</a>)</span> study in code. In the model, we describe a hierarchical structure with 500 villages each of which is home to 100 citizens who are eligible to run for elected office. Each citizen harbors three potential outcomes, <code>Y_Z_neutral</code>, <code>Y_Z_personal</code>, and <code>Y_Z_social</code>. <code>Y_Z_neutral</code> is the citizen’s latent probability of standing for election if treated with a neutral appeal; <code>Y_Z_personal</code> is the probability if treated with an appeal that emphasizes the personal returns to office, and <code>Y_Z_social</code> is the probability if treated with an appeal that underlines the benefits to the community. Our simplified model includes a constant treatment effect of 2 percentage points for the personal appeal and 3 percentage points for the social appeal.<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;We use the &lt;code&gt;pnorm&lt;/code&gt; function to define a latent variable representing the potential to run for office. We then in the measurement section measure our binary outcome, which springs from this latent outcome &lt;span class="math inline"&gt;\(Y\)&lt;/span&gt;.&lt;/p&gt;'><sup>2</sup></a></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -290,7 +295,7 @@ Zsocial
 </div>
 <div id="putting-designs-to-use" class="section level2">
 <h2>
-<span class="header-section-number">2.3</span> Putting designs to use<a class="anchor" aria-label="anchor" href="#putting-designs-to-use"><i class="fas fa-link"></i></a>
+<span class="header-section-number">2.4</span> Putting designs to use<a class="anchor" aria-label="anchor" href="#putting-designs-to-use"><i class="fas fa-link"></i></a>
 </h2>
 <p>The two pillars of our approach are the language for describing research designs (<em>MIDA</em>) and the algorithm for selecting high-quality designs (Declare-Diagnose-Redesign). Together, these two ideas can shape research design decisions throughout the lifecycle of a project. The full set of implications is drawn out in Part IV but we emphasize the most important ones here.</p>
 <p>Broadly speaking, the lifecycle of an empirical research project has four phases: Brainstorming, Planning, Realization, and Integration. Planning, Realization, and Integration describe what happens before, during, and after the implementation of a research design. We pre-pend a fourth phase – Brainstorming – to reflect the idea that research doesn’t just begin with “planning” – research ideas have to being with some spark of inspiration.</p>
@@ -301,7 +306,7 @@ Zsocial
 </div>
 <div id="further-reading" class="section level2">
 <h2>
-<span class="header-section-number">2.4</span> Further Reading<a class="anchor" aria-label="anchor" href="#further-reading"><i class="fas fa-link"></i></a>
+<span class="header-section-number">2.5</span> Further Reading<a class="anchor" aria-label="anchor" href="#further-reading"><i class="fas fa-link"></i></a>
 </h2>
 <p>TBD</p>
 <!-- - @brady2010rethinking -->
@@ -340,12 +345,16 @@ Zsocial
 <li><a class="nav-link" href="#declaration"><span class="header-section-number">2.2.1</span> Declaration</a></li>
 <li><a class="nav-link" href="#diagnosis"><span class="header-section-number">2.2.2</span> Diagnosis</a></li>
 <li><a class="nav-link" href="#redesign"><span class="header-section-number">2.2.3</span> Redesign</a></li>
-<li><a class="nav-link" href="#example-in-words-encouraging-political-candidacy-in-pakistan"><span class="header-section-number">2.2.4</span> Example in words: Encouraging Political Candidacy in Pakistan</a></li>
-<li><a class="nav-link" href="#example-in-code-encouraging-political-candidacy-in-pakistan"><span class="header-section-number">2.2.5</span> Example in code: Encouraging Political Candidacy in Pakistan</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#putting-designs-to-use"><span class="header-section-number">2.3</span> Putting designs to use</a></li>
-<li><a class="nav-link" href="#further-reading"><span class="header-section-number">2.4</span> Further Reading</a></li>
+<li>
+<a class="nav-link" href="#example-encouraging-political-candidacy-in-pakistan"><span class="header-section-number">2.3</span> Example: Encouraging political candidacy in Pakistan</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#declaration-in-words"><span class="header-section-number">2.3.1</span> Declaration in words</a></li>
+<li><a class="nav-link" href="#declaration-in-code"><span class="header-section-number">2.3.2</span> Declaration in code</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#putting-designs-to-use"><span class="header-section-number">2.4</span> Putting designs to use</a></li>
+<li><a class="nav-link" href="#further-reading"><span class="header-section-number">2.5</span> Further Reading</a></li>
 </ul>
 
       <div class="book-extra">
