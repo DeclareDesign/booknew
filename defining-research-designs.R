@@ -11,14 +11,17 @@ model <-
   declare_model(
     villages = add_level(N = 500, U_village = rnorm(N, sd = 0.1)),
     citizens = add_level(
-      N = 100, 
+      N = 100,
       U_citizen = rnorm(N),
       potential_outcomes(
         Y ~ pnorm(
-          U_citizen + U_village + 
-            0.1 * (Z == "personal") + 0.15 * (Z == "social")),
-          conditions = list(Z = c("neutral", "personal", "social"))
-        )))
+          U_citizen + U_village +
+            0.10 * (Z == "personal") +
+            0.15 * (Z == "social")),
+        conditions = list(Z = c("neutral", "personal", "social"))
+      )
+    )
+  )
 
 inquiry <- declare_inquiry(
   ATE_personal = mean(Y_Z_personal - Y_Z_neutral),
@@ -58,30 +61,6 @@ answer_strategy <-
 
 design <- model + inquiry + data_strategy + answer_strategy
 
-dag <- dagify(
-  Y ~ Z + X + U,
-  Z ~ X
-)
-
-nodes <-
-  tibble(
-    name = c("Y", "Z", "U", "X"),
-    label = c("Y", "Z", "U", "X"),
-    annotation = c(
-      "**Outcome**<br>",
-      "**Random assignment**<br>",
-      "**Unknown heterogeneity**",
-      "**villages**<br>Used for cluster assignment"),
-    x = c(5, 1, 5, 1),
-    y = c(2.5, 2.5, 4, 4), 
-    nudge_direction = c("S", "S", "N", "N"),
-    data_strategy = c("unmanipulated", "assignment", "unmanipulated", "unmanipulated"),
-    answer_strategy = "uncontrolled"
-  )
-ggdd_df <- make_dag_df(dag, nodes)
-
-base_dag_plot %+% ggdd_df + coord_fixed(ylim = c(2.05, 4.6), xlim = c(0.25 - epsilon, 5.75 + epsilon))
-
 diagnosands <- declare_diagnosands(
   bias = mean(estimate - estimand),
   rmse = sqrt(mean((estimate - estimand)^2)),
@@ -97,8 +76,11 @@ get_diagnosands(diagnosis) %>%
   select(inquiry_label, term, bias, rmse, power) %>%
   kable(digits = 3, caption = "Diagnosis of the simplified Gulzar-Khan design.", booktabs = TRUE)
 
-## designs <- redesign(design, n_villages = c(192, 295, 397, 500), citizens_per_village = c(25, 50, 75, 100))
-## diagnosis <- diagnose_design(designs, diagnosands = diagnosands)
+## designs <- redesign(design,
+##                     n_villages = c(192, 295, 397, 500),
+##                     citizens_per_village = c(25, 50, 75, 100))
+## 
+## diagnosis <- diagnose_designs(designs, diagnosands = diagnosands)
 
 
 
