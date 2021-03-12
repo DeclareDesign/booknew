@@ -90,7 +90,9 @@ You could write your own function to do that but you can also use one of the `de
 Here is an example of a `declare_assignment` step.
 
 ```{r}
-simple_random_assignment_step <- declare_assignment(prob = 0.6)
+simple_random_assignment_step <- 
+  declare_assignment(Z = simple_ra(N = N, prob = 0.6), 
+                     legacy = FALSE)
 ```
 
 The big idea here is that the object we created, `simple_random_assignment_step`, is not a particular assignment, it is a *function* that conducts assignment when called. You can run the function on data:
@@ -119,20 +121,14 @@ Every step of a research design declaration can be written using one of the `dec
 | Data strategy    | `declare_sampling()`           | specify sampling procedures                                     |
 |                  | `declare_assignment()`         | specify assignment procedures                                   |
 |                  | `declare_measurement()`        | specify measurement procedures                                  |
-| Answer strategy  | `declare_estimator()`          | specify data summary procedures                                 |
+| Answer strategy  | `declare_estimator()`          | specify estimation procedures                                   |
+|                  | `declare_test()`               | specify testing procedures                                      |
 
 Table: (\#tab:declarationfunctions) Declaration functions in `DeclareDesign`
 
-
-### Options and defaults
-
-Each of the `declare_*` functions has many options. In general, you do not have to specify these as default values are usually provided. For instance, you might have noticed above that when you ran the assignment step above, the new variable that was created was called `Z`. This is because `declare_assignment` has an argument `assignment_variable` that defaults to `Z`. You can change that of course to whatever you want.
-
-More subtly, the `declare_*` functions also default to "handlers" which have their own default arguments. These handlers are generally well-developed sets of functions that implement the tasks needed by the `declare_` function. For instance, `assignment_handler` defaults to the `conduct_ra` function from the `randomizr` package. The declaration passes any additional arguments that you give it on to `conduct_ra`, and, by the same token, assumes the default values of the handler. In the example above, we had `prob = 0.6` as an argument. If you look at the documentation, `prob` is not an argument of `declare_assignment` but it is an argument of `conduct_ra`, with a default value of 0.5. If we had left this bit out we would have gotten a function that assigned treatment with probability 0.5. As with any software, learning these defaults will take some time and can be looked up in the help files, e.g. `?declare_assignment`.
-
 ### Your own handlers
 
-The built-in functions we provide in the `DeclareDesign` package are quite flexible and handle many major designs, but not all. The framework is built so that you are never constrained by what we provide. At any point, rather than using the default handlers (such as `conduct_ra`), you can write a function that implements your own procedures. The only discipline that the framework imposes is that you write your procedure as a function that takes data in and sends data back.  
+The built-in functions we provide in the `DeclareDesign` package are quite flexible and handle many major designs, but not all. The framework is built so that you are never constrained by what we provide. At any point, you can write a function that implements your own procedures. The only discipline that the framework imposes is that you write your procedure as a function that takes data in and sends data back.  
 
 Here is an example of how you turn your own functions into design steps.
 
@@ -313,7 +309,7 @@ Sampling could also be non-random, which could be accomplished by using a custom
 
 #### Assignment
 
-The default handler for `declare_assignment` also relies on the `randomizr` package for random assignment. Here, we define an assignment procedure that allocates subjects to treatment with probability 0.5. One subtlety is that by default, `declare_assignment` conducts complete random assignment (exactly $m$ of $N$ units assigned to treatment, where $m$ = `prob` * $N$). 
+Here, we define an assignment procedure that allocates subjects to treatment with probability 0.5. 
 
 ```{r, eval = FALSE}
 declare_assignment(Z = complete_ra(N, prob = 0.5), legacy = FALSE)
@@ -346,7 +342,7 @@ draw_data(simple_design) %>%
 
 #### Measurement
 
-Measurement is a critical part of every research design; sometimes it is beneficial to explicitly declare the measurement procedures of the design, rather than allowing them to be implicit in the ways variables are created in `declare_population` and `declare_potential_outcomes`. For example, we might imagine that the normally distributed outcome variable `Y` is a latent outcome that will be translated into a binary outcome when measured by the researcher:
+Measurement is a critical part of every research design; sometimes it is beneficial to explicitly declare the measurement procedures of the design, rather than allowing them to be implicit in the ways variables are created in `declare_model`. For example, we might imagine that the normally distributed outcome variable `Y` is a latent outcome that will be translated into a binary outcome when measured by the researcher:
 
 ```{r, eval = FALSE}
 declare_measurement(Y_binary = rbinom(N, 1, prob = pnorm(Y)))
@@ -456,14 +452,6 @@ declare_estimator(handler = label_estimator(my_estimator),
                   label = "mean", inquiry = "Y_bar")
 ```
 
-
-
-
-
-
-
-
-
 ### Other design steps
 
 The main `declare_*` functions cover many elements of research designs, but not all. You can include any operations we haven't explicitly included as steps in your design too, using `declare_step`. Here, you must define a specific handler. Some handlers that may be useful are the `dplyr` verbs such as `mutate` and `summarize`, and the `fabricate` function from our `fabricatr` package.
@@ -546,25 +534,31 @@ design <-
 
 ### Order matters
 
-When defining a design, the order in which steps are included in the design via the `+` operator matters. Think of the order of your design as the temporal order in which steps take place. Here, since the estimand comes before sampling and assignment, it is a *population* estimand, the population average treatment effect. 
+When defining a design, the order in which steps are included in the design via the `+` operator matters. Think of the order of your design as the temporal order in which steps take place. Here, since the inquiry comes before sampling and assignment, it is a *population* inquiry, the population average treatment effect. 
 
 ```{r, eval = FALSE}
-model + inquiry + 
-  sampling + assignment + measurement + answer_strategy
+model +
+  declare_inquiry(PATE = mean(Y_Z_1 - Y_Z_0)) +
+  sampling +
+  assignment +
+  measurement +
+  answer_strategy
 ```
 
-We could define our estimand as a *sample* average treatment effect by putting `estimand` after `sampling`:
+We could define our inquiry as a *sample* average treatment effect by putting `inquiry` after `sampling`:
 
 ```{r, eval = FALSE}
-model + sampling + inquiry + 
-   assignment + measurement + answer_strategy
+model +
+  sampling +
+  declare_inquiry(SATE = mean(Y_Z_1 - Y_Z_0)) +
+  assignment +
+  measurement + 
+  answer_strategy
 ```
 
 ## Simulating a research design
 
-Diagnosing a research design --- learning about its properties --- requires first simulating running the design over and over. We need to simulate the data generating process, then calculate the estimands, then calculate the resulting estimates. 
-
-With the design defined as an object, we can learn about what kind of data it generates, the values of its estimand and estimates, and other features. For example, to draw simulated data based on the design, we use `draw_data`:
+Diagnosing a research design --- learning about its properties --- requires first simulating running the design over and over. We need to simulate the data generating process, then calculate the values of its inquiries, then calculate the resulting estimates. For example, to draw simulated data based on the design, we use `draw_data`:
 
 ```{r, eval = FALSE}
 draw_data(design)
@@ -573,9 +567,9 @@ draw_data(design)
 draw_data(design) %>% head(5) %>% kable(digits = 3, caption = "Simulated data draw.", booktabs = TRUE)
 ```
 
-`draw_data` runs all of the "data steps" in a design, which are both from the model (population and potential outcomes) and from the data strategy (sampling, assignment, and measurement).
+`draw_data` runs all of the "data steps" in a design, which are both from the model and from the data strategy (sampling, assignment, and measurement).
 
-To simulate the estimands from a single run of the design, we use `draw_estimands`. This runs two operations at once: it draws the data, and calculates the estimands at the point defined by the design. For example, in our design, the estimand comes just after the potential outcomes. In this design, `draw_estimands` will run the first two steps and then calculate the estimands from the `estimand` function we declared:
+To simulate the estimands from a single run of the design, we use `draw_inquiries`. This runs two operations at once: it draws the data, and calculates the estimands at the point defined by the design. For example, in our design, the estimand comes just after the potential outcomes. In this design, `draw_inquiries` will run the first two steps and then calculate the value of inquiry from the `inquiry` function we declared:
 
 ```{r, eval = FALSE}
 draw_inquiries(design)
@@ -611,7 +605,7 @@ simulation_df <- simulate_design(design, sims = sims)
 # figure out where the dropbox path is, create the directory if it doesn't exist, and name the RDS file
 rds_file_path <- paste0(get_dropbox_path("03_Software_Primer.Rmd"), "/simulation_df.RDS")
 if (do_diagnosis & !exists("do_bookdown")) {
-  write_rds(simulation_df, path = rds_file_path)
+  write_rds(simulation_df, file = rds_file_path)
 }
 simulation_df <- read_rds(rds_file_path)
 ```
@@ -676,7 +670,7 @@ simple_designer <- function(sample_size, effect_size) {
   declare_assignment(
     Z = complete_ra(N, prob = 0.5), legacy = FALSE
   ) +
-  declare_measurement(Y = reveal_outcome(Y ~ Z)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
   declare_estimator(
     Y ~ Z, model = difference_in_means, inquiry = "PATE"
   )
@@ -730,7 +724,7 @@ In our `DesignLibrary` package, we have created a set of common designs as desig
 ```{r, eval = FALSE}
 library(DesignLibrary)
 
-b_c_design <- block_cluster_two_arm_designer(N = 1000, N_blocks = 10)
+block_cluster_design <- block_cluster_two_arm_designer(N = 1000, N_blocks = 10)
 ```
 
 ## Further Reading
