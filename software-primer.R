@@ -27,7 +27,9 @@ voter_file <- fabricate(
 
 kable(head(voter_file, 5), digits = 3, caption = "Example data", booktabs = TRUE)
 
-simple_random_assignment_step <- declare_assignment(prob = 0.6)
+simple_random_assignment_step <- 
+  declare_assignment(Z = simple_ra(N = N, prob = 0.6), 
+                     legacy = FALSE)
 
 ## simple_random_assignment_step(voter_file)
 simple_random_assignment_step(voter_file) %>% 
@@ -270,11 +272,19 @@ design <-
     Y ~ Z, model = difference_in_means, inquiry = "PATE"
   )
 
-## model + inquiry +
-##   sampling + assignment + measurement + answer_strategy
+## model +
+##   declare_inquiry(PATE = mean(Y_Z_1 - Y_Z_0)) +
+##   sampling +
+##   assignment +
+##   measurement +
+##   answer_strategy
 
-## model + sampling + inquiry +
-##    assignment + measurement + answer_strategy
+## model +
+##   sampling +
+##   declare_inquiry(SATE = mean(Y_Z_1 - Y_Z_0)) +
+##   assignment +
+##   measurement +
+##   answer_strategy
 
 ## draw_data(design)
 draw_data(design) %>% head(5) %>% kable(digits = 3, caption = "Simulated data draw.", booktabs = TRUE)
@@ -328,7 +338,7 @@ simple_designer <- function(sample_size, effect_size) {
   declare_assignment(
     Z = complete_ra(N, prob = 0.5), legacy = FALSE
   ) +
-  declare_measurement(Y = reveal_outcome(Y ~ Z)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
   declare_estimator(
     Y ~ Z, model = difference_in_means, inquiry = "PATE"
   )
@@ -352,4 +362,4 @@ design <- simple_designer(sample_size = 100, effect_size = 0.25)
 
 ## library(DesignLibrary)
 ## 
-## b_c_design <- block_cluster_two_arm_designer(N = 1000, N_blocks = 10)
+## block_cluster_design <- block_cluster_two_arm_designer(N = 1000, N_blocks = 10)
