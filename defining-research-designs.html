@@ -98,6 +98,42 @@ As a terminological note, we use the word “estimand” to refer to the value o
 <p><strong>Data strategy.</strong> The data strategy is the full set of procedures we use to gather information from the world. The three basic groups of data strategy procedures parallel the three features of inquiries: units are sampled, conditions are assigned, and variables are measured. All data strategies involve sampling in the sense that no empirical strategy is comprehensive – some units are sampled into the study and some units aren’t. Even comprehensive research designs like a population census have a sampling strategy in that they don’t sample respondents in different years or different countries. Assignment procedures describe how researchers generate variation in the world. If you ask some subjects one question, but other subjects a different question, you’ve generated variation on the basis of an assignment procedure. We think of assignment procedures most often when they are randomized, as in a randomized experiment, but many kinds of research designs engage in assignment procedures that are not randomized. Measurement procedures are the ways in which researchers reduce the complex and multidimensional social world into a relatively parsimonious set of data. These data need not be quantitative data in the sense of being numbers or values on a pre-defined scale – qualitative data are data too. Measurement is the vexing but necessary reduction of reality to a few choice representations. Measurement always carries the possibility of measurement error, because this reduction is hard.</p>
 <p><strong>Answer strategy.</strong> The answer strategy is how we summarize the data produced by the data strategy. Just like the inquiry summarizes a part of the model, the answer strategy summarizes a part of the data. Complex, multidimensional datasets don’t just speak for themselves – they need to be summarized and explained. Answer strategies are functions that take in data and return answers. For some research designs, this is a literal function like <code>lm_robust</code> that estimates an ordinary least squares (OLS) regression with robust standard errors. For some research designs, the function is embodied by the researchers themselves when they read documents and summarize their meanings in a case study.</p>
 <p>Importantly, the answer strategy is more than the choice of an estimator. It includes the full set of procedures that begin with cleaning the dataset and end with answers in words, tables, and graphs. These activities include data cleaning, data transformation, estimation, plotting, and interpretation. Not only do we define our choice of OLS as the estimator, we also specify that we will focus attention on a particular coefficient estimate, assess uncertainty using a 95% confidence interval, and construct a coefficient plot to visualize the inference. The answer strategy also includes all of the if-then procedures that researchers implicitly or explicitly take depending on initial results and features of the data. In a stepwise regression procedure, the answer strategy is not the final regression that results from iterative model selection, but that whole procedure itself.</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:fourelementsofresearchdesign">Table 2.1: </span> The four elements of research design.</caption>
+<colgroup>
+<col width="13%">
+<col width="10%">
+<col width="76%">
+</colgroup>
+<thead><tr class="header">
+<th>Design element</th>
+<th>Abbreviation</th>
+<th>Related terms</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Model</td>
+<td><em>M</em></td>
+<td>hypothesized data generating process, structural causal model, theory of change, formal model</td>
+</tr>
+<tr class="even">
+<td>Inquiry</td>
+<td><em>I</em></td>
+<td>estimand, quantity of interest, research question</td>
+</tr>
+<tr class="odd">
+<td>Data strategy</td>
+<td><em>D</em></td>
+<td>sampling, assignment, and measurement</td>
+</tr>
+<tr class="even">
+<td>Answer strategy</td>
+<td><em>A</em></td>
+<td>data analysis, analysis plan, estimation, statistical model</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <div id="declare-diagnose-redesign" class="section level2">
 <h2>
@@ -226,7 +262,7 @@ As a terminological note, we use the word “estimand” to refer to the value o
 <code class="sourceCode R"><span class="va">diagnosis</span> <span class="op">&lt;-</span> <span class="fu">diagnose_design</span><span class="op">(</span><span class="va">design</span>, diagnosands <span class="op">=</span> <span class="va">diagnosands</span>, sims <span class="op">=</span> <span class="va">sims</span>, bootstrap_sims <span class="op">=</span> <span class="va">b_sims</span><span class="op">)</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:simpledesigndiagnosis">Table 2.1: </span>Diagnosis of the simplified Gulzar-Khan design.
+<span id="tab:simpledesigndiagnosis">Table 2.2: </span>Diagnosis of the simplified Gulzar-Khan design.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
