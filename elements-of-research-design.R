@@ -1,5 +1,5 @@
 # ---
-# Defining research designs
+# Elements of research design
 # --- 
 
 packages <- c("tidyverse", "DeclareDesign")
