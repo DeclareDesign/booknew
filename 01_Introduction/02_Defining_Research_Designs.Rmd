@@ -1,5 +1,5 @@
 ---
-title: "Defining research designs"
+title: "Elements of research design"
 output: html_document
 bibliography: ../bib/book.bib 
 ---
@@ -29,7 +29,7 @@ b_sims <- 200
 # load packages for this section here. note many (DD, tidyverse) are already available, see scripts/package-list.R
 ```
 
-# Defining research designs
+# Elements of research design
 
 At its heart, a research design is a procedure for generating empirical answers to theoretical questions. Research designs can be strong or weak -- assessing whether a design is strong requires having a clear sense of what the question is and knowing whether the answers a study is likely to deliver are reliable. This book offers a language for describing research designs and an algorithm for selecting among them. In other words, it is a set of tools for weighing and describing the dozens of choices we make in our research activities that together determine whether we can provide useful answers to our questions.
 
@@ -38,6 +38,17 @@ Remarkably, we can use the same basic language to describe research designs whet
 ## The four elements of research design
 
 Empirical research designs share in common that they all have a model (*M*), an inquiry  (*I*), a data strategy  (*D*), and an answer strategy  (*A*). The four together, which we refer to as MIDA, represent both your suppositions about how the world works and the choices you make as the researcher to intervene in and learn about the world.
+
+<!-- this is where say we use words differently in this book [to be written] -->
+
+| Design element   | Abbreviation  | Related terms                                                                                  | 
+| ---------------- | ------------- | ---------------------------------------------------------------------------------------------- | 
+| Model            | *M*           | hypothesized data generating process, structural causal model, theory of change, formal model  |
+| Inquiry          | *I*           | estimand, quantity of interest, research question                                              |
+| Data strategy    | *D*           | sampling, assignment, and measurement                                                          |
+| Answer strategy  | *A*           | data analysis, analysis plan, estimation, statistical model                                    |
+
+Table: (\#tab:fourelementsofresearchdesign) The four elements of research design.
 
 **Model.** The model comprises speculations about what causes what and how. It includes (possibly quite well-informed) guesses about how important variables are distributed, how things are correlated, and the sequences of events. Of course, we don't know the true model -- if we did we wouldn't have to do any empirical research. A fundamental challenge is that we have to design studies under a set of uncertain beliefs about the true model. 
 
@@ -51,6 +62,21 @@ Defining the model can feel like an odd exercise. Since researchers presumably w
 
 Researchers can refine their models in order to reduce uncertainty. They can draw on existing data, such as baseline surveys, or on new information gathered from pilot studies. Reducing uncertainty over the possible set of models is a core purpose of theoretical reflection, literature review, and formative research.
 
+:::: {.principles data-latex=""}
+::: {.principles-title data-latex=""}
+Examples of models
+:::
+
+1. Contact theory.
+
+2. Prisoner's dilemma.
+
+3. Theory of change.
+
+<!-- add real examples here -->
+
+::::
+
 **Inquiry**. The research question -- what we call the inquiry -- is a summary of the model we want to learn. Our theories are rich, so in a single model, there may be many possible inquiries that we may seek to learn about. A model may be a complex dance of ten or more interrelated variables, but an inquiry is something like the average causal effect of a single variable on another, the descriptive distribution of a third variable, or a prediction about the value a variable in the future. 
 
 Inquiries are defined with respect to units, conditions, and variables; they are summaries of characteristics of units in or across conditions. Inquiries may be causal, as in the average treatment effect (ATE). The ATE is the average difference in the outcome variable across two conditions: the treatment condition and the control condition. Inquiries may be descriptive, as in a population average of a characteristic. While it may seem that descriptive inquiries do not involve conditions, they often do. 
@@ -61,20 +87,86 @@ As a terminological note, we use the word "estimand" to refer to the value of an
 <!-- Please don't delete this sentence! -->
 Together, the model and data form the theoretical half of a research design. The second half is empirical, and its two components mirror those in the theoretical half.
 
+:::: {.principles data-latex=""}
+::: {.principles-title data-latex=""}
+Examples of inquiries
+:::
+
+1. What proportion of voters live with virtually no exposure to voters from the other party in their residential environment?
+
+<!-- https://www.nature.com/articles/s41562-021-01066-z --> 
+
+2. Effect of gaining political office on the divorce rate.
+
+<!-- https://www.aeaweb.org/articles?id=10.1257/app.20180435 --> 
+
+<!-- 3. **cool structural causal model allows you to ask an interest question.**  -->
+
+::::
+
 **Data strategy.** The data strategy is the full set of procedures we use to gather information from the world. The three basic groups of data strategy procedures parallel the three features of inquiries: units are sampled, conditions are assigned, and variables are measured. All data strategies involve sampling in the sense that no empirical strategy is comprehensive -- some units are sampled into the study and some units aren't. Even comprehensive research designs like a population census have a sampling strategy in that they don't sample respondents in different years or different countries. Assignment procedures describe how researchers generate variation in the world. If you ask some subjects one question, but other subjects a different question, you've generated variation on the basis of an assignment procedure. We think of assignment procedures most often when they are randomized, as in a randomized experiment, but many kinds of research designs engage in assignment procedures that are not randomized. Measurement procedures are the ways in which researchers reduce the complex and multidimensional social world into a relatively parsimonious set of data. These data need not be quantitative data in the sense of being numbers or values on a pre-defined scale -- qualitative data are data too. Measurement is the vexing but necessary reduction of reality to a few choice representations. Measurement always carries the possibility of measurement error, because this reduction is hard.
+
+:::: {.principles data-latex=""}
+::: {.principles-title data-latex=""}
+Examples of data strategies
+:::
+
+*Sampling procedures.*
+
+1. Random digit dial sample of 500 voters in the Netherlands.
+
+2. Respondent-driven sampling of people who are HIV positive, starting from a sample of HIV-positive individuals.
+
+3. "Mall intercept" convenience sample of men and women present at the mall on a Saturday.
+
+*Treatment assignment procedures.*
+
+<!-- research assignment -->
+
+4. Random assignment of free legal assistance intervention for detainees held in illegal pretrial detention.
+
+<!-- https://onlinelibrary.wiley.com/doi/10.1111/ajps.12529 --> 
+
+<!-- government assignment -->
+
+<!-- 5. Duflo quota experiment -->
+
+6. Nature's assignment of the gender of a child.
+
+*Measurement procedures.*
+
+7. Survey
+
+8. Administrative data 
+
+<!-- (text?) -->
+
+9. Cortisol
+
+::::
 
 **Answer strategy.** The answer strategy is how we summarize the data produced by the data strategy. Just like the inquiry summarizes a part of the model, the answer strategy summarizes a part of the data. Complex, multidimensional datasets don't just speak for themselves -- they need to be summarized and explained. Answer strategies are functions that take in data and return answers. For some research designs, this is a literal function like `lm_robust` that estimates an ordinary least squares (OLS) regression with robust standard errors. For some research designs, the function is embodied by the researchers themselves when they read documents and summarize their meanings in a case study. 
 
 Importantly, the answer strategy is more than the choice of an estimator. It includes the full set of procedures that begin with cleaning the dataset and end with answers in words, tables, and graphs. These activities include data cleaning, data transformation, estimation, plotting, and interpretation. Not only do we define our choice of OLS as the estimator, we also specify that we will focus attention on a particular coefficient estimate, assess uncertainty using a 95% confidence interval, and construct a coefficient plot to visualize the inference. The answer strategy also includes all of the if-then procedures that researchers implicitly or explicitly take depending on initial results and features of the data. In a stepwise regression procedure, the answer strategy is not the final regression that results from iterative model selection, but that whole procedure itself. 
 
-| Design element   | Abbreviation  | Related terms                                                                                  | 
-| ---------------- | ------------- | ---------------------------------------------------------------------------------------------- | 
-| Model            | *M*           | hypothesized data generating process, structural causal model, theory of change, formal model  |
-| Inquiry          | *I*           | estimand, quantity of interest, research question                                              |
-| Data strategy    | *D*           | sampling, assignment, and measurement                                                          |
-| Answer strategy  | *A*           | data analysis, analysis plan, estimation, statistical model                                    |
+:::: {.principles data-latex=""}
+::: {.principles-title data-latex=""}
+Examples of answer strategies
+:::
 
-Table: (\#tab:fourelementsofresearchdesign) The four elements of research design.
+1. Difference-in-means 
+
+2. Process tracing
+
+<!-- realize this is both answer and data strategy, should we leave out? -->
+
+3. Multilevel modeling and poststratification
+
+<!-- https://www.journals.uchicago.edu/doi/abs/10.1086/701766 --> 
+
+4. Coefficient plot from a linear regression with clustered standard errors
+
+::::
 
 
 ## Declare, diagnose, redesign
